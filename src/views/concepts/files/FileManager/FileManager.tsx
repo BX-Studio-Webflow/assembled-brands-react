@@ -9,17 +9,15 @@ import FileManagerDeleteDialog from './components/FileManagerDeleteDialog'
 import FileManagerInviteDialog from './components/FileManagerInviteDialog'
 import FileManagerRenameDialog from './components/FileManagerRenameDialog'
 import { useFileManagerStore } from './store/useFileManagerStore'
-import { apiGetFiles } from '@/services/FileService'
+import { apiGetAssets } from '@/services/AssetService'
 import useSWRMutation from 'swr/mutation'
-import { GetFileListResponse } from './types'
+import type { GetAssetsResponse } from '@/@types/asset'
 
 const { THead, Th, Tr } = Table
 
-async function getFile(_: string, { arg }: { arg: string }) {
-    const data = await apiGetFiles<GetFileListResponse, { id: string }>({
-        id: arg,
-    })
-    return data
+async function getAssets() {
+    const response = await apiGetAssets()
+    return response
 }
 
 const FileManager = () => {
@@ -30,26 +28,18 @@ const FileManager = () => {
         setDeleteDialog,
         setInviteDialog,
         setRenameDialog,
-        openedDirectoryId,
-        setOpenedDirectoryId,
-        setDirectories,
         setSelectedFile,
     } = useFileManagerStore()
 
-    const { trigger, isMutating } = useSWRMutation(
-        `/api/files/${openedDirectoryId}`,
-        getFile,
-        {
-            onSuccess: (resp) => {
-                setDirectories(resp.directory)
-                setFileList(resp.list)
-            },
+    const { trigger, isMutating } = useSWRMutation(`/assets`, getAssets, {
+        onSuccess: (resp: GetAssetsResponse) => {
+            setFileList(resp.assets)
         },
-    )
+    })
 
     useEffect(() => {
         if (fileList.length === 0) {
-            trigger(openedDirectoryId)
+            trigger()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -62,42 +52,17 @@ const FileManager = () => {
         setDeleteDialog({ id, open: true })
     }
 
-    const handleDownload = () => {
-        const blob = new Blob(
-            [
-                'This text file is created to demonstrate how file downloading works in our template demo.',
-            ],
-            { type: 'text/plain;charset=utf-8' },
-        )
-
+    const handleDownload = (url: string, fileName: string) => {
         const link = document.createElement('a')
-        link.href = window.URL.createObjectURL(blob)
-        link.download = 'sample-dowoad-file'
+        link.href = url
+        link.download = fileName
         document.body.appendChild(link)
-
         link.click()
-
         document.body.removeChild(link)
-        window.URL.revokeObjectURL(link.href)
     }
 
     const handleRename = (id: string) => {
         setRenameDialog({ id, open: true })
-    }
-
-    const handleOpen = (id: string) => {
-        setOpenedDirectoryId(id)
-        trigger(id)
-    }
-
-    const handleEntryClick = () => {
-        setOpenedDirectoryId('')
-        trigger('')
-    }
-
-    const handleDirectoryClick = (id: string) => {
-        setOpenedDirectoryId(id)
-        trigger(id)
     }
 
     const handleClick = (fileId: string) => {
@@ -107,10 +72,7 @@ const FileManager = () => {
     return (
         <>
             <div>
-                <FileManagerHeader
-                    onEntryClick={handleEntryClick}
-                    onDirectoryClick={handleDirectoryClick}
-                />
+                <FileManagerHeader />
                 <div className="mt-6">
                     {isMutating ? (
                         layout === 'grid' ? (
@@ -151,7 +113,6 @@ const FileManager = () => {
                             onShare={handleShare}
                             onDelete={handleDelete}
                             onRename={handleRename}
-                            onOpen={handleOpen}
                             onClick={handleClick}
                         />
                     )}

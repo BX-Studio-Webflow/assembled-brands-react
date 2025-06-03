@@ -1,28 +1,31 @@
 import { create } from 'zustand'
-import type { Files, Directories, Layout } from '../types'
+import type { Asset } from '@/@types/asset'
 
-type DialogProps = { id: string; open: boolean }
+export type Layout = 'grid' | 'list'
+
+type DialogProps = {
+    open: boolean
+    id: string
+}
 
 export type FileManagerState = {
-    fileList: Files
+    fileList: Asset[]
     layout: Layout
     selectedFile: string
     openedDirectoryId: string
-    directories: Directories
     deleteDialog: DialogProps
     inviteDialog: DialogProps
     renameDialog: DialogProps
 }
 
 type FileManagerAction = {
-    setFileList: (payload: Files) => void
+    setFileList: (payload: Asset[]) => void
     setLayout: (payload: Layout) => void
     setOpenedDirectoryId: (payload: string) => void
-    setDirectories: (payload: Directories) => void
     setSelectedFile: (payload: string) => void
-    setDeleteDialog: (paload: DialogProps) => void
-    setInviteDialog: (paload: DialogProps) => void
-    setRenameDialog: (paload: DialogProps) => void
+    setDeleteDialog: (payload: DialogProps) => void
+    setInviteDialog: (payload: DialogProps) => void
+    setRenameDialog: (payload: DialogProps) => void
     deleteFile: (payload: string) => void
     renameFile: (payload: { id: string; fileName: string }) => void
 }
@@ -32,7 +35,6 @@ const initialState: FileManagerState = {
     layout: 'grid',
     selectedFile: '',
     openedDirectoryId: '',
-    directories: [],
     deleteDialog: { open: false, id: '' },
     inviteDialog: { open: false, id: '' },
     renameDialog: { open: false, id: '' },
@@ -46,26 +48,22 @@ export const useFileManagerStore = create<FileManagerState & FileManagerAction>(
         setOpenedDirectoryId: (payload) =>
             set(() => ({ openedDirectoryId: payload })),
         setSelectedFile: (payload) => set(() => ({ selectedFile: payload })),
-        setDirectories: (payload) => set(() => ({ directories: payload })),
         setDeleteDialog: (payload) => set(() => ({ deleteDialog: payload })),
         setInviteDialog: (payload) => set(() => ({ inviteDialog: payload })),
         setRenameDialog: (payload) => set(() => ({ renameDialog: payload })),
         deleteFile: (payload) =>
             set(() => ({
-                fileList: get().fileList.filter((file) => file.id !== payload),
+                fileList: get().fileList.filter(
+                    (file) => file.id.toString() !== payload,
+                ),
             })),
         renameFile: (payload) =>
             set(() => ({
                 fileList: get().fileList.map((file) => {
-                    if (file.id === payload.id) {
-                        const fileAbbreviationArr = file.name.split('.')
-                        const fileAbbreviation =
-                            fileAbbreviationArr[fileAbbreviationArr.length - 1]
-
-                        if (fileAbbreviationArr.length > 1) {
-                            file.name = `${payload.fileName}.${fileAbbreviation}`
-                        } else {
-                            file.name = payload.fileName
+                    if (file.id.toString() === payload.id) {
+                        return {
+                            ...file,
+                            asset_name: payload.fileName,
                         }
                     }
                     return file

@@ -5,6 +5,8 @@ import FilePpt from '@/assets/svg/files/FilePpt'
 import FileFigma from '@/assets/svg/files/FileFigma'
 import FileImage from '@/assets/svg/files/FileImage'
 import Folder from '@/assets/svg/files/Folder'
+import FileVideo from '@/assets/svg/files/FileVideo'
+import FileAudio from '@/assets/svg/files/FileAudio'
 
 const FileIcon = ({ type, size = 40 }: { type: string; size?: number }) => {
     switch (type) {
@@ -26,6 +28,17 @@ const FileIcon = ({ type, size = 40 }: { type: string; size?: number }) => {
             return <FileImage height={size} width={size} />
         case 'directory':
             return <Folder height={size} width={size} />
+        case 'image':
+            return <FileImage height={size} width={size} />
+        case 'profile_picture':
+            return <FileImage height={size} width={size} />
+        case 'video':
+            return <FileVideo height={size} width={size} />
+        case 'audio':
+            return <FileAudio height={size} width={size} />
+        case 'document':
+            return <FileDoc height={size} width={size} />
+
         default:
             return <></>
     }

@@ -2,7 +2,12 @@ import { useRef, useImperativeHandle, useState } from 'react'
 import AuthContext from './AuthContext'
 import appConfig from '@/configs/app.config'
 import { useSessionUser, useToken } from '@/store/authStore'
-import { apiSignIn, apiSignOut, apiSignUp, apiSaveBusinessDetails } from '@/services/AuthService'
+import {
+    apiSignIn,
+    apiSignOut,
+    apiSignUp,
+    apiSaveBusinessDetails,
+} from '@/services/AuthService'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useNavigate } from 'react-router'
 import type {

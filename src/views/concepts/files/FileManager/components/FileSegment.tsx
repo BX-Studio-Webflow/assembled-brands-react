@@ -29,7 +29,13 @@ const FileSegment = (props: FileSegmentProps) => {
                             <FileIcon type={fileType || ''} />
                         </div>
                         <div>
-                            <div className="font-bold heading-text">{name}</div>
+                            <div className="font-bold heading-text">
+                                {name?.length && name?.length > 20
+                                    ? name?.slice(0, 10) +
+                                      '...' +
+                                      name?.slice(-7)
+                                    : name}
+                            </div>
                             <span className="text-xs">
                                 {fileSizeUnit(size || 0)}
                             </span>
