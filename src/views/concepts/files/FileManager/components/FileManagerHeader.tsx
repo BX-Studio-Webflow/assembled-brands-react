@@ -4,7 +4,11 @@ import { useFileManagerStore } from '../store/useFileManagerStore'
 import { TbLayoutGrid, TbList } from 'react-icons/tb'
 import type { Layout } from '../store/useFileManagerStore'
 
-const FileManagerHeader = () => {
+const FileManagerHeader = ({
+    onUploadSuccess,
+}: {
+    onUploadSuccess?: () => void
+}) => {
     const { layout, setLayout } = useFileManagerStore()
 
     return (
@@ -24,7 +28,7 @@ const FileManagerHeader = () => {
                         <TbList />
                     </Segment.Item>
                 </Segment>
-                <UploadFile />
+                <UploadFile onUploadSuccess={onUploadSuccess} />
             </div>
         </div>
     )

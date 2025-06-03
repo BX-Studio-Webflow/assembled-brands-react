@@ -1,5 +1,5 @@
 import ApiService from './ApiService'
-import type { Asset, GetAssetsResponse, AssetQueryParams } from '@/@types/asset'
+import type { Asset, GetAssetsResponse, AssetQueryParams, CreateS3PresignedURlRequestParams } from '@/@types/asset'
 
 export async function apiGetAssets(params?: AssetQueryParams) {
     return ApiService.fetchDataWithAxios<GetAssetsResponse>({
@@ -16,13 +16,13 @@ export async function apiGetAsset(id: number) {
     })
 }
 
-export async function apiCreateAsset(data: FormData) {
+export async function apiCreateAsset(data: CreateS3PresignedURlRequestParams) {
     return ApiService.fetchDataWithAxios<Asset>({
         url: '/asset',
         method: 'post',
-        data: data as unknown as Record<string, unknown>,
+        data,
         headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
         },
     })
 }

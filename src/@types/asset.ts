@@ -25,3 +25,12 @@ export interface AssetQueryParams {
     asset_type?: string
     search?: string
 }
+
+export interface CreateS3PresignedURlRequestParams {
+    fileName: string
+    contentType: string
+    assetType: string
+    fileSize: number
+    duration: number
+    [key: string]: unknown
+}

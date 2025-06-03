@@ -72,7 +72,7 @@ const FileManager = () => {
     return (
         <>
             <div>
-                <FileManagerHeader />
+                <FileManagerHeader onUploadSuccess={trigger} />
                 <div className="mt-6">
                     {isMutating ? (
                         layout === 'grid' ? (
