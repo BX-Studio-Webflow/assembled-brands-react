@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router'
 import cloneDeep from 'lodash/cloneDeep'
 import { TbPencil, TbEye } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
-import type { Customer } from '../types'
+import type { Lead } from '@/@types/lead'
 import type { TableQueries } from '@/@types/common'
 
 const statusColor: Record<string, string> = {
@@ -16,10 +16,16 @@ const statusColor: Record<string, string> = {
     blocked: 'bg-red-200 dark:bg-red-200 text-gray-900 dark:text-gray-900',
 }
 
-const NameColumn = ({ row }: { row: Customer }) => {
+const NameColumn = ({ row }: { row: Lead }) => {
     return (
         <div className="flex items-center">
-            <Avatar size={40} shape="circle" src={row.img} />
+            <Avatar
+                size={40}
+                shape="circle"
+                src={
+                    'https://cdn.prod.website-files.com/6835c75868daca6e9cfac75f/6835c75968daca6e9cfac934_Testimonial%20Avatar%20(1).webp'
+                }
+            />
             <Link
                 className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
                 to={`/concepts/customers/customer-details/${row.id}`}
@@ -75,15 +81,15 @@ const CustomerListTable = () => {
         selectedCustomer,
     } = useCustomerList()
 
-    const handleEdit = (customer: Customer) => {
+    const handleEdit = (customer: Lead) => {
         navigate(`/concepts/customers/customer-edit/${customer.id}`)
     }
 
-    const handleViewDetails = (customer: Customer) => {
+    const handleViewDetails = (customer: Lead) => {
         navigate(`/concepts/customers/customer-details/${customer.id}`)
     }
 
-    const columns: ColumnDef<Customer>[] = useMemo(
+    const columns: ColumnDef<Lead>[] = useMemo(
         () => [
             {
                 header: 'Name',
@@ -98,28 +104,38 @@ const CustomerListTable = () => {
                 accessorKey: 'email',
             },
             {
-                header: 'location',
-                accessorKey: 'personalInfo.location',
+                header: 'Phone',
+                accessorKey: 'phone',
             },
             {
                 header: 'Status',
-                accessorKey: 'status',
+                accessorKey: 'lead_status',
                 cell: (props) => {
                     const row = props.row.original
                     return (
                         <div className="flex items-center">
-                            <Tag className={statusColor[row.status]}>
-                                <span className="capitalize">{row.status}</span>
+                            <Tag
+                                className={
+                                    statusColor[row.lead_status || 'active']
+                                }
+                            >
+                                <span className="capitalize">
+                                    {row.lead_status || 'Active'}
+                                </span>
                             </Tag>
                         </div>
                     )
                 },
             },
             {
-                header: 'Spent',
-                accessorKey: 'totalSpending',
+                header: 'Registered Date',
+                accessorKey: 'registered_date',
                 cell: (props) => {
-                    return <span>${props.row.original.totalSpending}</span>
+                    return (
+                        <span>
+                            {props.row.original.registered_date || 'N/A'}
+                        </span>
+                    )
                 },
             },
             {
@@ -165,11 +181,11 @@ const CustomerListTable = () => {
         handleSetTableData(newTableData)
     }
 
-    const handleRowSelect = (checked: boolean, row: Customer) => {
+    const handleRowSelect = (checked: boolean, row: Lead) => {
         setSelectedCustomer(checked, row)
     }
 
-    const handleAllRowSelect = (checked: boolean, rows: Row<Customer>[]) => {
+    const handleAllRowSelect = (checked: boolean, rows: Row<Lead>[]) => {
         if (checked) {
             const originalRows = rows.map((row) => row.original)
             setSelectAllCustomer(originalRows)
@@ -194,6 +210,9 @@ const CustomerListTable = () => {
             }}
             checkboxChecked={(row) =>
                 selectedCustomer.some((selected) => selected.id === row.id)
+            }
+            indeterminateCheckboxChecked={(rows) =>
+                rows.length === selectedCustomer.length
             }
             onPaginationChange={handlePaginationChange}
             onSelectChange={handleSelectChange}

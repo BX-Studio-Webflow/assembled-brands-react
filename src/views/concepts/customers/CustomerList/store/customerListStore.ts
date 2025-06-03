@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { TableQueries } from '@/@types/common'
-import type { Customer, Filter } from '../types'
+import type { Filter } from '../types'
+import type { Lead } from '@/@types/lead'
 
 export const initialTableData: TableQueries = {
     pageIndex: 1,
@@ -26,14 +27,14 @@ export const initialFilterData = {
 export type CustomersListState = {
     tableData: TableQueries
     filterData: Filter
-    selectedCustomer: Partial<Customer>[]
+    selectedCustomer: Lead[]
 }
 
 type CustomersListAction = {
     setFilterData: (payload: Filter) => void
     setTableData: (payload: TableQueries) => void
-    setSelectedCustomer: (checked: boolean, customer: Customer) => void
-    setSelectAllCustomer: (customer: Customer[]) => void
+    setSelectedCustomer: (checked: boolean, customer: Lead) => void
+    setSelectAllCustomer: (customer: Lead[]) => void
 }
 
 const initialState: CustomersListState = {

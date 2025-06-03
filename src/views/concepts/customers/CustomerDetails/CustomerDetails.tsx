@@ -4,11 +4,11 @@ import Loading from '@/components/shared/Loading'
 import ProfileSection from './ProfileSection'
 import BillingSection from './BillingSection'
 import ActivitySection from './ActivitySection'
-import { apiGetCustomer } from '@/services/CustomersService'
 import useSWR from 'swr'
 import { useParams } from 'react-router'
 import isEmpty from 'lodash/isEmpty'
-import type { Customer } from '../CustomerList/types'
+import { apiGetLead } from '@/services/LeadsService'
+import { Lead } from '@/@types/lead'
 
 const { TabNav, TabList, TabContent } = Tabs
 
@@ -16,9 +16,9 @@ const CustomerDetails = () => {
     const { id } = useParams()
 
     const { data, isLoading } = useSWR(
-        ['/api/customers', { id: id as string }],
+        ['/lead/${id}', { id: id as string }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetCustomer<Customer, { id: string }>(params),
+        ([_, params]) => apiGetLead<Lead>(params.id),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -31,7 +31,24 @@ const CustomerDetails = () => {
             {!isEmpty(data) && (
                 <div className="flex flex-col xl:flex-row gap-4">
                     <div className="min-w-[330px] 2xl:min-w-[400px]">
-                        <ProfileSection data={data} />
+                        <ProfileSection
+                            data={{
+                                id: data.id.toString() || '',
+                                name: data.name || '',
+                                email: data.email || '',
+                                lastOnline: 0,
+                                personalInfo: {
+                                    location: 'United States',
+                                    title: '',
+                                    birthday: '01/02/1970',
+                                    phoneNumber: data.phone || '',
+                                    facebook: '',
+                                    twitter: '',
+                                    pinterest: '',
+                                    linkedIn: '',
+                                },
+                            }}
+                        />
                     </div>
                     <Card className="w-full">
                         <Tabs defaultValue="billing">
@@ -41,7 +58,36 @@ const CustomerDetails = () => {
                             </TabList>
                             <div className="p-4">
                                 <TabContent value="billing">
-                                    <BillingSection data={data} />
+                                    <BillingSection
+                                        data={{
+                                            ...data,
+                                            orderHistory: [
+                                                {
+                                                    id: '1',
+                                                    item: 'Premium Plan',
+                                                    status: 'Completed',
+                                                    amount: 99.99,
+                                                    date: Date.now(),
+                                                },
+                                            ],
+                                            personalInfo: {
+                                                address: '123 Main St',
+                                                postcode: '12345',
+                                                city: 'New York',
+                                                country: 'USA',
+                                            },
+                                            paymentMethod: [
+                                                {
+                                                    cardHolderName: data.name,
+                                                    cardType: 'Visa',
+                                                    expMonth: '12',
+                                                    expYear: '2025',
+                                                    last4Number: '4242',
+                                                    primary: true,
+                                                },
+                                            ],
+                                        }}
+                                    />
                                 </TabContent>
                                 <TabContent value="activity">
                                     <ActivitySection

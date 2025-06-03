@@ -44,8 +44,8 @@ const SignInForm = (props: SignInFormProps) => {
         control,
     } = useForm<SignInFormSchema>({
         defaultValues: {
-            email: '',
-            password: '',
+            email: 'kiplagatbrian18@gmail.com',
+            password: 'Brian!2001',
         },
         resolver: zodResolver(validationSchema),
     })
@@ -83,7 +83,7 @@ const SignInForm = (props: SignInFormProps) => {
                             <Input
                                 type="email"
                                 placeholder="Email"
-                                autoComplete="off"
+                                autoComplete="on"
                                 {...field}
                             />
                         )}
@@ -106,7 +106,7 @@ const SignInForm = (props: SignInFormProps) => {
                             <PasswordInput
                                 type="text"
                                 placeholder="Password"
-                                autoComplete="off"
+                                autoComplete="on"
                                 {...field}
                             />
                         )}

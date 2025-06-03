@@ -1,8 +1,7 @@
-import { apiGetCustomersList } from '@/services/CustomersService'
+import { apiGetLeads } from '@/services/LeadsService'
 import useSWR from 'swr'
 import { useCustomerListStore } from '../store/customerListStore'
-import type { GetCustomersListResponse } from '../types'
-import type { TableQueries } from '@/@types/common'
+import type { Lead } from '@/@types/lead'
 
 export default function useCustomerList() {
     const {
@@ -16,18 +15,17 @@ export default function useCustomerList() {
     } = useCustomerListStore((state) => state)
 
     const { data, error, isLoading, mutate } = useSWR(
-        ['/api/customers', { ...tableData, ...filterData }],
+        ['/lead', { ...tableData, ...filterData }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) =>
-            apiGetCustomersList<GetCustomersListResponse, TableQueries>(params),
+        ([_, params]) => apiGetLeads<Lead[]>(params),
         {
             revalidateOnFocus: false,
         },
     )
 
-    const customerList = data?.list || []
+    const customerList = data || []
 
-    const customerListTotal = data?.total || 0
+    const customerListTotal = data?.length || 0
 
     return {
         customerList,

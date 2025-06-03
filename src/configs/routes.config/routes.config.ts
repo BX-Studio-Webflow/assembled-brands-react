@@ -7,6 +7,7 @@ import guideRoute from './guideRoute'
 import othersRoute from './othersRoute'
 import type { Routes } from '@/@types/routes'
 import onboardingRoute from './onboardingRoute'
+
 export const publicRoutes: Routes = [...authRoute]
 
 export const protectedRoutes: Routes = [

@@ -5,23 +5,22 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import CustomerForm from '../CustomerForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import sleep from '@/utils/sleep'
 import { TbTrash } from 'react-icons/tb'
-import { useNavigate } from 'react-router'
-import type { CustomerFormSchema } from '../CustomerForm'
+import { useNavigate, useSearchParams } from 'react-router'
 
-const CustomerEdit = () => {
+const CustomerCreate = () => {
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const eventId = searchParams.get('eventId')
+        ? Number(searchParams.get('eventId'))
+        : undefined
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const handleFormSubmit = async (values: CustomerFormSchema) => {
-        console.log('Submitted values', values)
-        setIsSubmiting(true)
-        await sleep(800)
-        setIsSubmiting(false)
+    const handleFormSubmit = async () => {
+        setIsSubmiting(false) // Form submission is now handled in CustomerForm
         toast.push(
             <Notification type="success">Customer created!</Notification>,
             { placement: 'top-center' },
@@ -32,7 +31,7 @@ const CustomerEdit = () => {
     const handleConfirmDiscard = () => {
         setDiscardConfirmationOpen(true)
         toast.push(
-            <Notification type="success">Customer discardd!</Notification>,
+            <Notification type="success">Customer discarded!</Notification>,
             { placement: 'top-center' },
         )
         navigate('/concepts/customers/customer-list')
@@ -50,6 +49,7 @@ const CustomerEdit = () => {
         <>
             <CustomerForm
                 newCustomer
+                eventId={eventId}
                 defaultValues={{
                     firstName: '',
                     lastName: '',
@@ -57,10 +57,6 @@ const CustomerEdit = () => {
                     img: '',
                     phoneNumber: '',
                     dialCode: '',
-                    country: '',
-                    address: '',
-                    city: '',
-                    postcode: '',
                     tags: [],
                 }}
                 onFormSubmit={handleFormSubmit}
@@ -109,4 +105,4 @@ const CustomerEdit = () => {
     )
 }
 
-export default CustomerEdit
+export default CustomerCreate

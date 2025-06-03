@@ -3,10 +3,7 @@ import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import OverviewSection from './OverviewSection'
-import AddressSection from './AddressSection'
 import TagsSection from './TagsSection'
-import ProfileImageSection from './ProfileImageSection'
-import AccountSection from './AccountSection'
 import isEmpty from 'lodash/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -14,11 +11,14 @@ import { z } from 'zod'
 import type { ZodType } from 'zod'
 import type { CommonProps } from '@/@types/common'
 import type { CustomerFormSchema } from './types'
+import { apiCreateLead } from '@/services/LeadsService'
+import { useAuth } from '@/auth'
 
 type CustomerFormProps = {
     onFormSubmit: (values: CustomerFormSchema) => void
     defaultValues?: CustomerFormSchema
     newCustomer?: boolean
+    eventId?: number
 } & CommonProps
 
 const validationSchema: ZodType<CustomerFormSchema> = z.object({
@@ -32,21 +32,13 @@ const validationSchema: ZodType<CustomerFormSchema> = z.object({
     phoneNumber: z
         .string()
         .min(1, { message: 'Please input your mobile number' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
-    address: z.string().min(1, { message: 'Addrress required' }),
-    postcode: z.string().min(1, { message: 'Postcode required' }),
-    city: z.string().min(1, { message: 'City required' }),
     img: z.string(),
     tags: z.array(z.object({ value: z.string(), label: z.string() })),
 })
 
 const CustomerForm = (props: CustomerFormProps) => {
-    const {
-        onFormSubmit,
-        defaultValues = {},
-        newCustomer = false,
-        children,
-    } = props
+    const { onFormSubmit, defaultValues = {}, children, eventId } = props
+    const { user } = useAuth()
 
     const {
         handleSubmit,
@@ -55,10 +47,6 @@ const CustomerForm = (props: CustomerFormProps) => {
         control,
     } = useForm<CustomerFormSchema>({
         defaultValues: {
-            ...{
-                banAccount: false,
-                accountVerified: true,
-            },
             ...defaultValues,
         },
         resolver: zodResolver(validationSchema),
@@ -71,8 +59,26 @@ const CustomerForm = (props: CustomerFormProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(defaultValues)])
 
-    const onSubmit = (values: CustomerFormSchema) => {
-        onFormSubmit?.(values)
+    const onSubmit = async (values: CustomerFormSchema) => {
+        try {
+            // Format data according to backend schema
+            const leadData = {
+                name: `${values.firstName} ${values.lastName}`,
+                email: values.email,
+                phone: `${values.dialCode}${values.phoneNumber}`,
+                host_id: user?.id || 0,
+                ...(eventId && { event_id: eventId }),
+            }
+
+            // Make API call
+            await apiCreateLead(leadData)
+
+            // Call the original onFormSubmit
+            onFormSubmit?.(values)
+        } catch (error) {
+            console.error('Error creating lead:', error)
+            throw error
+        }
     }
 
     return (
@@ -85,17 +91,9 @@ const CustomerForm = (props: CustomerFormProps) => {
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="gap-4 flex flex-col flex-auto">
                         <OverviewSection control={control} errors={errors} />
-                        <AddressSection control={control} errors={errors} />
                     </div>
                     <div className="md:w-[370px] gap-4 flex flex-col">
-                        <ProfileImageSection
-                            control={control}
-                            errors={errors}
-                        />
                         <TagsSection control={control} errors={errors} />
-                        {!newCustomer && (
-                            <AccountSection control={control} errors={errors} />
-                        )}
                     </div>
                 </div>
             </Container>
