@@ -12,6 +12,20 @@ const getFileType = (type: string) => {
             return 'Figma'
         case 'image/jpeg':
             return 'JPEG'
+        case 'image/png':
+            return 'JPEG'
+        case 'image/gif':
+            return 'JPG'
+        case 'image/webp':
+            return 'JPG'
+        case 'image/svg+xml':
+            return 'SVG'
+        case 'image/tiff':
+            return 'TIFF'
+        case 'image/bmp':
+            return 'BMP'
+        case 'image/ico':
+            return 'ICO'
         case 'directory':
             return 'Folder'
         default:

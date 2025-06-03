@@ -1,16 +1,45 @@
 import { useFileManagerStore } from '../store/useFileManagerStore'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import { apiDeleteAsset } from '@/services/AssetService'
+import Notification from '@/components/ui/Notification'
+import toast from '@/components/ui/toast'
 
-const FileManagerDeleteDialog = () => {
-    const { deleteDialog, setDeleteDialog, deleteFile } = useFileManagerStore()
+type FileManagerDeleteDialogProps = {
+    onDeleteSuccess?: () => void
+}
+
+const FileManagerDeleteDialog = ({
+    onDeleteSuccess,
+}: FileManagerDeleteDialogProps) => {
+    const { deleteDialog, setDeleteDialog } = useFileManagerStore()
 
     const handleDeleteDialogClose = () => {
         setDeleteDialog({ id: '', open: false })
     }
 
-    const handleDeleteConfirm = () => {
-        deleteFile(deleteDialog.id)
-        setDeleteDialog({ id: '', open: false })
+    const handleDeleteConfirm = async () => {
+        if (!deleteDialog.id) return
+        try {
+            await apiDeleteAsset(Number(deleteDialog.id))
+            toast.push(
+                <Notification
+                    title={'File deleted successfully'}
+                    type="success"
+                />,
+                { placement: 'top-center' },
+            )
+            if (onDeleteSuccess) onDeleteSuccess()
+        } catch (e: unknown) {
+            toast.push(
+                <Notification
+                    title={e instanceof Error ? e.message : 'Delete failed'}
+                    type="danger"
+                />,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setDeleteDialog({ id: '', open: false })
+        }
     }
 
     return (

@@ -2,7 +2,7 @@ export interface Asset {
     id: number
     asset_name: string
     asset_type: string
-    content_type: string
+    content_type: 'image' | 'video' | 'audio' | 'document' | 'profile_picture'
     asset_url: string
     asset_size: number
     duration: number

@@ -4,7 +4,6 @@ import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
 import FileManagerHeader from './components/FileManagerHeader'
 import FileSegment from './components/FileSegment'
 import FileList from './components/FileList'
-import FileDetails from './components/FileDetails'
 import FileManagerDeleteDialog from './components/FileManagerDeleteDialog'
 import FileManagerInviteDialog from './components/FileManagerInviteDialog'
 import FileManagerRenameDialog from './components/FileManagerRenameDialog'
@@ -118,10 +117,10 @@ const FileManager = () => {
                     )}
                 </div>
             </div>
-            <FileDetails onShare={handleShare} />
-            <FileManagerDeleteDialog />
+
+            <FileManagerDeleteDialog onDeleteSuccess={trigger} />
             <FileManagerInviteDialog />
-            <FileManagerRenameDialog />
+            <FileManagerRenameDialog onRenameSuccess={trigger} />
         </>
     )
 }
