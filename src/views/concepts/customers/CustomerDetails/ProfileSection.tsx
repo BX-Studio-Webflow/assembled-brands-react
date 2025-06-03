@@ -15,6 +15,7 @@ import {
     FaPinterestP,
 } from 'react-icons/fa6'
 import { useNavigate } from 'react-router'
+import { apiDeleteLead } from '@/services/LeadsService'
 
 type CustomerInfoFieldProps = {
     title?: string
@@ -67,14 +68,27 @@ const ProfileSection = ({ data = {} }: ProfileSectionProps) => {
         setDialogOpen(true)
     }
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         setDialogOpen(false)
-        navigate('/concepts/customers/customer-list')
-        toast.push(
-            <Notification title={'Successfully Deleted'} type="success">
-                Customer successfuly deleted
-            </Notification>,
-        )
+        if (data.id) {
+            try {
+                await apiDeleteLead(data.id)
+                navigate('/concepts/customers/customer-list')
+                toast.push(
+                    <Notification title={'Successfully Deleted'} type="success">
+                        Lead successfuly deleted
+                    </Notification>,
+                )
+            } catch (e) {
+                toast.push(
+                    <Notification title={'Delete failed'} type="danger">
+                        {e instanceof Error
+                            ? e.message
+                            : 'Failed to delete customer'}
+                    </Notification>,
+                )
+            }
+        }
     }
 
     const handleSendMessage = () => {
