@@ -1,11 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Form } from '@/components/ui/Form'
 import Affix from '@/components/shared/Affix'
 import Card from '@/components/ui/Card'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import { apiGetProductList } from '@/services/ProductService'
-import ProductSelectSection from './components/ProductSelectSection'
 import CustomerDetailSection from './components/CustomerDetailSection'
 import BillingAddressSection from './components/BillingAddressSection'
 import PaymentMethodSection from './components/PaymentMethodSection'
@@ -15,116 +14,37 @@ import useLayoutGap from '@/utils/hooks/useLayoutGap'
 import useResponsive from '@/utils/hooks/useResponsive'
 import useSWR from 'swr'
 import isEmpty from 'lodash/isEmpty'
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import type { ZodType } from 'zod'
+import { EventFormSchema, EventFormType } from './validation/eventFormSchema'
 import type { ReactNode } from 'react'
-import type {
-    GetProductListResponse,
-    OrderFormSchema,
-    SelectedProduct,
-} from './types'
 import type { TableQueries, CommonProps } from '@/@types/common'
+import { apiCreateEvent } from '@/services/EventService'
 
 type OrderFormProps = {
     children: ReactNode
-    onFormSubmit: (values: OrderFormSchema) => void
-    defaultValues?: OrderFormSchema
-    defaultProducts?: SelectedProduct[]
+    onFormSubmit: (values: EventFormType) => void
+    defaultValues?: Partial<EventFormType>
+    defaultProducts?: any[]
     newOrder?: boolean
 } & CommonProps
 
-const baseValidationSchema = z.object({
-    firstName: z.string().min(1, { message: 'First name required' }),
-    lastName: z.string().min(1, { message: 'Last name required' }),
-    email: z
-        .string()
-        .min(1, { message: 'Email required' })
-        .email({ message: 'Invalid email' }),
-    dialCode: z.string().min(1, { message: 'Please select your country code' }),
-    phoneNumber: z
-        .string()
-        .min(1, { message: 'Please input your mobile number' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
-    address: z.string().min(1, { message: 'Addrress required' }),
-    postcode: z.string().min(1, { message: 'Postcode required' }),
-    city: z.string().min(1, { message: 'City required' }),
-})
-
-const validationSchema: ZodType<OrderFormSchema> = z.discriminatedUnion(
-    'paymentMethod',
-    [
-        z
-            .object({
-                paymentMethod: z.literal('creditOrDebitCard'),
-                cardHolderName: z
-                    .string()
-                    .min(1, { message: 'Card holder name required' }),
-                ccNumber: z
-                    .string()
-                    .min(1, 'Credit card number required')
-                    .refine(
-                        (value) =>
-                            /^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/.test(
-                                value,
-                            ),
-                        'Invalid credit card number',
-                    ),
-                cardExpiry: z
-                    .string()
-                    .min(1, { message: 'Card holder name required' })
-                    .refine(
-                        (value) =>
-                            /^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/.test(
-                                value,
-                            ),
-                        'Invalid Date',
-                    ),
-                code: z
-                    .string()
-                    .min(1, { message: 'Code required' })
-                    .refine((value) => /^[0-9]{3}$/.test(value), 'Invalid CVV'),
-            })
-            .merge(baseValidationSchema),
-        z
-            .object({
-                paymentMethod: z.literal('paypal'),
-                paypalEmail: z
-                    .string()
-                    .min(1, { message: 'Email required' })
-                    .email({ message: 'Invalid email' }),
-            })
-            .merge(baseValidationSchema),
-        z
-            .object({
-                paymentMethod: z.literal('bankTransfer'),
-                bankName: z.string().min(1, { message: 'Bank name required' }),
-                accountNumber: z
-                    .string()
-                    .min(1, { message: 'Account number required' }),
-                accountHolderName: z
-                    .string()
-                    .min(1, { message: 'Account holder name required' }),
-                IBAN: z.string().min(1, { message: 'IBAN required' }),
-            })
-            .merge(baseValidationSchema),
-        z
-            .object({
-                paymentMethod: z.literal(''),
-            })
-            .merge(baseValidationSchema),
-    ],
-)
+const defaultPlan = {
+    name: '',
+    isFree: false,
+    cost: 0,
+    date: 0,
+    payment_type: 'one_off' as const,
+}
 
 const OrderForm = (props: OrderFormProps) => {
     const { onFormSubmit, children, defaultValues, defaultProducts } = props
+    const [submitting, setSubmitting] = useState(false)
 
     const { setProductOption, setProductList, setSelectedProduct } =
         useOrderFormStore()
 
     const { getTopGapValue } = useLayoutGap()
-
     const { larger } = useResponsive()
 
     useSWR(
@@ -141,8 +61,7 @@ const OrderForm = (props: OrderFormProps) => {
             } as TableQueries,
         ],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) =>
-            apiGetProductList<GetProductListResponse, TableQueries>(params),
+        ([_, params]) => apiGetProductList<any, TableQueries>(params),
         {
             revalidateOnFocus: false,
             onSuccess: (resp) => {
@@ -173,25 +92,52 @@ const OrderForm = (props: OrderFormProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const onSubmit = (values: OrderFormSchema) => {
-        onFormSubmit?.(values)
-    }
-
     const {
         handleSubmit,
         reset,
         watch,
         formState: { errors },
         control,
-    } = useForm<OrderFormSchema>({
+        register,
+    } = useForm<EventFormType>({
+        resolver: zodResolver(EventFormSchema),
         defaultValues: {
-            paymentMethod: 'creditOrDebitCard',
-            ...(defaultValues ? defaultValues : {}),
+            event_name: '',
+            event_description: '',
+            membership_plans: [defaultPlan],
+            event_type: 'prerecorded',
+            asset_id: 1,
+            status: 'active',
         },
-        resolver: zodResolver(validationSchema),
+        mode: 'onTouched',
     })
 
-    const selectedPaymentMethod = watch('paymentMethod', '')
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'membership_plans',
+    })
+
+    const plans = watch('membership_plans') || []
+
+    const onSubmit = async (values: EventFormType) => {
+        setSubmitting(true)
+        // Transform membership_plans.date to unix timestamp (seconds)
+        const payload = {
+            ...values,
+            membership_plans: values.membership_plans.map((plan) => ({
+                ...plan,
+                date:
+                    plan.date instanceof Date
+                        ? Math.floor(plan.date.getTime() / 1000)
+                        : plan.date,
+                cost: Number(plan.cost),
+            })),
+            asset_id: Number(values.asset_id),
+        }
+        await apiCreateEvent(payload)
+        setSubmitting(false)
+        onFormSubmit?.(payload)
+    }
 
     return (
         <div className="flex">
@@ -213,7 +159,6 @@ const OrderForm = (props: OrderFormProps) => {
 
                         <div className="flex-1">
                             <div className="flex flex-col gap-4">
-                                <ProductSelectSection />
                                 <CustomerDetailSection
                                     control={control}
                                     errors={errors}
@@ -221,13 +166,17 @@ const OrderForm = (props: OrderFormProps) => {
                                 <BillingAddressSection
                                     control={control}
                                     errors={errors}
+                                    fields={fields}
+                                    append={() => append(defaultPlan)}
+                                    remove={remove}
+                                    plans={plans}
+                                    defaultPlan={defaultPlan}
                                 />
                                 <PaymentMethodSection
                                     control={control}
                                     errors={errors}
-                                    selectedPaymentMethod={
-                                        selectedPaymentMethod
-                                    }
+                                    register={register}
+                                    watch={watch}
                                 />
                             </div>
                         </div>

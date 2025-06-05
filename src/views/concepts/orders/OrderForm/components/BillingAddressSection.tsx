@@ -1,148 +1,215 @@
 import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
-import Select, { Option as DefaultOption } from '@/components/ui/Select'
-import Avatar from '@/components/ui/Avatar'
+import Select from '@/components/ui/Select'
 import { FormItem } from '@/components/ui/Form'
-import { countryList } from '@/constants/countries.constant'
-import { Controller } from 'react-hook-form'
+import type { Control, FieldErrors, FieldArrayWithId } from 'react-hook-form'
 import { components } from 'react-select'
-import type { FormSectionBaseProps } from '../types'
-import type { ControlProps, OptionProps } from 'react-select'
-
-type BillingAddressSectionProps = FormSectionBaseProps
-
-type CountryOption = {
-    label: string
-    dialCode: string
-    value: string
-}
+import Button from '@/components/ui/Button'
+import { Controller } from 'react-hook-form'
+import DatePicker from '@/components/ui/DatePicker'
+import { FiX } from 'react-icons/fi'
 
 const { Control } = components
+const { DateTimepicker } = DatePicker
 
-const CustomSelectOption = (props: OptionProps<CountryOption>) => {
-    return (
-        <DefaultOption<CountryOption>
-            {...props}
-            customLabel={(data, label) => (
-                <span className="flex items-center gap-2">
-                    <Avatar
-                        shape="circle"
-                        size={20}
-                        src={`/img/countries/${data.value}.png`}
-                    />
-                    <span>{label}</span>
-                </span>
-            )}
-        />
-    )
+// Minimal event form schema for this section
+interface MembershipPlan {
+    name: string
+    isFree?: boolean
+    cost?: number
+    date: string
+    payment_type: 'one_off' | 'recurring'
+}
+interface EventFormSchema {
+    membership_plans: MembershipPlan[]
 }
 
-const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
-    const selected = props.getValue()[0]
-    return (
-        <Control {...props}>
-            {selected && (
-                <Avatar
-                    className="ltr:ml-4 rtl:mr-4"
-                    shape="circle"
-                    size={20}
-                    src={`/img/countries/${selected.value}.png`}
-                />
-            )}
-            {children}
-        </Control>
-    )
+interface Props {
+    control: Control<EventFormSchema>
+    errors: FieldErrors<EventFormSchema>
+    fields: FieldArrayWithId<EventFormSchema, 'membership_plans', 'id'>[]
+    append: () => void
+    remove: (idx: number) => void
+    plans: MembershipPlan[]
 }
 
 const BillingAddressSection = ({
     control,
     errors,
-}: BillingAddressSectionProps) => {
+    fields,
+    append,
+    remove,
+    plans,
+}: Props) => {
+    const safeFields = Array.isArray(fields) ? fields : []
     return (
-        <Card id="addressInformation">
-            <h4 className="mb-6">Address Information</h4>
-            <FormItem
-                label="Country"
-                invalid={Boolean(errors.country)}
-                errorMessage={errors.country?.message}
-            >
-                <Controller
-                    name="country"
-                    control={control}
-                    render={({ field }) => (
-                        <Select<CountryOption>
-                            options={countryList}
-                            {...field}
-                            components={{
-                                Option: CustomSelectOption,
-                                Control: CustomControl,
-                            }}
-                            placeholder=""
-                            value={countryList.filter(
-                                (option) => option.value === field.value,
+        <div>
+            {safeFields.map((field, idx) => (
+                <Card
+                    key={field.id}
+                    className="mb-4 border border-green-400 bg-green-50 relative"
+                >
+                    {/* X icon in the top right */}
+                    {idx > 0 && (
+                        <button
+                            type="button"
+                            onClick={() => remove(idx)}
+                            className="absolute top-4 right-4 p-1 rounded-full border border-gray-300 hover:bg-gray-100"
+                            aria-label="Remove plan"
+                        >
+                            <FiX size={18} />
+                        </button>
+                    )}
+                    <h4 className="mb-4 font-bold">Plan</h4>
+                    <FormItem
+                        label="Price plan ticket name"
+                        invalid={Boolean(errors.membership_plans?.[idx]?.name)}
+                        errorMessage={
+                            errors.membership_plans?.[idx]?.name?.message
+                        }
+                    >
+                        <Controller
+                            name={`membership_plans.${idx}.name` as const}
+                            control={control}
+                            render={({ field }) => (
+                                <Input
+                                    type="text"
+                                    placeholder="1 day event on 23rd of..."
+                                    {...field}
+                                />
                             )}
-                            onChange={(option) => field.onChange(option?.value)}
                         />
+                    </FormItem>
+                    <div className="flex items-center mb-2">
+                        <Controller
+                            name={`membership_plans.${idx}.isFree` as const}
+                            control={control}
+                            render={({ field }) => (
+                                <input
+                                    type="checkbox"
+                                    checked={!!field.value}
+                                    onChange={(e) =>
+                                        field.onChange(e.target.checked)
+                                    }
+                                    className="mr-2"
+                                />
+                            )}
+                        />{' '}
+                        Free
+                    </div>
+                    {!plans[idx]?.isFree && (
+                        <FormItem
+                            label="Price"
+                            invalid={Boolean(
+                                errors.membership_plans?.[idx]?.cost,
+                            )}
+                            errorMessage={
+                                errors.membership_plans?.[idx]?.cost?.message
+                            }
+                        >
+                            <Controller
+                                name={`membership_plans.${idx}.cost` as const}
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="e.g. £120.99"
+                                        {...field}
+                                    />
+                                )}
+                            />
+                        </FormItem>
                     )}
-                />
-            </FormItem>
-            <FormItem
-                label="Address"
-                invalid={Boolean(errors.address)}
-                errorMessage={errors.address?.message}
-            >
-                <Controller
-                    name="address"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            type="text"
-                            autoComplete="off"
-                            placeholder="Address"
-                            {...field}
+                    <FormItem
+                        label="Start date/time of this plan"
+                        invalid={Boolean(errors.membership_plans?.[idx]?.date)}
+                        errorMessage={
+                            errors.membership_plans?.[idx]?.date?.message
+                        }
+                    >
+                        <Controller
+                            name={`membership_plans.${idx}.date` as const}
+                            control={control}
+                            render={({ field }) => (
+                                <DateTimepicker
+                                    placeholder="Pick date & time"
+                                    value={
+                                        field.value
+                                            ? new Date(field.value)
+                                            : undefined
+                                    }
+                                    onChange={(date) =>
+                                        field.onChange(
+                                            date ? date.toISOString() : '',
+                                        )
+                                    }
+                                />
+                            )}
                         />
-                    )}
-                />
-            </FormItem>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormItem
-                    label="City"
-                    invalid={Boolean(errors.city)}
-                    errorMessage={errors.city?.message}
-                >
-                    <Controller
-                        name="city"
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                type="text"
-                                autoComplete="off"
-                                placeholder="City"
-                                {...field}
-                            />
+                    </FormItem>
+                    <FormItem
+                        label="Payment frequency"
+                        invalid={Boolean(
+                            errors.membership_plans?.[idx]?.payment_type,
                         )}
-                    />
-                </FormItem>
-                <FormItem
-                    label="Postal Code"
-                    invalid={Boolean(errors.postcode)}
-                    errorMessage={errors.postcode?.message}
+                        errorMessage={
+                            errors.membership_plans?.[idx]?.payment_type
+                                ?.message
+                        }
+                    >
+                        <Controller
+                            name={
+                                `membership_plans.${idx}.payment_type` as const
+                            }
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    options={[
+                                        { value: 'one_off', label: 'One Off' },
+                                        {
+                                            value: 'recurring',
+                                            label: 'Recurring',
+                                        },
+                                    ]}
+                                    placeholder="Select one..."
+                                    value={
+                                        field.value
+                                            ? {
+                                                  value: field.value,
+                                                  label:
+                                                      field.value === 'one_off'
+                                                          ? 'One Off'
+                                                          : 'Recurring',
+                                              }
+                                            : undefined
+                                    }
+                                    onChange={(option) =>
+                                        field.onChange(option?.value)
+                                    }
+                                />
+                            )}
+                        />
+                    </FormItem>
+                </Card>
+            ))}
+            <div className="flex justify-center">
+                <Button
+                    type="button"
+                    onClick={append}
+                    className="mt-2 bg-green-600 text-white"
                 >
-                    <Controller
-                        name="postcode"
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                type="text"
-                                autoComplete="off"
-                                placeholder="Postal Code"
-                                {...field}
-                            />
-                        )}
-                    />
-                </FormItem>
+                    Add another plan
+                </Button>
             </div>
-        </Card>
+            {errors.membership_plans &&
+                typeof errors.membership_plans.message === 'string' && (
+                    <span className="text-error">
+                        {errors.membership_plans.message}
+                    </span>
+                )}
+        </div>
     )
 }
 

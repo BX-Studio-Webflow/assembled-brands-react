@@ -1,15 +1,9 @@
 import Avatar from '@/components/ui/Avatar'
 // eslint-disable-next-line import/named
 import { Link } from 'react-scroll'
-import { TbPackage, TbUserSquare, TbMapPin, TbCreditCard } from 'react-icons/tb'
+import { TbUserSquare, TbMapPin, TbCreditCard } from 'react-icons/tb'
 
 const navigationList = [
-    {
-        label: 'Select products',
-        description: 'Add product to purchase list.',
-        link: 'selectProducts',
-        icon: <TbPackage />,
-    },
     {
         label: 'Event details',
         description:

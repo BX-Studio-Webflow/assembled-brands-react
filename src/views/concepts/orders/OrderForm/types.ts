@@ -83,3 +83,19 @@ export type FormSectionBaseProps = {
     control: Control<OrderFormSchema>
     errors: FieldErrors<OrderFormSchema>
 }
+
+export type EventFormType = {
+    event_name: string
+    event_description: string
+    membership_plans: Array<{
+        name: string
+        isFree: boolean
+        cost: number
+        date: number
+        payment_type: 'one_off' | 'recurring'
+    }>
+    event_type: 'live_venue' | 'prerecorded' | 'live_video_call'
+    terms: boolean
+    asset_id: number
+    status: 'active' | 'suspended' | 'cancelled'
+}
