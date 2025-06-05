@@ -10,7 +10,7 @@ const OrderList = () => {
             <AdaptiveCard>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                        <h3>Orders</h3>
+                        <h3>Events</h3>
                         <OrderListActionTools />
                     </div>
                     <OrderListTableTools />

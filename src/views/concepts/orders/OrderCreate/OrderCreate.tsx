@@ -5,10 +5,11 @@ import toast from '@/components/ui/toast'
 import Container from '@/components/shared/Container'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import OrderForm from '../OrderForm'
-import sleep from '@/utils/sleep'
 import { useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
-import type { OrderFormSchema } from '../OrderForm'
+import { apiCreateEvent } from '@/services/EventService'
+import { CreateEventRequest } from '@/@types/events'
+import { EventFormType } from '../OrderForm/types'
 
 const OrderCreate = () => {
     const navigate = useNavigate()
@@ -17,10 +18,21 @@ const OrderCreate = () => {
         useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const handleFormSubmit = async (values: OrderFormSchema) => {
+    const handleFormSubmit = async (values: EventFormType) => {
         console.log('Submitted values', values)
         setIsSubmiting(true)
-        await sleep(800)
+        const payload = {
+            ...values,
+            membership_plans: values.membership_plans.map((plan) => ({
+                ...plan,
+                date:
+                    typeof plan.date === 'object' && plan.date instanceof Date
+                        ? plan.date.getTime()
+                        : plan.date,
+            })),
+        }
+        await apiCreateEvent(payload as CreateEventRequest)
+        navigate('/concepts/orders/order-list')
         setIsSubmiting(false)
         toast.push(<Notification type="success">Event created!</Notification>, {
             placement: 'top-center',

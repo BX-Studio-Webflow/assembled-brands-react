@@ -19,10 +19,7 @@ import type { TableQueries, CommonProps } from '@/@types/common'
 import { apiGetAssets } from '@/services/AssetService'
 import type { Asset, AssetQueryParams } from '@/@types/asset'
 import toast from '@/components/ui/toast'
-import { apiCreateEvent } from '@/services/EventService'
 import Notification from '@/components/ui/Notification'
-import { CreateEventRequest } from '@/@types/events'
-import { useNavigate } from 'react-router'
 type OrderFormProps = {
     children: ReactNode
     onFormSubmit: (values: EventFormType) => void
@@ -56,7 +53,6 @@ const defaultValues = {
 const OrderForm = (props: OrderFormProps) => {
     const { children } = props
     const [assets, setAssets] = useState<Asset[]>([])
-    const navigate = useNavigate()
     const { getTopGapValue } = useLayoutGap()
     const { larger } = useResponsive()
 
@@ -102,37 +98,33 @@ const OrderForm = (props: OrderFormProps) => {
 
     const plans = watch('membership_plans') || []
 
-    const onSubmit = async (values: EventFormType) => {
-        try {
-            const payload = {
-                ...values,
-                membership_plans: values.membership_plans.map((plan) => ({
-                    ...plan,
-                    date:
-                        typeof plan.date === 'object' &&
-                        plan.date instanceof Date
-                            ? plan.date.getTime()
-                            : plan.date,
-                })),
-            }
-            await apiCreateEvent(payload as CreateEventRequest)
-            toast.push(
-                <Notification type="success">Event created!</Notification>,
-                { placement: 'top-center' },
-            )
-            navigate('/concepts/orders/order-list')
-        } catch (error) {
-            console.error(error)
-            toast.push(
-                <Notification type="danger">
-                    {error instanceof Error
-                        ? error.message
-                        : 'Event creation failed!'}
-                </Notification>,
-                { placement: 'top-center' },
-            )
-        }
-    }
+ const onSubmit = async (values: EventFormType) => {
+     try {
+         const payload = {
+             ...values,
+             membership_plans: values.membership_plans.map((plan) => ({
+                 ...plan,
+                 date:
+                     typeof plan.date === 'object' && plan.date instanceof Date
+                         ? plan.date.getTime()
+                         : plan.date,
+             })),
+         }
+         if (props.onFormSubmit) {
+             await props.onFormSubmit(payload)
+         }
+     } catch (error) {
+         console.error(error)
+         toast.push(
+             <Notification type="danger">
+                 {error instanceof Error
+                     ? error.message
+                     : 'Event creation failed!'}
+             </Notification>,
+             { placement: 'top-center' },
+         )
+     }
+ }
 
     return (
         <div className="flex">
