@@ -130,6 +130,13 @@ const OrderForm = (props: OrderFormProps) => {
                                     control={control}
                                     errors={errors}
                                 />
+
+                                <PaymentMethodSection
+                                    control={control}
+                                    errors={errors}
+                                    assets={assets}
+                                />
+
                                 <BillingAddressSection
                                     control={control}
                                     errors={errors}
@@ -137,11 +144,6 @@ const OrderForm = (props: OrderFormProps) => {
                                     append={() => append(defaultPlan)}
                                     remove={remove}
                                     plans={plans}
-                                />
-                                <PaymentMethodSection
-                                    control={control}
-                                    errors={errors}
-                                    assets={assets}
                                 />
                             </div>
                         </div>

@@ -108,6 +108,46 @@ const PaymentMethodSection = ({ control, errors, assets = [] }: Props) => {
                 </FormItem>
             )}
 
+            {eventType === 'live_venue' && (
+                <FormItem
+                    label="Live Venue Address"
+                    invalid={Boolean(errors.live_venue_address)}
+                    errorMessage={errors.live_venue_address?.message}
+                >
+                    <Controller
+                        name="live_venue_address"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                placeholder="Enter live venue address"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
+
+            {eventType === 'live_video_call' && (
+                <FormItem
+                    label="Live Video Call URL"
+                    invalid={Boolean(errors.live_video_url)}
+                    errorMessage={errors.live_video_url?.message}
+                >
+                    <Controller
+                        name="live_video_url"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                placeholder="Enter live video call URL"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
+
             <FormItem
                 label="Pre-Event Instructions shown on payment confirmation email (Optional)"
                 invalid={Boolean(errors.instructions)}
