@@ -25,11 +25,13 @@ type AssetOption = {
 const PaymentMethodSection = ({ control, errors, assets = [] }: Props) => {
     const [eventType, setEventType] = useState<string>('')
     console.log(assets)
-    const assetOptions: AssetOption[] = assets.map((asset) => ({
-        value: asset.id.toString(),
-        label: asset.asset_name,
-        color: '#00B8D9', // Default color for all assets
-    }))
+    const assetOptions: AssetOption[] = assets
+        .filter((asset) => asset.asset_type === 'video')
+        .map((asset) => ({
+            value: asset.id.toString(),
+            label: asset.asset_name,
+            color: '#00B8D9', // Default color for all assets
+        }))
 
     return (
         <Card id="eventDetails">
