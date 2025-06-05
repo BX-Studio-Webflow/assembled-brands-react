@@ -1,24 +1,28 @@
-import { apiGetOrderList } from '@/services/OrderService'
+import { apiGetEvents } from '@/services/EventService'
 import useSWR from 'swr'
 import { useOrderListStore } from '../store/orderListStore'
-import type { GetOrdersResponse } from '../types'
-import type { TableQueries } from '@/@types/common'
+import type { EventQueryParams } from '@/@types/events'
 
 export default function useOrderList() {
     const { tableData, filterData, setTableData, setFilterData } =
         useOrderListStore((state) => state)
 
     const { data, error, isLoading, mutate } = useSWR(
-        ['/api/orders', { ...tableData, ...filterData }],
+        ['/events', { ...tableData, ...filterData }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) =>
-            apiGetOrderList<GetOrdersResponse, TableQueries>(params),
+        ([_, params]) => apiGetEvents(params as EventQueryParams),
         {
             revalidateOnFocus: false,
         },
     )
 
-    const orderList = data?.list || []
+    // Flatten the backend events array for the table
+    const orderList = (data?.events || []).map((item) => ({
+        ...item.event,
+        asset: item.asset,
+        host: item.host,
+        memberships: item.memberships,
+    }))
 
     const orderListTotal = data?.total || 0
 

@@ -6,48 +6,30 @@ import useOrderlist from '../hooks/useOrderlist'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router'
 import { TbTrash, TbEye } from 'react-icons/tb'
-import dayjs from 'dayjs'
-import { NumericFormat } from 'react-number-format'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { Order } from '../types'
 import type { TableQueries } from '@/@types/common'
+import { FaVideo, FaMapMarkerAlt, FaFilm } from 'react-icons/fa'
 
 const orderStatusColor: Record<
-    number,
-    {
-        label: string
-        bgClass: string
-        textClass: string
-    }
+    string,
+    { label: string; bgClass: string; textClass: string }
 > = {
-    0: {
-        label: 'Paid',
+    active: {
+        label: 'Active',
         bgClass: 'bg-success-subtle',
         textClass: 'text-success',
     },
-    1: {
-        label: 'Pending',
+    suspended: {
+        label: 'Suspended',
         bgClass: 'bg-warning-subtle',
         textClass: 'text-warning',
     },
-    2: { label: 'Failed', bgClass: 'bg-error-subtle', textClass: 'text-error' },
-}
-
-const OrderColumn = ({ row }: { row: Order }) => {
-    const navigate = useNavigate()
-
-    const onView = () => {
-        navigate(`/concepts/orders/order-details/${row.id}`)
-    }
-
-    return (
-        <span
-            className="cursor-pointer font-bold heading-text hover:text-primary"
-            onClick={onView}
-        >
-            #{row.id}
-        </span>
-    )
+    cancelled: {
+        label: 'Cancelled',
+        bgClass: 'bg-error-subtle',
+        textClass: 'text-error',
+    },
 }
 
 const ActionColumn = ({ row }: { row: Order }) => {
@@ -78,43 +60,6 @@ const ActionColumn = ({ row }: { row: Order }) => {
     )
 }
 
-const PaymentMethodImage = ({
-    paymentMehod,
-    className,
-}: {
-    paymentMehod: string
-    className: string
-}) => {
-    switch (paymentMehod) {
-        case 'visa':
-            return (
-                <img
-                    className={className}
-                    src="/img/others/img-8.png"
-                    alt={paymentMehod}
-                />
-            )
-        case 'master':
-            return (
-                <img
-                    className={className}
-                    src="/img/others/img-9.png"
-                    alt={paymentMehod}
-                />
-            )
-        case 'paypal':
-            return (
-                <img
-                    className={className}
-                    src="/img/others/img-10.png"
-                    alt={paymentMehod}
-                />
-            )
-        default:
-            return <></>
-    }
-}
-
 const OrderListTable = () => {
     const { orderList, orderListTotal, tableData, isLoading, setTableData } =
         useOrderlist()
@@ -122,28 +67,24 @@ const OrderListTable = () => {
     const columns: ColumnDef<Order>[] = useMemo(
         () => [
             {
-                header: 'Order',
-                accessorKey: 'id',
-                cell: (props) => <OrderColumn row={props.row.original} />,
-            },
-            {
-                header: 'Date',
-                accessorKey: 'date',
+                header: 'Asset',
+                accessorKey: 'asset',
                 cell: (props) => {
-                    const row = props.row.original
-                    return (
-                        <span className="font-semibold">
-                            {dayjs.unix(row.date).format('DD/MM/YYYY')}
+                    const {event_type, id } = props.row.original
+                    let icon = null
+                    if (event_type === 'prerecorded')
+                        icon = <FaFilm className="inline-block mr-1" />
+                    else if (event_type === 'live_venue')
+                        icon = <FaMapMarkerAlt className="inline-block mr-1" />
+                    else if (event_type === 'live_video_call')
+                        icon = <FaVideo className="inline-block mr-1" />
+
+                    return id ? (
+                        <span className="font-semibold flex items-center gap-2">
+                            {icon}
+                            id {id}
                         </span>
-                    )
-                },
-            },
-            {
-                header: 'Customer',
-                accessorKey: 'customer',
-                cell: (props) => {
-                    const row = props.row.original
-                    return <span className="font-semibold">{row.customer}</span>
+                    ) : null
                 },
             },
             {
@@ -152,50 +93,93 @@ const OrderListTable = () => {
                 cell: (props) => {
                     const { status } = props.row.original
                     return (
-                        <Tag className={orderStatusColor[status].bgClass}>
+                        <Tag
+                            className={orderStatusColor[status]?.bgClass || ''}
+                        >
                             <span
-                                className={`capitalize font-semibold ${orderStatusColor[status].textClass}`}
+                                className={`capitalize font-semibold ${orderStatusColor[status]?.textClass || ''}`}
                             >
-                                {orderStatusColor[status].label}
+                                {orderStatusColor[status]?.label || status}
                             </span>
                         </Tag>
                     )
                 },
             },
             {
-                header: 'Payment Method',
-                accessorKey: 'paymentMehod',
+                header: 'Name',
+                accessorKey: 'event_name',
                 cell: (props) => {
-                    const { paymentMehod, paymentIdendifier } =
-                        props.row.original
+                    const { event_name } = props.row.original
+                    return <span className="font-semibold">{event_name}</span>
+                },
+            },
+            {
+                header: 'Type',
+                accessorKey: 'event_type',
+                cell: (props) => {
+                    const { event_type } = props.row.original
                     return (
-                        <span className="flex items-center gap-2">
-                            <PaymentMethodImage
-                                className="max-h-[20px]"
-                                paymentMehod={paymentMehod}
-                            />
-                            <span className="font-semibold">
-                                {paymentIdendifier}
-                            </span>
+                        <span className="font-semibold">
+                            {event_type === 'prerecorded'
+                                ? 'Pre-Recorded'
+                                : event_type === 'live_venue'
+                                  ? 'Live Venue'
+                                  : 'Live Video Call'}
                         </span>
                     )
                 },
             },
             {
-                header: 'Total',
-                accessorKey: 'totalAmount',
+                header: 'Price Plans',
+                accessorKey: 'memberships',
                 cell: (props) => {
-                    const { totalAmount } = props.row.original
+                    const { memberships } = props.row.original
                     return (
-                        <NumericFormat
-                            className="heading-text font-bold"
-                            displayType="text"
-                            value={(
-                                Math.round(totalAmount * 100) / 100
-                            ).toFixed(2)}
-                            prefix={'$'}
-                            thousandSeparator={true}
-                        />
+                        <span className="font-semibold">
+                            {memberships && memberships.length > 0
+                                ? memberships
+                                      .map((m) => `${m.name} - £${m.price}`)
+                                      .join(' ')
+                                : ''}
+                        </span>
+                    )
+                },
+            },
+            {
+                header: 'Landing Page',
+                accessorKey: 'landing_page_url',
+                cell: (props) => {
+                    const { landing_page_url } = props.row.original
+                    return landing_page_url ? (
+                        <a
+                            href={landing_page_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <span role="img" aria-label="link">
+                                🔗
+                            </span>
+                        </a>
+                    ) : null
+                },
+            },
+            {
+                header: 'Created',
+                accessorKey: 'created_at',
+                cell: (props) => {
+                    const { created_at } = props.row.original
+                    return (
+                        <span className="font-semibold">
+                            {created_at
+                                ? new Date(created_at).toLocaleString('en-GB', {
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      year: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                  })
+                                : ''}
+                        </span>
                     )
                 },
             },
