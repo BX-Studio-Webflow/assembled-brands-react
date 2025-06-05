@@ -11,8 +11,6 @@ import { z } from 'zod'
 import type { ZodType } from 'zod'
 import type { CommonProps } from '@/@types/common'
 import type { CustomerFormSchema } from './types'
-import { apiCreateLead } from '@/services/LeadsService'
-import { useAuth } from '@/auth'
 
 type CustomerFormProps = {
     onFormSubmit: (values: CustomerFormSchema) => void
@@ -22,23 +20,17 @@ type CustomerFormProps = {
 } & CommonProps
 
 const validationSchema: ZodType<CustomerFormSchema> = z.object({
-    firstName: z.string().min(1, { message: 'First name required' }),
-    lastName: z.string().min(1, { message: 'Last name required' }),
-    email: z
-        .string()
-        .min(1, { message: 'Email required' })
-        .email({ message: 'Invalid email' }),
-    dialCode: z.string().min(1, { message: 'Please select your country code' }),
-    phoneNumber: z
-        .string()
-        .min(1, { message: 'Please input your mobile number' }),
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z.string().email('Invalid email address'),
+    dialCode: z.string().min(1, 'Please select your country code'),
+    phoneNumber: z.string().min(1, 'Please input your mobile number'),
     img: z.string(),
     tags: z.array(z.object({ value: z.string(), label: z.string() })),
 })
 
 const CustomerForm = (props: CustomerFormProps) => {
-    const { onFormSubmit, defaultValues = {}, children, eventId } = props
-    const { user } = useAuth()
+    const { onFormSubmit, defaultValues = {}, children } = props
 
     const {
         handleSubmit,

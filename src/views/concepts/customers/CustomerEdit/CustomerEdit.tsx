@@ -12,9 +12,11 @@ import { useParams, useNavigate } from 'react-router'
 import useSWR from 'swr'
 import type { CustomerFormSchema } from '../CustomerForm'
 import type { Lead } from '@/@types/lead'
+import { useAuth } from '@/auth'
 
 const CustomerEdit = () => {
     const { id } = useParams()
+    const { user } = useAuth()
 
     const navigate = useNavigate()
 
@@ -34,12 +36,32 @@ const CustomerEdit = () => {
     const handleFormSubmit = async (values: CustomerFormSchema) => {
         console.log('Submitted values', values)
         setIsSubmiting(true)
-        await apiUpdateLead(id as string, values)
-        setIsSubmiting(false)
-        toast.push(<Notification type="success">Changes Saved!</Notification>, {
-            placement: 'top-center',
-        })
-        navigate('/concepts/lead/lead-list')
+        try {
+            const leadData = {
+                name: `${values.firstName} ${values.lastName}`,
+                email: values.email,
+                phone: `${values.dialCode}${values.phoneNumber}`,
+                host_id: user?.id || 0,
+            }
+            await apiUpdateLead(id as string, leadData)
+            setIsSubmiting(false)
+            toast.push(
+                <Notification type="success">Changes Saved!</Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            navigate('/concepts/lead/lead-list')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    Failed to update customer: {error instanceof Error ? error.message : 'Unknown error'}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setIsSubmiting(false)
+        }
     }
 
     const getDefaultValues = () => {
