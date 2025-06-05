@@ -3,13 +3,16 @@ import Container from '@/components/shared/Container'
 import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
-import CustomerForm from '../CustomerForm'
+import CustomerForm, { CustomerFormSchema } from '../CustomerForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { TbTrash } from 'react-icons/tb'
 import { useNavigate, useSearchParams } from 'react-router'
+import { apiCreateLead } from '@/services/LeadsService'
+import { useAuth } from '@/auth'
 
 const CustomerCreate = () => {
     const navigate = useNavigate()
+    const { user } = useAuth()
     const [searchParams] = useSearchParams()
     const eventId = searchParams.get('eventId')
         ? Number(searchParams.get('eventId'))
@@ -19,13 +22,23 @@ const CustomerCreate = () => {
         useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const handleFormSubmit = async () => {
+    const handleFormSubmit = async (values: CustomerFormSchema) => {
         setIsSubmiting(false) // Form submission is now handled in CustomerForm
+        // Format data according to backend schema
+        const leadData = {
+            name: `${values.firstName} ${values.lastName}`,
+            email: values.email,
+            phone: `${values.dialCode}${values.phoneNumber}`,
+            host_id: user?.id || 0,
+        }
+
+        // Make API call
+        await apiCreateLead(leadData)
         toast.push(
             <Notification type="success">Customer created!</Notification>,
             { placement: 'top-center' },
         )
-        navigate('/concepts/customers/customer-list')
+        navigate('/concepts/lead/lead-list')
     }
 
     const handleConfirmDiscard = () => {
@@ -34,7 +47,7 @@ const CustomerCreate = () => {
             <Notification type="success">Customer discarded!</Notification>,
             { placement: 'top-center' },
         )
-        navigate('/concepts/customers/customer-list')
+        navigate('/concepts/lead/lead-list')
     }
 
     const handleDiscard = () => {

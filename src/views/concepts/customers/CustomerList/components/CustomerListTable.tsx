@@ -82,11 +82,11 @@ const CustomerListTable = () => {
     } = useCustomerList()
 
     const handleEdit = (customer: Lead) => {
-        navigate(`/concepts/customers/customer-edit/${customer.id}`)
+        navigate(`/concepts/lead/lead-edit/${customer.id}`)
     }
 
     const handleViewDetails = (customer: Lead) => {
-        navigate(`/concepts/customers/customer-details/${customer.id}`)
+        navigate(`/concepts/lead/lead-details/${customer.id}`)
     }
 
     const columns: ColumnDef<Lead>[] = useMemo(

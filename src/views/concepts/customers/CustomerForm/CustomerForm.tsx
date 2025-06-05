@@ -61,18 +61,6 @@ const CustomerForm = (props: CustomerFormProps) => {
 
     const onSubmit = async (values: CustomerFormSchema) => {
         try {
-            // Format data according to backend schema
-            const leadData = {
-                name: `${values.firstName} ${values.lastName}`,
-                email: values.email,
-                phone: `${values.dialCode}${values.phoneNumber}`,
-                host_id: user?.id || 0,
-                ...(eventId && { event_id: eventId }),
-            }
-
-            // Make API call
-            await apiCreateLead(leadData)
-
             // Call the original onFormSubmit
             onFormSubmit?.(values)
         } catch (error) {

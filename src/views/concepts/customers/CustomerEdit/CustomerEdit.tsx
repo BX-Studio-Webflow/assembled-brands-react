@@ -4,9 +4,8 @@ import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { apiGetLead } from '@/services/LeadsService'
+import { apiGetLead, apiUpdateLead } from '@/services/LeadsService'
 import CustomerForm from '../CustomerForm'
-import sleep from '@/utils/sleep'
 import NoUserFound from '@/assets/svg/NoUserFound'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
 import { useParams, useNavigate } from 'react-router'
@@ -35,12 +34,12 @@ const CustomerEdit = () => {
     const handleFormSubmit = async (values: CustomerFormSchema) => {
         console.log('Submitted values', values)
         setIsSubmiting(true)
-        await sleep(800)
+        await apiUpdateLead(id as string, values)
         setIsSubmiting(false)
         toast.push(<Notification type="success">Changes Saved!</Notification>, {
             placement: 'top-center',
         })
-        navigate('/concepts/customers/customer-list')
+        navigate('/concepts/lead/lead-list')
     }
 
     const getDefaultValues = () => {

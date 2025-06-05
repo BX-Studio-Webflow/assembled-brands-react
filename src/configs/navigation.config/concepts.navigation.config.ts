@@ -55,7 +55,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
-                    /*  {
+                     {
                         key: 'concepts.customers.customerEdit',
                         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-edit/1`,
                         title: 'Customer Edit',
@@ -71,7 +71,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                             },
                         },
                         subMenu: [],
-                    },*/
+                    },
                     {
                         key: 'concepts.customers.customerCreate',
                         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-create`,
