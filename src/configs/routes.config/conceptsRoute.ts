@@ -77,6 +77,69 @@ const conceptsRoute: Routes = [
         },
     },
     {
+        key: 'concepts.events.eventList',
+        path: `${CONCEPTS_PREFIX_PATH}/event/event-list`,
+        component: lazy(() => import('@/views/concepts/orders/OrderList')),
+        authority: [ADMIN, USER],
+        meta: {
+            pageContainerType: 'contained',
+        },
+    },
+    {
+        key: 'concepts.events.eventEdit',
+        path: `${CONCEPTS_PREFIX_PATH}/event/event-edit/:id`,
+        component: lazy(() => import('@/views/concepts/orders/OrderEdit')),
+        authority: [ADMIN, USER],
+        meta: {
+            header: {
+                title: 'Edit order',
+                contained: true,
+                description: 'Manage and track orders efficiently',
+            },
+            footer: false,
+        },
+    },
+    {
+        key: 'concepts.events.eventCreate',
+        path: `${CONCEPTS_PREFIX_PATH}/event/event-create`,
+        component: lazy(() => import('@/views/concepts/orders/OrderCreate')),
+        authority: [ADMIN, USER],
+        meta: {
+            header: {
+                title: 'Create order',
+                contained: true,
+                description:
+                    'Create new customer orders quickly and accurately',
+            },
+            footer: false,
+        },
+    },
+    {
+        key: 'concepts.events.eventDetails',
+        path: `${CONCEPTS_PREFIX_PATH}/event/event-details/:id`,
+        component: lazy(() => import('@/views/concepts/orders/OrderDetails')),
+        authority: [ADMIN, USER],
+        meta: {
+            header: {
+                contained: true,
+                title: lazy(
+                    () =>
+                        import(
+                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeader'
+                        ),
+                ),
+                extraHeader: lazy(
+                    () =>
+                        import(
+                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeaderExtra'
+                        ),
+                ),
+            },
+            pageContainerType: 'contained',
+        },
+    },
+
+    {
         key: 'concepts.products.productList',
         path: `${CONCEPTS_PREFIX_PATH}/products/product-list`,
         component: lazy(() => import('@/views/concepts/products/ProductList')),
@@ -160,68 +223,6 @@ const conceptsRoute: Routes = [
         component: lazy(() => import('@/views/concepts/projects/Issue')),
         authority: [ADMIN, USER],
         meta: {
-            pageContainerType: 'contained',
-        },
-    },
-    {
-        key: 'concepts.orders.orderList',
-        path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
-        component: lazy(() => import('@/views/concepts/orders/OrderList')),
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-        },
-    },
-    {
-        key: 'concepts.orders.orderEdit',
-        path: `${CONCEPTS_PREFIX_PATH}/orders/order-edit/:id`,
-        component: lazy(() => import('@/views/concepts/orders/OrderEdit')),
-        authority: [ADMIN, USER],
-        meta: {
-            header: {
-                title: 'Edit order',
-                contained: true,
-                description: 'Manage and track orders efficiently',
-            },
-            footer: false,
-        },
-    },
-    {
-        key: 'concepts.orders.orderCreate',
-        path: `${CONCEPTS_PREFIX_PATH}/orders/order-create`,
-        component: lazy(() => import('@/views/concepts/orders/OrderCreate')),
-        authority: [ADMIN, USER],
-        meta: {
-            header: {
-                title: 'Create order',
-                contained: true,
-                description:
-                    'Create new customer orders quickly and accurately',
-            },
-            footer: false,
-        },
-    },
-    {
-        key: 'concepts.orders.orderDetails',
-        path: `${CONCEPTS_PREFIX_PATH}/orders/order-details/:id`,
-        component: lazy(() => import('@/views/concepts/orders/OrderDetails')),
-        authority: [ADMIN, USER],
-        meta: {
-            header: {
-                contained: true,
-                title: lazy(
-                    () =>
-                        import(
-                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeader'
-                        ),
-                ),
-                extraHeader: lazy(
-                    () =>
-                        import(
-                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeaderExtra'
-                        ),
-                ),
-            },
             pageContainerType: 'contained',
         },
     },
