@@ -24,48 +24,254 @@ const conceptsNavigationConfig: NavigationTree[] = [
         },
         subMenu: [
             {
-                key: 'concepts.ai',
+                key: 'concepts.customers',
                 path: '',
-                title: 'AI',
-                translateKey: 'nav.conceptsAi.ai',
-                icon: 'ai',
+                title: 'Customers',
+                translateKey: 'nav.conceptsCustomers.customers',
+                icon: 'customers',
                 type: NAV_ITEM_TYPE_COLLAPSE,
                 authority: [ADMIN, USER],
                 meta: {
                     description: {
-                        translateKey: 'nav.conceptsAi.aiDesc',
-                        label: 'AI tools and resources',
+                        translateKey: 'nav.conceptsCustomers.customersDesc',
+                        label: 'Customer management',
                     },
                 },
                 subMenu: [
                     {
-                        key: 'concepts.ai.chat',
-                        path: `${CONCEPTS_PREFIX_PATH}/ai/chat`,
-                        title: 'Chat',
-                        translateKey: 'nav.conceptsAi.chat',
-                        icon: 'aiChat',
+                        key: 'concepts.customers.customerList',
+                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-list`,
+                        title: 'Customer List',
+                        translateKey: 'nav.conceptsCustomers.customerList',
+                        icon: 'customerList',
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [ADMIN, USER],
                         meta: {
                             description: {
-                                translateKey: 'nav.conceptsAi.chatDesc',
-                                label: 'AI-powered chat systems',
+                                translateKey:
+                                    'nav.conceptsCustomers.customerListDesc',
+                                label: 'List of all customers',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                  /*  {
+                        key: 'concepts.customers.customerEdit',
+                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-edit/1`,
+                        title: 'Customer Edit',
+                        translateKey: 'nav.conceptsCustomers.customerEdit',
+                        icon: 'customerEdit',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsCustomers.customerEditDesc',
+                                label: 'Edit customer info',
+                            },
+                        },
+                        subMenu: [],
+                    },*/
+                    {
+                        key: 'concepts.customers.customerCreate',
+                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-create`,
+                        title: 'Customer Create',
+                        translateKey: 'nav.conceptsCustomers.customerCreate',
+                        icon: 'customerCreate',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsCustomers.customerCreateDesc',
+                                label: 'Add a new customer',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                   /* {
+                        key: 'concepts.customers.customerDetails',
+                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/1`,
+                        title: 'Customer Details',
+                        translateKey: 'nav.conceptsCustomers.customerDetails',
+                        icon: 'customerDetails',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsCustomers.customerDetailsDesc',
+                                label: 'Detailed customer info',
+                            },
+                        },
+                        subMenu: [],
+                    },*/
+                ],
+            },
+            {
+                key: 'concepts.events',
+                path: '',
+                title: 'Events',
+                translateKey: 'nav.conceptsEvents.events',
+                icon: 'orders',
+                type: NAV_ITEM_TYPE_COLLAPSE,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.conceptsEvents.eventsDesc',
+                        label: 'Customer events management',
+                    },
+                },
+                subMenu: [
+                    {
+                        key: 'concepts.events.eventList',
+                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
+                        title: 'Event List',
+                        translateKey: 'nav.conceptsEvents.eventList',
+                        icon: 'orderList',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsEvents.eventListDesc',
+                                label: 'View all customer events',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                    /*{
+                        key: 'concepts.events.eventEdit',
+                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-edit/95954`,
+                        title: 'Event Edit',
+                        translateKey: 'nav.conceptsEvents.eventEdit',
+                        icon: 'orderEdit',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsEvents.eventEditDesc',
+                                label: 'Edit event details',
+                            },
+                        },
+                        subMenu: [],
+                    },*/
+                    {
+                        key: 'concepts.events.eventCreate',
+                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-create`,
+                        title: 'Event Create',
+                        translateKey: 'nav.conceptsEvents.eventCreate',
+                        icon: 'orderCreate',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsEvents.eventCreateDesc',
+                                label: 'Create new event',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                    /*{
+                        key: 'concepts.events.eventDetails',
+                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-details/95954`,
+                        title: 'Event Details',
+                        translateKey: 'nav.conceptsEvents.eventDetails',
+                        icon: 'ordeDetails',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsEvents.eventDetailsDesc',
+                                label: 'Detailed event information',
+                            },
+                        },
+                        subMenu: [],
+                    },*/
+                ],
+            },
+
+            {
+                key: 'concepts.fileManager',
+                path: `${CONCEPTS_PREFIX_PATH}/file-manager`,
+                title: 'File Manager',
+                translateKey: 'nav.fileManager',
+                icon: 'fileManager',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.fileManagerDesc',
+                        label: 'Manage your files',
+                    },
+                },
+                subMenu: [],
+            },
+            {
+                key: 'concepts.products',
+                path: '',
+                title: 'Products',
+                translateKey: 'nav.conceptsProducts.products',
+                icon: 'products',
+                type: NAV_ITEM_TYPE_COLLAPSE,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.conceptsProducts.productsDesc',
+                        label: 'Product inventory management',
+                    },
+                },
+                subMenu: [
+                    {
+                        key: 'concepts.products.productList',
+                        path: `${CONCEPTS_PREFIX_PATH}/products/product-list`,
+                        title: 'Product List',
+                        translateKey: 'nav.conceptsProducts.productList',
+                        icon: 'productList',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsProducts.productListDesc',
+                                label: 'All products listed',
                             },
                         },
                         subMenu: [],
                     },
                     {
-                        key: 'concepts.ai.image',
-                        path: `${CONCEPTS_PREFIX_PATH}/ai/image`,
-                        title: 'Image',
-                        translateKey: 'nav.conceptsAi.image',
-                        icon: 'aiImage',
+                        key: 'concepts.products.productEdit',
+                        path: `${CONCEPTS_PREFIX_PATH}/products/product-edit/12`,
+                        title: 'Product Edit',
+                        translateKey: 'nav.conceptsProducts.productEdit',
+                        icon: 'productEdit',
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [ADMIN, USER],
                         meta: {
                             description: {
-                                translateKey: 'nav.conceptsAi.imageDesc',
-                                label: 'AI image processing',
+                                translateKey:
+                                    'nav.conceptsProducts.productEditDesc',
+                                label: 'Edit product details',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                    {
+                        key: 'concepts.products.productCreate',
+                        path: `${CONCEPTS_PREFIX_PATH}/products/product-create`,
+                        title: 'Product Create',
+                        translateKey: 'nav.conceptsProducts.productCreate',
+                        icon: 'productCreate',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsProducts.productCreateDesc',
+                                label: 'Add new product',
                             },
                         },
                         subMenu: [],
@@ -175,237 +381,48 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 ],
             },
             {
-                key: 'concepts.customers',
+                key: 'concepts.ai',
                 path: '',
-                title: 'Customers',
-                translateKey: 'nav.conceptsCustomers.customers',
-                icon: 'customers',
+                title: 'AI',
+                translateKey: 'nav.conceptsAi.ai',
+                icon: 'ai',
                 type: NAV_ITEM_TYPE_COLLAPSE,
                 authority: [ADMIN, USER],
                 meta: {
                     description: {
-                        translateKey: 'nav.conceptsCustomers.customersDesc',
-                        label: 'Customer management',
+                        translateKey: 'nav.conceptsAi.aiDesc',
+                        label: 'AI tools and resources',
                     },
                 },
                 subMenu: [
                     {
-                        key: 'concepts.customers.customerList',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-list`,
-                        title: 'Customer List',
-                        translateKey: 'nav.conceptsCustomers.customerList',
-                        icon: 'customerList',
+                        key: 'concepts.ai.chat',
+                        path: `${CONCEPTS_PREFIX_PATH}/ai/chat`,
+                        title: 'Chat',
+                        translateKey: 'nav.conceptsAi.chat',
+                        icon: 'aiChat',
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [ADMIN, USER],
                         meta: {
                             description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerListDesc',
-                                label: 'List of all customers',
+                                translateKey: 'nav.conceptsAi.chatDesc',
+                                label: 'AI-powered chat systems',
                             },
                         },
                         subMenu: [],
                     },
                     {
-                        key: 'concepts.customers.customerEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-edit/1`,
-                        title: 'Customer Edit',
-                        translateKey: 'nav.conceptsCustomers.customerEdit',
-                        icon: 'customerEdit',
+                        key: 'concepts.ai.image',
+                        path: `${CONCEPTS_PREFIX_PATH}/ai/image`,
+                        title: 'Image',
+                        translateKey: 'nav.conceptsAi.image',
+                        icon: 'aiImage',
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [ADMIN, USER],
                         meta: {
                             description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerEditDesc',
-                                label: 'Edit customer info',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.customers.customerCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-create`,
-                        title: 'Customer Create',
-                        translateKey: 'nav.conceptsCustomers.customerCreate',
-                        icon: 'customerCreate',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerCreateDesc',
-                                label: 'Add a new customer',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.customers.customerDetails',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/1`,
-                        title: 'Customer Details',
-                        translateKey: 'nav.conceptsCustomers.customerDetails',
-                        icon: 'customerDetails',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerDetailsDesc',
-                                label: 'Detailed customer info',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                ],
-            },
-            {
-                key: 'concepts.products',
-                path: '',
-                title: 'Products',
-                translateKey: 'nav.conceptsProducts.products',
-                icon: 'products',
-                type: NAV_ITEM_TYPE_COLLAPSE,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.conceptsProducts.productsDesc',
-                        label: 'Product inventory management',
-                    },
-                },
-                subMenu: [
-                    {
-                        key: 'concepts.products.productList',
-                        path: `${CONCEPTS_PREFIX_PATH}/products/product-list`,
-                        title: 'Product List',
-                        translateKey: 'nav.conceptsProducts.productList',
-                        icon: 'productList',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsProducts.productListDesc',
-                                label: 'All products listed',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.products.productEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/products/product-edit/12`,
-                        title: 'Product Edit',
-                        translateKey: 'nav.conceptsProducts.productEdit',
-                        icon: 'productEdit',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsProducts.productEditDesc',
-                                label: 'Edit product details',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.products.productCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/products/product-create`,
-                        title: 'Product Create',
-                        translateKey: 'nav.conceptsProducts.productCreate',
-                        icon: 'productCreate',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsProducts.productCreateDesc',
-                                label: 'Add new product',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                ],
-            },
-            {
-                key: 'concepts.events',
-                path: '',
-                title: 'Events',
-                translateKey: 'nav.conceptsEvents.events',
-                icon: 'orders',
-                type: NAV_ITEM_TYPE_COLLAPSE,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.conceptsEvents.eventsDesc',
-                        label: 'Customer events management',
-                    },
-                },
-                subMenu: [
-                    {
-                        key: 'concepts.events.eventList',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
-                        title: 'Event List',
-                        translateKey: 'nav.conceptsEvents.eventList',
-                        icon: 'orderList',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsEvents.eventListDesc',
-                                label: 'View all customer events',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.events.eventEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-edit/95954`,
-                        title: 'Event Edit',
-                        translateKey: 'nav.conceptsEvents.eventEdit',
-                        icon: 'orderEdit',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsEvents.eventEditDesc',
-                                label: 'Edit event details',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.events.eventCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-create`,
-                        title: 'Event Create',
-                        translateKey: 'nav.conceptsEvents.eventCreate',
-                        icon: 'orderCreate',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsEvents.eventCreateDesc',
-                                label: 'Create new event',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.events.eventDetails',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-details/95954`,
-                        title: 'Event Details',
-                        translateKey: 'nav.conceptsEvents.eventDetails',
-                        icon: 'ordeDetails',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsEvents.eventDetailsDesc',
-                                label: 'Detailed event information',
+                                translateKey: 'nav.conceptsAi.imageDesc',
+                                label: 'AI image processing',
                             },
                         },
                         subMenu: [],
@@ -597,22 +614,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 },
                 subMenu: [],
             },
-            {
-                key: 'concepts.fileManager',
-                path: `${CONCEPTS_PREFIX_PATH}/file-manager`,
-                title: 'File Manager',
-                translateKey: 'nav.fileManager',
-                icon: 'fileManager',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.fileManagerDesc',
-                        label: 'Manage your files',
-                    },
-                },
-                subMenu: [],
-            },
+
             {
                 key: 'concepts.mail',
                 path: `${CONCEPTS_PREFIX_PATH}/mail`,

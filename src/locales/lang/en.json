@@ -14,7 +14,7 @@
             "image": "Image"
         },
         "conceptsCustomers": {
-            "customers": "Customer",
+            "customers": "Leads",
             "customerList": "List",
             "customerEdit": "Edit",
             "customerCreate": "Create",
