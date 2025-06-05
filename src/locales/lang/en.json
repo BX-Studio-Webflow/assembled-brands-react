@@ -34,12 +34,12 @@
             "projectTasks": "Tasks",
             "projectIssue": "Issue"
         },
-        "conceptsOrders": {
-            "orders": "Orders",
-            "orderList": "List",
-            "orderEdit": "Edit",
-            "orderDetails": "Details",
-            "orderCreate": "Create"
+        "conceptsEvents": {
+            "events": "Events",
+            "eventList": "List",
+            "eventEdit": "Edit",
+            "eventDetails": "Details",
+            "eventCreate": "Create"
         },
         "conceptsAccount": {
             "account": "Account",

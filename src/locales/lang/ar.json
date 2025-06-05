@@ -34,12 +34,12 @@
             "projectTasks": "المهام",
             "projectIssue": "المشكلة"
         },
-        "conceptsOrders": {
-            "orders": "الطلبات",
-            "orderList": "القائمة",
-            "orderEdit": "تعديل",
-            "orderDetails": "التفاصيل",
-            "orderCreate": "إنشاء"
+        "conceptsEvents": {
+            "events": "الفعاليات",
+            "eventList": "القائمة",
+            "eventEdit": "تعديل",
+            "eventDetails": "التفاصيل",
+            "eventCreate": "إنشاء"
         },
         "conceptsAccount": {
             "account": "الحساب",

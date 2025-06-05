@@ -34,12 +34,12 @@
             "projectTasks": "Tareas",
             "projectIssue": "Problema"
         },
-        "conceptsOrders": {
-            "orders": "Pedidos",
-            "orderList": "Lista",
-            "orderEdit": "Editar",
-            "orderDetails": "Detalles",
-            "orderCreate": "Crear"
+        "conceptsEvents": {
+            "events": "Eventos",
+            "eventList": "Lista",
+            "eventEdit": "Editar",
+            "eventDetails": "Detalles",
+            "eventCreate": "Crear"
         },
         "conceptsAccount": {
             "account": "Cuenta",
