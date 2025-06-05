@@ -26,7 +26,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
             {
                 key: 'concepts.customers',
                 path: '',
-                title: 'Customers',
+                title: 'Leads',
                 translateKey: 'nav.conceptsCustomers.customers',
                 icon: 'customers',
                 type: NAV_ITEM_TYPE_COLLAPSE,
@@ -34,14 +34,14 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 meta: {
                     description: {
                         translateKey: 'nav.conceptsCustomers.customersDesc',
-                        label: 'Customer management',
+                        label: 'Lead management',
                     },
                 },
                 subMenu: [
                     {
                         key: 'concepts.customers.customerList',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-list`,
-                        title: 'Customer List',
+                        path: `${CONCEPTS_PREFIX_PATH}/lead/lead-list`,
+                        title: 'Lead List',
                         translateKey: 'nav.conceptsCustomers.customerList',
                         icon: 'customerList',
                         type: NAV_ITEM_TYPE_ITEM,
@@ -50,14 +50,14 @@ const conceptsNavigationConfig: NavigationTree[] = [
                             description: {
                                 translateKey:
                                     'nav.conceptsCustomers.customerListDesc',
-                                label: 'List of all customers',
+                                label: 'List of all leads',
                             },
                         },
                         subMenu: [],
                     },
-                  /*  {
+                    /*  {
                         key: 'concepts.customers.customerEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-edit/1`,
+                        path: `${CONCEPTS_PREFIX_PATH}/lead/lead-edit/1`,
                         title: 'Customer Edit',
                         translateKey: 'nav.conceptsCustomers.customerEdit',
                         icon: 'customerEdit',
@@ -74,7 +74,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },*/
                     {
                         key: 'concepts.customers.customerCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-create`,
+                        path: `${CONCEPTS_PREFIX_PATH}/lead/lead-create`,
                         title: 'Customer Create',
                         translateKey: 'nav.conceptsCustomers.customerCreate',
                         icon: 'customerCreate',
@@ -89,9 +89,9 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
-                   /* {
+                    /* {
                         key: 'concepts.customers.customerDetails',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/1`,
+                        path: `${CONCEPTS_PREFIX_PATH}/lead/lead-details/1`,
                         title: 'Customer Details',
                         translateKey: 'nav.conceptsCustomers.customerDetails',
                         icon: 'customerDetails',
@@ -113,7 +113,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 path: '',
                 title: 'Events',
                 translateKey: 'nav.conceptsEvents.events',
-                icon: 'orders',
+                icon: 'dataDisplay',
                 type: NAV_ITEM_TYPE_COLLAPSE,
                 authority: [ADMIN, USER],
                 meta: {
@@ -125,7 +125,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 subMenu: [
                     {
                         key: 'concepts.events.eventList',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
+                        path: `${CONCEPTS_PREFIX_PATH}/event/event-list`,
                         title: 'Event List',
                         translateKey: 'nav.conceptsEvents.eventList',
                         icon: 'orderList',
@@ -142,7 +142,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                     /*{
                         key: 'concepts.events.eventEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-edit/95954`,
+                        path: `${CONCEPTS_PREFIX_PATH}/event/event-edit/95954`,
                         title: 'Event Edit',
                         translateKey: 'nav.conceptsEvents.eventEdit',
                         icon: 'orderEdit',
@@ -159,7 +159,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },*/
                     {
                         key: 'concepts.events.eventCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-create`,
+                        path: `${CONCEPTS_PREFIX_PATH}/event/event-create`,
                         title: 'Event Create',
                         translateKey: 'nav.conceptsEvents.eventCreate',
                         icon: 'orderCreate',
@@ -176,7 +176,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                     /*{
                         key: 'concepts.events.eventDetails',
-                        path: `${CONCEPTS_PREFIX_PATH}/orders/order-details/95954`,
+                        path: `${CONCEPTS_PREFIX_PATH}/event/event-details/95954`,
                         title: 'Event Details',
                         translateKey: 'nav.conceptsEvents.eventDetails',
                         icon: 'ordeDetails',
