@@ -11,22 +11,21 @@ const navigationList = [
         icon: <TbPackage />,
     },
     {
-        label: 'Customer details',
+        label: 'Event details',
         description:
-            'Enter customer information like name, email & phone number.',
+            'Enter event information like name, description, type, etc.',
         link: 'customerDetails',
         icon: <TbUserSquare />,
     },
     {
-        label: 'Address Information',
-        description: 'Provide shipping address details.',
+        label: 'Membership plans',
+        description: 'Add membership plans to the event.',
         link: 'addressInformation',
         icon: <TbMapPin />,
     },
     {
-        label: 'Payment',
-        description:
-            'Enter payment method and details to complete the transaction.',
+        label: 'Event assets',
+        description: 'Add assets to the event.',
         link: 'payment',
         icon: <TbCreditCard />,
     },

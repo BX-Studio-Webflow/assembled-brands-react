@@ -22,7 +22,7 @@ const OrderCreate = () => {
         setIsSubmiting(true)
         await sleep(800)
         setIsSubmiting(false)
-        toast.push(<Notification type="success">Order created!</Notification>, {
+        toast.push(<Notification type="success">Event created!</Notification>, {
             placement: 'top-center',
         })
         navigate('/concepts/orders/order-list')
@@ -31,7 +31,7 @@ const OrderCreate = () => {
     const handleConfirmDiscard = () => {
         setDiscardConfirmationOpen(true)
         toast.push(
-            <Notification type="success">Order discarded!</Notification>,
+            <Notification type="success">Event discarded!</Notification>,
             { placement: 'top-center' },
         )
         navigate('/concepts/orders/order-list')

@@ -90,3 +90,57 @@ export interface Membership {
     updated_at: string
     user_id: number
 }
+
+// Request type for creating an event
+export interface CreateEventRequest {
+    event_name: string
+    event_description: string
+    instructions?: string | null
+    landing_page_url?: string | null
+    asset_id: number
+    event_type: 'live_venue' | 'prerecorded' | 'live_video_call'
+    status: 'active' | 'suspended' | 'cancelled'
+    live_video_url?: string | null
+    calendar_url?: string | null
+    live_venue_address?: string | null
+    success_url?: string | null
+    membership_plans: MembershipPlanRequest[]
+}
+
+export interface MembershipPlanRequest {
+    id?: number
+    name: string
+    date: number
+    payment_type: 'one_off' | 'recurring'
+    cost: number
+    isFree?: boolean
+}
+
+// Request type for updating an event (all fields optional except id in URL)
+export interface UpdateEventRequest extends Partial<CreateEventRequest> {}
+
+// Request type for cancelling an event
+export interface CancelEventRequest {
+    status: 'cancelled' | 'active' | 'suspended'
+    id: number
+}
+
+// Request type for streaming a prerecorded event
+export interface EventStreamRequest {
+    event_id: number
+    token?: string | null
+    email?: string | null
+    isHost?: boolean | null
+}
+
+// Response type for event memberships
+export type EventMembershipsResponse = Membership[]
+
+// Response type for streamPrerecordedEvent
+export interface EventStreamResponse {
+    event: EventWithDetails | EventDetails
+    isHost: boolean
+    selectedDates?: any[]
+    lead?: any
+    membership?: any
+}
