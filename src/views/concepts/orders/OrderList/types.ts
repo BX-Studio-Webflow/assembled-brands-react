@@ -1,4 +1,4 @@
-export type Order = {
+export type EventItem = {
     // Event fields
     id: number
     event_name: string
@@ -16,12 +16,40 @@ export type Order = {
     updated_at: string
     host_id: number
     // Optionals for asset, host, memberships
-    asset?: any
-    host?: any
-    memberships?: any[]
+    asset?: {
+        asset_name: string
+        asset_size: number
+        asset_type: 'video' | 'image' | 'audio' | 'document'
+        asset_url: string
+        content_type: string
+        created_at: string
+        duration: number
+        hls_url: string | null
+        id: number
+        processing_status: 'pending' | 'processing' | 'completed' | 'failed'
+        updated_at: string
+        user_id: number
+    }
+    host?: {
+        email: string
+        name: string
+        profile_image: string | null
+    }
+    memberships?: {
+        billing: string | null
+        created_at: string
+        description: string
+        id: number
+        name: string
+        payment_type: 'one_off' | 'recurring'
+        price: number
+        price_point: string
+        updated_at: string
+        user_id: number
+    }[]
 }
 
-export type Orders = Order[]
+export type EventItems = EventItem[]
 
 export type Filter = {
     date: [Date, Date]
@@ -29,7 +57,7 @@ export type Filter = {
     paymentMethod: string[]
 }
 
-export type GetOrdersResponse = {
-    list: Orders
+export type GetEventsResponse = {
+    list: EventItem[]
     total: number
 }

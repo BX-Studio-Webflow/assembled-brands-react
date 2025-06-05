@@ -7,7 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router'
 import { TbTrash, TbEye } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
-import type { Order } from '../types'
+import type { EventItem } from '../types'
 import type { TableQueries } from '@/@types/common'
 import { FaVideo, FaMapMarkerAlt, FaFilm } from 'react-icons/fa'
 
@@ -32,7 +32,7 @@ const orderStatusColor: Record<
     },
 }
 
-const ActionColumn = ({ row }: { row: Order }) => {
+const ActionColumn = ({ row }: { row: EventItem }) => {
     const navigate = useNavigate()
 
     const onDelete = () => {}
@@ -64,16 +64,18 @@ const OrderListTable = () => {
     const { orderList, orderListTotal, tableData, isLoading, setTableData } =
         useOrderlist()
 
-    const columns: ColumnDef<Order>[] = useMemo(
+    const columns: ColumnDef<EventItem>[] = useMemo(
         () => [
             {
                 header: 'Asset',
                 accessorKey: 'asset',
                 cell: (props) => {
-                    const {event_type, id } = props.row.original
+                    const { event_type, id } = props.row.original
                     let icon = null
                     if (event_type === 'prerecorded')
-                        icon = <FaFilm className="inline-block mr-1" />
+                        icon = <FaFilm className="inline-block mr-1" onClick={() => {
+                            console.log(props.row.original)
+                        }}/>
                     else if (event_type === 'live_venue')
                         icon = <FaMapMarkerAlt className="inline-block mr-1" />
                     else if (event_type === 'live_video_call')
