@@ -1,8 +1,12 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Tag from '@/components/ui/Tag'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
+import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import Notification from '@/components/ui/Notification'
+import toast from '@/components/ui/toast'
 import useOrderlist from '../hooks/useOrderlist'
+import { apiDeleteEvent } from '@/services/EventService'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router'
 import { TbTrash, TbEye } from 'react-icons/tb'
@@ -34,29 +38,75 @@ const orderStatusColor: Record<
 
 const ActionColumn = ({ row }: { row: EventItem }) => {
     const navigate = useNavigate()
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const { mutate } = useOrderlist()
 
-    const onDelete = () => {}
+    const onDelete = () => {
+        setDeleteDialogOpen(true)
+    }
+
+    const handleConfirmDelete = async () => {
+        try {
+            await apiDeleteEvent(row.id)
+            toast.push(
+                <Notification type="success">
+                    Event deleted successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            mutate()
+        } catch {
+            toast.push(
+                <Notification type="danger">
+                    Failed to delete event. Please try again.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setDeleteDialogOpen(false)
+        }
+    }
+
+    const handleCancelDelete = () => {
+        setDeleteDialogOpen(false)
+    }
 
     const onView = () => {
         navigate(`/concepts/orders/order-details/${row.id}`)
     }
 
     return (
-        <div className="flex justify-end text-lg gap-1">
-            <Tooltip wrapperClass="flex" title="View">
-                <span className={`cursor-pointer p-2`} onClick={onView}>
-                    <TbEye />
-                </span>
-            </Tooltip>
-            <Tooltip wrapperClass="flex" title="Delete">
-                <span
-                    className="cursor-pointer p-2 hover:text-red-500"
-                    onClick={onDelete}
-                >
-                    <TbTrash />
-                </span>
-            </Tooltip>
-        </div>
+        <>
+            <div className="flex justify-end text-lg gap-1">
+                <Tooltip wrapperClass="flex" title="View">
+                    <span className={`cursor-pointer p-2`} onClick={onView}>
+                        <TbEye />
+                    </span>
+                </Tooltip>
+                <Tooltip wrapperClass="flex" title="Delete">
+                    <span
+                        className="cursor-pointer p-2 hover:text-red-500"
+                        onClick={onDelete}
+                    >
+                        <TbTrash />
+                    </span>
+                </Tooltip>
+            </div>
+            <ConfirmDialog
+                isOpen={deleteDialogOpen}
+                type="danger"
+                title="Delete Event"
+                onClose={handleCancelDelete}
+                onRequestClose={handleCancelDelete}
+                onCancel={handleCancelDelete}
+                onConfirm={handleConfirmDelete}
+            >
+                <p>
+                    Are you sure you want to delete this event? This action
+                    cannot be undone.
+                </p>
+            </ConfirmDialog>
+        </>
     )
 }
 
