@@ -1,31 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Form } from '@/components/ui/Form'
 import Affix from '@/components/shared/Affix'
 import Card from '@/components/ui/Card'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
-import { apiGetProductList } from '@/services/ProductService'
 import CustomerDetailSection from './components/CustomerDetailSection'
 import BillingAddressSection from './components/BillingAddressSection'
 import PaymentMethodSection from './components/PaymentMethodSection'
 import Navigator from './components/Navigator'
-import { useOrderFormStore } from './store/orderFormStore'
 import useLayoutGap from '@/utils/hooks/useLayoutGap'
 import useResponsive from '@/utils/hooks/useResponsive'
 import useSWR from 'swr'
-import isEmpty from 'lodash/isEmpty'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EventFormSchema, EventFormType } from './validation/eventFormSchema'
 import type { ReactNode } from 'react'
 import type { TableQueries, CommonProps } from '@/@types/common'
-import { apiCreateEvent } from '@/services/EventService'
+import { apiGetAssets } from '@/services/AssetService'
+import type { Asset, AssetQueryParams } from '@/@types/asset'
 
 type OrderFormProps = {
     children: ReactNode
     onFormSubmit: (values: EventFormType) => void
     defaultValues?: Partial<EventFormType>
-    defaultProducts?: any[]
     newOrder?: boolean
 } & CommonProps
 
@@ -33,23 +30,35 @@ const defaultPlan = {
     name: '',
     isFree: false,
     cost: 0,
-    date: 0,
+    date: new Date(),
     payment_type: 'one_off' as const,
 }
 
-const OrderForm = (props: OrderFormProps) => {
-    const { onFormSubmit, children, defaultValues, defaultProducts } = props
-    const [submitting, setSubmitting] = useState(false)
+const defaultValues = {
+    event_name: '',
+    event_description: '',
+    status: 'active' as const,
+    membership_plans: [defaultPlan],
+    event_type: 'live_venue' as const,
+    terms: true as const,
+    asset_id: 0,
+    live_video_url: '',
+    live_venue_address: '',
+    course_url_external: '',
+    course_internal: false,
+    invite_existing_leads: false,
+}
 
-    const { setProductOption, setProductList, setSelectedProduct } =
-        useOrderFormStore()
+const OrderForm = (props: OrderFormProps) => {
+    const { onFormSubmit, children } = props
+    const [assets, setAssets] = useState<Asset[]>([])
 
     const { getTopGapValue } = useLayoutGap()
     const { larger } = useResponsive()
 
     useSWR(
         [
-            '/api/products',
+            '/asset',
             {
                 pageIndex: 1,
                 pageSize: 10,
@@ -61,54 +70,24 @@ const OrderForm = (props: OrderFormProps) => {
             } as TableQueries,
         ],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetProductList<any, TableQueries>(params),
+        ([_, params]) => apiGetAssets(params as AssetQueryParams),
         {
             revalidateOnFocus: false,
-            onSuccess: (resp) => {
-                const list = resp.list.map(
-                    ({ id: value, name: label, img, stock: quantity }) => ({
-                        label,
-                        value,
-                        img,
-                        quantity,
-                    }),
-                )
-                setProductList(resp.list)
-                setProductOption(list)
+            onSuccess: (response) => {
+                console.log(response)
+                setAssets(response.assets)
             },
         },
     )
 
-    useEffect(() => {
-        if (defaultProducts) {
-            setSelectedProduct(defaultProducts)
-        }
-        if (!isEmpty(defaultValues)) {
-            reset(defaultValues)
-        }
-        return () => {
-            setSelectedProduct([])
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
     const {
-        handleSubmit,
-        reset,
-        watch,
-        formState: { errors },
         control,
-        register,
+        handleSubmit,
+        formState: { errors },
+        watch,
     } = useForm<EventFormType>({
         resolver: zodResolver(EventFormSchema),
-        defaultValues: {
-            event_name: '',
-            event_description: '',
-            membership_plans: [defaultPlan],
-            event_type: 'prerecorded',
-            asset_id: 1,
-            status: 'active',
-        },
+        defaultValues,
         mode: 'onTouched',
     })
 
@@ -120,23 +99,11 @@ const OrderForm = (props: OrderFormProps) => {
     const plans = watch('membership_plans') || []
 
     const onSubmit = async (values: EventFormType) => {
-        setSubmitting(true)
-        // Transform membership_plans.date to unix timestamp (seconds)
-        const payload = {
-            ...values,
-            membership_plans: values.membership_plans.map((plan) => ({
-                ...plan,
-                date:
-                    plan.date instanceof Date
-                        ? Math.floor(plan.date.getTime() / 1000)
-                        : plan.date,
-                cost: Number(plan.cost),
-            })),
-            asset_id: Number(values.asset_id),
+        try {
+            await onFormSubmit(values)
+        } catch (error) {
+            console.error(error)
         }
-        await apiCreateEvent(payload)
-        setSubmitting(false)
-        onFormSubmit?.(payload)
     }
 
     return (
@@ -170,13 +137,11 @@ const OrderForm = (props: OrderFormProps) => {
                                     append={() => append(defaultPlan)}
                                     remove={remove}
                                     plans={plans}
-                                    defaultPlan={defaultPlan}
                                 />
                                 <PaymentMethodSection
                                     control={control}
                                     errors={errors}
-                                    register={register}
-                                    watch={watch}
+                                    assets={assets}
                                 />
                             </div>
                         </div>

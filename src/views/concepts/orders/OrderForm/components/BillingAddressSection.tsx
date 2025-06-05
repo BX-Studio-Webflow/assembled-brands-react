@@ -3,6 +3,7 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import { FormItem } from '@/components/ui/Form'
 import type { Control, FieldErrors, FieldArrayWithId } from 'react-hook-form'
+import type { EventFormType } from '../validation/eventFormSchema'
 import { components } from 'react-select'
 import Button from '@/components/ui/Button'
 import { Controller } from 'react-hook-form'
@@ -12,25 +13,13 @@ import { FiX } from 'react-icons/fi'
 const { Control } = components
 const { DateTimepicker } = DatePicker
 
-// Minimal event form schema for this section
-interface MembershipPlan {
-    name: string
-    isFree?: boolean
-    cost?: number
-    date: string
-    payment_type: 'one_off' | 'recurring'
-}
-interface EventFormSchema {
-    membership_plans: MembershipPlan[]
-}
-
 interface Props {
-    control: Control<EventFormSchema>
-    errors: FieldErrors<EventFormSchema>
-    fields: FieldArrayWithId<EventFormSchema, 'membership_plans', 'id'>[]
+    control: Control<EventFormType>
+    errors: FieldErrors<EventFormType>
+    fields: FieldArrayWithId<EventFormType, 'membership_plans', 'id'>[]
     append: () => void
     remove: (idx: number) => void
-    plans: MembershipPlan[]
+    plans: EventFormType['membership_plans']
 }
 
 const BillingAddressSection = ({
@@ -135,15 +124,11 @@ const BillingAddressSection = ({
                                 <DateTimepicker
                                     placeholder="Pick date & time"
                                     value={
-                                        field.value
-                                            ? new Date(field.value)
-                                            : undefined
+                                        field.value instanceof Date
+                                            ? field.value
+                                            : new Date(field.value)
                                     }
-                                    onChange={(date) =>
-                                        field.onChange(
-                                            date ? date.toISOString() : '',
-                                        )
-                                    }
+                                    onChange={(date) => field.onChange(date)}
                                 />
                             )}
                         />

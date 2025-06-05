@@ -2,7 +2,7 @@ import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import { Controller } from 'react-hook-form'
-import type { EventFormType } from '../types'
+import type { EventFormType } from '../validation/eventFormSchema'
 import type { Control, FieldErrors } from 'react-hook-form'
 
 type CustomerDetailSectionProps = {

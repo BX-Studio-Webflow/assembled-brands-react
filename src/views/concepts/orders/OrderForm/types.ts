@@ -91,11 +91,22 @@ export type EventFormType = {
         name: string
         isFree: boolean
         cost: number
-        date: number
+        date: number | Date
         payment_type: 'one_off' | 'recurring'
+        id?: number
     }>
     event_type: 'live_venue' | 'prerecorded' | 'live_video_call'
-    terms: boolean
+    terms: true
     asset_id: number
     status: 'active' | 'suspended' | 'cancelled'
+    instructions?: string
+    landing_page_url?: string
+    success_url?: string
+    calendar_url?: string
+    asset?: { value: string; label: string; color: string }
+    live_video_url?: string
+    live_venue_address?: string
+    course_url_external?: string
+    course_internal?: boolean
+    invite_existing_leads?: boolean
 }

@@ -3,28 +3,34 @@ import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import Checkbox from '@/components/ui/Checkbox'
 import Radio from '@/components/ui/Radio'
+import Select from '@/components/ui/Select'
 import { Controller } from 'react-hook-form'
-import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
+import type { Control, FieldErrors } from 'react-hook-form'
+import type { EventFormType } from '../validation/eventFormSchema'
+import { useState } from 'react'
+import type { Asset } from '@/@types/asset'
 
-interface EventFormSchema {
-    event_type: 'prerecorded' | 'live_venue' | 'live_video_call'
-    instructions?: string
-    landing_page_url?: string
-    success_url?: string
-    calendar_url?: string
-    course_url_external?: string
-    course_internal?: boolean
-    invite_existing_leads?: boolean
-    terms: boolean
+type Props = {
+    control: Control<EventFormType>
+    errors: FieldErrors<EventFormType>
+    assets?: Asset[]
 }
 
-interface Props {
-    control: Control<EventFormSchema>
-    errors: FieldErrors<EventFormSchema>
-    register: UseFormRegister<EventFormSchema>
+type AssetOption = {
+    value: string
+    label: string
+    color: string
 }
 
-const PaymentMethodSection = ({ control, errors }: Props) => {
+const PaymentMethodSection = ({ control, errors, assets = [] }: Props) => {
+    const [eventType, setEventType] = useState<string>('')
+    console.log(assets)
+    const assetOptions: AssetOption[] = assets.map((asset) => ({
+        value: asset.id.toString(),
+        label: asset.asset_name,
+        color: '#00B8D9', // Default color for all assets
+    }))
+
     return (
         <Card id="eventDetails">
             <FormItem
@@ -42,7 +48,10 @@ const PaymentMethodSection = ({ control, errors }: Props) => {
                                 name="event_type"
                                 value="prerecorded"
                                 checked={field.value === 'prerecorded'}
-                                onChange={() => field.onChange('prerecorded')}
+                                onChange={() => {
+                                    field.onChange('prerecorded')
+                                    setEventType('prerecorded')
+                                }}
                             >
                                 Pre-Recorded
                             </Radio>
@@ -51,7 +60,10 @@ const PaymentMethodSection = ({ control, errors }: Props) => {
                                 name="event_type"
                                 value="live_venue"
                                 checked={field.value === 'live_venue'}
-                                onChange={() => field.onChange('live_venue')}
+                                onChange={() => {
+                                    field.onChange('live_venue')
+                                    setEventType('live_venue')
+                                }}
                             >
                                 Live Venue
                             </Radio>
@@ -59,9 +71,10 @@ const PaymentMethodSection = ({ control, errors }: Props) => {
                                 name="event_type"
                                 value="live_video_call"
                                 checked={field.value === 'live_video_call'}
-                                onChange={() =>
+                                onChange={() => {
                                     field.onChange('live_video_call')
-                                }
+                                    setEventType('live_video_call')
+                                }}
                             >
                                 Live Video Call
                             </Radio>
@@ -69,6 +82,31 @@ const PaymentMethodSection = ({ control, errors }: Props) => {
                     )}
                 />
             </FormItem>
+
+            {eventType === 'prerecorded' && (
+                <FormItem
+                    label="Select Asset"
+                    invalid={Boolean(errors.asset_id)}
+                    errorMessage={errors.asset_id?.message}
+                >
+                    <Controller
+                        name="asset_id"
+                        control={control}
+                        render={({ field: { onChange, value, ...field } }) => (
+                            <Select<AssetOption>
+                                placeholder="Please Select"
+                                options={assetOptions}
+                                value={assetOptions.find(
+                                    (option) =>
+                                        option.value === value?.toString(),
+                                )}
+                                onChange={(option) => onChange(option?.value)}
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
 
             <FormItem
                 label="Pre-Event Instructions shown on payment confirmation email (Optional)"
@@ -143,62 +181,23 @@ const PaymentMethodSection = ({ control, errors }: Props) => {
             </FormItem>
 
             <FormItem
-                label="Course Url (External) (Coming Soon)"
-                invalid={Boolean(errors.course_url_external)}
-                errorMessage={errors.course_url_external?.message}
+                label="Terms and Conditions"
+                invalid={Boolean(errors.terms)}
+                errorMessage={errors.terms?.message}
             >
                 <Controller
-                    name="course_url_external"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            type="text"
-                            placeholder="https://www.something.com"
-                            {...field}
-                        />
-                    )}
-                />
-            </FormItem>
-
-            <FormItem
-                label="Course Internal (Coming Soon)"
-                invalid={Boolean(errors.course_internal)}
-                errorMessage={errors.course_internal?.message}
-            >
-                <Controller
-                    name="course_internal"
+                    name="terms"
                     control={control}
                     render={({ field }) => (
                         <Checkbox
                             checked={!!field.value}
                             onChange={field.onChange}
                         >
-                            Yes
+                            I agree to the terms and conditions
                         </Checkbox>
                     )}
                 />
             </FormItem>
-
-            <FormItem
-                label="Send Invite to existing leads"
-                invalid={Boolean(errors.invite_existing_leads)}
-                errorMessage={errors.invite_existing_leads?.message}
-            >
-                <Controller
-                    name="invite_existing_leads"
-                    control={control}
-                    render={({ field }) => (
-                        <Checkbox
-                            checked={!!field.value}
-                            onChange={field.onChange}
-                        >
-                            Yes
-                        </Checkbox>
-                    )}
-                />
-            </FormItem>
-
-            
         </Card>
     )
 }
