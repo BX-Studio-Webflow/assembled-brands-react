@@ -65,6 +65,9 @@ importers:
       '@types/i18next':
         specifier: ^13.0.0
         version: 13.0.0(typescript@5.8.3)
+      '@vidstack/react':
+        specifier: ^1.12.13
+        version: 1.12.13(@types/react@19.0.2)(react@19.0.0)
       '@visx/pattern':
         specifier: ^3.13.0-alpha.0
         version: 3.13.0-alpha.0(react@19.0.0)
@@ -101,6 +104,9 @@ importers:
       gantt-task-react:
         specifier: ^0.3.9
         version: 0.3.9(react@19.0.0)
+      hls.js:
+        specifier: ^1.6.5
+        version: 1.6.5
       html-react-parser:
         specifier: ^5.2.1
         version: 5.2.4(@types/react@19.0.2)(react@19.0.0)
@@ -1680,6 +1686,13 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@vidstack/react@1.12.13':
+    resolution: {integrity: sha512-zyNydy1+HtoK6cJ8EmqFNkPPGHIFMrr2KH+ef3654EqXx4IcJ8A5LCNMXBuALQE8IMxtk040JMoR9OKyeXjBOQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': ^18.0.0 || ^19.0.0
+      react: ^18.0.0 || ^19.0.0
+
   '@visx/pattern@3.13.0-alpha.0':
     resolution: {integrity: sha512-t0F1rRkFdJIDwwQurcZKYZHRGJ+fKU1Q4KmvWqttwVHZfCWqOwFhLUZ37GARm9rkTjEm1+43oGgJNu615XVh4w==}
     peerDependencies:
@@ -2589,6 +2602,9 @@ packages:
   highlightjs-vue@1.0.0:
     resolution: {integrity: sha512-PDEfEF102G23vHmPhLyPboFCD+BkMGu+GuJe2d9/eH4FsCwvgBpnc9n0pGE+ffKdph38s6foEZiEjdgHdzp+IA==}
 
+  hls.js@1.6.5:
+    resolution: {integrity: sha512-KMn5n7JBK+olC342740hDPHnGWfE8FiHtGMOdJPfUjRdARTWj9OB+8c13fnsf9sk1VtpuU2fKSgUjHvg4rNbzQ==}
+
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
@@ -3031,6 +3047,10 @@ packages:
 
   mdurl@2.0.0:
     resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
+
+  media-captions@1.0.4:
+    resolution: {integrity: sha512-cyDNmuZvvO4H27rcBq2Eudxo9IZRDCOX/I7VEyqbxsEiD2Ei7UYUhG/Sc5fvMZjmathgz3fEK7iAKqvpY+Ux1w==}
+    engines: {node: '>=16'}
 
   media-typer@1.1.0:
     resolution: {integrity: sha512-aisnrDP4GNe06UcKFnV5bfMNPBUw4jsLGaWwWfnH3v02GnBuXX2MCVn5RbrWo0j3pczUilYblq7fQ7Nw2t5XKw==}
@@ -5569,6 +5589,13 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.7.2':
     optional: true
 
+  '@vidstack/react@1.12.13(@types/react@19.0.2)(react@19.0.0)':
+    dependencies:
+      '@floating-ui/dom': 1.7.0
+      '@types/react': 19.0.2
+      media-captions: 1.0.4
+      react: 19.0.0
+
   '@visx/pattern@3.13.0-alpha.0(react@19.0.0)':
     dependencies:
       '@types/react': 19.0.2
@@ -6714,6 +6741,8 @@ snapshots:
 
   highlightjs-vue@1.0.0: {}
 
+  hls.js@1.6.5: {}
+
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
@@ -7188,6 +7217,8 @@ snapshots:
       '@types/mdast': 4.0.4
 
   mdurl@2.0.0: {}
+
+  media-captions@1.0.4: {}
 
   media-typer@1.1.0: {}
 

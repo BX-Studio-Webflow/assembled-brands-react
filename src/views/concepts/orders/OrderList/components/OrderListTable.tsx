@@ -73,9 +73,14 @@ const OrderListTable = () => {
                     const { event_type, id } = props.row.original
                     let icon = null
                     if (event_type === 'prerecorded')
-                        icon = <FaFilm className="inline-block mr-1" onClick={() => {
-                            console.log(props.row.original)
-                        }}/>
+                        icon = (
+                            <FaFilm
+                                className="inline-block mr-1"
+                                onClick={() => {
+                                    console.log(props.row.original)
+                                }}
+                            />
+                        )
                     else if (event_type === 'live_venue')
                         icon = <FaMapMarkerAlt className="inline-block mr-1" />
                     else if (event_type === 'live_video_call')
