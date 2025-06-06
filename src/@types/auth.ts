@@ -101,3 +101,8 @@ export type OauthSignInCallbackPayload = {
     onSignIn: (token: Token, user?: User) => void
     redirect: () => void
 }
+
+export type UploadProfileImageBody = {
+    imageBase64: string
+    fileName: string
+}

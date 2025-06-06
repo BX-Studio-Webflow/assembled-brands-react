@@ -8,6 +8,7 @@ import type {
     SignInResponse,
     SignUpResponse,
     BusinessDetails,
+    UploadProfileImageBody,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -61,5 +62,13 @@ export async function apiGetUserMe<T>() {
     return ApiService.fetchDataWithAxios<T>({
         url: endpointConfig.saveBusinessDetails,
         method: 'get',
+    })
+}
+
+export async function apiUploadProfileImage<T>(data: UploadProfileImageBody) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: '/user/upload-profile-image',
+        method: 'post',
+        data,
     })
 }

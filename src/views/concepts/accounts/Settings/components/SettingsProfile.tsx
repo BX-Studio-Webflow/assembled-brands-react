@@ -18,7 +18,7 @@ import { HiOutlineUser } from 'react-icons/hi'
 import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
-import { apiGetUserMe } from '@/services/AuthService'
+import { apiGetUserMe, apiUploadProfileImage } from '@/services/AuthService'
 
 type ProfileSchema = {
     firstName: string
@@ -153,8 +153,7 @@ const SettingsProfile = () => {
                 email: data.business.email || '',
                 dialCode: '', // Will be extracted from phone
                 phoneNumber: data.business.phone || '',
-                img: data.business.profile_picture || '',
-                
+                img: data.business.logo || '',
             }
             reset(formData)
         }
@@ -165,6 +164,33 @@ const SettingsProfile = () => {
         if (data) {
             mutate({ ...data, ...values }, false)
         }
+    }
+
+    const handleUpload = async (files: FileList | null) => {
+        if (!files?.length) return
+
+        const file = files[0]
+        const reader = new FileReader()
+
+        return new Promise<string | null>((resolve, reject) => {
+            reader.onload = async (e) => {
+                try {
+                    const base64String = e.target?.result as string
+                    const response = await apiUploadProfileImage<{
+                        data: { url: string }
+                    }>({
+                        imageBase64: base64String,
+                        fileName: file.name,
+                    })
+                    resolve(response.data.url)
+                } catch (error) {
+                    console.error('Error uploading image:', error)
+                    reject(error)
+                }
+            }
+            reader.onerror = (error) => reject(error)
+            reader.readAsDataURL(file)
+        })
     }
 
     return (
@@ -188,13 +214,12 @@ const SettingsProfile = () => {
                                         showList={false}
                                         uploadLimit={1}
                                         beforeUpload={beforeUpload}
-                                        onChange={(files) => {
-                                            if (files.length > 0) {
-                                                field.onChange(
-                                                    URL.createObjectURL(
-                                                        files[0],
-                                                    ),
-                                                )
+                                        onChange={async (files: File[]) => {
+                                            const imageUrl = await handleUpload(
+                                                files as unknown as FileList,
+                                            )
+                                            if (imageUrl) {
+                                                field.onChange(imageUrl)
                                             }
                                         }}
                                     >

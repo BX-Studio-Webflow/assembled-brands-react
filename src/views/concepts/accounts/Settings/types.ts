@@ -28,20 +28,44 @@ export type Integration = {
 
 export type GetSettingsProfileResponse = {
     business: {
-        auth_provider: 'google' | 'email'
-        bio: null
-        createdAt: string
-        email: string
         id: number
-        is_banned: boolean
-        is_deleted: false
-        is_verified: true
+        name: string
+        address: string
+        phone: string
+        email: string
+        description: string | null
+        logo_asset_id: number
+        user_id: number
+        updated_at: string
+        created_at: string
+        logo: string
+        teamDetails: {
+            id: number
+            team_id: number
+            user_id: number
+            role: 'host' | 'master' | 'owner' | 'guest'
+            created_at: string
+            updated_at: string
+            team: {
+                id: number
+                name: string
+                created_at: string
+                updated_at: string
+            }
+            user: {
+                email: string
+                name: string
+            }
+        }
+    }
+    user: {
+        email: string
         name: string
         phone: string
-        profile_picture: string
         role: 'host' | 'master' | 'owner' | 'guest'
-        stripe_account_id: string | null
         subscription_status: 'active' | 'inactive' | 'expired'
+        is_banned: boolean
+        is_deleted: boolean
     }
 }
 
