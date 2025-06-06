@@ -11,7 +11,6 @@ const EventHeader = () => {
     const { data } = useEvent()
 
     if (!data) {
-        console.log('data is null')
         return null
     }
 

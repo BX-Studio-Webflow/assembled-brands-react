@@ -29,9 +29,6 @@ const EventStream = () => {
         },
     )
 
-    console.log('EventStream - SWR data:', data)
-    console.log('EventStream - isLoading:', isLoading)
-
     return (
         <EventProvider value={{ data: data || null, isLoading }}>
             <Loading loading={isLoading}>
