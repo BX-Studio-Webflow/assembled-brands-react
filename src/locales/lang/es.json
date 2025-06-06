@@ -21,7 +21,8 @@
             "customerDetails": "Detalles"
         },
         "conceptsProducts": {
-            "products": "Productos",
+            "scrumBoard": "Tablero Scrum",
+            "products": "Podcasts",
             "productList": "Lista",
             "productEdit": "Editar",
             "productCreate": "Crear"

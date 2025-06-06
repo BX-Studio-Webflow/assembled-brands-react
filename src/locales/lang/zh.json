@@ -21,7 +21,8 @@
             "customerDetails": "详情"
         },
         "conceptsProducts": {
-            "products": "产品",
+            "scrumBoard": "Scrum 看板",
+            "products": "播客",
             "productList": "列表",
             "productEdit": "编辑",
             "productCreate": "创建"
