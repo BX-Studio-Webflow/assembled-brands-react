@@ -213,7 +213,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
             {
                 key: 'concepts.products',
                 path: '',
-                title: 'Products',
+                title: 'Podcasts',
                 translateKey: 'nav.conceptsProducts.products',
                 icon: 'products',
                 type: NAV_ITEM_TYPE_COLLAPSE,
@@ -227,7 +227,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 subMenu: [
                     {
                         key: 'concepts.products.productList',
-                        path: `${CONCEPTS_PREFIX_PATH}/products/product-list`,
+                        path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-list`,
                         title: 'Product List',
                         translateKey: 'nav.conceptsProducts.productList',
                         icon: 'productList',
@@ -244,7 +244,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'concepts.products.productEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/products/product-edit/12`,
+                        path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-edit/12`,
                         title: 'Product Edit',
                         translateKey: 'nav.conceptsProducts.productEdit',
                         icon: 'productEdit',
@@ -261,7 +261,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'concepts.products.productCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/products/product-create`,
+                        path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-create`,
                         title: 'Product Create',
                         translateKey: 'nav.conceptsProducts.productCreate',
                         icon: 'productCreate',

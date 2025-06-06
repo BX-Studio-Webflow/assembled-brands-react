@@ -147,13 +147,13 @@ const conceptsRoute: Routes = [
 
     {
         key: 'concepts.products.productList',
-        path: `${CONCEPTS_PREFIX_PATH}/products/product-list`,
+        path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-list`,
         component: lazy(() => import('@/views/concepts/products/ProductList')),
         authority: [ADMIN, USER],
     },
     {
         key: 'concepts.products.productEdit',
-        path: `${CONCEPTS_PREFIX_PATH}/products/product-edit/:id`,
+        path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-edit/:id`,
         component: lazy(() => import('@/views/concepts/products/ProductEdit')),
         authority: [ADMIN, USER],
         meta: {
@@ -168,7 +168,7 @@ const conceptsRoute: Routes = [
     },
     {
         key: 'concepts.products.productCreate',
-        path: `${CONCEPTS_PREFIX_PATH}/products/product-create`,
+        path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-create`,
         component: lazy(
             () => import('@/views/concepts/products/ProductCreate'),
         ),
