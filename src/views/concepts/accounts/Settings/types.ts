@@ -27,20 +27,22 @@ export type Integration = {
 }
 
 export type GetSettingsProfileResponse = {
-    id: string
-    name: string
-    firstName: string
-    lastName: string
-    email: string
-    img: string
-    location: string
-    address: string
-    postcode: string
-    city: string
-    country: string
-    dialCode: string
-    birthday: string
-    phoneNumber: string
+    business: {
+        auth_provider: 'google' | 'email'
+        bio: null
+        createdAt: string
+        email: string
+        id: number
+        is_banned: boolean
+        is_deleted: false
+        is_verified: true
+        name: string
+        phone: string
+        profile_picture: string
+        role: 'host' | 'master' | 'owner' | 'guest'
+        stripe_account_id: string | null
+        subscription_status: 'active' | 'inactive' | 'expired'
+    }
 }
 
 export type GetSettingsNotificationResponse = {

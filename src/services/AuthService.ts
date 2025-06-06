@@ -56,3 +56,10 @@ export async function apiSaveBusinessDetails(data: BusinessDetails) {
         data,
     })
 }
+
+export async function apiGetUserMe<T>() {
+    return ApiService.fetchDataWithAxios<T>({
+        url: endpointConfig.saveBusinessDetails,
+        method: 'get',
+    })
+}

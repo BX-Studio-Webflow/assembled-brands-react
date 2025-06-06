@@ -9,7 +9,6 @@ import NumericInput from '@/components/shared/NumericInput'
 import { countryList } from '@/constants/countries.constant'
 import { components } from 'react-select'
 import type { ControlProps, OptionProps } from 'react-select'
-import { apiGetSettingsProfile } from '@/services/AccontsService'
 import sleep from '@/utils/sleep'
 import useSWR from 'swr'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,6 +18,7 @@ import { HiOutlineUser } from 'react-icons/hi'
 import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
+import { apiGetUserMe } from '@/services/AuthService'
 
 type ProfileSchema = {
     firstName: string
@@ -99,8 +99,8 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
 
 const SettingsProfile = () => {
     const { data, mutate } = useSWR(
-        '/api/settings/profile/',
-        () => apiGetSettingsProfile<GetSettingsProfileResponse>(),
+        '/user/me',
+        () => apiGetUserMe<GetSettingsProfileResponse>(),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -144,11 +144,21 @@ const SettingsProfile = () => {
     })
 
     useEffect(() => {
-        if (data) {
-            reset(data)
+        if (data?.business) {
+            console.log(data.business)
+            const formData = {
+                firstName: data.business.name.split(' ')[0] || '',
+                lastName:
+                    data.business.name.split(' ').slice(1).join(' ') || '',
+                email: data.business.email || '',
+                dialCode: '', // Will be extracted from phone
+                phoneNumber: data.business.phone || '',
+                img: data.business.profile_picture || '',
+                
+            }
+            reset(formData)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data])
+    }, [data, reset])
 
     const onSubmit = async (values: ProfileSchema) => {
         await sleep(500)
@@ -231,7 +241,7 @@ const SettingsProfile = () => {
                         />
                     </FormItem>
                     <FormItem
-                        label="User name"
+                        label="Last name"
                         invalid={Boolean(errors.lastName)}
                         errorMessage={errors.lastName?.message}
                     >
@@ -327,95 +337,7 @@ const SettingsProfile = () => {
                         />
                     </FormItem>
                 </div>
-                <h4 className="mb-6">Address information</h4>
-                <FormItem
-                    label="Country"
-                    invalid={Boolean(errors.country)}
-                    errorMessage={errors.country?.message}
-                >
-                    <Controller
-                        name="country"
-                        control={control}
-                        render={({ field }) => (
-                            <Select<CountryOption>
-                                options={countryList}
-                                {...field}
-                                components={{
-                                    Option: (props) => (
-                                        <CustomSelectOption
-                                            variant="country"
-                                            {...(props as OptionProps<CountryOption>)}
-                                        />
-                                    ),
-                                    Control: CustomControl,
-                                }}
-                                placeholder=""
-                                value={countryList.filter(
-                                    (option) => option.value === field.value,
-                                )}
-                                onChange={(option) =>
-                                    field.onChange(option?.value)
-                                }
-                            />
-                        )}
-                    />
-                </FormItem>
-                <FormItem
-                    label="Address"
-                    invalid={Boolean(errors.address)}
-                    errorMessage={errors.address?.message}
-                >
-                    <Controller
-                        name="address"
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                type="text"
-                                autoComplete="off"
-                                placeholder="Address"
-                                {...field}
-                            />
-                        )}
-                    />
-                </FormItem>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormItem
-                        label="City"
-                        invalid={Boolean(errors.city)}
-                        errorMessage={errors.city?.message}
-                    >
-                        <Controller
-                            name="city"
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    type="text"
-                                    autoComplete="off"
-                                    placeholder="City"
-                                    {...field}
-                                />
-                            )}
-                        />
-                    </FormItem>
-                    <FormItem
-                        label="Postal Code"
-                        invalid={Boolean(errors.postcode)}
-                        errorMessage={errors.postcode?.message}
-                    >
-                        <Controller
-                            name="postcode"
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    type="text"
-                                    autoComplete="off"
-                                    placeholder="Postal Code"
-                                    {...field}
-                                />
-                            )}
-                        />
-                    </FormItem>
-                </div>
+
                 <div className="flex justify-end">
                     <Button
                         variant="solid"
