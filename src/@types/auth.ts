@@ -106,3 +106,9 @@ export type UploadProfileImageBody = {
     imageBase64: string
     fileName: string
 }
+
+export type ResetPasswordInAppBody = {
+    oldPassword: string
+    newPassword: string
+    confirmPassword: string
+}

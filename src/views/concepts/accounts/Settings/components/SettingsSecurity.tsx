@@ -5,12 +5,15 @@ import Input from '@/components/ui/Input'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { Form, FormItem } from '@/components/ui/Form'
 import classNames from '@/utils/classNames'
-import sleep from '@/utils/sleep'
+import Notification from '@/components/ui/Notification'
 import isLastChild from '@/utils/isLastChild'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, Controller } from 'react-hook-form'
-import { z } from 'zod'
-import type { ZodType } from 'zod'
+import { z, type ZodType } from 'zod'
+import { toast } from '@/components/ui/toast'
+import { apiUpdatePasswordInApp } from '@/services/AuthService'
+import { AxiosError } from 'axios'
+import { userDetailData } from '@/mock/data/usersData'
 
 type PasswordSchema = {
     currentPassword: string
@@ -76,10 +79,33 @@ const SettingsSecurity = () => {
 
     const handlePostSubmit = async () => {
         setIsSubmitting(true)
-        await sleep(1000)
-        console.log('getValues', getValues())
-        setConfirmationOpen(false)
-        setIsSubmitting(false)
+
+        try {
+            await apiUpdatePasswordInApp<{
+                data: { message: string }
+            }>({
+                oldPassword: getValues('currentPassword'),
+                newPassword: getValues('newPassword'),
+                confirmPassword: getValues('confirmNewPassword'),
+            })
+
+            toast.push(
+                <Notification type="success">
+                    Your password has been updated!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setConfirmationOpen(false)
+            setIsSubmitting(false)
+        }
     }
 
     const onSubmit = async () => {

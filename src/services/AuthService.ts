@@ -9,6 +9,7 @@ import type {
     SignUpResponse,
     BusinessDetails,
     UploadProfileImageBody,
+    ResetPasswordInAppBody,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -72,3 +73,13 @@ export async function apiUploadProfileImage<T>(data: UploadProfileImageBody) {
         data,
     })
 }
+
+export async function apiUpdatePasswordInApp<T>(data: ResetPasswordInAppBody) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: '/user/reset-password-in-app',
+        method: 'post',
+        data,
+    })
+}
+
+
