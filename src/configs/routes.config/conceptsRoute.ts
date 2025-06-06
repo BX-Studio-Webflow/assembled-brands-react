@@ -119,24 +119,6 @@ const conceptsRoute: Routes = [
         path: `${CONCEPTS_PREFIX_PATH}/event/stream/:id`,
         component: lazy(() => import('@/views/concepts/orders/EventStream')),
         authority: [ADMIN, USER],
-        meta: {
-            header: {
-                contained: true,
-                title: lazy(
-                    () =>
-                        import(
-                            '@/views/concepts/orders/EventStream/components/EventHeaderWrapper'
-                        ),
-                ),
-                extraHeader: lazy(
-                    () =>
-                        import(
-                            '@/views/concepts/orders/EventStream/components/EventHeaderExtra'
-                        ),
-                ),
-            },
-            pageContainerType: 'contained',
-        },
     },
     {
         key: 'concepts.events.eventDetails',

@@ -9,6 +9,8 @@ import ChatBody from '../../chat/Chat/components/ChatBody'
 import ChatSidebar from '../../chat/Chat/components/ChatSidebar'
 import Card from '@/components/ui/Card'
 import { EventProvider } from './context/EventContext'
+import EventHeader from './components/EventHeader'
+import EventHeaderExtra from './components/EventHeaderExtra'
 
 const EventStream = () => {
     const { id } = useParams()
@@ -32,6 +34,10 @@ const EventStream = () => {
     return (
         <EventProvider value={{ data: data || null, isLoading }}>
             <Loading loading={isLoading}>
+                <div className="flex flex-row justify-between gap-4 mb-4 ">
+                    <EventHeader />
+                    <EventHeaderExtra />
+                </div>
                 {data && (
                     <>
                         <Card

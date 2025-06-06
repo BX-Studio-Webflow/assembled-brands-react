@@ -5,19 +5,22 @@ import { apiSaveInstantCallback } from '@/services/EventService'
 import { useAuth } from '@/auth'
 import { toast } from '@/components/ui'
 import { Notification } from '@/components/ui/Notification'
+import { AxiosError } from 'axios'
 
 const EventHeaderExtra = () => {
-    const { id } = useParams()
     const { user } = useAuth()
 
-    const navigate = useNavigate()
     const { data } = useEvent()
 
     if (!data) {
         return <></>
     }
     const handleUpgradeClick = () => {
-        navigate(`/concepts/orders/order-edit/${id}`)
+        window.open(`${data.event.calendar_url}`, '_blank')
+    }
+
+    const handleScheduleCallback = () => {
+        window.open(`${data.event.calendar_url}`, '_blank')
     }
 
     const handleInstantCallback = async () => {
@@ -35,15 +38,11 @@ const EventHeaderExtra = () => {
                 </Notification>,
                 { placement: 'top-center' },
             )
-        } catch (error) {
-            toast.push(
-                <Notification type="danger">
-                    {error instanceof Error
-                        ? error.message
-                        : 'An unknown error occurred'}
-                </Notification>,
-                { placement: 'top-center' },
-            )
+        } catch (error: unknown) {
+            const message = (error as AxiosError).message
+            toast.push(<Notification type="danger">{message}</Notification>, {
+                placement: 'top-center',
+            })
         }
     }
 
@@ -63,7 +62,7 @@ const EventHeaderExtra = () => {
                 customColorClass={() =>
                     'bg-teal-400 hover:bg-teal-500 text-white'
                 }
-                onClick={() => window.print()}
+                onClick={() => handleScheduleCallback()}
             >
                 Schedule a Call Back
             </Button>
