@@ -10,6 +10,7 @@ import type {
     BusinessDetails,
     UploadProfileImageBody,
     ResetPasswordInAppBody,
+    InitiateStripeConnectResponse,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -88,3 +89,11 @@ export async function apiGetStripeSubscriptions<T>() {
         method: 'get',
     })
 }
+
+export async function apiInitateStripeConnect() {
+    return ApiService.fetchDataWithAxios<InitiateStripeConnectResponse>({
+        url: '/stripe/connect/oauth',
+        method: 'get',
+    })
+}
+

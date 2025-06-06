@@ -11,37 +11,23 @@ import isLastChild from '@/utils/isLastChild'
 import sleep from '@/utils/sleep'
 import { TbPlus } from 'react-icons/tb'
 import useSWR from 'swr'
-import { useNavigate } from 'react-router'
 import { PiLightningFill } from 'react-icons/pi'
-import { NumericFormat } from 'react-number-format'
 
 import type {
     GetSettingsBillingResponse,
     CreditCard,
     CreditCardInfo,
 } from '../types'
-import { apiGetStripeSubscriptions } from '@/services/AuthService'
+import {
+    apiGetStripeSubscriptions,
+    apiInitateStripeConnect,
+} from '@/services/AuthService'
 import { useAuth } from '@/auth'
-
-const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-]
+import { AxiosError } from 'axios'
 
 type CardDetails = GetSettingsBillingResponse['data']['cardDetails'][0]
 
 const SettingsBilling = () => {
-    const navigate = useNavigate()
     const { user } = useAuth()
     const [selectedCard, setSelectedCard] = useState<{
         type: 'NEW' | 'EDIT' | ''
@@ -112,8 +98,18 @@ const SettingsBilling = () => {
         )
     }
 
-    const handleChangePlan = () => {
-        navigate('/concepts/account/pricing?subcription=basic&cycle=monthly')
+    const handleStripeConnect = async () => {
+        try {
+            const response = await apiInitateStripeConnect()
+            window.open(response.url, '_blank')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
     }
 
     return (
@@ -165,7 +161,7 @@ const SettingsBilling = () => {
                         <Button
                             size="sm"
                             variant="solid"
-                            onClick={handleChangePlan}
+                            onClick={handleStripeConnect}
                         >
                             Connect account
                         </Button>
@@ -206,8 +202,7 @@ const SettingsBilling = () => {
                                         </div>
                                     </div>
                                     <span>
-                                        Expires{' '}
-                                        {card.card.exp_month}/
+                                        Expires {card.card.exp_month}/
                                         {card.card.exp_year}
                                     </span>
                                 </div>

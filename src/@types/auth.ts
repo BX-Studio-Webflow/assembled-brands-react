@@ -120,3 +120,7 @@ export type ResetPasswordInAppBody = {
     newPassword: string
     confirmPassword: string
 }
+
+export type InitiateStripeConnectResponse = {
+    url: string
+}
