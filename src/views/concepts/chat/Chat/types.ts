@@ -1,4 +1,4 @@
-export type ChatType = 'personal' | 'groups'
+export type TabType = 'chat' | 'event'
 
 export type Chat = {
     id: string
@@ -9,7 +9,7 @@ export type Chat = {
     time: number
     lastConversation: string
     muted: boolean
-    chatType: ChatType
+    chatType: TabType
     groupId: string
 }
 
@@ -37,7 +37,7 @@ export type SelectedChat = {
         avatarImageUrl: string
     }
     muted?: boolean
-    chatType?: ChatType
+    chatType?: TabType
     members?: {
         id: string
         name: string
@@ -85,7 +85,7 @@ export interface GetChatsResponse {
     time: number
     unread: number
     muted: boolean
-    chatType: ChatType
+    chatType: TabType
     userId?: string
     groupId?: string
 }

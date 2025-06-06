@@ -12,24 +12,24 @@ import {
 import FirebaseDB from '@/services/firebase/FirebaseDB'
 import type {
     Chats,
-    ChatType,
     GetConversationResponse,
     Conversations,
     Message,
     SelectedChat,
+    TabType,
 } from '../types'
 
 type ContactInfoDrawer = {
     userId: string
     chatId: string
-    chatType: ChatType | ''
+    TabType: TabType | ''
     open: boolean
 }
 
 export type ChatState = {
     conversationRecord: Conversations
     selectedChat: SelectedChat
-    selectedChatType: ChatType | ''
+    selectedTabType: TabType | ''
     mobileSideBarExpand: boolean
     chats: Chats
     chatsFetched: boolean
@@ -54,7 +54,7 @@ type ChatAction = {
     setSelectedChat: (payload: SelectedChat) => void
     setContactInfoDrawer: (payload: ContactInfoDrawer) => void
     setChatMute: (payload: { id: string; muted: boolean }) => void
-    setSelectedChatType: (payload: ChatType | '') => void
+    setselectedTabType: (payload: TabType | '') => void
     setChatRead: (payload: string) => void
     setContactListDialog: (payload: boolean) => void
     setMobileSidebar: (payload: boolean) => void
@@ -68,13 +68,13 @@ const initialState: ChatState = {
     selectedChat: {},
     mobileSideBarExpand: false,
     chats: [],
-    selectedChatType: 'personal',
+    selectedTabType: 'event',
     chatsFetched: false,
     contactListDialog: false,
     contactInfoDrawer: {
         userId: '',
         chatId: '',
-        chatType: '',
+        TabType: '',
         open: false,
     },
     messages: [],
@@ -101,8 +101,8 @@ export const useChatStore = create<ChatState & ChatAction>((set, get) => ({
             })
             return { chats }
         }),
-    setSelectedChatType: (payload) =>
-        set(() => ({ selectedChatType: payload })),
+    setselectedTabType: (payload) =>
+        set(() => ({ selectedTabType: payload })),
     setChatRead: (id) =>
         set(() => {
             const chats = get().chats.map((chat) => {

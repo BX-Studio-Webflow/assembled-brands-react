@@ -22,7 +22,7 @@ import NoUserFound from '@/assets/svg/NoUserFound'
 const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     const scrollRef = useRef<ScrollBarRef>(null)
     const selectedChat = useChatStore((state) => state.selectedChat)
-    const selectedChatType = useChatStore((state) => state.selectedChatType)
+    const selectedTabType = useChatStore((state) => state.selectedTabType)
     const messages = useChatStore((state) => state.messages)
     const sendMessage = useChatStore((state) => state.sendMessage)
     const subscribeToMessages = useChatStore(
@@ -161,7 +161,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
 
     return (
         <div className="w-full md:block">
-            {selectedChatType === 'personal' ? (
+            {selectedTabType === 'chat' ? (
                 <Card
                     className="flex-1 h-full max-h-full dark:border-gray-700"
                     bodyClass="h-[calc(100%-100px)] relative"
@@ -183,7 +183,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                     <EventVideoPlayer src={data.event.asset.presignedUrl} />
                 </div>
             )}
-            {isVideoPiP && selectedChatType === 'personal' && (
+            {isVideoPiP && selectedTabType === 'event' && (
                 <div
                     className={classNames(
                         'fixed z-50 rounded-lg overflow-hidden shadow-lg transition-all duration-300',
