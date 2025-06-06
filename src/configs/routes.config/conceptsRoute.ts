@@ -115,6 +115,30 @@ const conceptsRoute: Routes = [
         },
     },
     {
+        key: 'concepts.events.eventStream',
+        path: `${CONCEPTS_PREFIX_PATH}/event/stream/:id`,
+        component: lazy(() => import('@/views/concepts/orders/EventStream')),
+        authority: [ADMIN, USER],
+        meta: {
+            header: {
+                contained: true,
+                title: lazy(
+                    () =>
+                        import(
+                            '@/views/concepts/orders/EventStream/components/EventHeader'
+                        ),
+                ),
+                extraHeader: lazy(
+                    () =>
+                        import(
+                            '@/views/concepts/orders/EventStream/components/EventHeaderExtra'
+                        ),
+                ),
+            },
+            pageContainerType: 'contained',
+        },
+    },
+    {
         key: 'concepts.events.eventDetails',
         path: `${CONCEPTS_PREFIX_PATH}/event/event-details/:id`,
         component: lazy(() => import('@/views/concepts/orders/OrderDetails')),
