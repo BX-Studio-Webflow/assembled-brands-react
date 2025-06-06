@@ -9,7 +9,12 @@ import classNames from '@/utils/classNames'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
 import uniqueId from 'lodash/uniqueId'
-import { TbChevronLeft, TbPictureInPicture } from 'react-icons/tb'
+import {
+    TbChevronLeft,
+    TbPictureInPicture,
+    TbMaximize,
+    TbMinimize,
+} from 'react-icons/tb'
 import type { GetConversationResponse, Message, ChatType } from '../types'
 import type { ScrollBarRef } from '@/components/view/ChatBox'
 import EventVideoPlayer from '@/views/concepts/orders/EventStream/components/EventVideoPlayer'
@@ -50,6 +55,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     )
     const [conversation, setConversation] = useState<Message[]>([])
     const [isVideoPiP, setIsVideoPiP] = useState(false)
+    const [isFullSize, setIsFullSize] = useState(false)
 
     const { smaller } = useResponsive()
 
@@ -194,6 +200,13 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
 
     const togglePiP = () => {
         setIsVideoPiP(!isVideoPiP)
+        if (!isVideoPiP) {
+            setIsFullSize(false)
+        }
+    }
+
+    const toggleFullSize = () => {
+        setIsFullSize(!isFullSize)
     }
 
     return (
@@ -222,10 +235,30 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                         />
                     </Card>
                     {isVideoPiP && (
-                        <div className="fixed top-4 right-4 w-160 h-96 z-50 rounded-lg overflow-hidden shadow-lg">
-                            <EventVideoPlayer
-                                src={data.event.asset.presignedUrl}
-                            />
+                        <div
+                            className={classNames(
+                                'fixed z-50 rounded-lg overflow-hidden shadow-lg transition-all duration-300',
+                                isFullSize
+                                    ? 'top-0 right-0 w-full h-full'
+                                    : 'top-4 right-4 w-160 h-96',
+                            )}
+                        >
+                            <div className="relative w-full h-full">
+                                <EventVideoPlayer
+                                    src={data.event.asset.presignedUrl}
+                                />
+                                <button
+                                    onClick={toggleFullSize}
+                                    className="absolute top-2 right-2 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary-dark transition-colors"
+                                    title={isFullSize ? 'Minimize' : 'Maximize'}
+                                >
+                                    {isFullSize ? (
+                                        <TbMinimize className="w-6 h-6" />
+                                    ) : (
+                                        <TbMaximize className="w-6 h-6" />
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     )}
                     <button
