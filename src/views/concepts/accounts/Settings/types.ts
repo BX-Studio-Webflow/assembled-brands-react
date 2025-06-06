@@ -66,6 +66,7 @@ export type GetSettingsProfileResponse = {
         subscription_status: 'active' | 'inactive' | 'expired'
         is_banned: boolean
         is_deleted: boolean
+        profile_picture: string
     }
 }
 

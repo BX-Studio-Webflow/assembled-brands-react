@@ -153,7 +153,7 @@ const SettingsProfile = () => {
                 email: data.business.email || '',
                 dialCode: '', // Will be extracted from phone
                 phoneNumber: data.business.phone || '',
-                img: data.business.logo || '',
+                img: data.user.profile_picture || '',
             }
             reset(formData)
         }
