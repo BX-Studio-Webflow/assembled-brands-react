@@ -66,20 +66,19 @@ export type MembershipPlan = {
     billing: string
 }
 
-export type PodcastFormSchema = {
+export interface PodcastFormSchema {
     episode_type: string
     name: string
     description: string
     podcast_type: string
     asset?: number | number[]
     podcast_url?: string
-    landing_page_url?: string
-    cover_image_asset_id?: number
-    brand?: string
-    membership_plans: MembershipPlan[]
+    landing_page_url: string
+    cover_image_asset_id: number
+    membership_plans: number[]
 }
 
-export type FormSectionBaseProps = {
+export interface FormSectionBaseProps {
     control: Control<PodcastFormSchema>
     errors: FieldErrors<PodcastFormSchema>
 }

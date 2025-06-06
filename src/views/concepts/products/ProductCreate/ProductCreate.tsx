@@ -26,19 +26,19 @@ const ProductCreate = () => {
             const payload = {
                 title: values.name,
                 description: values.description,
-                cover_image_asset_id: values.cover_image_asset_id, // must be collected in the form
-                podcast_type: values.podcast_type, // 'prerecorded' or 'link'
+                cover_image_asset_id: values.cover_image_asset_id || 0,
+                podcast_type: values.podcast_type,
                 episode_type:
                     values.episode_type === 'series' ? 'multiple' : 'single',
-                status: 'published', // must be collected in the form
-                link_url: values.podcast_url, // if podcast_type is 'link'
-                landing_page_url: values.landing_page_url, // must be collected in the form
+                status: 'published',
+                link_url: values.podcast_url || '',
+                landing_page_url: values.landing_page_url || '',
                 assets: Array.isArray(values.asset)
                     ? values.asset
                     : values.asset
                       ? [values.asset]
                       : [],
-                memberships: values.membership_plans.map((plan) => plan.id),
+                memberships: values.membership_plans,
             }
             await apiCreatePodcast(payload)
             navigate('/concepts/podcasts/podcast-list')
@@ -52,7 +52,7 @@ const ProductCreate = () => {
             navigate('/concepts/podcasts/podcast-list')
         } catch (error) {
             toast.push(
-                <Notification type="success">
+                <Notification type="danger">
                     {(error as AxiosError).message}
                 </Notification>,
                 {
@@ -87,15 +87,11 @@ const ProductCreate = () => {
                 defaultValues={{
                     name: '',
                     description: '',
-                    productCode: '',
-                    taxRate: 0,
-                    price: '',
-                    bulkDiscountPrice: '',
-                    costPerItem: '',
-                    imgList: [],
-                    category: '',
-                    tags: [],
-                    brand: '',
+                    membership_plans: [],
+                    landing_page_url: '',
+                    cover_image_asset_id: undefined,
+                    episode_type: 'series',
+                    podcast_type: 'prerecorded',
                 }}
                 onFormSubmit={handleFormSubmit}
             >

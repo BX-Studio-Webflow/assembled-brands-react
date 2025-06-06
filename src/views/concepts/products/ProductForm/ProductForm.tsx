@@ -4,26 +4,20 @@ import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import GeneralSection from './components/GeneralSection'
 import AttributeSection from './components/AttributeSection'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useForm, Control } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import isEmpty from 'lodash/isEmpty'
 import type { PodcastFormSchema } from './types'
 import type { ZodType } from 'zod'
 import type { CommonProps } from '@/@types/common'
-import MembershipCardSection from './components/PricingSection'
 import useSWR from 'swr'
 import type { Asset, AssetQueryParams } from '@/@types/asset'
 import { apiGetAssets } from '@/services/AssetService'
+import { apiGetMemberships } from '@/services/MembershipService'
+import type { Membership, MembershipQueryParams } from '@/@types/membership'
 
 // Default membership plan logic (similar to OrderForm)
-const defaultPlan = {
-    id: 1,
-    name: 'Membership',
-    price: 10,
-    price_point: 'monthly',
-    billing: 'monthly',
-}
 
 const validationSchema: ZodType<PodcastFormSchema> = z.object({
     episode_type: z
@@ -39,15 +33,7 @@ const validationSchema: ZodType<PodcastFormSchema> = z.object({
         required_error: 'Cover image is required',
     }),
     membership_plans: z
-        .array(
-            z.object({
-                id: z.number(),
-                name: z.string(),
-                price: z.union([z.string(), z.number()]),
-                price_point: z.string(),
-                billing: z.string(),
-            }),
-        )
+        .array(z.number())
         .min(1, { message: 'At least 1 membership plan required!' }),
 })
 
@@ -61,8 +47,11 @@ const ProductForm = (props: ProductFormProps) => {
     const {
         onFormSubmit,
         defaultValues = {
-            imgList: [],
-            membership_plans: [defaultPlan],
+            episode_type: 'series',
+            podcast_type: 'prerecorded',
+            name: '',
+            description: '',
+            membership_plans: [],
             landing_page_url: '',
             cover_image_asset_id: undefined,
         },
@@ -74,18 +63,13 @@ const ProductForm = (props: ProductFormProps) => {
         reset,
         formState: { errors },
         control,
-        watch,
     } = useForm<PodcastFormSchema>({
-        defaultValues: {
-            ...defaultValues,
-            membership_plans: defaultValues.membership_plans?.length
-                ? defaultValues.membership_plans
-                : [defaultPlan],
-        },
+        defaultValues: defaultValues as PodcastFormSchema,
         resolver: zodResolver(validationSchema),
     })
 
     const [assets, setAssets] = useState<Asset[]>([])
+    const [memberships, setMemberships] = useState<Membership[]>([])
 
     useSWR(
         [
@@ -100,8 +84,7 @@ const ProductForm = (props: ProductFormProps) => {
                 },
             } as AssetQueryParams,
         ],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetAssets(params as AssetQueryParams),
+        (_: string, params: AssetQueryParams) => apiGetAssets(params),
         {
             revalidateOnFocus: false,
             onSuccess: (response) => {
@@ -110,47 +93,58 @@ const ProductForm = (props: ProductFormProps) => {
         },
     )
 
+    useSWR(
+        [
+            '/membership',
+            {
+                pageIndex: 1,
+                pageSize: 10,
+                query: '',
+                sort: {
+                    order: '',
+                    key: '',
+                },
+            } as MembershipQueryParams,
+        ],
+        (_: string, params: MembershipQueryParams) => apiGetMemberships(params),
+        {
+            revalidateOnFocus: false,
+            onSuccess: (response) => {
+                setMemberships(response.plans)
+            },
+        },
+    )
+
     useEffect(() => {
         if (!isEmpty(defaultValues)) {
-            reset({
-                ...defaultValues,
-                membership_plans: defaultValues.membership_plans?.length
-                    ? defaultValues.membership_plans
-                    : [defaultPlan],
-            })
+            reset(defaultValues as PodcastFormSchema)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(defaultValues)])
+    }, [JSON.stringify(defaultValues), reset])
 
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'membership_plans',
+    const onSubmit = handleSubmit((values) => {
+        onFormSubmit(values)
     })
-
-    const plans = watch('membership_plans') || []
 
     return (
         <Form
             className="flex w-full h-full"
             containerClassName="flex flex-col w-full justify-between"
-            onSubmit={handleSubmit((values) => onFormSubmit?.(values))}
+            onSubmit={onSubmit}
         >
             <Container>
                 <div className="flex flex-col xl:flex-row gap-4">
                     <div className="gap-4 flex flex-col flex-auto">
-                        <GeneralSection control={control} errors={errors} />
-                        <MembershipCardSection
-                            control={control}
+                        <GeneralSection
+                            control={control as Control<PodcastFormSchema>}
                             errors={errors}
-                            fields={fields}
-                            append={() => append(defaultPlan)}
-                            remove={remove}
-                            plans={plans}
+                            memberships={memberships.filter(
+                                (plan) => plan.price_point === 'podcast',
+                            )}
                         />
                     </div>
                     <div className="lg:min-w-[440px] 2xl:w-[500px] gap-4 flex flex-col">
                         <AttributeSection
-                            control={control}
+                            control={control as Control<PodcastFormSchema>}
                             errors={errors}
                             assets={assets}
                         />

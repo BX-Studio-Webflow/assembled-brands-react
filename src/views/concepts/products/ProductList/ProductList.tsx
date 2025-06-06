@@ -12,7 +12,7 @@ const ProductList = () => {
                 <AdaptiveCard>
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                            <h3>Products</h3>
+                            <h3>Podcasts</h3>
                             <ProductListActionTools />
                         </div>
                         <ProducListTableTools />

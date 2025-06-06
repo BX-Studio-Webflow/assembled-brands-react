@@ -3,14 +3,23 @@ import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { Controller, useWatch } from 'react-hook-form'
-import type { FormSectionBaseProps } from '../types'
 import { Radio } from '@/components/ui/Radio'
+import { Checkbox } from '@/components/ui'
+import type { FormSectionBaseProps } from '../types'
+import type { Membership } from '@/@types/membership'
 
-type GeneralSectionProps = FormSectionBaseProps
+type GeneralSectionProps = FormSectionBaseProps & {
+    memberships?: Membership[]
+}
 
-const GeneralSection = ({ control, errors }: GeneralSectionProps) => {
+const GeneralSection = ({
+    control,
+    errors,
+    memberships = [],
+}: GeneralSectionProps) => {
     const type = useWatch({ control, name: 'episode_type' })
     const label = type === 'episode' ? 'Episode Name' : 'Series Name'
+
     return (
         <Card>
             <h4 className="mb-6">Basic Information</h4>
@@ -66,6 +75,33 @@ const GeneralSection = ({ control, errors }: GeneralSectionProps) => {
                                 field.onChange(html)
                             }}
                         />
+                    )}
+                />
+            </FormItem>
+            <FormItem label="Choose Membership Plans">
+                <Controller
+                    name="membership_plans"
+                    control={control}
+                    render={({ field: { value = [], onChange } }) => (
+                        <Checkbox.Group
+                            value={value.map((id) => id.toString())}
+                            onChange={(selectedIds) => {
+                                const selectedPlans = memberships.filter((m) =>
+                                    selectedIds.includes(m.id.toString()),
+                                )
+                                onChange(selectedPlans.map((plan) => plan.id))
+                            }}
+                            className="flex flex-col gap-y-4"
+                        >
+                            {memberships.map((membership) => (
+                                <Checkbox
+                                    key={membership.id}
+                                    value={membership.id.toString()}
+                                >
+                                    {membership.name}
+                                </Checkbox>
+                            ))}
+                        </Checkbox.Group>
                     )}
                 />
             </FormItem>

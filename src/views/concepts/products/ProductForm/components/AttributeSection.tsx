@@ -68,7 +68,7 @@ const AttributeSection = ({
                                         ? field.onChange(
                                               option
                                                   ? (
-                                                        option as {
+                                                        option as unknown as {
                                                             value: number
                                                         }[]
                                                     ).map((o) => o.value)
