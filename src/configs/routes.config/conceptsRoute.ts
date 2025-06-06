@@ -125,7 +125,7 @@ const conceptsRoute: Routes = [
                 title: lazy(
                     () =>
                         import(
-                            '@/views/concepts/orders/EventStream/components/EventHeader'
+                            '@/views/concepts/orders/EventStream/components/EventHeaderWrapper'
                         ),
                 ),
                 extraHeader: lazy(

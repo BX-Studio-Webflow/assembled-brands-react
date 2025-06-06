@@ -153,7 +153,24 @@ export interface MembershipWithDates extends Membership {
 }
 
 // Extended EventWithDetails interface with leadCount
-export interface EventWithDetailsAndCount extends EventWithDetails {
+export interface EventWithDetailsAndCount {
+    id: number
+    event_name: string
+    event_description: string
+    event_type: 'live_venue' | 'prerecorded' | 'live_video_call'
+    asset_id: number
+    created_at: string
+    updated_at: string
+    status: 'active' | 'suspended' | 'cancelled'
+    live_video_url: string
+    success_url: string
+    instructions: string
+    landing_page_url: string
+    calendar_url: string
+    live_venue_address: string
+    host_id: number
+    asset: Asset
+    host: Host
     leadCount: number
     memberships: MembershipWithDates[]
 }
