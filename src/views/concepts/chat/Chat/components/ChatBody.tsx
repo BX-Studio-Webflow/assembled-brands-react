@@ -4,56 +4,33 @@ import Card from '@/components/ui/Card'
 import ChatBox from '@/components/view/ChatBox'
 import ChatAction from './ChatAction'
 import { useChatStore } from '../store/chatStore'
-import { apiGetConversation } from '@/services/ChatService'
 import classNames from '@/utils/classNames'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
-import uniqueId from 'lodash/uniqueId'
 import {
     TbChevronLeft,
     TbPictureInPicture,
     TbMaximize,
     TbMinimize,
 } from 'react-icons/tb'
-import type { GetConversationResponse, Message, ChatType } from '../types'
+import type { ChatType } from '../types'
 import type { ScrollBarRef } from '@/components/view/ChatBox'
 import EventVideoPlayer from '@/views/concepts/orders/EventStream/components/EventVideoPlayer'
 import { EventStreamResponse } from '@/@types/events'
 
-const getFileType = (file: File) => {
-    console.log('file.type', file.type)
-    switch (file.type) {
-        case 'image/jpg':
-        case 'image/jpeg':
-        case 'image/png':
-        case 'image/webp':
-            return 'image'
-        case 'video/mp4':
-        case 'video/avi':
-            return 'video'
-        case 'audio/mp3':
-        case 'audio/wav':
-            return 'audio'
-        default:
-            return 'misc'
-    }
-}
-
 const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     const scrollRef = useRef<ScrollBarRef>(null)
     const selectedChat = useChatStore((state) => state.selectedChat)
-    const conversationRecord = useChatStore((state) => state.conversationRecord)
-    const pushConversationRecord = useChatStore(
-        (state) => state.pushConversationRecord,
+    const selectedChatType = useChatStore((state) => state.selectedChatType)
+    const messages = useChatStore((state) => state.messages)
+    const sendMessage = useChatStore((state) => state.sendMessage)
+    const subscribeToMessages = useChatStore(
+        (state) => state.subscribeToMessages,
     )
     const setSelectedChat = useChatStore((state) => state.setSelectedChat)
-    const pushConversationMessage = useChatStore(
-        (state) => state.pushConversationMessage,
-    )
     const setContactInfoDrawer = useChatStore(
         (state) => state.setContactInfoDrawer,
     )
-    const [conversation, setConversation] = useState<Message[]>([])
     const [isVideoPiP, setIsVideoPiP] = useState(false)
     const [isFullSize, setIsFullSize] = useState(false)
 
@@ -74,14 +51,6 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
         })
     }
 
-    const handlePushMessage = (message: Message) => {
-        pushConversationMessage(selectedChat.id as string, message)
-        setConversation((prevConversation) => {
-            prevConversation.push(message)
-            return structuredClone(prevConversation)
-        })
-    }
-
     const handleInputChange = async ({
         value,
         attachments,
@@ -89,26 +58,22 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
         value: string
         attachments?: File[]
     }) => {
-        const newMessage: Message = {
-            id: uniqueId('chat-conversation-'),
-            sender: {
-                id: '1',
-                name: 'Angelina Gotelli',
-                avatarImageUrl: '/img/avatars/thumb-1.jpg',
-            },
-            content: value,
-            attachments: attachments?.map((attachment) => {
-                return {
-                    type: getFileType(attachment),
-                    source: attachment,
-                    mediaUrl: URL.createObjectURL(attachment),
-                }
-            }),
-            timestamp: dayjs().toDate(),
-            type: 'regular',
-            isMyMessage: true,
+        try {
+            await sendMessage(
+                '1', // TODO: Replace with actual user ID
+                'Angelina Gotelli', // TODO: Replace with actual user name
+                value,
+                false, // TODO: Replace with actual host status
+                data.event.id.toString(),
+            )
+
+            if (attachments?.length) {
+                // TODO: Handle file uploads
+                console.log('File attachments:', attachments)
+            }
+        } catch (error) {
+            console.error('Error sending message:', error)
         }
-        handlePushMessage(newMessage)
     }
 
     const cardHeaderProps = {
@@ -134,13 +99,11 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                         <div className="min-w-0 flex-1">
                             <div className="flex justify-between">
                                 <div className="font-bold heading-text truncate">
-                                    {selectedChat.user?.name}
+                                    Event chat
                                 </div>
                             </div>
                             <div>
-                                {selectedChat?.chatType === 'groups'
-                                    ? 'click here for group info'
-                                    : 'last seen recently'}
+                                Chat with your host
                             </div>
                         </div>
                     </button>
@@ -152,30 +115,14 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     }
 
     useEffect(() => {
-        const fetchConvesation = async () => {
-            const record = conversationRecord.find(
-                (item) => item.id === selectedChat.id,
-            )
-
-            if (record) {
-                setConversation(record.conversation)
-            } else {
-                const resp = await apiGetConversation<GetConversationResponse>({
-                    id: selectedChat.id as string,
-                })
-                setConversation(resp.conversation)
-                pushConversationRecord(resp)
-            }
-
-            scrollToBottom()
+        if (data.event.id) {
+            subscribeToMessages(data.event.id.toString())
         }
+    }, [data.event.id, subscribeToMessages])
 
-        if (selectedChat.id) {
-            setConversation([])
-            fetchConvesation()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedChat.id, conversation])
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
 
     // Automatically enable PiP when a chat is selected
     useEffect(() => {
@@ -187,16 +134,20 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     }, [selectedChat.id])
 
     const messageList = useMemo(() => {
-        return conversation.map((item) => {
-            item.timestamp = dayjs
-                .unix(item.timestamp as number)
-                .toDate() as Date
-            if (item.isMyMessage) {
-                item.showAvatar = false
-            }
-            return item
-        })
-    }, [conversation])
+        return messages.map((item) => ({
+            id: item.id,
+            sender: {
+                id: item.senderId,
+                name: item.name,
+                avatarImageUrl: '/img/avatars/thumb-1.jpg', // TODO: Replace with actual avatar
+            },
+            content: item.text,
+            timestamp: dayjs(item.timestamp).toDate(),
+            type: 'regular' as const,
+            isMyMessage: item.senderId === '1', // TODO: Replace with actual user ID
+            showAvatar: item.senderId !== '1', // TODO: Replace with actual user ID
+        }))
+    }, [messages])
 
     const togglePiP = () => {
         setIsVideoPiP(!isVideoPiP)
@@ -210,72 +161,53 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     }
 
     return (
-        <div
-            className={classNames(
-                'w-full md:block',
-                !selectedChat.id && 'hidden',
-            )}
-        >
-            {selectedChat.id ? (
-                <>
-                    <Card
-                        className="flex-1 h-full max-h-full dark:border-gray-700"
-                        bodyClass="h-[calc(100%-100px)] relative"
-                        {...cardHeaderProps}
-                    >
-                        <ChatBox
-                            ref={scrollRef}
-                            messageList={messageList}
-                            placeholder="Enter a prompt here"
-                            showAvatar={true}
-                            avatarGap={true}
-                            messageListClass="h-[calc(100%-100px)]"
-                            bubbleClass="max-w-[300px]"
-                            onInputChange={handleInputChange}
-                        />
-                    </Card>
-                    {isVideoPiP && (
-                        <div
-                            className={classNames(
-                                'fixed z-50 rounded-lg overflow-hidden shadow-lg transition-all duration-300',
-                                isFullSize
-                                    ? 'top-0 right-0 w-full h-full'
-                                    : 'top-4 right-4 w-160 h-96',
-                            )}
-                        >
-                            <div className="relative w-full h-full">
-                                <EventVideoPlayer
-                                    src={data.event.asset.presignedUrl}
-                                />
-                                <button
-                                    onClick={toggleFullSize}
-                                    className="absolute top-2 right-2 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary-dark transition-colors"
-                                    title={isFullSize ? 'Minimize' : 'Maximize'}
-                                >
-                                    {isFullSize ? (
-                                        <TbMinimize className="w-6 h-6" />
-                                    ) : (
-                                        <TbMaximize className="w-6 h-6" />
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                    <button
-                        onClick={togglePiP}
-                        className="fixed top-4 right-4 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary-dark transition-colors"
-                        title={
-                            isVideoPiP
-                                ? 'Exit Picture-in-Picture'
-                                : 'Enter Picture-in-Picture'
-                        }
-                    >
-                        <TbPictureInPicture className="w-6 h-6" />
-                    </button>
-                </>
+        <div className="w-full md:block">
+            {selectedChatType === 'personal' ? (
+                <Card
+                    className="flex-1 h-full max-h-full dark:border-gray-700"
+                    bodyClass="h-[calc(100%-100px)] relative"
+                    {...cardHeaderProps}
+                >
+                    <ChatBox
+                        ref={scrollRef}
+                        messageList={messageList}
+                        placeholder="Enter a prompt here"
+                        showAvatar={true}
+                        avatarGap={true}
+                        messageListClass="h-[calc(100%-100px)]"
+                        bubbleClass="max-w-[300px]"
+                        onInputChange={handleInputChange}
+                    />
+                </Card>
             ) : (
                 <div className="flex-1 h-full max-h-full flex flex-col rounded-2xl border border-gray-200 dark:border-gray-800 p-0 m-0">
                     <EventVideoPlayer src={data.event.asset.presignedUrl} />
+                </div>
+            )}
+            {isVideoPiP && selectedChatType === 'personal' && (
+                <div
+                    className={classNames(
+                        'fixed z-50 rounded-lg overflow-hidden shadow-lg transition-all duration-300',
+                        isFullSize
+                            ? 'top-0 right-0 w-full h-full'
+                            : 'top-4 right-4 w-160 h-96',
+                    )}
+                >
+                    <div className="relative w-full h-full">
+                        <EventVideoPlayer src={data.event.asset.presignedUrl} />
+                        <button
+                            className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-75"
+                            onClick={togglePiP}
+                        >
+                            <TbPictureInPicture />
+                        </button>
+                        <button
+                            className="absolute top-2 right-12 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-75"
+                            onClick={toggleFullSize}
+                        >
+                            {isFullSize ? <TbMinimize /> : <TbMaximize />}
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

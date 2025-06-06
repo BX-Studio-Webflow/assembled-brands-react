@@ -13,23 +13,20 @@ export type Chat = {
     groupId: string
 }
 
-export type Message = {
+export interface Message {
     id: string
-    sender: {
-        id: string
-        name: string
-        avatarImageUrl: string
-    }
-    attachments?: Array<{
-        type: 'image' | 'video' | 'audio' | 'misc'
+    senderId: string
+    name: string
+    text: string
+    timestamp: number
+    isHost: boolean
+    eventId?: string
+    type?: 'regular' | 'reply' | 'deleted' | 'divider'
+    attachments?: {
+        type: string
         source: File
         mediaUrl: string
-    }>
-    content: string
-    timestamp: number | Date
-    type: 'regular' | 'reply' | 'deleted' | 'divider'
-    isMyMessage: boolean
-    showAvatar?: boolean
+    }[]
 }
 
 export type SelectedChat = {
@@ -50,12 +47,12 @@ export type SelectedChat = {
 
 export type Messages = Message[]
 
-export type Conversation = {
+export interface GetConversationResponse {
     id: string
-    conversation: Messages
+    conversation: Message[]
 }
 
-export type Conversations = Conversation[]
+export type Conversations = GetConversationResponse[]
 
 export type Chats = Chat[]
 
@@ -80,11 +77,27 @@ export type UserDetails = {
     }[]
 }
 
-export type GetChatsResponse = Chats
+export interface GetChatsResponse {
+    id: string
+    name: string
+    avatar: string
+    lastConversation: string
+    time: number
+    unread: number
+    muted: boolean
+    chatType: ChatType
+    userId?: string
+    groupId?: string
+}
 
-export type GetConversationResponse = Conversation
-
-export type GetContactsResponse = UserDetails[]
+export interface GetContactsResponse {
+    id: string
+    name: string
+    avatarImageUrl: string
+    lastSeen: string
+    status: string
+    unread: number
+}
 
 export type GetContactDetailResponse = {
     userDetails: UserDetails

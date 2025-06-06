@@ -13,7 +13,7 @@ import FirebaseDB from '@/services/firebase/FirebaseDB'
 import type {
     Chats,
     ChatType,
-    Conversation,
+    GetConversationResponse,
     Conversations,
     Message,
     SelectedChat,
@@ -37,8 +37,14 @@ export type ChatState = {
     contactInfoDrawer: ContactInfoDrawer
     messages: Message[]
     unsubscribe: (() => void) | null
-    subscribeToMessages: (chatId: string) => void
-    sendMessage: (senderId: string, text: string) => Promise<void>
+    subscribeToMessages: (eventId: string) => void
+    sendMessage: (
+        senderId: string,
+        name: string,
+        text: string,
+        isHost: boolean,
+        eventId: string,
+    ) => Promise<string>
     deleteMessage: (messageId: string) => Promise<void>
 }
 
@@ -52,7 +58,7 @@ type ChatAction = {
     setChatRead: (payload: string) => void
     setContactListDialog: (payload: boolean) => void
     setMobileSidebar: (payload: boolean) => void
-    pushConversationRecord: (payload: Conversation) => void
+    pushConversationRecord: (payload: GetConversationResponse) => void
     pushConversationMessage: (id: string, conversation: Message) => void
     deleteConversationRecord: (payload: string) => void
 }
@@ -74,7 +80,7 @@ const initialState: ChatState = {
     messages: [],
     unsubscribe: null,
     subscribeToMessages: () => {},
-    sendMessage: async () => {},
+    sendMessage: async () => '',
     deleteMessage: async () => {},
 }
 
@@ -147,64 +153,65 @@ export const useChatStore = create<ChatState & ChatAction>((set, get) => ({
                 chats: previousChats.filter((chat) => chat.id !== payload),
             }
         }),
-    subscribeToMessages: (chatId) => {
+    subscribeToMessages: (eventId) => {
         const currentUnsubscribe = get().unsubscribe
         if (currentUnsubscribe) {
             currentUnsubscribe()
         }
 
-        const messagesRef = collection(FirebaseDB, 'chats', chatId, 'messages')
+        const messagesRef = collection(
+            FirebaseDB,
+            'events',
+            eventId,
+            'messages',
+        )
         const q = query(messagesRef, orderBy('timestamp', 'asc'))
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const messages: Message[] = snapshot.docs.map((doc) => {
+            const messages: Message[] = []
+            snapshot.forEach((doc) => {
                 const data = doc.data()
-                const selectedChat = get().selectedChat
-                const isMyMessage = selectedChat?.user?.id
-                    ? data.senderId === selectedChat.user.id
-                    : false
-                return {
+                messages.push({
                     id: doc.id,
-                    sender: {
-                        id: data.senderId,
-                        name: data.name || 'Unknown',
-                        avatarImageUrl: data.avatarImageUrl || '',
-                    },
-                    content: data.text,
-                    timestamp: data.timestamp?.toDate() || new Date(),
-                    type: 'regular',
-                    isMyMessage,
-                }
+                    senderId: data.senderId,
+                    name: data.name || 'Unknown',
+                    text: data.text,
+                    timestamp: data.timestamp?.toMillis() || Date.now(),
+                    isHost: data.isHost || false,
+                    eventId: eventId,
+                })
             })
             set({ messages })
         })
 
         set({ unsubscribe })
     },
-    sendMessage: async (senderId, text) => {
-        const selectedChat = get().selectedChat
-        if (!selectedChat?.id) return
-
+    sendMessage: async (senderId, name, text, isHost, eventId) => {
         const messagesRef = collection(
             FirebaseDB,
-            'chats',
-            selectedChat.id,
+            'events',
+            eventId,
             'messages',
         )
-        await addDoc(messagesRef, {
+        const docRef = await addDoc(messagesRef, {
             senderId,
+            name,
             text,
             timestamp: serverTimestamp(),
+            isHost,
         })
+
+        return docRef.id
     },
     deleteMessage: async (messageId) => {
-        const selectedChat = get().selectedChat
-        if (!selectedChat?.id) return
-
+        const eventId = get().messages.find((m) => m.id === messageId)?.eventId
+        if (!eventId) {
+            throw new Error('Message not found')
+        }
         const messageRef = doc(
             FirebaseDB,
-            'chats',
-            selectedChat.id,
+            'events',
+            eventId,
             'messages',
             messageId,
         )
