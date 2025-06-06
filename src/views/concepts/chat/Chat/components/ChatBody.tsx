@@ -17,6 +17,7 @@ import type { ChatType } from '../types'
 import type { ScrollBarRef } from '@/components/view/ChatBox'
 import EventVideoPlayer from '@/views/concepts/orders/EventStream/components/EventVideoPlayer'
 import { EventStreamResponse } from '@/@types/events'
+import NoUserFound from '@/assets/svg/NoUserFound'
 
 const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     const scrollRef = useRef<ScrollBarRef>(null)
@@ -94,7 +95,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                         onClick={handleProfileClick}
                     >
                         <div>
-                            <Avatar src={selectedChat.user?.avatarImageUrl} />
+                            <NoUserFound height={40} width={40} />
                         </div>
                         <div className="min-w-0 flex-1">
                             <div className="flex justify-between">
@@ -102,9 +103,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                                     Event chat
                                 </div>
                             </div>
-                            <div>
-                                Chat with your host
-                            </div>
+                            <div>Chat with your host</div>
                         </div>
                     </button>
                 </div>
