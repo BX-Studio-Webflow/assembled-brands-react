@@ -127,30 +127,15 @@ const SettingsBilling = () => {
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h6 className="font-bold">
-                                    {data.currentPlan.plan}
-                                </h6>
+                                <h6 className="font-bold">Stripe</h6>
                                 <Tag className="bg-success-subtle text-success rounded-md border-0">
-                                    <span className="capitalize">
-                                        {data.currentPlan.status}
-                                    </span>
+                                    <span className="capitalize">Active</span>
                                 </Tag>
                             </div>
                             <div className="font-semibold">
-                                <span>
-                                    Billing {data.currentPlan.billingCycle}
-                                </span>
+                                <span>Connected</span>
                                 <span> | </span>
-                                <span>
-                                    Next payment on{' '}
-                                    {dayjs
-                                        .unix(
-                                            (data.currentPlan
-                                                .nextPaymentDate as number) ||
-                                                0,
-                                        )
-                                        .format('MM/DD/YYYY')}
-                                </span>
+                                <span>All set to receive payouts </span>
                                 <span>
                                     <span className="mx-1">for</span>
                                     <NumericFormat
@@ -175,7 +160,7 @@ const SettingsBilling = () => {
                             variant="solid"
                             onClick={handleChangePlan}
                         >
-                            Change plan
+                            Connect account
                         </Button>
                     </div>
                 </div>

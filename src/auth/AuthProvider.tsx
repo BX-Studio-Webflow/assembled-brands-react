@@ -80,10 +80,18 @@ function AuthProvider({ children }: AuthProviderProps) {
             id: 0,
             email: '',
             name: '',
+            profile_picture: '',
             createdAt: '',
             is_verified: false,
             role: '',
             authority: [],
+            phone: '',
+            bio: null,
+            is_banned: false,
+            is_deleted: false,
+            stripe_account_id: null,
+            subscription_status: 'inactive',
+            auth_provider: 'email',
         })
         setSessionSignedIn(false)
     }

@@ -13,7 +13,7 @@ import { z, type ZodType } from 'zod'
 import { toast } from '@/components/ui/toast'
 import { apiUpdatePasswordInApp } from '@/services/AuthService'
 import { AxiosError } from 'axios'
-import { userDetailData } from '@/mock/data/usersData'
+import { useAuth } from '@/auth'
 
 type PasswordSchema = {
     currentPassword: string
@@ -65,7 +65,7 @@ const SettingsSecurity = () => {
     )
     const [confirmationOpen, setConfirmationOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
-
+    const { signOut } = useAuth()
     const formRef = useRef<HTMLFormElement>(null)
 
     const {
@@ -95,6 +95,8 @@ const SettingsSecurity = () => {
                 </Notification>,
                 { placement: 'top-center' },
             )
+
+            signOut()
         } catch (error) {
             toast.push(
                 <Notification type="danger">

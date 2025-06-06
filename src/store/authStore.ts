@@ -36,10 +36,21 @@ const initialState: AuthState = {
         signedIn: false,
     },
     user: {
-        avatar: '',
-        userName: '',
+        profile_picture: '',
+        name: '',
         email: '',
+        phone: '',
+        bio: null,
+        is_banned: false,
+        is_deleted: false,
+        stripe_account_id: null,
+        subscription_status: 'inactive',
         authority: [],
+        id: 0,
+        createdAt: '',
+        is_verified: false,
+        role: '',
+        auth_provider: 'email',
     },
 }
 

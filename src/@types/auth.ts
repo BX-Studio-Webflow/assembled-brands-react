@@ -25,7 +25,15 @@ export type User = {
     createdAt: string
     is_verified: boolean
     role: string
+    phone: string
+    profile_picture: string
     authority: string[]
+    bio: string | null
+    is_banned: boolean
+    is_deleted: boolean
+    stripe_account_id: string | null
+    subscription_status: 'active' | 'inactive' | 'expired'
+    auth_provider: 'google' | 'email'
 }
 
 export type Token = {
