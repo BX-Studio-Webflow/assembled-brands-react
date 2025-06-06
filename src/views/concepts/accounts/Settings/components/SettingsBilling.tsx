@@ -6,13 +6,11 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import CreditCardDialog from '@/components/view/CreditCardDialog'
 import BillingHistory from './BillingHistory'
-import { apiGetSettingsBilling } from '@/services/AccontsService'
 import classNames from '@/utils/classNames'
 import isLastChild from '@/utils/isLastChild'
 import sleep from '@/utils/sleep'
 import { TbPlus } from 'react-icons/tb'
 import useSWR from 'swr'
-import dayjs from 'dayjs'
 import { useNavigate } from 'react-router'
 import { PiLightningFill } from 'react-icons/pi'
 import { NumericFormat } from 'react-number-format'
@@ -22,6 +20,8 @@ import type {
     CreditCard,
     CreditCardInfo,
 } from '../types'
+import { apiGetStripeSubscriptions } from '@/services/AuthService'
+import { useAuth } from '@/auth'
 
 const months = [
     'Jan',
@@ -38,9 +38,11 @@ const months = [
     'Dec',
 ]
 
+type CardDetails = GetSettingsBillingResponse['data']['cardDetails'][0]
+
 const SettingsBilling = () => {
     const navigate = useNavigate()
-
+    const { user } = useAuth()
     const [selectedCard, setSelectedCard] = useState<{
         type: 'NEW' | 'EDIT' | ''
         dialogOpen: boolean
@@ -53,19 +55,14 @@ const SettingsBilling = () => {
 
     const {
         data = {
-            currentPlan: {
-                plan: '',
-                status: '',
-                billingCycle: '',
-                nextPaymentDate: null,
-                amount: null,
+            data: {
+                subscriptions: [],
+                cardDetails: [],
             },
-            paymentMethods: [],
-            transactionHistory: [],
         },
     } = useSWR(
-        '/api/settings/billing/',
-        () => apiGetSettingsBilling<GetSettingsBillingResponse>(),
+        '/subscription',
+        () => apiGetStripeSubscriptions<GetSettingsBillingResponse>(),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -73,11 +70,18 @@ const SettingsBilling = () => {
         },
     )
 
-    const handleEditCreditCard = (card: Partial<CreditCard>) => {
+    const handleEditCreditCard = (card: CardDetails) => {
         setSelectedCard({
             type: 'EDIT',
             dialogOpen: true,
-            cardInfo: card,
+            cardInfo: {
+                cardHolderName: card.billing_details.name,
+                cardType: card.card.brand.toUpperCase(),
+                expMonth: card.card.exp_month.toString(),
+                expYear: card.card.exp_year.toString(),
+                last4Number: card.card.last4,
+                primary: false,
+            },
         })
     }
 
@@ -128,28 +132,31 @@ const SettingsBilling = () => {
                         <div>
                             <div className="flex items-center gap-2">
                                 <h6 className="font-bold">Stripe</h6>
-                                <Tag className="bg-success-subtle text-success rounded-md border-0">
-                                    <span className="capitalize">Active</span>
+                                <Tag
+                                    className={
+                                        user?.stripe_account_id
+                                            ? 'bg-success-subtle text-success rounded-md border-0'
+                                            : 'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0'
+                                    }
+                                >
+                                    <span className="capitalize">
+                                        {user?.stripe_account_id
+                                            ? 'Active'
+                                            : 'Inactive'}
+                                    </span>
                                 </Tag>
                             </div>
                             <div className="font-semibold">
-                                <span>Connected</span>
-                                <span> | </span>
-                                <span>All set to receive payouts </span>
                                 <span>
-                                    <span className="mx-1">for</span>
-                                    <NumericFormat
-                                        className="font-bold heading-text"
-                                        displayType="text"
-                                        value={(
-                                            Math.round(
-                                                (data.currentPlan.amount || 0) *
-                                                    100,
-                                            ) / 100
-                                        ).toFixed(2)}
-                                        prefix={'$'}
-                                        thousandSeparator={true}
-                                    />
+                                    {user?.stripe_account_id
+                                        ? 'Connected'
+                                        : 'Unconnected'}
+                                </span>
+                                <span> | </span>
+                                <span>
+                                    {user?.stripe_account_id
+                                        ? 'All set to receive payouts'
+                                        : 'Please link your account'}
                                 </span>
                             </div>
                         </div>
@@ -165,26 +172,27 @@ const SettingsBilling = () => {
                     </div>
                 </div>
             </div>
+
             <div className="mt-8">
                 <h5>Payment method</h5>
                 <div>
-                    {data.paymentMethods?.map((card, index) => (
+                    {data.data.cardDetails?.map((card, index) => (
                         <div
-                            key={card.cardId}
+                            key={card.id}
                             className={classNames(
                                 'flex items-center justify-between p-4',
-                                !isLastChild(data.paymentMethods, index) &&
+                                !isLastChild(data.data.cardDetails, index) &&
                                     'border-b border-gray-200 dark:border-gray-600',
                             )}
                         >
                             <div className="flex items-center">
-                                {card.cardType === 'VISA' && (
+                                {card.card.brand === 'visa' && (
                                     <img
                                         src="/img/others/img-8.png"
                                         alt="visa"
                                     />
                                 )}
-                                {card.cardType === 'MASTER' && (
+                                {card.card.brand === 'mastercard' && (
                                     <img
                                         src="/img/others/img-9.png"
                                         alt="master"
@@ -193,22 +201,14 @@ const SettingsBilling = () => {
                                 <div className="ml-3 rtl:mr-3">
                                     <div className="flex items-center">
                                         <div className="text-gray-900 dark:text-gray-100 font-semibold">
-                                            {card.cardHolderName} ••••{' '}
-                                            {card.last4Number}
+                                            {card.billing_details.name} ••••{' '}
+                                            {card.card.last4}
                                         </div>
-                                        {card.primary && (
-                                            <Tag className="bg-primary-subtle text-primary rounded-md border-0 mx-2">
-                                                <span className="capitalize">
-                                                    {' '}
-                                                    Primary{' '}
-                                                </span>
-                                            </Tag>
-                                        )}
                                     </div>
                                     <span>
-                                        Expired{' '}
-                                        {months[parseInt(card.expMonth) - 1]} 20
-                                        {card.expYear}
+                                        Expires{' '}
+                                        {card.card.exp_month}/
+                                        {card.card.exp_year}
                                     </span>
                                 </div>
                             </div>
@@ -238,11 +238,18 @@ const SettingsBilling = () => {
                     </Button>
                 </div>
             </div>
+
             <div className="mt-8">
                 <h5>Transaction history</h5>
                 <BillingHistory
                     className="mt-4"
-                    data={data.transactionHistory}
+                    data={data.data.subscriptions.map((sub) => ({
+                        id: sub.id.toString(),
+                        item: sub.object,
+                        status: sub.payment_status,
+                        amount: sub.amount_total,
+                        date: sub.created,
+                    }))}
                 />
             </div>
             <CreditCardDialog

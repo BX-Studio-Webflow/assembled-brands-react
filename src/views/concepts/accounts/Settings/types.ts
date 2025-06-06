@@ -78,20 +78,73 @@ export type GetSettingsNotificationResponse = {
 }
 
 export type GetSettingsBillingResponse = {
-    paymentMethods: Array<CreditCardInfo>
-    transactionHistory: Array<{
-        id: string
-        item: string
-        status: string
-        amount: number
-        date: number
-    }>
-    currentPlan: {
-        plan: string
-        status: string
-        billingCycle: string
-        nextPaymentDate: number
-        amount: number
+    data: {
+        subscriptions: Array<{
+            id: number
+            created_at: string
+            user_id: number
+            object: string
+            amount_subtotal: number
+            amount_total: number
+            session_id: string
+            cancel_url: string
+            success_url: string
+            created: number
+            currency: string
+            mode: string
+            payment_status: string
+            status: string
+            subscription_id: string | null
+        }>
+        cardDetails: Array<{
+            id: string
+            object: string
+            allow_redisplay: string
+            billing_details: {
+                address: {
+                    city: string | null
+                    country: string
+                    line1: string | null
+                    line2: string | null
+                    postal_code: string | null
+                    state: string | null
+                }
+                email: string
+                name: string
+                phone: string | null
+                tax_id: string | null
+            }
+            card: {
+                brand: string
+                checks: {
+                    address_line1_check: string | null
+                    address_postal_code_check: string | null
+                    cvc_check: string
+                }
+                country: string
+                display_brand: string
+                exp_month: number
+                exp_year: number
+                fingerprint: string
+                funding: string
+                generated_from: string | null
+                last4: string
+                networks: {
+                    available: string[]
+                    preferred: string | null
+                }
+                regulated_status: string
+                three_d_secure_usage: {
+                    supported: boolean
+                }
+                wallet: string | null
+            }
+            created: number
+            customer: string
+            livemode: boolean
+            metadata: Record<string, unknown>
+            type: string
+        }>
     }
 }
 

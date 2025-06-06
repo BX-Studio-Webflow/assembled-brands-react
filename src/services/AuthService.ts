@@ -82,4 +82,9 @@ export async function apiUpdatePasswordInApp<T>(data: ResetPasswordInAppBody) {
     })
 }
 
-
+export async function apiGetStripeSubscriptions<T>() {
+    return ApiService.fetchDataWithAxios<T>({
+        url: '/subscription',
+        method: 'get',
+    })
+}
