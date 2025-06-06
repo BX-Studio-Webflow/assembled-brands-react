@@ -72,7 +72,7 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
     }
 
     const onView = () => {
-        navigate(`/concepts/orders/order-details/${row.id}`)
+        navigate(`/concepts/event/stream/${row.id}`)
     }
 
     return (
@@ -113,6 +113,7 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
 const OrderListTable = () => {
     const { orderList, orderListTotal, tableData, isLoading, setTableData } =
         useOrderlist()
+    const navigate = useNavigate()
 
     const columns: ColumnDef<EventItem>[] = useMemo(
         () => [
@@ -127,7 +128,7 @@ const OrderListTable = () => {
                             <FaFilm
                                 className="inline-block mr-1"
                                 onClick={() => {
-                                    console.log(props.row.original)
+                                    navigate(`/concepts/event/stream/${id}`)
                                 }}
                             />
                         )

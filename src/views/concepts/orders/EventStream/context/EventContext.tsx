@@ -4,11 +4,15 @@ import { EventStreamResponse } from '@/@types/events'
 interface EventContextType {
     data: EventStreamResponse | null
     isLoading: boolean
+    eventStatus?: string
+    nextDate?: { start: Date; end: Date } | null
 }
 
 const EventContext = createContext<EventContextType>({
     data: null,
     isLoading: false,
+    eventStatus: undefined,
+    nextDate: null,
 })
 
 export const useEvent = () => useContext(EventContext)
