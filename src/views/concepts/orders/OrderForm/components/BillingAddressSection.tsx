@@ -42,9 +42,9 @@ const BillingAddressSection = ({
                     {idx > 0 && (
                         <button
                             type="button"
-                            onClick={() => remove(idx)}
                             className="absolute top-4 right-4 p-1 rounded-full border border-gray-300 hover:bg-gray-100"
                             aria-label="Remove plan"
+                            onClick={() => remove(idx)}
                         >
                             <FiX size={18} />
                         </button>
@@ -77,10 +77,10 @@ const BillingAddressSection = ({
                                 <input
                                     type="checkbox"
                                     checked={!!field.value}
+                                    className="mr-2"
                                     onChange={(e) =>
                                         field.onChange(e.target.checked)
                                     }
-                                    className="mr-2"
                                 />
                             )}
                         />{' '}
@@ -182,8 +182,8 @@ const BillingAddressSection = ({
             <div className="flex justify-center">
                 <Button
                     type="button"
-                    onClick={append}
                     className="mt-2 bg-green-600 text-white"
+                    onClick={append}
                 >
                     Add another plan
                 </Button>

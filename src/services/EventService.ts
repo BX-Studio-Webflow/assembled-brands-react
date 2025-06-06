@@ -9,6 +9,7 @@ import type {
     EventStreamRequest,
     EventMembershipsResponse,
     EventStreamResponse,
+    SaveInstantCallbackRequest,
 } from '@/@types/events'
 
 export async function apiGetEvents(params?: EventQueryParams) {
@@ -88,6 +89,17 @@ export async function apiGetEventMemberships(id: number) {
 export async function apiStreamPrerecordedEvent(data: EventStreamRequest) {
     return ApiService.fetchDataWithAxios<EventStreamResponse>({
         url: '/event/stream',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiSaveInstantCallback(data: SaveInstantCallbackRequest) {
+    return ApiService.fetchDataWithAxios<void>({
+        url: '/callback',
         method: 'post',
         data,
         headers: {

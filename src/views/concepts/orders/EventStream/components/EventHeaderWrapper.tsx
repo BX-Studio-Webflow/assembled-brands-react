@@ -5,6 +5,7 @@ import { EventStreamResponse } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 import { EventProvider } from '../context/EventContext'
 import EventHeader from './EventHeader'
+import EventHeaderExtra from './EventHeaderExtra'
 
 const EventHeaderWrapper = () => {
     const { id } = useParams()
@@ -27,7 +28,10 @@ const EventHeaderWrapper = () => {
 
     return (
         <EventProvider value={{ data: data || null, isLoading }}>
-            <EventHeader />
+            <div className="flex flex-row justify-between gap-4">
+                <EventHeader />
+                <EventHeaderExtra />
+            </div>
         </EventProvider>
     )
 }

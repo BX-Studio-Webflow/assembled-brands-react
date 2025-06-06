@@ -8,6 +8,7 @@ import {
     defaultLayoutIcons,
     DefaultVideoLayout,
 } from '@vidstack/react/player/layouts/default'
+
 interface EventVideoPlayerProps {
     src?: string
     poster?: string

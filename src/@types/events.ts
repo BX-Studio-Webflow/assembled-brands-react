@@ -189,3 +189,11 @@ export interface EventStreamResponse {
     }
     membership?: MembershipWithDates
 }
+
+export type SaveInstantCallbackRequest = {
+  lead_id: number,
+  event_id: number,
+  callback_type: 'instant' | 'scheduled',
+  notes: string,
+  host_id:  number,
+}

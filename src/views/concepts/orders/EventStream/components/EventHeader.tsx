@@ -11,7 +11,7 @@ const EventHeader = () => {
     const { data } = useEvent()
 
     if (!data) {
-        return null
+        return <></>
     }
 
     const statusClass =
