@@ -37,6 +37,18 @@ export async function apiCreateEvent(data: CreateEventRequest) {
     })
 }
 
+export async function apiStreamEvent(data: EventStreamRequest) {
+    return ApiService.fetchDataWithAxios<EventStreamResponse>({
+        url: '/event/stream',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+
 export async function apiUpdateEvent(id: number, data: UpdateEventRequest) {
     return ApiService.fetchDataWithAxios<Event>({
         url: `/event/${id}`,

@@ -70,6 +70,7 @@ export interface Asset {
     created_at: string
     updated_at: string
     user_id: number
+    presignedUrl?: string
 }
 
 export interface Host {
@@ -136,12 +137,38 @@ export interface EventStreamRequest {
 // Response type for event memberships
 export type EventMembershipsResponse = Membership[]
 
-// Response type for streamPrerecordedEvent
-export interface EventStreamResponse {
-    event: EventWithDetails | EventDetails
-    isHost: boolean
-    selectedDates?: any[]
-    lead?: any
-    membership?: any
+// Types for membership dates
+export interface MembershipDate {
+    id: number
+    membership_id: number
+    date: string
+    created_at: string
+    updated_at: string
+    user_id: number
 }
 
+// Extended Membership interface with dates
+export interface MembershipWithDates extends Membership {
+    dates: MembershipDate[]
+}
+
+// Extended EventWithDetails interface with leadCount
+export interface EventWithDetailsAndCount extends EventWithDetails {
+    leadCount: number
+    memberships: MembershipWithDates[]
+}
+
+// Response type for streamPrerecordedEvent
+export interface EventStreamResponse {
+    event: EventWithDetailsAndCount
+    isHost: boolean
+    selectedDates?: MembershipDate[]
+    lead?: {
+        id: number
+        email: string
+        name: string
+        created_at: string
+        updated_at: string
+    }
+    membership?: MembershipWithDates
+}

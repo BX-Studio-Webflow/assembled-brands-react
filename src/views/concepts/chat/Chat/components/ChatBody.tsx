@@ -3,7 +3,6 @@ import Avatar from '@/components/ui/Avatar'
 import Card from '@/components/ui/Card'
 import ChatBox from '@/components/view/ChatBox'
 import ChatAction from './ChatAction'
-import StartConverstation from '@/assets/svg/StartConverstation'
 import { useChatStore } from '../store/chatStore'
 import { apiGetConversation } from '@/services/ChatService'
 import classNames from '@/utils/classNames'
@@ -13,6 +12,8 @@ import uniqueId from 'lodash/uniqueId'
 import { TbChevronLeft } from 'react-icons/tb'
 import type { GetConversationResponse, Message, ChatType } from '../types'
 import type { ScrollBarRef } from '@/components/view/ChatBox'
+import EventVideoPlayer from '@/views/concepts/orders/EventStream/components/EventVideoPlayer'
+import { EventStreamResponse } from '@/@types/events'
 
 const getFileType = (file: File) => {
     console.log('file.type', file.type)
@@ -33,7 +34,7 @@ const getFileType = (file: File) => {
     }
 }
 
-const ChatBody = () => {
+const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     const scrollRef = useRef<ScrollBarRef>(null)
     const selectedChat = useChatStore((state) => state.selectedChat)
     const conversationRecord = useChatStore((state) => state.conversationRecord)
@@ -212,12 +213,8 @@ const ChatBody = () => {
                 </Card>
             ) : (
                 <div className="flex-1 h-full max-h-full flex flex-col items-center justify-center rounded-2xl border border-gray-200 dark:border-gray-800">
-                    <StartConverstation height={250} width={250} />
-                    <div className="mt-10 text-center">
-                        <h3>Start Chatting!</h3>
-                        <p className="mt-2 text-base">
-                            Pick a Conversation or Begin a New One
-                        </p>
+                    <div>
+                        <EventVideoPlayer src={data.event.asset.presignedUrl} />
                     </div>
                 </div>
             )}
