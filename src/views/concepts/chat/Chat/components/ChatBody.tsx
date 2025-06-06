@@ -9,7 +9,7 @@ import classNames from '@/utils/classNames'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
 import uniqueId from 'lodash/uniqueId'
-import { TbChevronLeft } from 'react-icons/tb'
+import { TbChevronLeft, TbPictureInPicture } from 'react-icons/tb'
 import type { GetConversationResponse, Message, ChatType } from '../types'
 import type { ScrollBarRef } from '@/components/view/ChatBox'
 import EventVideoPlayer from '@/views/concepts/orders/EventStream/components/EventVideoPlayer'
@@ -48,9 +48,8 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     const setContactInfoDrawer = useChatStore(
         (state) => state.setContactInfoDrawer,
     )
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, setIsFetchingConversation] = useState(false)
     const [conversation, setConversation] = useState<Message[]>([])
+    const [isVideoPiP, setIsVideoPiP] = useState(false)
 
     const { smaller } = useResponsive()
 
@@ -148,8 +147,6 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
 
     useEffect(() => {
         const fetchConvesation = async () => {
-            setIsFetchingConversation(true)
-
             const record = conversationRecord.find(
                 (item) => item.id === selectedChat.id,
             )
@@ -164,7 +161,6 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                 pushConversationRecord(resp)
             }
 
-            setIsFetchingConversation(false)
             scrollToBottom()
         }
 
@@ -174,6 +170,15 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedChat.id, conversation])
+
+    // Automatically enable PiP when a chat is selected
+    useEffect(() => {
+        if (selectedChat.id) {
+            setIsVideoPiP(true)
+        } else {
+            setIsVideoPiP(false)
+        }
+    }, [selectedChat.id])
 
     const messageList = useMemo(() => {
         return conversation.map((item) => {
@@ -187,6 +192,10 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
         })
     }, [conversation])
 
+    const togglePiP = () => {
+        setIsVideoPiP(!isVideoPiP)
+    }
+
     return (
         <div
             className={classNames(
@@ -195,27 +204,45 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
             )}
         >
             {selectedChat.id ? (
-                <Card
-                    className="flex-1 h-full max-h-full dark:border-gray-700"
-                    bodyClass="h-[calc(100%-100px)] relative"
-                    {...cardHeaderProps}
-                >
-                    <ChatBox
-                        ref={scrollRef}
-                        messageList={messageList}
-                        placeholder="Enter a prompt here"
-                        showAvatar={true}
-                        avatarGap={true}
-                        messageListClass="h-[calc(100%-100px)]"
-                        bubbleClass="max-w-[300px]"
-                        onInputChange={handleInputChange}
-                    />
-                </Card>
+                <>
+                    <Card
+                        className="flex-1 h-full max-h-full dark:border-gray-700"
+                        bodyClass="h-[calc(100%-100px)] relative"
+                        {...cardHeaderProps}
+                    >
+                        <ChatBox
+                            ref={scrollRef}
+                            messageList={messageList}
+                            placeholder="Enter a prompt here"
+                            showAvatar={true}
+                            avatarGap={true}
+                            messageListClass="h-[calc(100%-100px)]"
+                            bubbleClass="max-w-[300px]"
+                            onInputChange={handleInputChange}
+                        />
+                    </Card>
+                    {isVideoPiP && (
+                        <div className="fixed top-4 right-4 w-160 h-96 z-50 rounded-lg overflow-hidden shadow-lg">
+                            <EventVideoPlayer
+                                src={data.event.asset.presignedUrl}
+                            />
+                        </div>
+                    )}
+                    <button
+                        onClick={togglePiP}
+                        className="fixed top-4 right-4 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary-dark transition-colors"
+                        title={
+                            isVideoPiP
+                                ? 'Exit Picture-in-Picture'
+                                : 'Enter Picture-in-Picture'
+                        }
+                    >
+                        <TbPictureInPicture className="w-6 h-6" />
+                    </button>
+                </>
             ) : (
-                <div className="flex-1 h-full max-h-full flex flex-col items-center justify-center rounded-2xl border border-gray-200 dark:border-gray-800">
-                    <div>
-                        <EventVideoPlayer src={data.event.asset.presignedUrl} />
-                    </div>
+                <div className="flex-1 h-full max-h-full flex flex-col rounded-2xl border border-gray-200 dark:border-gray-800 p-0 m-0">
+                    <EventVideoPlayer src={data.event.asset.presignedUrl} />
                 </div>
             )}
         </div>

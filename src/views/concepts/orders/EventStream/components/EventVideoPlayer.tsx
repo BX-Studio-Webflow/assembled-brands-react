@@ -15,13 +15,13 @@ interface EventVideoPlayerProps {
 
 const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     src = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4',
-    poster = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg',
+    poster = 'https://ecme-react.themenate.net/img/landing/hero/hero.webp',
 }) => {
     return (
-        <Card className="w-full max-w-2xl mx-auto">
-            <MediaPlayer title="..." src={src}>
-                <MediaProvider>
-                    <Poster src={poster} alt="..." />
+        <Card className="w-full h-full p-0 m-0">
+            <MediaPlayer title="..." src={src} className="w-full h-full">
+                <MediaProvider className="w-full h-full">
+                    <Poster src={poster} alt="..." className="w-full h-full" />
                 </MediaProvider>
 
                 <DefaultVideoLayout
