@@ -7,20 +7,23 @@ import OrderDetailNote from './components/OrderDetailNote'
 import { apiGetOrder } from '@/services/OrderService'
 import useSWR from 'swr'
 import { useParams } from 'react-router'
-import type { GetOrderDetailsResponse } from './types'
 
 const EventStream = () => {
     const { id } = useParams()
 
-    const { data, isLoading } = useSWR<GetOrderDetailsResponse, { id: string }>(
-        [`/api/project/${id}`],
-        () => apiGetOrder({ id }),
+    const { data, isLoading } = useSWR<
+        GetEventStreamResponse,
         {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-        },
-    )
+            event_id: 41
+            email: null
+            token: null
+            isHost: true
+        }
+    >([`/event/stream/${id}`], () => apiGetOrder({ id }), {
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
+        revalidateOnReconnect: false,
+    })
 
     return (
         <Loading loading={isLoading}>
