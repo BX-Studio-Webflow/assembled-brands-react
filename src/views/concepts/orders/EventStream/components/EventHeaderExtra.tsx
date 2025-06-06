@@ -1,4 +1,3 @@
-import { useParams, useNavigate } from 'react-router'
 import Button from '@/components/ui/Button'
 import { useEvent } from '../context/EventContext'
 import { apiSaveInstantCallback } from '@/services/EventService'

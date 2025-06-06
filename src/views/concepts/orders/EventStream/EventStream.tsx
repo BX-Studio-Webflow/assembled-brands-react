@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import Loading from '@/components/shared/Loading'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { useParams } from 'react-router'
 import { EventStreamResponse } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
@@ -16,8 +16,9 @@ import EventWaitingCard from './components/EventWaitingCard'
 const EventStream = () => {
     const { id } = useParams()
 
+    const swrKey = [`/event/stream/${id}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
-        [`/event/stream/${id}`],
+        swrKey,
         () =>
             apiStreamEvent({
                 event_id: Number(id),
@@ -63,6 +64,10 @@ const EventStream = () => {
         return { eventStatus: status, nextDate: next }
     }, [data])
 
+    const handleCountdownEnd = () => {
+        mutate(swrKey)
+    }
+
     return (
         <EventProvider
             value={{ data: data || null, isLoading, eventStatus, nextDate }}
@@ -85,7 +90,9 @@ const EventStream = () => {
                         </Card>
                     </>
                 )}
-                {data && eventStatus !== 'live' && <EventWaitingCard />}
+                {data && eventStatus !== 'live' && (
+                    <EventWaitingCard onCountdownEnd={handleCountdownEnd} />
+                )}
             </Loading>
         </EventProvider>
     )

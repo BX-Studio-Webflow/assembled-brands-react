@@ -2,7 +2,13 @@ import React, { useEffect, useRef } from 'react'
 import { useEvent } from '../context/EventContext'
 import { Countdown } from '@/utils/countdown'
 
-const EventWaitingCard = () => {
+interface EventWaitingCardProps {
+    onCountdownEnd?: () => void
+}
+
+const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
+    onCountdownEnd,
+}) => {
     const { eventStatus, nextDate } = useEvent()
     const countdownRef = useRef<HTMLDivElement>(null)
 
@@ -12,6 +18,9 @@ const EventWaitingCard = () => {
             countdown = new Countdown(countdownRef.current, nextDate.start, {
                 threshold: '0',
                 reset: 'false',
+                onEnd: () => {
+                    onCountdownEnd?.()
+                },
             })
             countdown.start()
         } else if (countdownRef.current) {
@@ -20,7 +29,7 @@ const EventWaitingCard = () => {
         return () => {
             countdown?.destroy()
         }
-    }, [eventStatus, nextDate])
+    }, [eventStatus, nextDate, onCountdownEnd])
 
     return (
         <div className="flex flex-col items-center justify-center h-full bg-green-100 rounded-lg p-8">

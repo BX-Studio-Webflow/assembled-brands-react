@@ -1,24 +1,25 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useEvent } from '../context/EventContext'
 import { formatDate } from '@/utils/dates'
-import { Countdown } from '@/utils/countdown'
 
-const statusColors: { [key: string]: string } = {
-    cancelled: 'bg-black text-white',
-    active: 'bg-green-500 text-white',
-    suspended: 'bg-blue-500 text-white',
-    live: 'bg-red-500 text-white',
-    early: 'bg-yellow-500 text-white',
-    ended: 'bg-gray-400 text-white',
+const statusPills: { [key: string]: string } = {
+    cancelled:
+        'bg-red-100 text-red-800 border border-red-400 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-red-400',
+    active: 'bg-green-100 text-green-800 border border-green-400 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-green-400',
+    suspended:
+        'bg-yellow-100 text-yellow-800 border border-yellow-300 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-yellow-300',
+    live: 'bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300"',
+    early: 'bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-900 dark:text-yellow-300',
+    ended: 'bg-gray-100 text-gray-800 border border-gray-500 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-gray-400',
 }
 
 const EventHeader = () => {
     const { data } = useEvent()
-    const countdownRef = useRef<Countdown | null>(null)
-    const statusRef = useRef<HTMLSpanElement>(null)
+    const [status, setStatus] = useState('early')
+    const [statusText, setStatusText] = useState('')
 
     useEffect(() => {
-        if (!data?.event.memberships?.length || !statusRef.current) return
+        if (!data?.event.memberships?.length) return
 
         const now = new Date()
         const sortedDates = data.event.memberships
@@ -33,62 +34,46 @@ const EventHeader = () => {
             .sort((a, b) => a.start.getTime() - b.start.getTime())
 
         const nextDate = sortedDates.find((date) => date.end > now)
-        console.log(nextDate)
 
         if (!nextDate) {
-            statusRef.current.textContent = `Event Ended ${formatDate(sortedDates[sortedDates.length - 1].end, 'DD MMM YYYY HH:mm')}`
-            statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.ended}`
+            setStatus('ended')
+            setStatusText(
+                `Event Ended ${formatDate(sortedDates[sortedDates.length - 1].end, 'DD MMM YYYY HH:mm')}`,
+            )
             return
         }
 
-        // Cleanup previous countdown if exists
-        if (countdownRef.current) {
-            countdownRef.current.destroy()
-        }
-
         if (data.event.status === 'cancelled') {
-            statusRef.current.textContent = 'Event cancelled'
-            statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.cancelled}`
+            setStatus('cancelled')
+            setStatusText('Event cancelled')
         } else if (data.event.status === 'suspended') {
-            statusRef.current.textContent = 'Event suspended'
-            statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.suspended}`
+            setStatus('suspended')
+            setStatusText('Event suspended')
         } else if (now > nextDate.end) {
-            statusRef.current.textContent = `Event Ended ${formatDate(nextDate.end, 'DD MMM YYYY HH:mm')}`
-            statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.ended}`
+            setStatus('ended')
+            setStatusText(
+                `Event Ended ${formatDate(nextDate.end, 'DD MMM YYYY HH:mm')}`,
+            )
         } else if (now > nextDate.start) {
             const timeLeft = Math.round(
                 (nextDate.end.getTime() - now.getTime()) / 1000,
             )
             if (timeLeft <= 20 && timeLeft > 0) {
-                statusRef.current.textContent = `Event ending in ${timeLeft} seconds`
-                statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.live}`
+                setStatus('live')
+                setStatusText(`Event ending in ${timeLeft} seconds`)
             } else {
-                statusRef.current.textContent = 'Event is live'
-                statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.live}`
+                setStatus('live')
+                setStatusText('Event is live')
             }
         } else {
-            statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.early}`
-            countdownRef.current = new Countdown(
-                statusRef.current,
-                nextDate.start,
-                {
-                    threshold: '0',
-                    reset: 'false',
-                    onEnd: () => {
-                        if (statusRef.current) {
-                            statusRef.current.textContent = 'Event is live'
-                            statusRef.current.className = `px-2 py-0.5 rounded-md font-sm text-sm ${statusColors.live}`
-                        }
-                    },
-                },
+            setStatus('early')
+            const timeToStart = Math.round(
+                (nextDate.start.getTime() - now.getTime()) / 1000,
             )
-            countdownRef.current.start()
-        }
-
-        return () => {
-            if (countdownRef.current) {
-                countdownRef.current.destroy()
-            }
+            const hours = Math.floor(timeToStart / 3600)
+            const minutes = Math.floor((timeToStart % 3600) / 60)
+            const seconds = timeToStart % 60
+            setStatusText(`Event starts in ${hours}h ${minutes}m ${seconds}s`)
         }
     }, [data])
 
@@ -102,10 +87,9 @@ const EventHeader = () => {
                 <span className="font-bold text-lg">
                     {data.event.event_name}
                 </span>
-                <span
-                    ref={statusRef}
-                    className="px-2 py-0.5 rounded-md font-sm text-sm"
-                />
+                <span className={statusPills[status] || statusPills['ended']}>
+                    {statusText}
+                </span>
             </div>
             <span className="text-sm mt-8">{data.event.event_description}</span>
         </div>
