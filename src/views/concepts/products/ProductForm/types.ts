@@ -73,6 +73,8 @@ export type PodcastFormSchema = {
     podcast_type: string
     asset?: number | number[]
     podcast_url?: string
+    landing_page_url?: string
+    cover_image_asset_id?: number
     brand?: string
     membership_plans: MembershipPlan[]
 }

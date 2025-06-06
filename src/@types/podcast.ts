@@ -83,3 +83,14 @@ export interface CreateS3PresignedURlRequestParams {
     duration: number
     [key: string]: unknown
 }
+
+export interface CreatePodcastRequest {
+    title: string
+    description: string
+    cover_image_asset_id: number
+    podcast_type: string
+    episode_type: string
+    status: string
+    link_url: string
+    landing_page_url: string
+}

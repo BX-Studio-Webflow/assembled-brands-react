@@ -24,6 +24,12 @@ const AttributeSection = ({
             value: asset.id,
             label: asset.asset_name,
         }))
+    const coverImageOptions = assets
+        .filter((asset: Asset) => asset.asset_type === 'image')
+        .map((asset: Asset) => ({
+            value: asset.id,
+            label: asset.asset_name,
+        }))
     return (
         <Card>
             <h4 className="mb-6">Attribute</h4>
@@ -103,18 +109,38 @@ const AttributeSection = ({
             )}
             <FormItem
                 label="Landing page URL"
-                invalid={Boolean(errors.brand)}
-                errorMessage={errors.brand?.message}
+                invalid={Boolean(errors.landing_page_url)}
+                errorMessage={errors.landing_page_url?.message}
             >
                 <Controller
-                    name="brand"
+                    name="landing_page_url"
                     control={control}
                     render={({ field }) => (
                         <Input
-                            type="text"
+                            type="url"
                             autoComplete="off"
-                            placeholder="Product brand"
+                            placeholder="Landing page URL"
                             {...field}
+                        />
+                    )}
+                />
+            </FormItem>
+            <FormItem
+                label="Cover Image"
+                invalid={Boolean(errors.cover_image_asset_id)}
+                errorMessage={errors.cover_image_asset_id?.message}
+            >
+                <Controller
+                    name="cover_image_asset_id"
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                            placeholder="Select a cover image"
+                            options={coverImageOptions}
+                            onChange={(option) => field.onChange(option?.value)}
+                            value={coverImageOptions.find(
+                                (opt) => opt.value === field.value,
+                            )}
                         />
                     )}
                 />

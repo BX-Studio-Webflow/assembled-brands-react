@@ -34,7 +34,10 @@ const validationSchema: ZodType<PodcastFormSchema> = z.object({
     podcast_type: z.string().min(1, { message: 'Please select podcast type.' }),
     asset: z.union([z.number(), z.array(z.number())]).optional(),
     podcast_url: z.string().url({ message: 'Must be a valid URL' }).optional(),
-    brand: z.string().optional(),
+    landing_page_url: z.string().url({ message: 'Must be a valid URL' }),
+    cover_image_asset_id: z.number({
+        required_error: 'Cover image is required',
+    }),
     membership_plans: z
         .array(
             z.object({
@@ -60,6 +63,8 @@ const ProductForm = (props: ProductFormProps) => {
         defaultValues = {
             imgList: [],
             membership_plans: [defaultPlan],
+            landing_page_url: '',
+            cover_image_asset_id: undefined,
         },
         children,
     } = props

@@ -3,7 +3,7 @@ import type {
     Podcast,
     GetPodcastsResponse,
     PodcastQueryParams,
-    CreateS3PresignedURlRequestParams,
+    CreatePodcastRequest,
 } from '@/@types/podcast'
 
 export async function apiGetPodcasts(
@@ -23,9 +23,7 @@ export async function apiGetPodcast(id: number) {
     })
 }
 
-export async function apiCreatePodcast(
-    data: CreateS3PresignedURlRequestParams,
-) {
+export async function apiCreatePodcast(data: CreatePodcastRequest) {
     return ApiService.fetchDataWithAxios<Podcast>({
         url: '/podcast',
         method: 'post',
