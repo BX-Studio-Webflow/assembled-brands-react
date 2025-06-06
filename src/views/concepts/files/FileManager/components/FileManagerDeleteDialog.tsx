@@ -53,8 +53,8 @@ const FileManagerDeleteDialog = ({
             onConfirm={handleDeleteConfirm}
         >
             <p>
-                Are you sure you want to delete this file? This action can&apos;t
-                be undone.
+                Are you sure you want to delete this file? This action
+                can&apos;t be undone.
             </p>
         </ConfirmDialog>
     )

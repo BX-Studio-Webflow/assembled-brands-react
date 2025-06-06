@@ -5,9 +5,7 @@ import type { TabType } from '../types'
 
 const ChatSegment = () => {
     const selectedTabType = useChatStore((state) => state.selectedTabType)
-    const setselectedTabType = useChatStore(
-        (state) => state.setselectedTabType,
-    )
+    const setselectedTabType = useChatStore((state) => state.setselectedTabType)
 
     return (
         <Segment

@@ -99,33 +99,34 @@ const OrderForm = (props: OrderFormProps) => {
 
     const plans = watch('membership_plans') || []
 
- const onSubmit = async (values: EventFormType) => {
-     try {
-         const payload = {
-             ...values,
-             membership_plans: values.membership_plans.map((plan) => ({
-                 ...plan,
-                 date:
-                     typeof plan.date === 'object' && plan.date instanceof Date
-                         ? plan.date.getTime()
-                         : plan.date,
-             })),
-         }
-         if (props.onFormSubmit) {
-             await props.onFormSubmit(payload)
-         }
-     } catch (error) {
-         console.error(error)
-         toast.push(
-             <Notification type="danger">
-                 {error instanceof Error
-                     ? error.message
-                     : 'Event creation failed!'}
-             </Notification>,
-             { placement: 'top-center' },
-         )
-     }
- }
+    const onSubmit = async (values: EventFormType) => {
+        try {
+            const payload = {
+                ...values,
+                membership_plans: values.membership_plans.map((plan) => ({
+                    ...plan,
+                    date:
+                        typeof plan.date === 'object' &&
+                        plan.date instanceof Date
+                            ? plan.date.getTime()
+                            : plan.date,
+                })),
+            }
+            if (props.onFormSubmit) {
+                await props.onFormSubmit(payload)
+            }
+        } catch (error) {
+            console.error(error)
+            toast.push(
+                <Notification type="danger">
+                    {error instanceof Error
+                        ? error.message
+                        : 'Event creation failed!'}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
+    }
 
     return (
         <div className="flex">

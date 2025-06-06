@@ -55,7 +55,8 @@ const CustomerEdit = () => {
         } catch (error) {
             toast.push(
                 <Notification type="danger">
-                    Failed to update customer: {error instanceof Error ? error.message : 'Unknown error'}
+                    Failed to update customer:{' '}
+                    {error instanceof Error ? error.message : 'Unknown error'}
                 </Notification>,
                 { placement: 'top-center' },
             )

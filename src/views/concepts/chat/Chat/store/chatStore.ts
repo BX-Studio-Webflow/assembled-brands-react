@@ -101,8 +101,7 @@ export const useChatStore = create<ChatState & ChatAction>((set, get) => ({
             })
             return { chats }
         }),
-    setselectedTabType: (payload) =>
-        set(() => ({ selectedTabType: payload })),
+    setselectedTabType: (payload) => set(() => ({ selectedTabType: payload })),
     setChatRead: (id) =>
         set(() => {
             const chats = get().chats.map((chat) => {

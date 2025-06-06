@@ -175,7 +175,9 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
                             >
                                 <span className="truncate max-w-xs">
                                     {file.name.length > 10
-                                        ? file.name.slice(0, 15) + '...' + file.name.slice(-5)
+                                        ? file.name.slice(0, 15) +
+                                          '...' +
+                                          file.name.slice(-5)
                                         : file.name}
                                 </span>
                                 <Progress

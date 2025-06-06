@@ -51,14 +51,33 @@ export type AttributeFields = {
     category: string
     tags?: { label: string; value: string }[]
     brand?: string
+    asset?: number
+    type?: string
+    podcast_url?: string
+    episode_type?: string
+    podcast_type?: string
 }
 
-export type ProductFormSchema = GeneralFields &
-    PricingFields &
-    ImageFields &
-    AttributeFields
+export type MembershipPlan = {
+    id: number
+    name: string
+    price: number | string
+    price_point: string
+    billing: string
+}
+
+export type PodcastFormSchema = {
+    episode_type: string
+    name: string
+    description: string
+    podcast_type: string
+    asset?: number | number[]
+    podcast_url?: string
+    brand?: string
+    membership_plans: MembershipPlan[]
+}
 
 export type FormSectionBaseProps = {
-    control: Control<ProductFormSchema>
-    errors: FieldErrors<ProductFormSchema>
+    control: Control<PodcastFormSchema>
+    errors: FieldErrors<PodcastFormSchema>
 }

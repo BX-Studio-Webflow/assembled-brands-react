@@ -1,85 +1,108 @@
 import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
-import Tooltip from '@/components/ui/Tooltip'
 import { FormItem } from '@/components/ui/Form'
-import { HiOutlineQuestionMarkCircle } from 'react-icons/hi'
-import { Controller } from 'react-hook-form'
-import CreatableSelect from 'react-select/creatable'
+import { Controller, useWatch } from 'react-hook-form'
+
 import type { FormSectionBaseProps } from '../types'
+import { Radio } from '@/components/ui/Radio'
+import type { Asset } from '@/@types/asset'
 
-type AttributeSectionProps = FormSectionBaseProps
+// Only AttributeSection expects assets
+export type AttributeSectionProps = FormSectionBaseProps & { assets: Asset[] }
 
-type Options = {
-    label: string
-    value: string
-}[]
-
-const categories: Options = [
-    { label: 'Bags', value: 'bags' },
-    { label: 'Cloths', value: 'cloths' },
-    { label: 'Devices', value: 'devices' },
-    { label: 'Shoes', value: 'shoes' },
-    { label: 'Watches', value: 'watches' },
-]
-
-const tags: Options = [
-    { label: 'trend', value: 'trend' },
-    { label: 'unisex', value: 'unisex' },
-]
-
-const AttributeSection = ({ control, errors }: AttributeSectionProps) => {
+const AttributeSection = ({
+    control,
+    errors,
+    assets,
+}: AttributeSectionProps) => {
+    const episodeType = useWatch({ control, name: 'episode_type' })
+    const type = useWatch({ control, name: 'podcast_type' })
+    const options = assets
+        .filter((asset: Asset) => asset.asset_type === 'audio')
+        .map((asset: Asset) => ({
+            value: asset.id,
+            label: asset.asset_name,
+        }))
     return (
         <Card>
             <h4 className="mb-6">Attribute</h4>
-            <FormItem
-                label="Category"
-                invalid={Boolean(errors.category)}
-                errorMessage={errors.category?.message}
-            >
+            <FormItem label="Choose Podcast Type">
                 <Controller
-                    name="category"
+                    name="podcast_type"
                     control={control}
                     render={({ field }) => (
-                        <Select
-                            options={categories}
-                            value={categories.filter(
-                                (category) => category.value === field.value,
-                            )}
-                            onChange={(option) => field.onChange(option?.value)}
-                        />
-                    )}
-                />
-            </FormItem>
-            <FormItem
-                label="Tags"
-                extra={
-                    <Tooltip
-                        title="You add as many tags as you want to a product"
-                        className="text-center"
-                    >
-                        <HiOutlineQuestionMarkCircle className="text-base mx-1" />
-                    </Tooltip>
-                }
-            >
-                <Controller
-                    name="tags"
-                    control={control}
-                    render={({ field }) => (
-                        <Select
-                            isMulti
-                            isClearable
+                        <Radio.Group
                             value={field.value}
-                            placeholder="Add tags for product..."
-                            componentAs={CreatableSelect}
-                            options={tags}
-                            onChange={(option) => field.onChange(option)}
-                        />
+                            onChange={field.onChange}
+                            className="flex gap-x-16 w-full"
+                        >
+                            <Radio value="prerecorded">Pre-Recorded</Radio>
+                            <Radio value="live">Live</Radio>
+                        </Radio.Group>
                     )}
                 />
             </FormItem>
+            {type === 'prerecorded' && (
+                <FormItem
+                    label="Audio"
+                    invalid={Boolean(errors.asset)}
+                    errorMessage={errors.asset?.message}
+                >
+                    <Controller
+                        name="asset"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                isMulti={episodeType === 'series'}
+                                placeholder="Select an audio file"
+                                options={options}
+                                onChange={(option) =>
+                                    episodeType === 'series'
+                                        ? field.onChange(
+                                              option
+                                                  ? (
+                                                        option as {
+                                                            value: number
+                                                        }[]
+                                                    ).map((o) => o.value)
+                                                  : [],
+                                          )
+                                        : field.onChange(
+                                              (
+                                                  option as {
+                                                      value: number
+                                                  } | null
+                                              )?.value,
+                                          )
+                                }
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
+            {type === 'live' && (
+                <FormItem
+                    label="Podcast URL"
+                    invalid={Boolean(errors.podcast_url)}
+                    errorMessage={errors.podcast_url?.message}
+                >
+                    <Controller
+                        name="podcast_url"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="url"
+                                autoComplete="off"
+                                placeholder="Podcast URL"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
             <FormItem
-                label="Brand"
+                label="Landing page URL"
                 invalid={Boolean(errors.brand)}
                 errorMessage={errors.brand?.message}
             >

@@ -1,7 +1,14 @@
 import ApiService from './ApiService'
-import type { Podcast, GetPodcastsResponse, PodcastQueryParams, CreateS3PresignedURlRequestParams } from '@/@types/podcast'
+import type {
+    Podcast,
+    GetPodcastsResponse,
+    PodcastQueryParams,
+    CreateS3PresignedURlRequestParams,
+} from '@/@types/podcast'
 
-export async function apiGetPodcasts(params?: PodcastQueryParams): Promise<GetPodcastsResponse> {
+export async function apiGetPodcasts(
+    params?: PodcastQueryParams,
+): Promise<GetPodcastsResponse> {
     return ApiService.fetchDataWithAxios<GetPodcastsResponse>({
         url: '/podcast',
         method: 'get',
@@ -16,7 +23,9 @@ export async function apiGetPodcast(id: number) {
     })
 }
 
-export async function apiCreatePodcast(data: CreateS3PresignedURlRequestParams) {
+export async function apiCreatePodcast(
+    data: CreateS3PresignedURlRequestParams,
+) {
     return ApiService.fetchDataWithAxios<Podcast>({
         url: '/podcast',
         method: 'post',
@@ -26,8 +35,6 @@ export async function apiCreatePodcast(data: CreateS3PresignedURlRequestParams) 
         },
     })
 }
-
-
 
 export async function apiDeletePodcast(id: number) {
     return ApiService.fetchDataWithAxios<void>({

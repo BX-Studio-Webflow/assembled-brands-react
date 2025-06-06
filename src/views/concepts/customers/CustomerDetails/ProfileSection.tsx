@@ -208,9 +208,9 @@ const ProfileSection = ({ data = {} }: ProfileSectionProps) => {
                     onConfirm={handleDelete}
                 >
                     <p>
-                        Are you sure you want to delete this lead? All
-                        record related to this lead will be deleted as well.
-                        This action cannot be undone.
+                        Are you sure you want to delete this lead? All record
+                        related to this lead will be deleted as well. This
+                        action cannot be undone.
                     </p>
                 </ConfirmDialog>
             </div>

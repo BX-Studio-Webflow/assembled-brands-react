@@ -1,5 +1,10 @@
 import ApiService from './ApiService'
-import type { Asset, GetAssetsResponse, AssetQueryParams, CreateS3PresignedURlRequestParams } from '@/@types/asset'
+import type {
+    Asset,
+    GetAssetsResponse,
+    AssetQueryParams,
+    CreateS3PresignedURlRequestParams,
+} from '@/@types/asset'
 
 export async function apiGetAssets(params?: AssetQueryParams) {
     return ApiService.fetchDataWithAxios<GetAssetsResponse>({
