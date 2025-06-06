@@ -19,6 +19,9 @@ import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
 import { apiGetUserMe, apiUploadProfileImage } from '@/services/AuthService'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import { AxiosError } from 'axios'
 
 type ProfileSchema = {
     firstName: string
@@ -183,8 +186,20 @@ const SettingsProfile = () => {
                         fileName: file.name,
                     })
                     resolve(response.data.url)
+                    toast.push(
+                        <Notification type="success">
+                            Your profile image has been updated!
+                        </Notification>,
+                        { placement: 'top-center' },
+                    )
                 } catch (error) {
                     console.error('Error uploading image:', error)
+                    toast.push(
+                        <Notification type="danger">
+                            {(error as AxiosError).message}
+                        </Notification>,
+                        { placement: 'top-center' },
+                    )
                     reject(error)
                 }
             }
