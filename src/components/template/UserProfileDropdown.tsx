@@ -1,7 +1,6 @@
 import Avatar from '@/components/ui/Avatar'
 import Dropdown from '@/components/ui/Dropdown'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
-import { useSessionUser } from '@/store/authStore'
 import { Link } from 'react-router'
 import {
     PiUserDuotone,

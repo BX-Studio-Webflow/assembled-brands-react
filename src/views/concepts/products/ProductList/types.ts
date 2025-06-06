@@ -1,14 +1,19 @@
-export type Product = {
+export interface PodcastRow {
     id: string
     name: string
     productCode: string
     img: string
-    category: string
     price: number
     stock: number
-    status: number
     sales: number
     salesPercentage: number
+    status: 'published' | 'draft'
+    description: string
+    type: 'link' | 'prerecorded'
+    episodeType: 'single' | 'multiple'
+    host: string
+    membershipNames: string
+    createdAt: string
 }
 
 export type Filter = {
@@ -16,9 +21,4 @@ export type Filter = {
     maxAmount: number | string
     productStatus: string
     productType: string[]
-}
-
-export type GetProductListResponse = {
-    list: Product[]
-    total: number
 }

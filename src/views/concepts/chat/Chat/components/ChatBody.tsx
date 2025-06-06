@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
-import Avatar from '@/components/ui/Avatar'
 import Card from '@/components/ui/Card'
 import ChatBox from '@/components/view/ChatBox'
 import ChatAction from './ChatAction'
@@ -13,7 +12,7 @@ import {
     TbMaximize,
     TbMinimize,
 } from 'react-icons/tb'
-import type { ChatType } from '../types'
+
 import type { ScrollBarRef } from '@/components/view/ChatBox'
 import EventVideoPlayer from '@/views/concepts/orders/EventStream/components/EventVideoPlayer'
 import { EventStreamResponse } from '@/@types/events'
@@ -29,9 +28,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
         (state) => state.subscribeToMessages,
     )
     const setSelectedChat = useChatStore((state) => state.setSelectedChat)
-    const setContactInfoDrawer = useChatStore(
-        (state) => state.setContactInfoDrawer,
-    )
+
     const [isVideoPiP, setIsVideoPiP] = useState(false)
     const [isFullSize, setIsFullSize] = useState(false)
 
@@ -41,15 +38,6 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight
         }
-    }
-
-    const handleProfileClick = () => {
-        setContactInfoDrawer({
-            userId: selectedChat.user?.id as string,
-            chatId: selectedChat.id as string,
-            chatType: selectedChat.chatType as ChatType,
-            open: true,
-        })
     }
 
     const handleInputChange = async ({
@@ -89,11 +77,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                             <TbChevronLeft />
                         </button>
                     )}
-                    <button
-                        className="flex items-center gap-2"
-                        role="button"
-                        onClick={handleProfileClick}
-                    >
+                    <button className="flex items-center gap-2" role="button">
                         <div>
                             <NoUserFound height={40} width={40} />
                         </div>

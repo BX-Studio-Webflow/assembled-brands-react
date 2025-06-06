@@ -1,8 +1,7 @@
-import { apiGetProductList } from '@/services/ProductService'
 import useSWR from 'swr'
 import { useProductListStore } from '../store/productListStore'
-import type { GetProductListResponse } from '../types'
-import type { TableQueries } from '@/@types/common'
+import { apiGetPodcasts } from '@/services/PodcastService'
+import type { GetPodcastsResponse } from '@/@types/podcast'
 
 const useProductList = () => {
     const {
@@ -16,17 +15,34 @@ const useProductList = () => {
     } = useProductListStore((state) => state)
 
     const { data, error, isLoading, mutate } = useSWR(
-        ['/api/products', { ...tableData, ...filterData }],
+        ['/podcast', { ...tableData, ...filterData }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) =>
-            apiGetProductList<GetProductListResponse, TableQueries>(params),
+        ([_, params]) => apiGetPodcasts(params),
         {
             revalidateOnFocus: false,
         },
     )
 
-    const productList = data?.list || []
+    const transformedPodcasts =
+        data?.podcasts?.map((podcast: GetPodcastsResponse['podcasts'][0]) => ({
+            id: podcast.podcast.id.toString(),
+            name: podcast.podcast.title,
+            productCode: `POD-${podcast.podcast.id}`,
+            img: podcast.cover.asset_url,
+            price: podcast.memberships[0]?.price || 0,
+            stock: 1,
+            sales: 0,
+            salesPercentage: 0,
+            status: podcast.podcast.status,
+            description: podcast.podcast.description,
+            type: podcast.podcast.podcast_type,
+            episodeType: podcast.podcast.episode_type,
+            host: podcast.host.name,
+            membershipNames: podcast.memberships.map((m) => m.name).join(', '),
+            createdAt: podcast.podcast.created_at,
+        })) || []
 
+    const productList = transformedPodcasts
     const productListTotal = data?.total || 0
 
     return {

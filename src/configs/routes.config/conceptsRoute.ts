@@ -175,9 +175,9 @@ const conceptsRoute: Routes = [
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Create product',
+                title: 'Create podcast',
                 description:
-                    'Quickly add products to your inventory. Enter key details, manage stock, and set availability.',
+                    'Quickly add podcasts to your inventory. Enter key details, manage stock, and set availability.',
                 contained: true,
             },
             footer: false,

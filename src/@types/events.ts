@@ -118,7 +118,7 @@ export interface MembershipPlanRequest {
 }
 
 // Request type for updating an event (all fields optional except id in URL)
-export interface UpdateEventRequest extends Partial<CreateEventRequest> {}
+export type UpdateEventRequest = Partial<CreateEventRequest>
 
 // Request type for cancelling an event
 export interface CancelEventRequest {
@@ -191,9 +191,9 @@ export interface EventStreamResponse {
 }
 
 export type SaveInstantCallbackRequest = {
-  lead_id: number,
-  event_id: number,
-  callback_type: 'instant' | 'scheduled',
-  notes: string,
-  host_id:  number,
+    lead_id: number
+    event_id: number
+    callback_type: 'instant' | 'scheduled'
+    notes: string
+    host_id: number
 }
