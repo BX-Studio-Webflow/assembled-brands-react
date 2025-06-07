@@ -90,6 +90,7 @@ import {
     PiDotsThreeCircleDuotone,
     PiCircleHalfTiltDuotone,
     PiHouseLineDuotone,
+    PiMicrophoneDuotone,
 } from 'react-icons/pi'
 import type { JSX } from 'react'
 
@@ -196,6 +197,8 @@ const navigationIcon: NavigationIcons = {
     sharedComponentDoc: <PiShareNetworkDuotone />,
     utilsDoc: <PiToolboxDuotone />,
     changeLog: <PiCodeDuotone />,
+    podcast: <PiMicrophoneDuotone />,
+    memberships: <PiUsersDuotone />,
 }
 
 export default navigationIcon

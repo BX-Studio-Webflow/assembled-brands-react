@@ -1,5 +1,5 @@
 import Button from '@/components/ui/Button'
-import { TbCloudDownload, TbUserPlus } from 'react-icons/tb'
+import { TbCloudDownload, TbUsers } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
 import useMembershipList from '../hooks/useMembershipList'
 import { CSVLink } from 'react-csv'
@@ -25,8 +25,10 @@ const MembershipListActionTools = () => {
             </CSVLink>
             <Button
                 variant="solid"
-                icon={<TbUserPlus className="text-xl" />}
-                onClick={() => navigate('/concepts/lead/lead-create')}
+                icon={<TbUsers className="text-xl" />}
+                onClick={() =>
+                    navigate('/concepts/membership/membership-create')
+                }
             >
                 Add new
             </Button>

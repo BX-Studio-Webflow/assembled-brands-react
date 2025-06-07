@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { TableQueries } from '@/@types/common'
 import type { Filter } from '../types'
-import type { Lead } from '@/@types/lead'
+import type { Membership } from '@/@types/membership'
 
 export const initialTableData: TableQueries = {
     pageIndex: 1,
@@ -27,14 +27,14 @@ export const initialFilterData = {
 export type MembershipsListState = {
     tableData: TableQueries
     filterData: Filter
-    selectedMembership: Lead[]
+    selectedMembership: Membership[]
 }
 
 type MembershipsListAction = {
     setFilterData: (payload: Filter) => void
     setTableData: (payload: TableQueries) => void
-    setSelectedMembership: (checked: boolean, customer: Lead) => void
-    setSelectAllMembership: (customer: Lead[]) => void
+    setSelectedMembership: (checked: boolean, membership: Membership) => void
+    setSelectAllMembership: (memberships: Membership[]) => void
 }
 
 const initialState: MembershipsListState = {
@@ -56,7 +56,9 @@ export const useMembershipListStore = create<
                 return { selectedMembership: [...prevData, ...[row]] }
             } else {
                 if (
-                    prevData.some((prevMembership) => row.id === prevMembership.id)
+                    prevData.some(
+                        (prevMembership) => row.id === prevMembership.id,
+                    )
                 ) {
                     return {
                         selectedMembership: prevData.filter(

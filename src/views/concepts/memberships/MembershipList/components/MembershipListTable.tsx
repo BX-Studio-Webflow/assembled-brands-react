@@ -8,15 +8,16 @@ import { Link, useNavigate } from 'react-router'
 import cloneDeep from 'lodash/cloneDeep'
 import { TbPencil, TbEye } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
-import type { Lead } from '@/@types/lead'
 import type { TableQueries } from '@/@types/common'
+import type { Membership } from '@/@types/membership'
 
-const statusColor: Record<string, string> = {
-    active: 'bg-emerald-200 dark:bg-emerald-200 text-gray-900 dark:text-gray-900',
-    blocked: 'bg-red-200 dark:bg-red-200 text-gray-900 dark:text-gray-900',
+const paymentTypeColor: Record<string, string> = {
+    one_off:
+        'bg-emerald-200 dark:bg-emerald-200 text-gray-900 dark:text-gray-900',
+    recurring: 'bg-blue-200 dark:bg-blue-200 text-gray-900 dark:text-gray-900',
 }
 
-const NameColumn = ({ row }: { row: Lead }) => {
+const NameColumn = ({ row }: { row: Membership }) => {
     return (
         <div className="flex items-center">
             <Avatar
@@ -28,7 +29,7 @@ const NameColumn = ({ row }: { row: Lead }) => {
             />
             <Link
                 className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
-                to={`/concepts/customers/customer-details/${row.id}`}
+                to={`/concepts/memberships/membership-details/${row.id}`}
             >
                 {row.name}
             </Link>
@@ -81,15 +82,15 @@ const MembershipListTable = () => {
         selectedMembership,
     } = useMembershipList()
 
-    const handleEdit = (customer: Lead) => {
-        navigate(`/concepts/lead/lead-edit/${customer.id}`)
+    const handleEdit = (membership: Membership) => {
+        navigate(`/concepts/memberships/membership-edit/${membership.id}`)
     }
 
-    const handleViewDetails = (customer: Lead) => {
-        navigate(`/concepts/lead/lead-details/${customer.id}`)
+    const handleViewDetails = (membership: Membership) => {
+        navigate(`/concepts/memberships/membership-details/${membership.id}`)
     }
 
-    const columns: ColumnDef<Lead>[] = useMemo(
+    const columns: ColumnDef<Membership>[] = useMemo(
         () => [
             {
                 header: 'Name',
@@ -100,27 +101,33 @@ const MembershipListTable = () => {
                 },
             },
             {
-                header: 'Email',
-                accessorKey: 'email',
+                header: 'Description',
+                accessorKey: 'description',
+                cell: (props) => {
+                    return (
+                        <span className="truncate max-w-[200px] block">
+                            {props.row.original.description}
+                        </span>
+                    )
+                },
             },
             {
-                header: 'Phone',
-                accessorKey: 'phone',
+                header: 'Price',
+                accessorKey: 'price',
+                cell: (props) => {
+                    return <span>${props.row.original.price.toFixed(2)}</span>
+                },
             },
             {
-                header: 'Status',
-                accessorKey: 'lead_status',
+                header: 'Payment Type',
+                accessorKey: 'payment_type',
                 cell: (props) => {
                     const row = props.row.original
                     return (
                         <div className="flex items-center">
-                            <Tag
-                                className={
-                                    statusColor[row.lead_status || 'active']
-                                }
-                            >
+                            <Tag className={paymentTypeColor[row.payment_type]}>
                                 <span className="capitalize">
-                                    {row.lead_status || 'Active'}
+                                    {row.payment_type}
                                 </span>
                             </Tag>
                         </div>
@@ -128,12 +135,18 @@ const MembershipListTable = () => {
                 },
             },
             {
-                header: 'Registered Date',
-                accessorKey: 'registered_date',
+                header: 'Price Point',
+                accessorKey: 'price_point',
+            },
+            {
+                header: 'Created Date',
+                accessorKey: 'created_at',
                 cell: (props) => {
                     return (
                         <span>
-                            {props.row.original.registered_date || 'N/A'}
+                            {new Date(
+                                props.row.original.created_at,
+                            ).toLocaleDateString()}
                         </span>
                     )
                 },
@@ -181,11 +194,11 @@ const MembershipListTable = () => {
         handleSetTableData(newTableData)
     }
 
-    const handleRowSelect = (checked: boolean, row: Lead) => {
+    const handleRowSelect = (checked: boolean, row: Membership) => {
         setSelectedMembership(checked, row)
     }
 
-    const handleAllRowSelect = (checked: boolean, rows: Row<Lead>[]) => {
+    const handleAllRowSelect = (checked: boolean, rows: Row<Membership>[]) => {
         if (checked) {
             const originalRows = rows.map((row) => row.original)
             setSelectAllMembership(originalRows)

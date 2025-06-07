@@ -215,7 +215,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 path: '',
                 title: 'Podcasts',
                 translateKey: 'nav.conceptsProducts.products',
-                icon: 'products',
+                icon: 'podcast',
                 type: NAV_ITEM_TYPE_COLLAPSE,
                 authority: [ADMIN, USER],
                 meta: {
@@ -283,7 +283,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 path: '',
                 title: 'Memberships',
                 translateKey: 'nav.conceptsMemberships.memberships',
-                icon: 'products',
+                icon: 'memberships',
                 type: NAV_ITEM_TYPE_COLLAPSE,
                 authority: [ADMIN, USER],
                 meta: {
