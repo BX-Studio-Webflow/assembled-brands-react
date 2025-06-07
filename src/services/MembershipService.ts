@@ -32,3 +32,14 @@ export async function apiCreateMembership(
         data,
     })
 }
+
+export async function apiUpdateMembership(
+    id: number,
+    data: CreateMembershipBody,
+): Promise<Membership> {
+    return ApiService.fetchDataWithAxios<Membership>({
+        url: `/membership/${id}`,
+        method: 'put',
+        data,
+    })
+}

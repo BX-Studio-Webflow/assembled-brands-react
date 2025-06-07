@@ -4,26 +4,26 @@ import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { apiGetLead, apiUpdateLead } from '@/services/LeadsService'
+import {
+    apiGetMembership,
+    apiUpdateMembership,
+} from '@/services/MembershipService'
 import MembershipForm from '../MembershipForm'
 import NoUserFound from '@/assets/svg/NoUserFound'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
 import { useParams, useNavigate } from 'react-router'
 import useSWR from 'swr'
 import type { MembershipFormSchema } from '../MembershipForm'
-import type { Lead } from '@/@types/lead'
-import { useAuth } from '@/auth'
+import type { Membership } from '@/@types/membership'
 
 const MembershipEdit = () => {
     const { id } = useParams()
-    const { user } = useAuth()
-
     const navigate = useNavigate()
 
-    const { data, isLoading } = useSWR(
-        [`/lead/${id}`, { id: id as string }],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetLead<Lead>(params.id),
+    const { data, isLoading } = useSWR<Membership>(
+        [`/membership/${id}`, { id: id as string }],
+        (_: string, params: { id: string }) =>
+            apiGetMembership(Number(params.id)),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -37,13 +37,7 @@ const MembershipEdit = () => {
         console.log('Submitted values', values)
         setIsSubmiting(true)
         try {
-            const leadData = {
-                name: `${values.firstName} ${values.lastName}`,
-                email: values.email,
-                phone: `${values.dialCode}${values.phoneNumber}`,
-                host_id: user?.id || 0,
-            }
-            await apiUpdateLead(id as string, leadData)
+            await apiUpdateMembership(Number(id), values)
             setIsSubmiting(false)
             toast.push(
                 <Notification type="success">Changes Saved!</Notification>,
@@ -51,11 +45,11 @@ const MembershipEdit = () => {
                     placement: 'top-center',
                 },
             )
-            navigate('/concepts/lead/lead-list')
+            navigate('/concepts/memberships/membership-list')
         } catch (error) {
             toast.push(
                 <Notification type="danger">
-                    Failed to update customer:{' '}
+                    Failed to update membership:{' '}
                     {error instanceof Error ? error.message : 'Unknown error'}
                 </Notification>,
                 { placement: 'top-center' },
@@ -65,27 +59,30 @@ const MembershipEdit = () => {
         }
     }
 
-    const getDefaultValues = () => {
+    const getDefaultValues = (): MembershipFormSchema => {
         if (data) {
-            const [firstName, ...lastNameParts] = data.name.split(' ')
-            const lastName = lastNameParts.join(' ')
-
             return {
-                firstName,
-                lastName,
-                email: data.email,
-                img: '',
-                phoneNumber: data.phone,
-                dialCode: '',
-                country: '',
-                address: '',
-                city: '',
-                postcode: '',
-                tags: [],
+                name: data.name,
+                description: data.description,
+                price: data.price,
+                payment_type: data.payment_type,
+                price_point: data.price_point as
+                    | 'standalone'
+                    | 'course'
+                    | 'podcast',
+                billing: data.billing as 'per-day' | 'package' | undefined,
+                dates: data.dates?.map((date) => date.toString()) || [],
             }
         }
-
-        return {}
+        return {
+            name: '',
+            description: '',
+            price: 0,
+            payment_type: 'one_off',
+            price_point: 'standalone',
+            billing: undefined,
+            dates: [],
+        }
     }
 
     const handleConfirmDelete = () => {
@@ -94,7 +91,7 @@ const MembershipEdit = () => {
             <Notification type="success">Membership deleted!</Notification>,
             { placement: 'top-center' },
         )
-        navigate('/concepts/customers/customer-list')
+        navigate('/concepts/memberships/membership-list')
     }
 
     const handleDelete = () => {
@@ -114,13 +111,13 @@ const MembershipEdit = () => {
             {!isLoading && !data && (
                 <div className="h-full flex flex-col items-center justify-center">
                     <NoUserFound height={280} width={280} />
-                    <h3 className="mt-8">No user found!</h3>
+                    <h3 className="mt-8">No membership found!</h3>
                 </div>
             )}
             {!isLoading && data && (
                 <>
                     <MembershipForm
-                        defaultValues={getDefaultValues() as MembershipFormSchema}
+                        defaultValues={getDefaultValues()}
                         newMembership={false}
                         onFormSubmit={handleFormSubmit}
                     >
@@ -161,15 +158,15 @@ const MembershipEdit = () => {
                     <ConfirmDialog
                         isOpen={deleteConfirmationOpen}
                         type="danger"
-                        title="Remove customers"
+                        title="Delete membership"
                         onClose={handleCancel}
                         onRequestClose={handleCancel}
                         onCancel={handleCancel}
                         onConfirm={handleConfirmDelete}
                     >
                         <p>
-                            Are you sure you want to remove this customer? This
-                            action can&apos;t be undo.{' '}
+                            Are you sure you want to delete this membership?
+                            This action can&apos;t be undone.
                         </p>
                     </ConfirmDialog>
                 </>

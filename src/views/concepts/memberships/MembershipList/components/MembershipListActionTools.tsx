@@ -27,7 +27,7 @@ const MembershipListActionTools = () => {
                 variant="solid"
                 icon={<TbUsers className="text-xl" />}
                 onClick={() =>
-                    navigate('/concepts/membership/membership-create')
+                    navigate('/concepts/memberships/membership-create')
                 }
             >
                 Add new
