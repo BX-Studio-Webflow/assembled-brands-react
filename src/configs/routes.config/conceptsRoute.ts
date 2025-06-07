@@ -184,6 +184,44 @@ const conceptsRoute: Routes = [
         },
     },
     {
+        key: 'concepts.memberships.membershipList',
+        path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-list`,
+        component: lazy(() => import('@/views/concepts/memberships/MembershipList')),
+        authority: [ADMIN, USER],
+    },
+    {
+        key: 'concepts.memberships.membershipEdit',
+        path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-edit/:id`,
+        component: lazy(() => import('@/views/concepts/memberships/MembershipEdit')),
+        authority: [ADMIN, USER],
+        meta: {
+            header: {
+                title: 'Edit membership',
+                description:
+                    'Quickly manage membership details, stock, and availability.',
+                contained: true,
+            },
+            footer: false,
+        },
+    },
+    {
+        key: 'concepts.memberships.membershipCreate',
+        path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-create`,
+        component: lazy(
+            () => import('@/views/concepts/memberships/MembershipCreate'),
+        ),
+        authority: [ADMIN, USER],
+        meta: {
+            header: {
+                title: 'Create membership',
+                description:
+                    'Quickly add memberships to your inventory. Enter key details, manage stock, and set availability.',
+                contained: true,
+            },
+            footer: false,
+        },
+    },
+    {
         key: 'concepts.projects.scrumBoard',
         path: `${CONCEPTS_PREFIX_PATH}/projects/scrum-board`,
         component: lazy(() => import('@/views/concepts/projects/ScrumBoard')),

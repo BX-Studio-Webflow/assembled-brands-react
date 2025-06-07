@@ -279,6 +279,75 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 ],
             },
             {
+                key: 'concepts.memberships',
+                path: '',
+                title: 'Memberships',
+                translateKey: 'nav.conceptsMemberships.memberships',
+                icon: 'products',
+                type: NAV_ITEM_TYPE_COLLAPSE,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.conceptsProducts.productsDesc',
+                        label: 'Product inventory management',
+                    },
+                },
+                subMenu: [
+                    {
+                        key: 'concepts.memberships.membershipList',
+                        path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-list`,
+                        title: 'Membership List',
+                        translateKey: 'nav.conceptsMemberships.membershipList',
+                        icon: 'productList',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsProducts.productListDesc',
+                                label: 'All products listed',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                    {
+                        key: 'concepts.memberships.membershipEdit',
+                        path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-edit/12`,
+                        title: 'Membership Edit',
+                        translateKey: 'nav.conceptsMemberships.membershipEdit',
+                        icon: 'productEdit',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsMemberships.membershipEditDesc',
+                                label: 'Edit membership details',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                    {
+                        key: 'concepts.memberships.membershipCreate',
+                        path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-create`,
+                        title: 'Membership Create',
+                        translateKey: 'nav.conceptsMemberships.membershipCreate',
+                        icon: 'productCreate',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsMemberships.membershipCreateDesc',
+                                label: 'Add new membership',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                ],
+            },
+
+            {
                 key: 'concepts.projects',
                 path: '',
                 title: 'Projects',

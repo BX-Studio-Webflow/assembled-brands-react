@@ -41,6 +41,13 @@
             "eventDetails": "التفاصيل",
             "eventCreate": "إنشاء"
         },
+        "conceptsMemberships": {
+            "memberships": "العضويات",
+            "membershipList": "القائمة",
+            "membershipEdit": "تعديل",
+            "membershipCreate": "إنشاء",
+            "membershipDetails": "التفاصيل"
+        },
         "conceptsAccount": {
             "account": "الحساب",
             "settings": "الإعدادات",

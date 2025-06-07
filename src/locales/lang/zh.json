@@ -42,6 +42,13 @@
             "orderDetails": "详情",
             "orderCreate": "创建"
         },
+        "conceptsMemberships": {
+            "memberships": "会员",
+            "membershipList": "列表",
+            "membershipEdit": "编辑",
+            "membershipCreate": "创建",
+            "membershipDetails": "详情"
+        },
         "conceptsAccount": {
             "account": "账户",
             "settings": "设置",

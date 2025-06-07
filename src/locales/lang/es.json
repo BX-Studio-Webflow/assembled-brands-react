@@ -42,6 +42,13 @@
             "eventDetails": "Detalles",
             "eventCreate": "Crear"
         },
+        "conceptsMemberships": {
+            "memberships": "Membresías",
+            "membershipList": "Lista",
+            "membershipEdit": "Editar",
+            "membershipCreate": "Crear",
+            "membershipDetails": "Detalles"
+        },
         "conceptsAccount": {
             "account": "Cuenta",
             "settings": "Configuraciones",
