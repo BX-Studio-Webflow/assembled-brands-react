@@ -21,7 +21,7 @@ const NameColumn = ({ row }: { row: Membership }) => {
         <div className="flex items-center">
             <Link
                 className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
-                to={`/concepts/memberships/membership-details/${row.id}`}
+                to={`/concepts/memberships/membership-edit/${row.id}`}
             >
                 {row.name}
             </Link>
