@@ -2,17 +2,17 @@ import { useState } from 'react'
 import StickyFooter from '@/components/shared/StickyFooter'
 import Button from '@/components/ui/Button'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import useProductList from '../hooks/useProductList'
+import usePodcastList from '../hooks/usePodcastList'
 import { TbChecks } from 'react-icons/tb'
 
-const ProductListSelected = () => {
+const PodcastListSelected = () => {
     const {
-        selectedProduct,
+        selectedPodcast,
         productList,
         mutate,
         productListTotal,
-        setSelectAllProduct,
-    } = useProductList()
+        setSelectAllPodcast,
+    } = usePodcastList()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
 
@@ -25,16 +25,16 @@ const ProductListSelected = () => {
     }
 
     const handleConfirmDelete = () => {
-        const newProductList = productList.filter((product) => {
-            return !selectedProduct.some(
+        const newPodcastList = productList.filter((product) => {
+            return !selectedPodcast.some(
                 (selected) => selected.id === product.id,
             )
         })
-        setSelectAllProduct([])
+        setSelectAllPodcast([])
         mutate(
             {
-                list: newProductList,
-                total: productListTotal - selectedProduct.length,
+                list: newPodcastList,
+                total: productListTotal - selectedPodcast.length,
             },
             false,
         )
@@ -43,7 +43,7 @@ const ProductListSelected = () => {
 
     return (
         <>
-            {selectedProduct.length > 0 && (
+            {selectedPodcast.length > 0 && (
                 <StickyFooter
                     className="flex items-center justify-between py-4 bg-white dark:bg-gray-800"
                     stickyClass="-mx-4 sm:-mx-8 border-t border-gray-200 dark:border-gray-700 px-8"
@@ -52,15 +52,15 @@ const ProductListSelected = () => {
                     <div className="container mx-auto">
                         <div className="flex items-center justify-between">
                             <span>
-                                {selectedProduct.length > 0 && (
+                                {selectedPodcast.length > 0 && (
                                     <span className="flex items-center gap-2">
                                         <span className="text-lg text-primary">
                                             <TbChecks />
                                         </span>
                                         <span className="font-semibold flex items-center gap-1">
                                             <span className="heading-text">
-                                                {selectedProduct.length}{' '}
-                                                Products
+                                                {selectedPodcast.length}{' '}
+                                                Podcasts
                                             </span>
                                             <span>selected</span>
                                         </span>
@@ -104,4 +104,4 @@ const ProductListSelected = () => {
     )
 }
 
-export default ProductListSelected
+export default PodcastListSelected

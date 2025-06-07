@@ -1,11 +1,11 @@
 import Container from '@/components/shared/Container'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
-import ProductListActionTools from './components/ProductListActionTools'
-import ProducListTableTools from './components/ProducListTableTools'
-import ProductListTable from './components/ProductListTable'
-import ProductListSelected from './components/ProductListSelected'
+import PodcastListActionTools from './components/PodcastListActionTools'
+import PodcastListTableTools from './components/PodcastListTableTools'
+import PodcastListTable from './components/PodcastListTable'
+import PodcastListSelected from './components/PodcastListSelected'
 
-const ProductList = () => {
+const PodcastList = () => {
     return (
         <>
             <Container>
@@ -13,16 +13,16 @@ const ProductList = () => {
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                             <h3>Podcasts</h3>
-                            <ProductListActionTools />
+                            <PodcastListActionTools />
                         </div>
-                        <ProducListTableTools />
-                        <ProductListTable />
+                        <PodcastListTableTools />
+                        <PodcastListTable />
                     </div>
                 </AdaptiveCard>
             </Container>
-            <ProductListSelected />
+            <PodcastListSelected />
         </>
     )
 }
 
-export default ProductList
+export default PodcastList

@@ -37,13 +37,13 @@ const validationSchema: ZodType<PodcastFormSchema> = z.object({
         .min(1, { message: 'At least 1 membership plan required!' }),
 })
 
-type ProductFormProps = {
+type PodcastFormProps = {
     onFormSubmit: (values: PodcastFormSchema) => void
     defaultValues?: PodcastFormSchema
-    newProduct?: boolean
+    newPodcast?: boolean
 } & CommonProps
 
-const ProductForm = (props: ProductFormProps) => {
+const PodcastForm = (props: PodcastFormProps) => {
     const {
         onFormSubmit,
         defaultValues = {
@@ -156,4 +156,4 @@ const ProductForm = (props: ProductFormProps) => {
     )
 }
 
-export default ProductForm
+export default PodcastForm

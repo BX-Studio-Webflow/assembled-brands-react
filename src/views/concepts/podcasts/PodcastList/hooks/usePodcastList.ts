@@ -1,18 +1,18 @@
 import useSWR from 'swr'
-import { useProductListStore } from '../store/productListStore'
+import { usePodcastListStore } from '../store/podcastListStore'
 import { apiGetPodcasts } from '@/services/PodcastService'
 import type { GetPodcastsResponse } from '@/@types/podcast'
 
-const useProductList = () => {
+const usePodcastList = () => {
     const {
         tableData,
         filterData,
         setTableData,
         setFilterData,
-        selectedProduct,
-        setSelectedProduct,
-        setSelectAllProduct,
-    } = useProductListStore((state) => state)
+        selectedPodcast,
+        setSelectedPodcast,
+        setSelectAllPodcast,
+    } = usePodcastListStore((state) => state)
 
     const { data, error, isLoading, mutate } = useSWR(
         ['/podcast', { ...tableData, ...filterData }],
@@ -54,11 +54,11 @@ const useProductList = () => {
         productList,
         productListTotal,
         setTableData,
-        selectedProduct,
-        setSelectedProduct,
-        setSelectAllProduct,
+        selectedPodcast,
+        setSelectedPodcast,
+        setSelectAllPodcast,
         setFilterData,
     }
 }
 
-export default useProductList
+export default usePodcastList

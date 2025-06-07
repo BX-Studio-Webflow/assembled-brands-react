@@ -3,16 +3,16 @@ import Container from '@/components/shared/Container'
 import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
-import ProductForm from '../ProductForm'
+import PodcastForm from '../PodcastForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 
 import { TbTrash } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
-import type { PodcastFormSchema } from '../ProductForm/types'
+import type { PodcastFormSchema } from '../PodcastForm/types'
 import { apiCreatePodcast } from '@/services/PodcastService'
 import { AxiosError } from 'axios'
 
-const ProductCreate = () => {
+const PodcastCreate = () => {
     const navigate = useNavigate()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
@@ -66,7 +66,7 @@ const ProductCreate = () => {
     const handleConfirmDiscard = () => {
         setDiscardConfirmationOpen(true)
         toast.push(
-            <Notification type="success">Product discardd!</Notification>,
+            <Notification type="success">Podcast discardd!</Notification>,
             { placement: 'top-center' },
         )
         navigate('/concepts/products/product-list')
@@ -82,14 +82,14 @@ const ProductCreate = () => {
 
     return (
         <>
-            <ProductForm
-                newProduct
+            <PodcastForm
+                newPodcast
                 defaultValues={{
                     name: '',
                     description: '',
                     membership_plans: [],
                     landing_page_url: '',
-                    cover_image_asset_id: undefined,
+                    cover_image_asset_id: 0,
                     episode_type: 'series',
                     podcast_type: 'prerecorded',
                 }}
@@ -120,7 +120,7 @@ const ProductCreate = () => {
                         </div>
                     </div>
                 </Container>
-            </ProductForm>
+            </PodcastForm>
             <ConfirmDialog
                 isOpen={discardConfirmationOpen}
                 type="danger"
@@ -139,4 +139,4 @@ const ProductCreate = () => {
     )
 }
 
-export default ProductCreate
+export default PodcastCreate

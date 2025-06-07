@@ -1,6 +1,6 @@
 import type { Control, FieldErrors } from 'react-hook-form'
 
-export type Product = {
+export type Podcast = {
     id: string
     name: string
     productCode: string

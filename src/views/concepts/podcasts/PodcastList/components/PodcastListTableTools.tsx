@@ -1,6 +1,6 @@
-import ProductListSearch from './ProductListSearch'
-import ProductTableFilter from './ProductTableFilter'
-import useProducList from '../hooks/useProductList'
+import PodcastListSearch from './PodcastListSearch'
+import PodcastTableFilter from './PodcastTableFilter'
+import useProducList from '../hooks/usePodcastList'
 import cloneDeep from 'lodash/cloneDeep'
 
 const ProducListTableTools = () => {
@@ -21,8 +21,8 @@ const ProducListTableTools = () => {
 
     return (
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <ProductListSearch onInputChange={handleInputChange} />
-            <ProductTableFilter />
+            <PodcastListSearch onInputChange={handleInputChange} />
+            <PodcastTableFilter />
         </div>
     )
 }

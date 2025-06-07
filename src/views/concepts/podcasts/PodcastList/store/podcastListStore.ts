@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { TableQueries } from '@/@types/common'
-import type { Product, Filter } from '../types'
+import type { Podcast, Filter } from '../types'
 
 export const initialTableData: TableQueries = {
     pageIndex: 1,
@@ -19,46 +19,46 @@ export const initialFilterData = {
     productType: ['Bags', 'Cloths', 'Devices', 'Shoes', 'Watches'],
 }
 
-export type ProductsListState = {
+export type PodcastsListState = {
     tableData: TableQueries
     filterData: Filter
-    selectedProduct: Partial<Product>[]
+    selectedPodcast: Partial<Podcast>[]
 }
 
-type ProductsListAction = {
+type PodcastsListAction = {
     setFilterData: (payload: Filter) => void
     setTableData: (payload: TableQueries) => void
-    setSelectedProduct: (checked: boolean, customer: Product) => void
-    setSelectAllProduct: (customer: Product[]) => void
+    setSelectedPodcast: (checked: boolean, customer: Podcast) => void
+    setSelectAllPodcast: (customer: Podcast[]) => void
 }
 
-const initialState: ProductsListState = {
+const initialState: PodcastsListState = {
     tableData: initialTableData,
     filterData: initialFilterData,
-    selectedProduct: [],
+    selectedPodcast: [],
 }
 
-export const useProductListStore = create<
-    ProductsListState & ProductsListAction
+export const usePodcastListStore = create<
+    PodcastsListState & PodcastsListAction
 >((set) => ({
     ...initialState,
     setFilterData: (payload) => set(() => ({ filterData: payload })),
     setTableData: (payload) => set(() => ({ tableData: payload })),
-    setSelectedProduct: (checked, row) =>
+    setSelectedPodcast: (checked, row) =>
         set((state) => {
-            const prevData = state.selectedProduct
+            const prevData = state.selectedPodcast
             if (checked) {
-                return { selectedProduct: [...prevData, ...[row]] }
+                return { selectedPodcast: [...prevData, ...[row]] }
             } else {
-                if (prevData.some((prevProduct) => row.id === prevProduct.id)) {
+                if (prevData.some((prevPodcast) => row.id === prevPodcast.id)) {
                     return {
-                        selectedProduct: prevData.filter(
-                            (prevProduct) => prevProduct.id !== row.id,
+                        selectedPodcast: prevData.filter(
+                            (prevPodcast) => prevPodcast.id !== row.id,
                         ),
                     }
                 }
-                return { selectedProduct: prevData }
+                return { selectedPodcast: prevData }
             }
         }),
-    setSelectAllProduct: (row) => set(() => ({ selectedProduct: row })),
+    setSelectAllPodcast: (row) => set(() => ({ selectedPodcast: row })),
 }))

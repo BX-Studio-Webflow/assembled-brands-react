@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import useProductList from '../hooks/useProductList'
+import usePodcastList from '../hooks/usePodcastList'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router'
 import { TbPencil, TbTrash } from 'react-icons/tb'
@@ -11,7 +11,7 @@ import type { PodcastRow } from '../types'
 import type { TableQueries } from '@/@types/common'
 import Tag from '@/components/ui/Tag'
 
-const ProductColumn = ({ row }: { row: PodcastRow }) => {
+const PodcastColumn = ({ row }: { row: PodcastRow }) => {
     return (
         <div className="flex items-center gap-2">
             <div>
@@ -52,7 +52,7 @@ const ActionColumn = ({
     )
 }
 
-const ProductListTable = () => {
+const PodcastListTable = () => {
     const navigate = useNavigate()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
@@ -72,14 +72,14 @@ const ProductListTable = () => {
     }
 
     const handleConfirmDelete = () => {
-        const newProductList = productList.filter((podcast: PodcastRow) => {
+        const newPodcastList = productList.filter((podcast: PodcastRow) => {
             return !(toDeleteId === podcast.id)
         })
-        setSelectAllProduct([])
+        setSelectAllPodcast([])
         mutate(
             {
-                list: newProductList,
-                total: productListTotal - selectedProduct.length,
+                list: newPodcastList,
+                total: productListTotal - selectedPodcast.length,
             },
             false,
         )
@@ -93,11 +93,11 @@ const ProductListTable = () => {
         tableData,
         isLoading,
         setTableData,
-        setSelectAllProduct,
-        setSelectedProduct,
-        selectedProduct,
+        setSelectAllPodcast,
+        setSelectedPodcast,
+        selectedPodcast,
         mutate,
-    } = useProductList()
+    } = usePodcastList()
 
     const columns: ColumnDef<PodcastRow>[] = useMemo(
         () => [
@@ -106,7 +106,7 @@ const ProductListTable = () => {
                 accessorKey: 'name',
                 cell: (props) => {
                     const row = props.row.original
-                    return <ProductColumn row={row} />
+                    return <PodcastColumn row={row} />
                 },
             },
             {
@@ -184,8 +184,8 @@ const ProductListTable = () => {
 
     const handleSetTableData = (data: TableQueries) => {
         setTableData(data)
-        if (selectedProduct.length > 0) {
-            setSelectAllProduct([])
+        if (selectedPodcast.length > 0) {
+            setSelectAllPodcast([])
         }
     }
 
@@ -209,15 +209,15 @@ const ProductListTable = () => {
     }
 
     const handleRowSelect = (checked: boolean, row: PodcastRow) => {
-        setSelectedProduct(checked, row)
+        setSelectedPodcast(checked, row)
     }
 
     const handleAllRowSelect = (checked: boolean, rows: Row<PodcastRow>[]) => {
         if (checked) {
             const originalRows = rows.map((row) => row.original)
-            setSelectAllProduct(originalRows)
+            setSelectAllPodcast(originalRows)
         } else {
-            setSelectAllProduct([])
+            setSelectAllPodcast([])
         }
     }
 
@@ -237,7 +237,7 @@ const ProductListTable = () => {
                     pageSize: tableData.pageSize as number,
                 }}
                 checkboxChecked={(row) =>
-                    selectedProduct.some((selected) => selected.id === row.id)
+                    selectedPodcast.some((selected) => selected.id === row.id)
                 }
                 onPaginationChange={handlePaginationChange}
                 onSelectChange={handleSelectChange}
@@ -264,4 +264,4 @@ const ProductListTable = () => {
     )
 }
 
-export default ProductListTable
+export default PodcastListTable

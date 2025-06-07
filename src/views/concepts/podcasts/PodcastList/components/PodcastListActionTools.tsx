@@ -1,13 +1,13 @@
 import Button from '@/components/ui/Button'
 import { TbCloudDownload, TbPlus } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
-import useProductList from '../hooks/useProductList'
+import usePodcastList from '../hooks/usePodcastList'
 import { CSVLink } from 'react-csv'
 
-const ProductListActionTools = () => {
+const PodcastListActionTools = () => {
     const navigate = useNavigate()
 
-    const { productList } = useProductList()
+    const { productList } = usePodcastList()
 
     return (
         <div className="flex flex-col md:flex-row gap-3">
@@ -27,4 +27,4 @@ const ProductListActionTools = () => {
     )
 }
 
-export default ProductListActionTools
+export default PodcastListActionTools

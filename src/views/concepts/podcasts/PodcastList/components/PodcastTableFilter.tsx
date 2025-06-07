@@ -7,7 +7,7 @@ import Select, { Option as DefaultOption } from '@/components/ui/Select'
 import { components } from 'react-select'
 import { Form, FormItem } from '@/components/ui/Form'
 import NumericInput from '@/components/shared/NumericInput'
-import useProductList from '../hooks/useProductList'
+import usePodcastList from '../hooks/usePodcastList'
 import { TbFilter, TbMinus } from 'react-icons/tb'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -73,10 +73,10 @@ const validationSchema: ZodType<FormSchema> = z.object({
     productType: z.array(z.string()),
 })
 
-const ProductTableFilter = () => {
+const PodcastTableFilter = () => {
     const [filterIsOpen, setFilterIsOpen] = useState(false)
 
-    const { filterData, setFilterData } = useProductList()
+    const { filterData, setFilterData } = usePodcastList()
 
     const { handleSubmit, control, getValues } = useForm<FormSchema>({
         defaultValues: filterData,
@@ -105,7 +105,7 @@ const ProductTableFilter = () => {
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <div>
-                        <FormItem label="Product price">
+                        <FormItem label="Podcast price">
                             <div className="flex items-center gap-2">
                                 <Controller
                                     name="minAmount"
@@ -154,7 +154,7 @@ const ProductTableFilter = () => {
                                 />
                             </div>
                         </FormItem>
-                        <FormItem label="Product status">
+                        <FormItem label="Podcast status">
                             <Controller
                                 name="productStatus"
                                 control={control}
@@ -177,7 +177,7 @@ const ProductTableFilter = () => {
                                 )}
                             />
                         </FormItem>
-                        <FormItem label="Product type">
+                        <FormItem label="Podcast type">
                             <div className="mt-4">
                                 <Controller
                                     name="productType"
@@ -215,4 +215,4 @@ const ProductTableFilter = () => {
     )
 }
 
-export default ProductTableFilter
+export default PodcastTableFilter

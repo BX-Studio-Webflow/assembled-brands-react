@@ -3,11 +3,11 @@ import useDebounce from '@/utils/hooks/useDebounce'
 import { TbSearch } from 'react-icons/tb'
 import type { ChangeEvent } from 'react'
 
-type ProductListSearchProps = {
+type PodcastListSearchProps = {
     onInputChange: (value: string) => void
 }
 
-const ProductListSearch = (props: ProductListSearchProps) => {
+const PodcastListSearch = (props: PodcastListSearchProps) => {
     const { onInputChange } = props
 
     function handleDebounceFn(value: string) {
@@ -29,4 +29,4 @@ const ProductListSearch = (props: ProductListSearchProps) => {
     )
 }
 
-export default ProductListSearch
+export default PodcastListSearch
