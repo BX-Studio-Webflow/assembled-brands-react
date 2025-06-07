@@ -1,27 +1,30 @@
 import { useState } from 'react'
+import { useParams, useNavigate } from 'react-router'
+import useSWR from 'swr'
+import { apiGetPodcast } from '@/services/PodcastService'
+import type { PodcastDetails } from '@/@types/podcast'
+import type { PodcastFormSchema } from '../PodcastForm/types'
 import Container from '@/components/shared/Container'
+import AdaptiveCard from '@/components/shared/AdaptiveCard'
 import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import ProductForm from '../ProductForm'
+import PodcastForm from '../PodcastForm'
 import NoProductFound from '@/assets/svg/NoProductFound'
-import { apiGetProduct } from '@/services/ProductService'
-import sleep from '@/utils/sleep'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
-import { useParams, useNavigate } from 'react-router'
-import useSWR from 'swr'
-import type { Product, ProductFormSchema } from '../ProductForm/types'
+import sleep from '@/utils/sleep'
 
-const ProducEdit = () => {
+const PodcastEdit = () => {
     const { id } = useParams()
-
     const navigate = useNavigate()
 
-    const { data, isLoading } = useSWR(
-        [`/api/product/${id}`, { id: id as string }],
+    const podcastId = id ? parseInt(id, 10) : 0
+
+    const { data, isLoading } = useSWR<PodcastDetails>(
+        podcastId ? [`/api/podcast/${podcastId}`, podcastId] : null,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetProduct<Product, { id: string }>(params),
+        ([_, id]) => apiGetPodcast(id as number),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -29,51 +32,34 @@ const ProducEdit = () => {
     )
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const [isSubmiting, setIsSubmiting] = useState(false)
-
-    const getDefaultValues = () => {
+    const getDefaultValues = (): PodcastFormSchema | undefined => {
         if (data) {
-            const {
-                name,
-                description,
-                productCode,
-                taxRate,
-                price,
-                bulkDiscountPrice,
-                costPerItem,
-                imgList,
-                category,
-                brand,
-            } = data
+            const { podcast, memberships } = data
 
             return {
-                name,
-                description,
-                productCode,
-                taxRate,
-                price,
-                bulkDiscountPrice,
-                costPerItem,
-                imgList,
-                category,
-                tags: [{ label: 'trend', value: 'trend' }],
-                brand,
+                name: podcast.title,
+                description: podcast.description,
+                podcast_type: podcast.podcast_type,
+                episode_type: podcast.episode_type,
+                cover_image_asset_id: podcast.cover_image_asset_id,
+                podcast_url: podcast.link_url,
+                landing_page_url: podcast.landing_page_url,
+                membership_plans: memberships.map((m) => m.id),
             }
         }
-
-        return {}
+        return undefined
     }
 
-    const handleFormSubmit = async (values: ProductFormSchema) => {
+    const handleFormSubmit = async (values: PodcastFormSchema) => {
         console.log('Submitted values', values)
-        setIsSubmiting(true)
+        setIsSubmitting(true)
         await sleep(800)
-        setIsSubmiting(false)
+        setIsSubmitting(false)
         toast.push(<Notification type="success">Changes Saved!</Notification>, {
             placement: 'top-center',
         })
-        navigate('/concepts/products/product-list')
     }
 
     const handleDelete = () => {
@@ -84,17 +70,15 @@ const ProducEdit = () => {
         setDeleteConfirmationOpen(false)
     }
 
-    const handleBack = () => {
-        navigate('/concepts/products/product-list')
-    }
-
     const handleConfirmDelete = () => {
-        setDeleteConfirmationOpen(true)
+        setDeleteConfirmationOpen(false)
         toast.push(
-            <Notification type="success">Product deleted!</Notification>,
-            { placement: 'top-center' },
+            <Notification type="success">Podcast Deleted!</Notification>,
+            {
+                placement: 'top-center',
+            },
         )
-        navigate('/concepts/products/product-list')
+        navigate('/concepts/podcasts/podcast-list')
     }
 
     return (
@@ -107,57 +91,58 @@ const ProducEdit = () => {
             )}
             {!isLoading && data && (
                 <>
-                    <ProductForm
-                        defaultValues={getDefaultValues() as ProductFormSchema}
-                        newProduct={false}
-                        onFormSubmit={handleFormSubmit}
-                    >
-                        <Container>
-                            <div className="flex items-center justify-between px-8">
-                                <Button
-                                    className="ltr:mr-3 rtl:ml-3"
-                                    type="button"
-                                    variant="plain"
-                                    icon={<TbArrowNarrowLeft />}
-                                    onClick={handleBack}
-                                >
-                                    Back
-                                </Button>
-                                <div className="flex items-center">
-                                    <Button
-                                        className="ltr:mr-3 rtl:ml-3"
-                                        type="button"
-                                        customColorClass={() =>
-                                            'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
-                                        }
-                                        icon={<TbTrash />}
-                                        onClick={handleDelete}
-                                    >
-                                        Delete
-                                    </Button>
-                                    <Button
-                                        variant="solid"
-                                        type="submit"
-                                        loading={isSubmiting}
-                                    >
-                                        Save
-                                    </Button>
+                    <Container>
+                        <AdaptiveCard>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                                    <h3>Edit Podcast</h3>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="plain"
+                                            icon={<TbArrowNarrowLeft />}
+                                            onClick={() => navigate(-1)}
+                                        >
+                                            Back
+                                        </Button>
+                                        <Button
+                                            variant="plain"
+                                            icon={<TbTrash />}
+                                            onClick={handleDelete}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
                                 </div>
+                                <PodcastForm
+                                    defaultValues={getDefaultValues()}
+                                    onFormSubmit={handleFormSubmit}
+                                    newPodcast={false}
+                                >
+                                    <div className="flex items-center justify-between px-8">
+                                        <Button
+                                            variant="solid"
+                                            type="submit"
+                                            loading={isSubmitting}
+                                        >
+                                            Save
+                                        </Button>
+                                    </div>
+                                </PodcastForm>
                             </div>
-                        </Container>
-                    </ProductForm>
+                        </AdaptiveCard>
+                    </Container>
                     <ConfirmDialog
                         isOpen={deleteConfirmationOpen}
                         type="danger"
-                        title="Remove product"
+                        title="Delete podcast"
                         onClose={handleCancel}
                         onRequestClose={handleCancel}
                         onCancel={handleCancel}
                         onConfirm={handleConfirmDelete}
                     >
                         <p>
-                            Are you sure you want to remove this product? This
-                            action can&apos;t be undo.{' '}
+                            Are you sure you want to delete this podcast? This
+                            action can&apos;t be undone.
                         </p>
                     </ConfirmDialog>
                 </>
@@ -166,4 +151,4 @@ const ProducEdit = () => {
     )
 }
 
-export default ProducEdit
+export default PodcastEdit

@@ -30,8 +30,8 @@ const GeneralSection = ({
                     render={({ field }) => (
                         <Radio.Group
                             value={field.value}
-                            onChange={field.onChange}
                             className="flex gap-x-16 w-full"
+                            onChange={field.onChange}
                         >
                             <Radio value="series">Series</Radio>
                             <Radio value="episode">Episode</Radio>
@@ -85,13 +85,13 @@ const GeneralSection = ({
                     render={({ field: { value = [], onChange } }) => (
                         <Checkbox.Group
                             value={value.map((id) => id.toString())}
+                            className="flex flex-col gap-y-4"
                             onChange={(selectedIds) => {
                                 const selectedPlans = memberships.filter((m) =>
                                     selectedIds.includes(m.id.toString()),
                                 )
                                 onChange(selectedPlans.map((plan) => plan.id))
                             }}
-                            className="flex flex-col gap-y-4"
                         >
                             {memberships.map((membership) => (
                                 <Checkbox

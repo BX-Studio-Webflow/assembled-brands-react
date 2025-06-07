@@ -109,11 +109,11 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                 value={paymentTypeOptions.find(
                                     (option) => option.value === field.value,
                                 )}
+                                placeholder="Select Payment Type"
                                 onChange={(option) =>
                                     field.onChange(option?.value)
                                 }
                                 onBlur={field.onBlur}
-                                placeholder="Select Payment Type"
                             />
                         )}
                     />
@@ -132,11 +132,11 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                 value={pricePointOptions.find(
                                     (option) => option.value === field.value,
                                 )}
+                                placeholder="Select Price Point"
                                 onChange={(option) =>
                                     field.onChange(option?.value)
                                 }
                                 onBlur={field.onBlur}
-                                placeholder="Select Price Point"
                             />
                         )}
                     />
@@ -152,6 +152,7 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                     control={control}
                     render={({ field }) => (
                         <Select<Option<BillingType>>
+                            isClearable
                             options={billingOptions}
                             value={
                                 field.value
@@ -161,10 +162,9 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                       )
                                     : null
                             }
+                            placeholder="Select Billing Type"
                             onChange={(option) => field.onChange(option?.value)}
                             onBlur={field.onBlur}
-                            placeholder="Select Billing Type"
-                            isClearable
                         />
                     )}
                 />

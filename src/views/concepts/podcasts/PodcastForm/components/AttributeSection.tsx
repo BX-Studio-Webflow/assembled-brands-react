@@ -40,8 +40,8 @@ const AttributeSection = ({
                     render={({ field }) => (
                         <Radio.Group
                             value={field.value}
-                            onChange={field.onChange}
                             className="flex gap-x-16 w-full"
+                            onChange={field.onChange}
                         >
                             <Radio value="prerecorded">Pre-Recorded</Radio>
                             <Radio value="live">Live</Radio>
@@ -137,10 +137,10 @@ const AttributeSection = ({
                         <Select
                             placeholder="Select a cover image"
                             options={coverImageOptions}
-                            onChange={(option) => field.onChange(option?.value)}
                             value={coverImageOptions.find(
                                 (opt) => opt.value === field.value,
                             )}
+                            onChange={(option) => field.onChange(option?.value)}
                         />
                     )}
                 />

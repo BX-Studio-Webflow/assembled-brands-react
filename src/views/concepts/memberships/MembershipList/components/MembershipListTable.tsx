@@ -1,14 +1,17 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Tag from '@/components/ui/Tag'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
+import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import useMembershipList from '../hooks/useMembershipList'
 import { Link, useNavigate } from 'react-router'
 import cloneDeep from 'lodash/cloneDeep'
-import { TbPencil, TbEye } from 'react-icons/tb'
+import { TbPencil, TbTrash } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { TableQueries } from '@/@types/common'
 import type { Membership } from '@/@types/membership'
+import { toast, Notification } from '@/components/ui'
+import { apiDeleteMembership } from '@/services/MembershipService'
 
 const paymentTypeColor: Record<string, string> = {
     one_off:
@@ -31,10 +34,10 @@ const NameColumn = ({ row }: { row: Membership }) => {
 
 const ActionColumn = ({
     onEdit,
-    onViewDetail,
+    onDelete,
 }: {
     onEdit: () => void
-    onViewDetail: () => void
+    onDelete: () => void
 }) => {
     return (
         <div className="flex items-center gap-3">
@@ -47,13 +50,13 @@ const ActionColumn = ({
                     <TbPencil />
                 </div>
             </Tooltip>
-            <Tooltip title="View">
+            <Tooltip title="Delete">
                 <div
                     className={`text-xl cursor-pointer select-none font-semibold`}
                     role="button"
-                    onClick={onViewDetail}
+                    onClick={onDelete}
                 >
-                    <TbEye />
+                    <TbTrash />
                 </div>
             </Tooltip>
         </div>
@@ -62,6 +65,8 @@ const ActionColumn = ({
 
 const MembershipListTable = () => {
     const navigate = useNavigate()
+    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
+    const [toDeleteId, setToDeleteId] = useState<number | ''>('')
 
     const {
         customerList,
@@ -72,14 +77,43 @@ const MembershipListTable = () => {
         setSelectAllMembership,
         setSelectedMembership,
         selectedMembership,
+        mutate,
     } = useMembershipList()
 
     const handleEdit = (membership: Membership) => {
         navigate(`/concepts/memberships/membership-edit/${membership.id}`)
     }
 
-    const handleViewDetails = (membership: Membership) => {
-        navigate(`/concepts/memberships/membership-edit/${membership.id}`)
+    const handleDelete = (membership: Membership) => {
+        setDeleteConfirmationOpen(true)
+        setToDeleteId(membership.id)
+    }
+
+    const handleCancel = () => {
+        setDeleteConfirmationOpen(false)
+    }
+
+    const handleConfirmDelete = async () => {
+        try {
+            await apiDeleteMembership(Number(toDeleteId))
+            toast.push(
+                <Notification type="success">
+                    Membership deleted successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            mutate()
+        } catch {
+            toast.push(
+                <Notification type="danger">
+                    Failed to delete membership. Please try again.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setDeleteConfirmationOpen(false)
+            setToDeleteId('')
+        }
     }
 
     const columns: ColumnDef<Membership>[] = useMemo(
@@ -149,9 +183,7 @@ const MembershipListTable = () => {
                 cell: (props) => (
                     <ActionColumn
                         onEdit={() => handleEdit(props.row.original)}
-                        onViewDetail={() =>
-                            handleViewDetails(props.row.original)
-                        }
+                        onDelete={() => handleDelete(props.row.original)}
                     />
                 ),
             },
@@ -200,31 +232,49 @@ const MembershipListTable = () => {
     }
 
     return (
-        <DataTable
-            selectable
-            columns={columns}
-            data={customerList}
-            noData={!isLoading && customerList.length === 0}
-            skeletonAvatarColumns={[0]}
-            skeletonAvatarProps={{ width: 28, height: 28 }}
-            loading={isLoading}
-            pagingData={{
-                total: customerListTotal,
-                pageIndex: tableData.pageIndex as number,
-                pageSize: tableData.pageSize as number,
-            }}
-            checkboxChecked={(row) =>
-                selectedMembership.some((selected) => selected.id === row.id)
-            }
-            indeterminateCheckboxChecked={(rows) =>
-                rows.length === selectedMembership.length
-            }
-            onPaginationChange={handlePaginationChange}
-            onSelectChange={handleSelectChange}
-            onSort={handleSort}
-            onCheckBoxChange={handleRowSelect}
-            onIndeterminateCheckBoxChange={handleAllRowSelect}
-        />
+        <>
+            <DataTable
+                selectable
+                columns={columns}
+                data={customerList}
+                noData={!isLoading && customerList.length === 0}
+                skeletonAvatarColumns={[0]}
+                skeletonAvatarProps={{ width: 28, height: 28 }}
+                loading={isLoading}
+                pagingData={{
+                    total: customerListTotal,
+                    pageIndex: tableData.pageIndex as number,
+                    pageSize: tableData.pageSize as number,
+                }}
+                checkboxChecked={(row) =>
+                    selectedMembership.some(
+                        (selected) => selected.id === row.id,
+                    )
+                }
+                indeterminateCheckboxChecked={(rows) =>
+                    rows.length === selectedMembership.length
+                }
+                onPaginationChange={handlePaginationChange}
+                onSelectChange={handleSelectChange}
+                onSort={handleSort}
+                onCheckBoxChange={handleRowSelect}
+                onIndeterminateCheckBoxChange={handleAllRowSelect}
+            />
+            <ConfirmDialog
+                isOpen={deleteConfirmationOpen}
+                type="danger"
+                title="Remove membership"
+                onClose={handleCancel}
+                onRequestClose={handleCancel}
+                onCancel={handleCancel}
+                onConfirm={handleConfirmDelete}
+            >
+                <p>
+                    Are you sure you want to remove this membership? This action
+                    can&apos;t be undone.
+                </p>
+            </ConfirmDialog>
+        </>
     )
 }
 

@@ -10,6 +10,8 @@ import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { PodcastRow } from '../types'
 import type { TableQueries } from '@/@types/common'
 import Tag from '@/components/ui/Tag'
+import { apiDeletePodcast } from '@/services/PodcastService'
+import { toast, Notification } from '@/components/ui'
 
 const PodcastColumn = ({ row }: { row: PodcastRow }) => {
     return (
@@ -71,20 +73,27 @@ const PodcastListTable = () => {
         navigate(`/concepts/podcasts/podcast-edit/${product.id}`)
     }
 
-    const handleConfirmDelete = () => {
-        const newPodcastList = productList.filter((podcast: PodcastRow) => {
-            return !(toDeleteId === podcast.id)
-        })
-        setSelectAllPodcast([])
-        mutate(
-            {
-                list: newPodcastList,
-                total: productListTotal - selectedPodcast.length,
-            },
-            false,
-        )
-        setDeleteConfirmationOpen(false)
-        setToDeleteId('')
+    const handleConfirmDelete = async () => {
+        try {
+            await apiDeletePodcast(Number(toDeleteId))
+            toast.push(
+                <Notification type="success">
+                    Podcast deleted successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            mutate()
+        } catch {
+            toast.push(
+                <Notification type="danger">
+                    Failed to delete podcast. Please try again.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setDeleteConfirmationOpen(false)
+            setToDeleteId('')
+        }
     }
 
     const {
@@ -248,7 +257,7 @@ const PodcastListTable = () => {
             <ConfirmDialog
                 isOpen={deleteConfirmationOpen}
                 type="danger"
-                title="Remove products"
+                title="Remove podcast"
                 onClose={handleCancel}
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
@@ -256,7 +265,7 @@ const PodcastListTable = () => {
             >
                 <p>
                     {' '}
-                    Are you sure you want to remove this product? This action
+                    Are you sure you want to remove this podcast? This action
                     can&apos;t be undo.{' '}
                 </p>
             </ConfirmDialog>

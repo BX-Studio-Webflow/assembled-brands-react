@@ -4,6 +4,7 @@ import type {
     GetPodcastsResponse,
     PodcastQueryParams,
     CreatePodcastRequest,
+    PodcastDetails,
 } from '@/@types/podcast'
 
 export async function apiGetPodcasts(
@@ -16,8 +17,8 @@ export async function apiGetPodcasts(
     })
 }
 
-export async function apiGetPodcast(id: number) {
-    return ApiService.fetchDataWithAxios<Podcast>({
+export async function apiGetPodcast(id: number): Promise<PodcastDetails> {
+    return ApiService.fetchDataWithAxios<PodcastDetails>({
         url: `/podcast/${id}`,
         method: 'get',
     })

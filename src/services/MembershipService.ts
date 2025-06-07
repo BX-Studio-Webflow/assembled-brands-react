@@ -43,3 +43,10 @@ export async function apiUpdateMembership(
         data,
     })
 }
+
+export async function apiDeleteMembership(id: number) {
+    return ApiService.fetchDataWithAxios<void>({
+        url: `/membership/${id}`,
+        method: 'delete',
+    })
+}
