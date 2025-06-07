@@ -2,7 +2,7 @@ import AdaptiveCard from '@/components/shared/AdaptiveCard'
 import Container from '@/components/shared/Container'
 import MembershipListTable from './components/MembershipListTable'
 import MembershipListActionTools from './components/MembershipListActionTools'
-import MembershipsListTableTools from './components/MembershipsListTableTools'
+import MembershipListTableTools from './components/MembershipListTableTools'
 import MembershipListSelected from './components/MembershipListSelected'
 
 const MembershipList = () => {
@@ -15,7 +15,7 @@ const MembershipList = () => {
                             <h3>Memberships</h3>
                             <MembershipListActionTools />
                         </div>
-                        <MembershipsListTableTools />
+                        <MembershipListTableTools />
                         <MembershipListTable />
                     </div>
                 </AdaptiveCard>

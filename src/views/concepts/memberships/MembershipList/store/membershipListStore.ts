@@ -24,48 +24,48 @@ export const initialFilterData = {
     ],
 }
 
-export type CustomersListState = {
+export type MembershipsListState = {
     tableData: TableQueries
     filterData: Filter
-    selectedCustomer: Lead[]
+    selectedMembership: Lead[]
 }
 
-type CustomersListAction = {
+type MembershipsListAction = {
     setFilterData: (payload: Filter) => void
     setTableData: (payload: TableQueries) => void
-    setSelectedCustomer: (checked: boolean, customer: Lead) => void
-    setSelectAllCustomer: (customer: Lead[]) => void
+    setSelectedMembership: (checked: boolean, customer: Lead) => void
+    setSelectAllMembership: (customer: Lead[]) => void
 }
 
-const initialState: CustomersListState = {
+const initialState: MembershipsListState = {
     tableData: initialTableData,
     filterData: initialFilterData,
-    selectedCustomer: [],
+    selectedMembership: [],
 }
 
-export const useCustomerListStore = create<
-    CustomersListState & CustomersListAction
+export const useMembershipListStore = create<
+    MembershipsListState & MembershipsListAction
 >((set) => ({
     ...initialState,
     setFilterData: (payload) => set(() => ({ filterData: payload })),
     setTableData: (payload) => set(() => ({ tableData: payload })),
-    setSelectedCustomer: (checked, row) =>
+    setSelectedMembership: (checked, row) =>
         set((state) => {
-            const prevData = state.selectedCustomer
+            const prevData = state.selectedMembership
             if (checked) {
-                return { selectedCustomer: [...prevData, ...[row]] }
+                return { selectedMembership: [...prevData, ...[row]] }
             } else {
                 if (
-                    prevData.some((prevCustomer) => row.id === prevCustomer.id)
+                    prevData.some((prevMembership) => row.id === prevMembership.id)
                 ) {
                     return {
-                        selectedCustomer: prevData.filter(
-                            (prevCustomer) => prevCustomer.id !== row.id,
+                        selectedMembership: prevData.filter(
+                            (prevMembership) => prevMembership.id !== row.id,
                         ),
                     }
                 }
-                return { selectedCustomer: prevData }
+                return { selectedMembership: prevData }
             }
         }),
-    setSelectAllCustomer: (row) => set(() => ({ selectedCustomer: row })),
+    setSelectAllMembership: (row) => set(() => ({ selectedMembership: row })),
 }))

@@ -1,31 +1,30 @@
-import { apiGetLeads } from '@/services/LeadsService'
 import useSWR from 'swr'
-import { useCustomerListStore } from '../store/membershipListStore'
-import type { Lead } from '@/@types/lead'
+import { useMembershipListStore } from '../store/membershipListStore'
+import { apiGetMemberships } from '@/services/MembershipService'
 
-export default function useCustomerList() {
+export default function useMembershipList() {
     const {
         tableData,
         filterData,
         setTableData,
-        selectedCustomer,
-        setSelectedCustomer,
-        setSelectAllCustomer,
+        selectedMembership,
+        setSelectedMembership,
+        setSelectAllMembership,
         setFilterData,
-    } = useCustomerListStore((state) => state)
+    } = useMembershipListStore((state) => state)
 
     const { data, error, isLoading, mutate } = useSWR(
-        ['/lead', { ...tableData, ...filterData }],
+        ['/membership', { ...tableData, ...filterData }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetLeads<Lead[]>(params),
+        ([_, params]) => apiGetMemberships(),
         {
             revalidateOnFocus: false,
         },
     )
 
-    const customerList = data || []
+    const customerList = data?.plans || []
 
-    const customerListTotal = data?.length || 0
+    const customerListTotal = data?.total || 0
 
     return {
         customerList,
@@ -36,9 +35,9 @@ export default function useCustomerList() {
         filterData,
         mutate,
         setTableData,
-        selectedCustomer,
-        setSelectedCustomer,
-        setSelectAllCustomer,
+        selectedMembership,
+        setSelectedMembership,
+        setSelectAllMembership,
         setFilterData,
     }
 }
