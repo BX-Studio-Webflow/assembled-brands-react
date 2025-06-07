@@ -26,7 +26,7 @@ const EventListActionTools = () => {
             <Button
                 variant="solid"
                 icon={<TbPlus className="text-xl" />}
-                onClick={() => navigate('/concepts/events/event-create')}
+                onClick={() => navigate('/concepts/event/event-create')}
             >
                 Add new
             </Button>

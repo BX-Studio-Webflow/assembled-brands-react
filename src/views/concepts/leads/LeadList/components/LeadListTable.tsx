@@ -86,7 +86,7 @@ const LeadListTable = () => {
     }
 
     const handleViewDetails = (customer: Lead) => {
-        navigate(`/concepts/lead/lead-details/${customer.id}`)
+        navigate(`/concepts/lead/lead-edit/${customer.id}`)
     }
 
     const columns: ColumnDef<Lead>[] = useMemo(
