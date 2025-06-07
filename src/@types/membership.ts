@@ -35,3 +35,13 @@ export interface GetMembershipsResponse {
     plans: Membership[]
     total: number
 }
+
+export interface CreateMembershipBody {
+    name: string
+    description: string
+    price: number
+    payment_type: 'one_off' | 'recurring'
+    price_point: 'standalone' | 'course' | 'podcast'
+    billing?: 'per-day' | 'package'
+    dates?: string[]
+}

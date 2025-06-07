@@ -3,7 +3,6 @@ import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import OverviewSection from './OverviewSection'
-import TagsSection from './TagsSection'
 import isEmpty from 'lodash/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -16,18 +15,17 @@ type MembershipFormProps = {
     onFormSubmit: (values: MembershipFormSchema) => void
     defaultValues?: MembershipFormSchema
     newMembership?: boolean
-    eventId?: number
 } & CommonProps
 
-const validationSchema: ZodType<MembershipFormSchema> = z.object({
-    firstName: z.string().min(1, 'First name is required'),
-    lastName: z.string().min(1, 'Last name is required'),
-    email: z.string().email('Invalid email address'),
-    dialCode: z.string().min(1, 'Please select your country code'),
-    phoneNumber: z.string().min(1, 'Please input your mobile number'),
-    img: z.string(),
-    tags: z.array(z.object({ value: z.string(), label: z.string() })),
-})
+const validationSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    description: z.string().min(1, 'Description is required'),
+    price: z.coerce.number().min(0, 'Price must be positive'),
+    payment_type: z.enum(['one_off', 'recurring']),
+    price_point: z.enum(['standalone', 'course', 'podcast']),
+    billing: z.enum(['per-day', 'package']).optional(),
+    dates: z.array(z.string()).optional(),
+}) satisfies ZodType<MembershipFormSchema>
 
 const MembershipForm = (props: MembershipFormProps) => {
     const { onFormSubmit, defaultValues = {}, children } = props
@@ -53,10 +51,9 @@ const MembershipForm = (props: MembershipFormProps) => {
 
     const onSubmit = async (values: MembershipFormSchema) => {
         try {
-            // Call the original onFormSubmit
             onFormSubmit?.(values)
         } catch (error) {
-            console.error('Error creating lead:', error)
+            console.error('Error creating membership:', error)
             throw error
         }
     }
@@ -68,14 +65,7 @@ const MembershipForm = (props: MembershipFormProps) => {
             onSubmit={handleSubmit(onSubmit)}
         >
             <Container>
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="gap-4 flex flex-col flex-auto">
-                        <OverviewSection control={control} errors={errors} />
-                    </div>
-                    <div className="md:w-[370px] gap-4 flex flex-col">
-                        <TagsSection control={control} errors={errors} />
-                    </div>
-                </div>
+                <OverviewSection control={control} errors={errors} />
             </Container>
             <BottomStickyBar>{children}</BottomStickyBar>
         </Form>

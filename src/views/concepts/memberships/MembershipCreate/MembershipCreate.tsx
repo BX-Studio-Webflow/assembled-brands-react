@@ -6,39 +6,42 @@ import toast from '@/components/ui/toast'
 import MembershipForm, { MembershipFormSchema } from '../MembershipForm'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { TbTrash } from 'react-icons/tb'
-import { useNavigate, useSearchParams } from 'react-router'
-import { apiCreateLead } from '@/services/LeadsService'
-import { useAuth } from '@/auth'
+import { useNavigate } from 'react-router'
+import { apiCreateMembership } from '@/services/MembershipService'
+import { AxiosError } from 'axios'
 
 const MembershipCreate = () => {
     const navigate = useNavigate()
-    const { user } = useAuth()
-    const [searchParams] = useSearchParams()
-    const eventId = searchParams.get('eventId')
-        ? Number(searchParams.get('eventId'))
-        : undefined
-
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values: MembershipFormSchema) => {
-        setIsSubmiting(false) // Form submission is now handled in MembershipForm
-        // Format data according to backend schema
-        const leadData = {
-            name: `${values.firstName} ${values.lastName}`,
-            email: values.email,
-            phone: `${values.dialCode}${values.phoneNumber}`,
-            host_id: user?.id || 0,
+        setIsSubmiting(true)
+        try {
+            await apiCreateMembership({
+                name: values.name,
+                description: values.description,
+                price: values.price,
+                payment_type: values.payment_type,
+                price_point: values.price_point,
+                billing: values.billing,
+                dates: values.dates,
+            })
+            toast.push(
+                <Notification type="success">Membership created!</Notification>,
+                { placement: 'top-center' },
+            )
+            navigate('/concepts/memberships/membership-list')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
         }
-
-        // Make API call
-        await apiCreateLead(leadData)
-        toast.push(
-            <Notification type="success">Membership created!</Notification>,
-            { placement: 'top-center' },
-        )
-        navigate('/concepts/lead/lead-list')
+        setIsSubmiting(false)
     }
 
     const handleConfirmDiscard = () => {
@@ -47,7 +50,7 @@ const MembershipCreate = () => {
             <Notification type="success">Membership discarded!</Notification>,
             { placement: 'top-center' },
         )
-        navigate('/concepts/lead/lead-list')
+        navigate('/concepts/memberships/membership-list')
     }
 
     const handleDiscard = () => {
@@ -62,15 +65,14 @@ const MembershipCreate = () => {
         <>
             <MembershipForm
                 newMembership
-                eventId={eventId}
                 defaultValues={{
-                    firstName: '',
-                    lastName: '',
-                    email: '',
-                    img: '',
-                    phoneNumber: '',
-                    dialCode: '',
-                    tags: [],
+                    name: '',
+                    description: '',
+                    price: 0,
+                    payment_type: 'one_off',
+                    price_point: 'standalone',
+                    billing: undefined,
+                    dates: [],
                 }}
                 onFormSubmit={handleFormSubmit}
             >

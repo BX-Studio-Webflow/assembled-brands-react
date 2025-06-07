@@ -29,7 +29,16 @@ export type AccountField = {
     accountVerified?: boolean
 }
 
-export type MembershipFormSchema = OverviewFields
+export interface MembershipFormSchema {
+    name: string
+    description: string
+    price: number
+    payment_type: 'one_off' | 'recurring'
+    price_point: 'standalone' | 'course' | 'podcast'
+    billing?: 'per-day' | 'package'
+    dates?: string[]
+}
+
 export type FormSectionBaseProps = {
     control: Control<MembershipFormSchema>
     errors: FieldErrors<MembershipFormSchema>

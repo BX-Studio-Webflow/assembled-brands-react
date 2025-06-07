@@ -1,4 +1,5 @@
 import {
+    CreateMembershipBody,
     GetMembershipsResponse,
     Membership,
     MembershipQueryParams,
@@ -19,5 +20,15 @@ export async function apiGetMembership(id: number): Promise<Membership> {
     return ApiService.fetchDataWithAxios<Membership>({
         url: `/membership/${id}`,
         method: 'get',
+    })
+}
+
+export async function apiCreateMembership(
+    data: CreateMembershipBody,
+): Promise<Membership> {
+    return ApiService.fetchDataWithAxios<Membership>({
+        url: '/membership',
+        method: 'post',
+        data,
     })
 }
