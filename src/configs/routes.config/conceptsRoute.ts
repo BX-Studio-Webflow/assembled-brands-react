@@ -26,17 +26,13 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.customers.customerList',
         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-list`,
-        component: lazy(
-            () => import('@/views/concepts/leads/LeadList'),
-        ),
+        component: lazy(() => import('@/views/concepts/leads/LeadList')),
         authority: [ADMIN, USER],
     },
     {
         key: 'concepts.customers.customerEdit',
         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-edit/:id`,
-        component: lazy(
-            () => import('@/views/concepts/leads/LeadEdit'),
-        ),
+        component: lazy(() => import('@/views/concepts/leads/LeadEdit')),
         authority: [ADMIN, USER],
         meta: {
             header: {
@@ -51,9 +47,7 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.customers.customerCreate',
         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-create`,
-        component: lazy(
-            () => import('@/views/concepts/leads/LeadCreate'),
-        ),
+        component: lazy(() => import('@/views/concepts/leads/LeadCreate')),
         authority: [ADMIN, USER],
         meta: {
             header: {
@@ -65,17 +59,7 @@ const conceptsRoute: Routes = [
             footer: false,
         },
     },
-    {
-        key: 'concepts.customers.customerDetails',
-        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/:id`,
-        component: lazy(
-            () => import('@/views/concepts/leads/LeadDetails'),
-        ),
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-        },
-    },
+
     {
         key: 'concepts.events.eventList',
         path: `${CONCEPTS_PREFIX_PATH}/event/event-list`,
@@ -108,8 +92,7 @@ const conceptsRoute: Routes = [
             header: {
                 title: 'Create event',
                 contained: true,
-                description:
-                    'Create new event quickly and accurately',
+                description: 'Create new event quickly and accurately',
             },
             footer: false,
         },
@@ -119,30 +102,6 @@ const conceptsRoute: Routes = [
         path: `${CONCEPTS_PREFIX_PATH}/event/stream/:id`,
         component: lazy(() => import('@/views/concepts/events/EventStream')),
         authority: [ADMIN, USER],
-    },
-    {
-        key: 'concepts.events.eventDetails',
-        path: `${CONCEPTS_PREFIX_PATH}/event/event-details/:id`,
-        component: lazy(() => import('@/views/concepts/events/EventDetails')),
-        authority: [ADMIN, USER],
-        meta: {
-            header: {
-                contained: true,
-                title: lazy(
-                    () =>
-                        import(
-                            '@/views/concepts/events/EventDetails/components/EventDetailHeader'
-                        ),
-                ),
-                extraHeader: lazy(
-                    () =>
-                        import(
-                            '@/views/concepts/events/EventDetails/components/EventDetailHeaderExtra'
-                        ),
-                ),
-            },
-            pageContainerType: 'contained',
-        },
     },
 
     {
@@ -186,13 +145,17 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.memberships.membershipList',
         path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-list`,
-        component: lazy(() => import('@/views/concepts/memberships/MembershipList')),
+        component: lazy(
+            () => import('@/views/concepts/memberships/MembershipList'),
+        ),
         authority: [ADMIN, USER],
     },
     {
         key: 'concepts.memberships.membershipEdit',
         path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-edit/:id`,
-        component: lazy(() => import('@/views/concepts/memberships/MembershipEdit')),
+        component: lazy(
+            () => import('@/views/concepts/memberships/MembershipEdit'),
+        ),
         authority: [ADMIN, USER],
         meta: {
             header: {
