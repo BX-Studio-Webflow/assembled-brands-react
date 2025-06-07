@@ -9,6 +9,7 @@ import FileVideo from '@/assets/svg/files/FileVideo'
 import FileAudio from '@/assets/svg/files/FileAudio'
 
 const FileIcon = ({ type, size = 40 }: { type: string; size?: number }) => {
+    console.log(type)
     switch (type) {
         case 'pdf':
             return <FilePdf height={size} width={size} />
