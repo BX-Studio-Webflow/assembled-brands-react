@@ -14,7 +14,7 @@ import {
 } from 'react-icons/tb'
 
 import type { ScrollBarRef } from '@/components/view/ChatBox'
-import EventVideoPlayer from '@/views/concepts/orders/EventStream/components/EventVideoPlayer'
+import EventVideoPlayer from '@/views/concepts/events/EventStream/components/EventVideoPlayer'
 import { EventStreamResponse } from '@/@types/events'
 import NoUserFound from '@/assets/svg/NoUserFound'
 

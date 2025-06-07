@@ -79,7 +79,7 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.events.eventList',
         path: `${CONCEPTS_PREFIX_PATH}/event/event-list`,
-        component: lazy(() => import('@/views/concepts/orders/OrderList')),
+        component: lazy(() => import('@/views/concepts/events/EventList')),
         authority: [ADMIN, USER],
         meta: {
             pageContainerType: 'contained',
@@ -88,7 +88,7 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.events.eventEdit',
         path: `${CONCEPTS_PREFIX_PATH}/event/event-edit/:id`,
-        component: lazy(() => import('@/views/concepts/orders/OrderEdit')),
+        component: lazy(() => import('@/views/concepts/events/EventEdit')),
         authority: [ADMIN, USER],
         meta: {
             header: {
@@ -102,7 +102,7 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.events.eventCreate',
         path: `${CONCEPTS_PREFIX_PATH}/event/event-create`,
-        component: lazy(() => import('@/views/concepts/orders/OrderCreate')),
+        component: lazy(() => import('@/views/concepts/events/EventCreate')),
         authority: [ADMIN, USER],
         meta: {
             header: {
@@ -117,13 +117,13 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.events.eventStream',
         path: `${CONCEPTS_PREFIX_PATH}/event/stream/:id`,
-        component: lazy(() => import('@/views/concepts/orders/EventStream')),
+        component: lazy(() => import('@/views/concepts/events/EventStream')),
         authority: [ADMIN, USER],
     },
     {
         key: 'concepts.events.eventDetails',
         path: `${CONCEPTS_PREFIX_PATH}/event/event-details/:id`,
-        component: lazy(() => import('@/views/concepts/orders/OrderDetails')),
+        component: lazy(() => import('@/views/concepts/events/EventDetails')),
         authority: [ADMIN, USER],
         meta: {
             header: {
@@ -131,13 +131,13 @@ const conceptsRoute: Routes = [
                 title: lazy(
                     () =>
                         import(
-                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeader'
+                            '@/views/concepts/events/EventDetails/components/EventDetailHeader'
                         ),
                 ),
                 extraHeader: lazy(
                     () =>
                         import(
-                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeaderExtra'
+                            '@/views/concepts/events/EventDetails/components/EventDetailHeaderExtra'
                         ),
                 ),
             },
