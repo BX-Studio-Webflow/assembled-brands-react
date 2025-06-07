@@ -55,7 +55,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
-                    {
+                    /* {
                         key: 'concepts.customers.customerEdit',
                         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-edit/1`,
                         title: 'Customer Edit',
@@ -71,7 +71,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                             },
                         },
                         subMenu: [],
-                    },
+                    }, */
                     {
                         key: 'concepts.customers.customerCreate',
                         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-create`,
@@ -242,7 +242,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
-                    {
+                    /* {
                         key: 'concepts.products.productEdit',
                         path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-edit/12`,
                         title: 'Product Edit',
@@ -258,7 +258,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                             },
                         },
                         subMenu: [],
-                    },
+                    }, */
                     {
                         key: 'concepts.products.productCreate',
                         path: `${CONCEPTS_PREFIX_PATH}/podcasts/podcast-create`,
@@ -331,7 +331,8 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         key: 'concepts.memberships.membershipCreate',
                         path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-create`,
                         title: 'Membership Create',
-                        translateKey: 'nav.conceptsMemberships.membershipCreate',
+                        translateKey:
+                            'nav.conceptsMemberships.membershipCreate',
                         icon: 'productCreate',
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [ADMIN, USER],
