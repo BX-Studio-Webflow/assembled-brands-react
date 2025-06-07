@@ -21,9 +21,8 @@ const MembershipEdit = () => {
     const navigate = useNavigate()
 
     const { data, isLoading } = useSWR<Membership>(
-        [`/membership/${id}`, { id: id as string }],
-        (_: string, params: { id: string }) =>
-            apiGetMembership(Number(params.id)),
+        id ? `/membership/${id}` : null,
+        () => apiGetMembership(Number(id)),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
