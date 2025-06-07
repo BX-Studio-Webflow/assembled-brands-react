@@ -27,7 +27,7 @@ const conceptsRoute: Routes = [
         key: 'concepts.customers.customerList',
         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-list`,
         component: lazy(
-            () => import('@/views/concepts/customers/CustomerList'),
+            () => import('@/views/concepts/leads/LeadList'),
         ),
         authority: [ADMIN, USER],
     },
@@ -35,7 +35,7 @@ const conceptsRoute: Routes = [
         key: 'concepts.customers.customerEdit',
         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-edit/:id`,
         component: lazy(
-            () => import('@/views/concepts/customers/CustomerEdit'),
+            () => import('@/views/concepts/leads/LeadEdit'),
         ),
         authority: [ADMIN, USER],
         meta: {
@@ -52,14 +52,14 @@ const conceptsRoute: Routes = [
         key: 'concepts.customers.customerCreate',
         path: `${CONCEPTS_PREFIX_PATH}/lead/lead-create`,
         component: lazy(
-            () => import('@/views/concepts/customers/CustomerCreate'),
+            () => import('@/views/concepts/leads/LeadCreate'),
         ),
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Create customer',
+                title: 'Create lead',
                 description:
-                    'Manage customer details, track purchases, and update preferences easily.',
+                    'Manage lead details, track purchases, and update preferences easily.',
                 contained: true,
             },
             footer: false,
@@ -69,7 +69,7 @@ const conceptsRoute: Routes = [
         key: 'concepts.customers.customerDetails',
         path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/:id`,
         component: lazy(
-            () => import('@/views/concepts/customers/CustomerDetails'),
+            () => import('@/views/concepts/leads/LeadDetails'),
         ),
         authority: [ADMIN, USER],
         meta: {
@@ -106,10 +106,10 @@ const conceptsRoute: Routes = [
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Create order',
+                title: 'Create event',
                 contained: true,
                 description:
-                    'Create new customer orders quickly and accurately',
+                    'Create new event quickly and accurately',
             },
             footer: false,
         },
