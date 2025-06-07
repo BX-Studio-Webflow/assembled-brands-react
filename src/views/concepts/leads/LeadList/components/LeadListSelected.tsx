@@ -34,9 +34,7 @@ const LeadListSelected = () => {
 
     const handleConfirmDelete = () => {
         const newLeadList = customerList.filter((customer) => {
-            return !selectedLead.some(
-                (selected) => selected.id === customer.id,
-            )
+            return !selectedLead.some((selected) => selected.id === customer.id)
         })
         setSelectAllLead([])
         mutate(
@@ -80,8 +78,7 @@ const LeadListSelected = () => {
                                         </span>
                                         <span className="font-semibold flex items-center gap-1">
                                             <span className="heading-text">
-                                                {selectedLead.length}{' '}
-                                                Leads
+                                                {selectedLead.length} Leads
                                             </span>
                                             <span>selected</span>
                                         </span>

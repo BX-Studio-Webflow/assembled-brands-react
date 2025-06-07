@@ -34,10 +34,9 @@ const LeadCreate = () => {
 
         // Make API call
         await apiCreateLead(leadData)
-        toast.push(
-            <Notification type="success">Lead created!</Notification>,
-            { placement: 'top-center' },
-        )
+        toast.push(<Notification type="success">Lead created!</Notification>, {
+            placement: 'top-center',
+        })
         navigate('/concepts/lead/lead-list')
     }
 

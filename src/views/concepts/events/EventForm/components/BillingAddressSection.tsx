@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button'
 import { Controller } from 'react-hook-form'
 import DatePicker from '@/components/ui/DatePicker'
 import { FiX } from 'react-icons/fi'
+import Checkbox from '@/components/ui/Checkbox'
 
 const { Control } = components
 const { DateTimepicker } = DatePicker
@@ -74,17 +75,14 @@ const BillingAddressSection = ({
                             name={`membership_plans.${idx}.isFree` as const}
                             control={control}
                             render={({ field }) => (
-                                <input
-                                    type="checkbox"
+                                <Checkbox
                                     checked={!!field.value}
-                                    className="mr-2"
-                                    onChange={(e) =>
-                                        field.onChange(e.target.checked)
-                                    }
-                                />
+                                    onChange={(value) => field.onChange(value)}
+                                >
+                                    Free
+                                </Checkbox>
                             )}
-                        />{' '}
-                        Free
+                        />
                     </div>
                     {!plans[idx]?.isFree && (
                         <FormItem

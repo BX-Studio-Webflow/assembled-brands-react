@@ -310,7 +310,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
-                    {
+                    /*{
                         key: 'concepts.memberships.membershipEdit',
                         path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-edit/12`,
                         title: 'Membership Edit',
@@ -326,7 +326,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                             },
                         },
                         subMenu: [],
-                    },
+                    },*/
                     {
                         key: 'concepts.memberships.membershipCreate',
                         path: `${CONCEPTS_PREFIX_PATH}/memberships/membership-create`,

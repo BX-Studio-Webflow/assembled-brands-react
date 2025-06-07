@@ -27,17 +27,17 @@ const EventCreate = () => {
                 ...plan,
                 date:
                     typeof plan.date === 'object' && plan.date instanceof Date
-                        ? plan.date.getTime()
-                        : plan.date,
+                        ? Math.floor(plan.date.getTime() / 1000)
+                        : Math.floor(plan.date / 1000),
             })),
         }
         await apiCreateEvent(payload as CreateEventRequest)
-        navigate('/concepts/events/event-list')
+        navigate('/concepts/event/event-list')
         setIsSubmiting(false)
         toast.push(<Notification type="success">Event created!</Notification>, {
             placement: 'top-center',
         })
-        navigate('/concepts/events/event-list')
+        navigate('/concepts/event/event-list')
     }
 
     const handleConfirmDiscard = () => {

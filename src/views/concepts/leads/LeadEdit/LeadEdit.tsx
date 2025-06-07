@@ -90,10 +90,9 @@ const LeadEdit = () => {
 
     const handleConfirmDelete = () => {
         setDeleteConfirmationOpen(true)
-        toast.push(
-            <Notification type="success">Lead deleted!</Notification>,
-            { placement: 'top-center' },
-        )
+        toast.push(<Notification type="success">Lead deleted!</Notification>, {
+            placement: 'top-center',
+        })
         navigate('/concepts/customers/customer-list')
     }
 

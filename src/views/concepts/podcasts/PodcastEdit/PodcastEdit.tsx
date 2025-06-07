@@ -115,8 +115,8 @@ const PodcastEdit = () => {
                                 </div>
                                 <PodcastForm
                                     defaultValues={getDefaultValues()}
-                                    onFormSubmit={handleFormSubmit}
                                     newPodcast={false}
+                                    onFormSubmit={handleFormSubmit}
                                 >
                                     <div className="flex items-center justify-between px-8">
                                         <Button

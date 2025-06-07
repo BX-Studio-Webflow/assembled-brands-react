@@ -43,29 +43,27 @@ const initialState: LeadsListState = {
     selectedLead: [],
 }
 
-export const useLeadListStore = create<
-    LeadsListState & LeadsListAction
->((set) => ({
-    ...initialState,
-    setFilterData: (payload) => set(() => ({ filterData: payload })),
-    setTableData: (payload) => set(() => ({ tableData: payload })),
-    setSelectedLead: (checked, row) =>
-        set((state) => {
-            const prevData = state.selectedLead
-            if (checked) {
-                return { selectedLead: [...prevData, ...[row]] }
-            } else {
-                if (
-                    prevData.some((prevLead) => row.id === prevLead.id)
-                ) {
-                    return {
-                        selectedLead: prevData.filter(
-                            (prevLead) => prevLead.id !== row.id,
-                        ),
+export const useLeadListStore = create<LeadsListState & LeadsListAction>(
+    (set) => ({
+        ...initialState,
+        setFilterData: (payload) => set(() => ({ filterData: payload })),
+        setTableData: (payload) => set(() => ({ tableData: payload })),
+        setSelectedLead: (checked, row) =>
+            set((state) => {
+                const prevData = state.selectedLead
+                if (checked) {
+                    return { selectedLead: [...prevData, ...[row]] }
+                } else {
+                    if (prevData.some((prevLead) => row.id === prevLead.id)) {
+                        return {
+                            selectedLead: prevData.filter(
+                                (prevLead) => prevLead.id !== row.id,
+                            ),
+                        }
                     }
+                    return { selectedLead: prevData }
                 }
-                return { selectedLead: prevData }
-            }
-        }),
-    setSelectAllLead: (row) => set(() => ({ selectedLead: row })),
-}))
+            }),
+        setSelectAllLead: (row) => set(() => ({ selectedLead: row })),
+    }),
+)

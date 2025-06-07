@@ -49,6 +49,7 @@ const EventStream = () => {
             }))
             .sort((a, b) => a.start.getTime() - b.start.getTime())
         const next = sortedDates.find((date) => date.end > now) || null
+        console.log({ sortedDates, next, actual: data.event.memberships })
         let status = 'early'
         if (!next) {
             status = 'ended'
