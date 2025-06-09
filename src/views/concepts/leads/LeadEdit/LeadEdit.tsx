@@ -40,7 +40,8 @@ const LeadEdit = () => {
             const leadData = {
                 name: `${values.firstName} ${values.lastName}`,
                 email: values.email,
-                phone: `${values.dialCode}${values.phoneNumber}`,
+                dial_code: values.dialCode,
+                phone: values.phoneNumber,
                 host_id: user?.id || 0,
             }
             await apiUpdateLead(id as string, leadData)
@@ -76,7 +77,7 @@ const LeadEdit = () => {
                 email: data.email,
                 img: '',
                 phoneNumber: data.phone,
-                dialCode: '',
+                dialCode: data.dial_code || '00',
                 country: '',
                 address: '',
                 city: '',

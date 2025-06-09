@@ -10,15 +10,11 @@ import RichTextEditor from '@/components/shared/RichTextEditor'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import useLeadList from '../hooks/useLeadList'
 import { TbChecks } from 'react-icons/tb'
+import { apiDeleteLead } from '@/services/LeadsService'
 
 const LeadListSelected = () => {
-    const {
-        selectedLead,
-        customerList,
-        mutate,
-        customerListTotal,
-        setSelectAllLead,
-    } = useLeadList()
+    const { selectedLead, customerList, mutate, setSelectAllLead } =
+        useLeadList()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [sendMessageDialogOpen, setSendMessageDialogOpen] = useState(false)
@@ -32,18 +28,23 @@ const LeadListSelected = () => {
         setDeleteConfirmationOpen(false)
     }
 
-    const handleConfirmDelete = () => {
-        const newLeadList = customerList.filter((customer) => {
-            return !selectedLead.some((selected) => selected.id === customer.id)
-        })
-        setSelectAllLead([])
-        mutate(
-            {
-                list: newLeadList,
-                total: customerListTotal - selectedLead.length,
-            },
-            false,
-        )
+    const handleConfirmDelete = async () => {
+        try {
+            // Delete all leads in parallel
+            await Promise.all(
+                selectedLead.map((lead) => apiDeleteLead(String(lead.id))),
+            )
+            // Update local state after successful deletion
+            const newLeadList = customerList.filter((customer) => {
+                return !selectedLead.some(
+                    (selected) => selected.id === customer.id,
+                )
+            })
+            mutate(newLeadList)
+            setSelectAllLead([])
+        } catch (error) {
+            console.error('Error deleting leads:', error)
+        }
         setDeleteConfirmationOpen(false)
     }
 

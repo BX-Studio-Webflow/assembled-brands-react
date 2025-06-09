@@ -28,7 +28,8 @@ const LeadCreate = () => {
         const leadData = {
             name: `${values.firstName} ${values.lastName}`,
             email: values.email,
-            phone: `${values.dialCode}${values.phoneNumber}`,
+            dial_code: values.dialCode,
+            phone: values.phoneNumber,
             host_id: user?.id || 0,
         }
 
