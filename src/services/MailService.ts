@@ -9,6 +9,13 @@ export async function apiGetMails<T>(params?: Record<string, unknown>) {
     })
 }
 
+export async function apiGetMail<T>(id: string) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: `/email/${id}`,
+        method: 'get',
+    })
+}
+
 export async function apiCreateMail(data: MailRequestBody) {
     return ApiService.fetchDataWithAxios({
         url: '/email',

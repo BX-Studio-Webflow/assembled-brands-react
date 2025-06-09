@@ -52,7 +52,7 @@ const MailList = () => {
 
     const { larger } = useResponsive()
 
-    const { fetchMails, isMailsFetching } = useMail()
+    const { fetchMails, isMailsFetching, fetchMail } = useMail()
 
     useEffect(() => {
         const category = query.get('category')
@@ -86,7 +86,9 @@ const MailList = () => {
     const handleMailClick = (e: MouseEvent<HTMLElement>, mail: Mail) => {
         e.stopPropagation()
         setMail(mail)
+        setSelectedMail([mail.id])
         onResetChecked()
+        fetchMail(String(mail.id))
         navigate(`${location.pathname}?mail=${mail.id}`, { replace: true })
     }
 

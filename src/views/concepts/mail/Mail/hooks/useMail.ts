@@ -1,5 +1,5 @@
 import { useMailStore } from '../store/mailStore'
-import { apiGetMails } from '@/services/MailService'
+import { apiGetMails, apiGetMail } from '@/services/MailService'
 import useSWRMutation from 'swr/mutation'
 import type { GetMailsResponse, GetMailResponse } from '../types'
 
@@ -12,7 +12,7 @@ async function getMails(
 }
 
 async function getMail(_: string, { arg }: { arg: string }) {
-    const data = await apiGetMails<GetMailResponse>({ id: arg })
+    const data = await apiGetMail<GetMailResponse>(arg)
     return data
 }
 
@@ -38,7 +38,7 @@ const useMail = () => {
     )
 
     const { trigger: fetchMail, isMutating: isMailFetching } = useSWRMutation(
-        `/api/mail/${selectedMailId}`,
+        `/email/${selectedMailId[0]}`,
         getMail,
         {
             onSuccess: (mail) => {

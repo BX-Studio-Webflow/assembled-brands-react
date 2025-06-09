@@ -64,4 +64,20 @@ export interface GetMailRequest {
     id: string
 }
 
-export interface GetMailResponse extends Mail {}
+export interface GetMailResponse {
+    id: number
+    email: string
+    subject: string
+    title: string
+    subtitle: string
+    body: string
+    button_text: string
+    button_link: string
+    created_at: string
+    checked: boolean
+    starred: boolean
+    flagged: boolean
+    host_id: number
+    status: string
+    updated_at: string
+}
