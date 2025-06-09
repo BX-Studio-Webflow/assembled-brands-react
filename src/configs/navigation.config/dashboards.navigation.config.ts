@@ -22,16 +22,16 @@ const dashboardsNavigationConfig: NavigationTree[] = [
         },
         subMenu: [
             {
-                key: 'dashboard.ecommerce',
-                path: `${DASHBOARDS_PREFIX_PATH}/ecommerce`,
-                title: 'Ecommerce',
-                translateKey: 'nav.dashboard.ecommerce',
-                icon: 'dashboardEcommerce',
+                key: 'dashboard.information',
+                path: `${DASHBOARDS_PREFIX_PATH}/information`,
+                title: 'Analytics',
+                translateKey: 'nav.dashboard.information',
+                icon: 'dashboardAnalytic',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],
                 subMenu: [],
             },
-            {
+            /* {
                 key: 'dashboard.project',
                 path: `${DASHBOARDS_PREFIX_PATH}/project`,
                 title: 'Project',
@@ -60,7 +60,7 @@ const dashboardsNavigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],
                 subMenu: [],
-            },
+            },*/
         ],
     },
 ]

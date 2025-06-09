@@ -9,7 +9,7 @@ const HeroContent = ({ mode }: { mode: Mode }) => {
     const navigate = useNavigate()
 
     const handlePreview = () => {
-        navigate('/dashboards/ecommerce')
+        navigate('/dashboards/information')
     }
 
     const handleGetTemplate = () => {

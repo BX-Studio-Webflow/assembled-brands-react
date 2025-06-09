@@ -348,7 +348,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 ],
             },
 
-            {
+           /* {
                 key: 'concepts.projects',
                 path: '',
                 title: 'Projects',
@@ -683,7 +683,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 },
                 subMenu: [],
-            },
+            },*/
 
             {
                 key: 'concepts.mail',
@@ -701,7 +701,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 },
                 subMenu: [],
             },
-            {
+           /* {
                 key: 'concepts.chat',
                 path: `${CONCEPTS_PREFIX_PATH}/chat`,
                 title: 'Chat',
@@ -716,7 +716,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 },
                 subMenu: [],
-            },
+            },*/
         ],
     },
 ]
