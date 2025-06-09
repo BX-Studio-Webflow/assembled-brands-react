@@ -13,6 +13,16 @@ import useSWR from 'swr'
 import type { LeadFormSchema } from '../LeadForm'
 import type { Lead } from '@/@types/lead'
 import { useAuth } from '@/auth'
+import ProfileSection from './ProfileSection'
+import { Card } from '@/components/ui/Card'
+import TabNav from '@/components/ui/Tabs/TabNav'
+import TabList from '@/components/ui/Tabs/TabList'
+import TabContent from '@/components/ui/Tabs/TabContent'
+import BillingSection from './BillingSection'
+import ActivitySection from './ActivitySection'
+import { Tabs } from '@/components/ui'
+import Loading from '@/components/shared/Loading'
+import isEmpty from 'lodash/isEmpty'
 
 const LeadEdit = () => {
     const { id } = useParams()
@@ -158,6 +168,39 @@ const LeadEdit = () => {
                             </div>
                         </Container>
                     </LeadForm>
+                    <Loading loading={isLoading}>
+                        {!isEmpty(data) && (
+                            <div className="flex flex-col xl:flex-row gap-4">
+                                <div className="min-w-[330px] 2xl:min-w-[400px]">
+                                    <ProfileSection data={data} />
+                                </div>
+                                <Card className="w-full">
+                                    <Tabs defaultValue="billing">
+                                        <TabList>
+                                            <TabNav value="billing">
+                                                Billing
+                                            </TabNav>
+                                            <TabNav value="activity">
+                                                Events
+                                            </TabNav>
+                                        </TabList>
+                                        <div className="p-4">
+                                            <TabContent value="billing">
+                                                <BillingSection data={data} />
+                                            </TabContent>
+                                            <TabContent value="activity">
+                                                <ActivitySection
+                                                    bookings={
+                                                        data.bookings || []
+                                                    }
+                                                />
+                                            </TabContent>
+                                        </div>
+                                    </Tabs>
+                                </Card>
+                            </div>
+                        )}
+                    </Loading>
                     <ConfirmDialog
                         isOpen={deleteConfirmationOpen}
                         type="danger"

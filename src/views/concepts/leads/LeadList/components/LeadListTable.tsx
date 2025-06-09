@@ -143,6 +143,12 @@ const LeadListTable = () => {
             {
                 header: 'Phone',
                 accessorKey: 'phone',
+                cell: (props) => {
+                    const { row } = props
+                    const dialCode = row.original.dial_code || ''
+                    const phone = row.original.phone || ''
+                    return `${dialCode}${phone}`
+                },
             },
             {
                 header: 'Status',
@@ -165,12 +171,21 @@ const LeadListTable = () => {
                 },
             },
             {
-                header: 'Registered Date',
-                accessorKey: 'registered_date',
+                header: 'Created',
+                accessorKey: 'created_at',
                 cell: (props) => {
+                    const { created_at } = props.row.original
                     return (
-                        <span>
-                            {props.row.original.registered_date || 'N/A'}
+                        <span className="font-semibold">
+                            {created_at
+                                ? new Date(created_at).toLocaleString('en-GB', {
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      year: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                  })
+                                : ''}
                         </span>
                     )
                 },

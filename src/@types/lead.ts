@@ -3,6 +3,7 @@ export interface Lead {
     name: string
     email: string
     phone: string
+    dial_code: string
     event_id: number | null
     registered_date: string | null
     membership_active: boolean
@@ -18,6 +19,57 @@ export interface Lead {
     events: Event[]
     membership: Membership | null
     callback: Callback | null
+    tags: {
+        id: number
+        tag_id: number
+        lead_id: number
+        created_at: string
+        updated_at: string
+        tag: {
+            id: number
+            host_id: number
+            tag: string
+            created_at: string
+            updated_at: string
+        }
+    }[]
+    payments: {
+        id: number
+        contact_id: number
+        lead_id: number
+        event_id: number
+        membership_id: number
+        stripe_customer_id: string
+        checkout_session_id: string
+        amount: string
+        currency: string
+        status: string
+        payment_type: string
+        metadata: {
+            dates?: number[]
+            eventName?: string
+            sessionId?: string
+            membershipName?: string
+        }
+        created_at: string
+        updated_at: string
+    }[]
+    bookings: {
+        id: number
+        lead_id: number
+        host_id: number
+        event_id: number
+        created_at: string
+        updated_at: string
+        event: {
+            id: number
+            event_name: string
+            event_description: string
+            status: string
+            created_at: string
+            updated_at: string
+        }
+    }[]
 }
 
 export interface Event {
