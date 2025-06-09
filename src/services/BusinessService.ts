@@ -1,16 +1,20 @@
-export const apiUpdateBusiness = (data: {
-    name: string
-    address: string
-    email: string
-    dial_code: string
-    phone: string
-}) => {
+import ApiService from './ApiService'
+import type {
+    GetBusinessResponse,
+    UpdateBusinessRequest,
+} from '@/@types/business'
+
+export const apiGetBusiness = () => {
+    return ApiService.fetchDataWithAxios<GetBusinessResponse>({
+        url: '/business/my',
+        method: 'get',
+    })
+}
+
+export const apiUpdateBusiness = (data: UpdateBusinessRequest) => {
     return ApiService.fetchDataWithAxios<void>({
         url: '/business/my',
         method: 'post',
         data,
-        headers: {
-            'Content-Type': 'application/json',
-        },
     })
 }

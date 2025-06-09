@@ -23,17 +23,14 @@ import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
 
-type ProfileSchema = {
+type BusinessProfileSchema = {
     firstName: string
     lastName: string
     email: string
     dialCode: string
     phoneNumber: string
     img: string
-    country: string
     address: string
-    postcode: string
-    city: string
 }
 
 type CountryOption = {
@@ -44,7 +41,7 @@ type CountryOption = {
 
 const { Control } = components
 
-const validationSchema: ZodType<ProfileSchema> = z.object({
+const validationSchema: ZodType<BusinessProfileSchema> = z.object({
     firstName: z.string().min(1, { message: 'First name required' }),
     lastName: z.string().min(1, { message: 'Last name required' }),
     email: z
@@ -55,10 +52,7 @@ const validationSchema: ZodType<ProfileSchema> = z.object({
     phoneNumber: z
         .string()
         .min(1, { message: 'Please input your mobile number' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
-    address: z.string().min(1, { message: 'Addrress required' }),
-    postcode: z.string().min(1, { message: 'Postcode required' }),
-    city: z.string().min(1, { message: 'City required' }),
+    address: z.string().min(1, { message: 'Address required' }),
     img: z.string(),
 })
 
@@ -142,7 +136,7 @@ const SettingsBusiness = () => {
         reset,
         formState: { errors, isSubmitting },
         control,
-    } = useForm<ProfileSchema>({
+    } = useForm<BusinessProfileSchema>({
         resolver: zodResolver(validationSchema),
     })
 
@@ -162,8 +156,9 @@ const SettingsBusiness = () => {
         }
     }, [data, reset])
 
-    const onSubmit = async (values: ProfileSchema) => {
+    const onSubmit = async (values: BusinessProfileSchema) => {
         try {
+            console.log('Form submitted with values:', values)
             const formData = {
                 name: `${values.firstName} ${values.lastName}`.trim(),
                 address: values.address,
