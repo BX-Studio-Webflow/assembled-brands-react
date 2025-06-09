@@ -39,3 +39,10 @@ export async function apiToggleMail(id: number, action: 'flag' | 'star') {
         data: { id, action },
     })
 }
+
+export async function apiDeleteMail(id: number) {
+    return ApiService.fetchDataWithAxios({
+        url: `/email/${id}`,
+        method: 'delete',
+    })
+}

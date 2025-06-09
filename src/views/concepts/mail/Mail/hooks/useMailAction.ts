@@ -1,7 +1,7 @@
 import { useMailStore } from '../store/mailStore'
 import cloneDeep from 'lodash/cloneDeep'
 import type { Mail } from '../types'
-import { apiToggleMail } from '@/services/MailService'
+import { apiToggleMail, apiDeleteMail } from '@/services/MailService'
 
 const useMailAction = () => {
     const { mailList, setMail, setMailList, setSelectedMail } = useMailStore()
@@ -69,9 +69,16 @@ const useMailAction = () => {
         setSelectedMail([])
     }
 
-    const onMailDelete = (mailsId: number[]) => {
-        setMailList(mailList.filter((mail) => !mailsId.includes(mail.id)))
-        setSelectedMail([])
+    const onMailDelete = async (mailsId: number[]) => {
+        try {
+            // Delete all emails in parallel
+            await Promise.all(mailsId.map((id) => apiDeleteMail(id)))
+            // Update local state after successful deletion
+            setMailList(mailList.filter((mail) => !mailsId.includes(mail.id)))
+            setSelectedMail([])
+        } catch (error) {
+            console.error('Error deleting emails:', error)
+        }
     }
 
     const onResetChecked = () => {
