@@ -9,7 +9,6 @@ import NumericInput from '@/components/shared/NumericInput'
 import { countryList } from '@/constants/countries.constant'
 import { components } from 'react-select'
 import type { ControlProps, OptionProps } from 'react-select'
-import sleep from '@/utils/sleep'
 import useSWR from 'swr'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, Controller } from 'react-hook-form'
@@ -19,6 +18,7 @@ import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
 import { apiGetUserMe, apiUploadProfileImage } from '@/services/AuthService'
+import { apiUpdateBusiness } from '@/services/BusinessService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
@@ -100,7 +100,7 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
     )
 }
 
-const SettingsProfile = () => {
+const SettingsBusiness = () => {
     const { data, mutate } = useSWR(
         '/user/me',
         () => apiGetUserMe<GetSettingsProfileResponse>(),
@@ -147,24 +147,47 @@ const SettingsProfile = () => {
     })
 
     useEffect(() => {
-        if (data?.user) {
-            const name = data.user.name || ''
+        if (data?.business) {
             const formData = {
-                firstName: name.split(' ')[0] || '',
-                lastName: name.split(' ').slice(1).join(' ') || '',
-                email: data.user.email || '',
-                dialCode: data.user.dial_code || '',
-                phoneNumber: data.user.phone || '',
-                img: data.user.profile_picture || '',
+                firstName: data.business.name.split(' ')[0] || '',
+                lastName:
+                    data.business.name.split(' ').slice(1).join(' ') || '',
+                email: data.business.email || '',
+                dialCode: data.business.dial_code || '',
+                phoneNumber: data.business.phone || '',
+                img: data.business.logo || '',
+                address: data.business.address || '',
             }
             reset(formData)
         }
     }, [data, reset])
 
     const onSubmit = async (values: ProfileSchema) => {
-        await sleep(500)
-        if (data) {
-            mutate({ ...data, ...values }, false)
+        try {
+            const formData = {
+                name: `${values.firstName} ${values.lastName}`.trim(),
+                address: values.address,
+                email: values.email,
+                dial_code: values.dialCode,
+                phone: values.phoneNumber,
+            }
+            console.log('Submitting form data:', formData)
+            await apiUpdateBusiness(formData)
+            toast.push(
+                <Notification type="success">
+                    Business details updated successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            mutate() // Refresh the data
+        } catch (error) {
+            console.error('Error updating business:', error)
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
         }
     }
 
@@ -209,7 +232,7 @@ const SettingsProfile = () => {
 
     return (
         <>
-            <h4 className="mb-8">Personal information</h4>
+            <h4 className="mb-8">Business information</h4>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-8">
                     <Controller
@@ -377,6 +400,25 @@ const SettingsProfile = () => {
                     </FormItem>
                 </div>
 
+                <FormItem
+                    label="Address"
+                    invalid={Boolean(errors.address)}
+                    errorMessage={errors.address?.message}
+                >
+                    <Controller
+                        name="address"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                autoComplete="off"
+                                placeholder="Address"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+
                 <div className="flex justify-end">
                     <Button
                         variant="solid"
@@ -391,4 +433,4 @@ const SettingsProfile = () => {
     )
 }
 
-export default SettingsProfile
+export default SettingsBusiness

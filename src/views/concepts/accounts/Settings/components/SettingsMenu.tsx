@@ -9,6 +9,7 @@ import {
     TbFileDollar,
     TbRefreshDot,
     TbUsers,
+    TbBuilding,
 } from 'react-icons/tb'
 import type { View } from '../types'
 import type { ReactNode } from 'react'
@@ -17,6 +18,7 @@ const { MenuItem } = Menu
 
 const menuList: { label: string; value: View; icon: ReactNode }[] = [
     { label: 'Profile', value: 'profile', icon: <TbUserSquare /> },
+    { label: 'Business', value: 'business', icon: <TbBuilding /> },
     { label: 'Security', value: 'security', icon: <TbLock /> },
     { label: 'Notification', value: 'notification', icon: <TbBell /> },
     { label: 'Billing', value: 'billing', icon: <TbFileDollar /> },

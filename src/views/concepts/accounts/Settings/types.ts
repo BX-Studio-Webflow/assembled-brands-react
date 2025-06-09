@@ -5,6 +5,7 @@ export type View =
     | 'billing'
     | 'integration'
     | 'team'
+    | 'business'
 
 export type CreditCard = {
     cardHolderName: string
@@ -34,6 +35,7 @@ export type GetSettingsProfileResponse = {
         address: string
         phone: string
         email: string
+        dial_code: string
         description: string | null
         logo_asset_id: number
         user_id: number
@@ -63,6 +65,7 @@ export type GetSettingsProfileResponse = {
         email: string
         name: string
         phone: string
+        dial_code: string
         role: 'host' | 'master' | 'owner' | 'guest'
         subscription_status: 'active' | 'inactive' | 'expired'
         is_banned: boolean
