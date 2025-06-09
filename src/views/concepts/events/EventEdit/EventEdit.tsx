@@ -11,71 +11,16 @@ import { apiGetEvent } from '@/services/EventService'
 import useSWR from 'swr'
 import { useParams, useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
-import type { EventFormSchema } from '../EventForm'
-
-type GetEventDetailsResponse = {
-    id: string
-    progressStatus: number
-    paymentStatus: number
-    dateTime: number
-    paymentSummary: {
-        subTotal: number
-        tax: number
-        deliveryFees: number
-        total: number
-        customerPayment: number
-    }
-    note: string
-    shipping: {
-        deliveryFees: number
-        estimatedMin: number
-        estimatedMax: number
-        shippingLogo: string
-        shippingVendor: string
-    }
-    product: {
-        id: string
-        name: string
-        productCode: string
-        img: string
-        price: number
-        quantity: number
-        total: number
-        details: Record<string, string[]>
-    }[]
-    activity: {
-        date: number
-        events: {
-            time: number
-            action: string
-            recipient?: string
-        }[]
-    }[]
-    customer: {
-        name: string
-        firstName: string
-        lastName: string
-        email: string
-        phone: string
-        dialCode: string
-        phoneNumber: string
-        img: string
-        previousEvent: number
-        country: string
-        address: string
-        postcode: string
-        city: string
-    }
-}
+import type { EventFormType } from '../EventForm/validation/eventFormSchema'
+import type { Event } from '@/@types/events'
 
 const EventEdit = () => {
     const { id } = useParams()
-
     const navigate = useNavigate()
 
-    const { data, isLoading } = useSWR<GetEventDetailsResponse, { id: string }>(
-        [`/api/project/${id}`],
-        () => apiGetEvent({ id }),
+    const { data, isLoading } = useSWR<Event>(
+        id ? `/event/${id}` : null,
+        () => apiGetEvent(Number(id)),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -87,14 +32,14 @@ const EventEdit = () => {
         useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const handleFormSubmit = async (values: EventFormSchema) => {
+    const handleFormSubmit = async (values: EventFormType) => {
         console.log('Submitted values', values)
         setIsSubmiting(true)
         await sleep(800)
         setIsSubmiting(false)
         toast.push(
             <Notification type="success">
-                Event: #{data?.id} updated!
+                Event updated successfully!
             </Notification>,
             { placement: 'top-center' },
         )
@@ -118,38 +63,34 @@ const EventEdit = () => {
     }
 
     const EventFormProps = useMemo(() => {
-        const products = data
-            ? data.product.map(
-                  ({ id, name, productCode, img, price, quantity }) => {
-                      return {
-                          id,
-                          name,
-                          productCode,
-                          img,
-                          price,
-                          quantity,
-                          stock: 0,
-                      }
-                  },
-              )
-            : []
-
-        const defaultValues = {
-            firstName: data?.customer.name || '',
-            lastName: data?.customer.lastName || '',
-            email: data?.customer.email || '',
-            dialCode: data?.customer.dialCode || '',
-            phoneNumber: data?.customer.phoneNumber || '',
-            country: data?.customer.country || '',
-            address: data?.customer.address || '',
-            postcode: data?.customer.postcode || '',
-            city: data?.customer.city || '',
-            paymentMethod: 'paypal',
-            paypalEmail: data?.customer.email,
-        } as EventFormSchema
+        const defaultValues: EventFormType = {
+            event_name: data?.event_name || '',
+            event_description: data?.event_description || '',
+            status: data?.status || 'active',
+            event_type: data?.event_type || 'live_venue',
+            live_venue_address: data?.live_venue_address || '',
+            live_video_url: data?.live_video_url || '',
+            asset_id: data?.asset_id || 0,
+            membership_plans: (data?.membership_plans || []).map((plan) => ({
+                ...plan,
+                date: new Date(plan.date),
+                isFree: plan.cost === 0,
+            })) || [
+                {
+                    name: '',
+                    isFree: false,
+                    cost: 0,
+                    date: new Date(),
+                    payment_type: 'one_off',
+                },
+            ],
+            terms: true,
+            course_url_external: '',
+            course_internal: false,
+            invite_existing_leads: false,
+        }
 
         return {
-            defaultProducts: products,
             defaultValues,
         }
     }, [data])

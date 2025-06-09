@@ -9,7 +9,7 @@ import useEventlist from '../hooks/useEventList'
 import { apiDeleteEvent } from '@/services/EventService'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router'
-import { TbTrash, TbEye } from 'react-icons/tb'
+import { TbTrash, TbEye, TbPencil } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { EventItem } from '../types'
 import type { TableQueries } from '@/@types/common'
@@ -75,9 +75,18 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
         navigate(`/concepts/event/stream/${row.id}`)
     }
 
+    const onEdit = () => {
+        navigate(`/concepts/event/event-edit/${row.id}`)
+    }
+
     return (
         <>
             <div className="flex justify-end text-lg gap-1">
+                <Tooltip wrapperClass="flex" title="Edit">
+                    <span className={`cursor-pointer p-2`} onClick={onEdit}>
+                        <TbPencil />
+                    </span>
+                </Tooltip>
                 <Tooltip wrapperClass="flex" title="View">
                     <span className={`cursor-pointer p-2`} onClick={onView}>
                         <TbEye />

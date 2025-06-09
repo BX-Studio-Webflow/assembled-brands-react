@@ -121,7 +121,7 @@ const MailList = () => {
     }
 
     const handleConfirmDelete = () => {
-        onMailDelete([deleteConfirmationOpen.selected])
+        onMailDelete([Number(deleteConfirmationOpen.selected)])
         handleClose()
     }
 
