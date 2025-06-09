@@ -39,3 +39,14 @@ export const apiDeleteTeamInvitation = (invitationId: number) => {
         method: 'delete',
     })
 }
+
+export const apiInviteTeamMember = (email: string, teamId: number) => {
+    return ApiService.fetchDataWithAxios<void>({
+        url: '/team/invite',
+        method: 'post',
+        data: {
+            invitee_email: email,
+            team_id: teamId,
+        },
+    })
+}

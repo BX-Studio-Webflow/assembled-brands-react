@@ -23,6 +23,7 @@ import {
     apiRejectTeamInvitation,
     apiRevokeTeamMember,
     apiDeleteTeamInvitation,
+    apiInviteTeamMember,
 } from '@/services/TeamService'
 import { AxiosError } from 'axios'
 
@@ -74,14 +75,14 @@ const SettingsTeam = () => {
 
     const handleInviteSubmit = async (values: InviteUser) => {
         try {
-            // TODO: Implement API call to send invitation
-            console.log('Inviting user:', values)
+            await apiInviteTeamMember(values.email, data.team_members.team_id)
             toast.push(
                 <Notification type="success">
                     Invitation sent successfully!
                 </Notification>,
                 { placement: 'top-center' },
             )
+            mutate() // Refresh the data
             setInviteDialog({
                 open: false,
                 defaultValues: { email: '' },
