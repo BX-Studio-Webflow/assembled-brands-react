@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import { HiPencil, HiOutlineTrash } from 'react-icons/hi'
 import { useNavigate } from 'react-router'
 import type { Lead } from '@/@types/lead'
+import { apiDeleteLead } from '@/services/LeadsService'
 
 type CustomerInfoFieldProps = {
     title?: string
@@ -41,18 +42,31 @@ const ProfileSection = ({ data }: ProfileSectionProps) => {
         setDialogOpen(true)
     }
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         setDialogOpen(false)
-        navigate('/concepts/lead/lead-list')
-        toast.push(
-            <Notification title={'Successfully Deleted'} type="success">
-                Lead successfully deleted
-            </Notification>,
-        )
+        try {
+            await apiDeleteLead(String(data.id))
+            toast.push(
+                <Notification type="success">
+                    Lead deleted successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            navigate('/concepts/lead/lead-list')
+        } catch {
+            toast.push(
+                <Notification type="danger">
+                    Failed to delete lead. Please try again.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setDialogOpen(false)
+        }
     }
 
     const handleSendMessage = () => {
-        navigate('/concepts/chat')
+        navigate('/concepts/mail')
     }
 
     const handleEdit = () => {
@@ -108,7 +122,7 @@ const ProfileSection = ({ data }: ProfileSectionProps) => {
                         </div>
                     )}
                 </div>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 mt-8">
                     <Button block variant="solid" onClick={handleSendMessage}>
                         Send Message
                     </Button>
