@@ -6,7 +6,22 @@ import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import UploadMedia from '@/assets/svg/UploadMedia'
 import { Progress } from '@/components/ui/Progress'
-import { apiCreateAsset } from '@/services/AssetService'
+import {
+    apiCreateAsset,
+    apiCreateMultipartAsset,
+    apiCompleteMultipartUpload,
+} from '@/services/AssetService'
+
+const CHUNK_SIZE = 5 * 1024 * 1024 // 5MB chunks
+const LARGE_FILE_CHUNK_SIZE = 100 * 1024 * 1024 // 100MB chunks for files > 1GB
+
+const getChunkSize = (fileSize: number) => {
+    // For files larger than 1GB, use 100MB chunks
+    if (fileSize > 1024 * 1024 * 1024) {
+        return LARGE_FILE_CHUNK_SIZE
+    }
+    return CHUNK_SIZE
+}
 
 const getAssetType = (file: File) => {
     if (file.type.startsWith('image/')) return 'image'
@@ -43,6 +58,149 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
         setProgressArr([])
     }
 
+    const uploadFileMultipart = async (file: File, idx: number) => {
+        let duration = 0
+        if (file.type.startsWith('video/')) {
+            try {
+                duration = await getVideoDuration(file)
+            } catch {
+                toast.push(
+                    <Notification
+                        title={'Could not get video duration'}
+                        type="warning"
+                    />,
+                    { placement: 'top-center' },
+                )
+            }
+        }
+
+        const assetType = getAssetType(file) as
+            | 'image'
+            | 'video'
+            | 'audio'
+            | 'document'
+            | 'profile_picture'
+        const chunkSize = getChunkSize(file.size)
+        const assetPayload = {
+            fileName: file.name,
+            contentType: file.type,
+            assetType,
+            fileSize: file.size,
+            duration,
+            partSize: chunkSize,
+        }
+
+        // Initiate multipart upload
+        const { presignedUrls, asset } =
+            await apiCreateMultipartAsset(assetPayload)
+        const parts: { ETag: string; PartNumber: number }[] = []
+
+        // Upload each part
+        for (let i = 0; i < presignedUrls.length; i++) {
+            const start = i * chunkSize
+            const end = Math.min(start + chunkSize, file.size)
+            const chunk = file.slice(start, end)
+
+            const response = await fetch(presignedUrls[i], {
+                method: 'PUT',
+                body: chunk,
+                headers: {
+                    'Content-Type': file.type,
+                },
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to upload part ${i + 1}`)
+            }
+
+            const etag = response.headers.get('ETag')
+            if (!etag) {
+                throw new Error(`No ETag received for part ${i + 1}`)
+            }
+
+            parts.push({ ETag: etag, PartNumber: i + 1 })
+
+            // Update progress
+            const percent = Math.round(((i + 1) / presignedUrls.length) * 100)
+            setProgressArr((prev) => {
+                const updated = [...prev]
+                updated[idx] = percent
+                return updated
+            })
+        }
+
+        // Complete multipart upload
+        await apiCompleteMultipartUpload(asset.id, parts)
+        setProgressArr((prev) => {
+            const updated = [...prev]
+            updated[idx] = 100
+            return updated
+        })
+    }
+
+    const uploadFileDirect = async (file: File, idx: number) => {
+        let duration = 0
+        if (file.type.startsWith('video/')) {
+            try {
+                duration = await getVideoDuration(file)
+            } catch {
+                toast.push(
+                    <Notification
+                        title={'Could not get video duration'}
+                        type="warning"
+                    />,
+                    { placement: 'top-center' },
+                )
+            }
+        }
+
+        const assetType = getAssetType(file)
+        const assetPayload = {
+            fileName: file.name,
+            contentType: file.type,
+            assetType,
+            fileSize: file.size,
+            duration,
+        }
+
+        const assetResp = await apiCreateAsset(assetPayload)
+        const presignedUrl = assetResp.presignedUrl
+
+        await new Promise<void>((resolve, reject) => {
+            const xhr = new XMLHttpRequest()
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable) {
+                    const percent = Math.round(
+                        (event.loaded / event.total) * 100,
+                    )
+                    setProgressArr((prev) => {
+                        const updated = [...prev]
+                        updated[idx] = percent
+                        return updated
+                    })
+                }
+            })
+            xhr.addEventListener('load', () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    setProgressArr((prev) => {
+                        const updated = [...prev]
+                        updated[idx] = 100
+                        return updated
+                    })
+                    resolve()
+                } else {
+                    reject(new Error('Failed to upload file to S3'))
+                }
+            })
+            xhr.addEventListener('error', () => {
+                reject(new Error('Network error during upload'))
+            })
+            xhr.open('PUT', presignedUrl)
+            xhr.setRequestHeader('Content-Type', file.type)
+            xhr.send(file)
+        })
+    }
+
     const handleUpload = async () => {
         if (uploadedFiles.length === 0) return
         setIsUploading(true)
@@ -51,67 +209,14 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
             // Limit to 10 files
             const filesToUpload = uploadedFiles.slice(0, 10)
             const uploadPromises = filesToUpload.map((file, idx) => {
-                return (async () => {
-                    let duration = 0
-                    if (file.type.startsWith('video/')) {
-                        try {
-                            duration = await getVideoDuration(file)
-                        } catch {
-                            toast.push(
-                                <Notification
-                                    title={'Could not get video duration'}
-                                    type="warning"
-                                />,
-                                { placement: 'top-center' },
-                            )
-                        }
-                    }
-                    const assetType = getAssetType(file)
-                    const assetPayload = {
-                        fileName: file.name,
-                        contentType: file.type,
-                        assetType,
-                        fileSize: file.size,
-                        duration,
-                    }
-                    const assetResp = await apiCreateAsset(assetPayload)
-                    const presignedUrl = assetResp.presignedUrl
-                    // Upload to S3
-                    await new Promise<void>((resolve, reject) => {
-                        const xhr = new XMLHttpRequest()
-                        xhr.upload.addEventListener('progress', (event) => {
-                            if (event.lengthComputable) {
-                                const percent = Math.round(
-                                    (event.loaded / event.total) * 100,
-                                )
-                                setProgressArr((prev) => {
-                                    const updated = [...prev]
-                                    updated[idx] = percent
-                                    return updated
-                                })
-                            }
-                        })
-                        xhr.addEventListener('load', () => {
-                            if (xhr.status >= 200 && xhr.status < 300) {
-                                setProgressArr((prev) => {
-                                    const updated = [...prev]
-                                    updated[idx] = 100
-                                    return updated
-                                })
-                                resolve()
-                            } else {
-                                reject(new Error('Failed to upload file to S3'))
-                            }
-                        })
-                        xhr.addEventListener('error', () => {
-                            reject(new Error('Network error during upload'))
-                        })
-                        xhr.open('PUT', presignedUrl)
-                        xhr.setRequestHeader('Content-Type', file.type)
-                        xhr.send(file)
-                    })
-                })()
+                // Use multipart upload for files larger than 5MB
+                if (file.size > CHUNK_SIZE) {
+                    return uploadFileMultipart(file, idx)
+                } else {
+                    return uploadFileDirect(file, idx)
+                }
             })
+
             await Promise.all(uploadPromises)
             toast.push(
                 <Notification title={'Successfully uploaded'} type="success" />,

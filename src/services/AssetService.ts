@@ -46,3 +46,36 @@ export async function apiDeleteAsset(id: number) {
         method: 'delete',
     })
 }
+
+export const apiCreateMultipartAsset = async (payload: {
+    fileName: string
+    contentType: string
+    assetType: 'image' | 'video' | 'audio' | 'document' | 'profile_picture'
+    fileSize: number
+    duration: number
+    partSize: number
+}) => {
+    const response = await ApiService.fetchDataWithAxios<{
+        uploadId: string
+        key: string
+        presignedUrls: string[]
+        asset: Asset
+    }>({
+        url: '/asset/multipart',
+        method: 'post',
+        data: payload,
+    })
+    return response
+}
+
+export const apiCompleteMultipartUpload = async (
+    assetId: number,
+    parts: Array<{ ETag: string; PartNumber: number }>,
+) => {
+    const response = await ApiService.fetchDataWithAxios<{ success: boolean }>({
+        url: `/asset/${assetId}/complete`,
+        method: 'post',
+        data: { parts },
+    })
+    return response
+}
