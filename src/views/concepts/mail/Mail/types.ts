@@ -31,15 +31,12 @@ export interface Mail {
     button_text: string
     button_link: string
     created_at: string
+    checked: boolean
+    starred: boolean
+    flagged: boolean
     host_id: number
     status: 'draft' | 'sent'
     updated_at: string
-    checked?: boolean
-    starred?: boolean
-    flagged?: boolean
-    avatar?: string
-    name?: string
-    label?: string
 }
 
 export type MenuBase = {

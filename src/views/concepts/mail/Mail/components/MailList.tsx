@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import Avatar from '@/components/ui/Avatar'
 import ScrollBar from '@/components/ui/ScrollBar'
 import Loading from '@/components/shared/Loading'
 import Table from '@/components/ui/Table'
@@ -158,16 +157,21 @@ const MailList = () => {
                                         >
                                             <Td width="40">
                                                 <div className="h-[32px] w-[32px] flex items-center justify-center">
-                                                    <Avatar
-                                                        shape="circle"
-                                                        src={mail.avatar}
-                                                        size="sm"
+                                                    <div
                                                         className={classNames(
                                                             'group-hover:hidden',
                                                             mail.checked &&
                                                                 'hidden',
                                                         )}
-                                                    />
+                                                    >
+                                                        <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                                                            <span className="text-sm font-semibold">
+                                                                {mail.email
+                                                                    .charAt(0)
+                                                                    .toUpperCase()}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                     <div
                                                         className={classNames(
                                                             'group-hover:block',
@@ -196,7 +200,7 @@ const MailList = () => {
                                             </Td>
                                             <Td>
                                                 <span className="font-bold heading-text truncate">
-                                                    {mail.name || mail.email}
+                                                    {mail.email}
                                                 </span>
                                             </Td>
                                             <Td>
@@ -299,16 +303,21 @@ const MailList = () => {
                                     >
                                         <div className="flex gap-4 min-w-0">
                                             <div className="h-[32px] w-[32px] flex items-center justify-center">
-                                                <Avatar
-                                                    shape="circle"
-                                                    src={mail.avatar}
-                                                    size="sm"
+                                                <div
                                                     className={classNames(
                                                         'group-hover:hidden',
                                                         mail.checked &&
                                                             'hidden',
                                                     )}
-                                                />
+                                                >
+                                                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                                                        <span className="text-sm font-semibold">
+                                                            {mail.email
+                                                                .charAt(0)
+                                                                .toUpperCase()}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                                 <div
                                                     className={classNames(
                                                         'group-hover:block',
@@ -336,7 +345,7 @@ const MailList = () => {
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <div className="font-bold heading-text truncate">
-                                                    {mail.name || mail.email}
+                                                    {mail.email}
                                                 </div>
                                                 <div className="min-w-0">
                                                     <div className="text-nowrap truncate">

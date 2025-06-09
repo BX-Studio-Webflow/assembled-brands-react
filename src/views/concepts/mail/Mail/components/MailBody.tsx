@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
 import MailList from './MailList'
-import MailSidebar from './MailSidebar'
 import MailDetail from './MailDetail'
 import MailBodyTop from './MailBodyTop'
 import useMail from '../hooks/useMail'
@@ -31,7 +30,7 @@ const MailBody = () => {
             bodyClass="h-full flex flex-col"
         >
             <div className="flex flex-auto h-full">
-                <MailSidebar />
+            
                 <div className="lg:ltr:pl-6 lg:rtl:pr-6 flex-1">
                     <MailBodyTop />
                     <div className="relative h-[calc(100%-70px)]">

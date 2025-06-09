@@ -1,23 +1,18 @@
 import { useMailStore } from '../store/mailStore'
 import { apiGetMails } from '@/services/MailService'
 import useSWRMutation from 'swr/mutation'
-import type {
-    GetMailsResponse,
-    GetMailResponse,
-    GetMailsRequest,
-    GetMailRequest,
-} from '../types'
+import type { GetMailsResponse, GetMailResponse } from '../types'
 
 async function getMails(
     _: string,
     { arg }: { arg: { category: string; label: string } },
 ) {
-    const data = await apiGetMails<GetMailsResponse, GetMailsRequest>(arg)
+    const data = await apiGetMails<GetMailsResponse>(arg)
     return data
 }
 
 async function getMail(_: string, { arg }: { arg: string }) {
-    const data = await apiGetMail<GetMailResponse, GetMailRequest>({ id: arg })
+    const data = await apiGetMails<GetMailResponse>({ id: arg })
     return data
 }
 
