@@ -7,8 +7,9 @@ import Select from '@/components/ui/Select'
 import { Controller } from 'react-hook-form'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Asset } from '@/@types/asset'
+import { useFormContext } from 'react-hook-form'
 
 type Props = {
     control: Control<EventFormType>
@@ -24,7 +25,16 @@ type AssetOption = {
 
 const PaymentMethodSection = ({ control, errors, assets = [] }: Props) => {
     const [eventType, setEventType] = useState<string>('')
-    console.log(assets)
+    const { watch } = useFormContext<EventFormType>()
+    const formEventType = watch('event_type')
+
+    // Initialize and update eventType when form value changes
+    useEffect(() => {
+        if (formEventType) {
+            setEventType(formEventType)
+        }
+    }, [formEventType])
+
     const assetOptions: AssetOption[] = assets
         .filter((asset) => asset.asset_type === 'video')
         .map((asset) => ({

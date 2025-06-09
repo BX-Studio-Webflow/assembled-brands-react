@@ -10,6 +10,7 @@ import type {
     EventMembershipsResponse,
     EventStreamResponse,
     SaveInstantCallbackRequest,
+    EventWithDetailsAndCount,
 } from '@/@types/events'
 
 export async function apiGetEvents(params?: EventQueryParams) {
@@ -21,7 +22,7 @@ export async function apiGetEvents(params?: EventQueryParams) {
 }
 
 export async function apiGetEvent(id: number) {
-    return ApiService.fetchDataWithAxios<Event>({
+    return ApiService.fetchDataWithAxios<EventWithDetailsAndCount>({
         url: `/event/${id}`,
         method: 'get',
     })

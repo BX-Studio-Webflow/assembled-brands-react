@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Form } from '@/components/ui/Form'
 import Affix from '@/components/shared/Affix'
 import Card from '@/components/ui/Card'
@@ -11,7 +11,7 @@ import Navigator from './components/Navigator'
 import useLayoutGap from '@/utils/hooks/useLayoutGap'
 import useResponsive from '@/utils/hooks/useResponsive'
 import useSWR from 'swr'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EventFormSchema, EventFormType } from './validation/eventFormSchema'
 import type { ReactNode } from 'react'
@@ -49,6 +49,10 @@ const defaultValues = {
     course_url_external: '',
     course_internal: false,
     invite_existing_leads: false,
+    instructions: '',
+    landing_page_url: '',
+    success_url: '',
+    calendar_url: '',
 }
 
 const EventForm = (props: EventFormProps) => {
@@ -65,7 +69,7 @@ const EventForm = (props: EventFormProps) => {
                 pageSize: 10,
                 query: '',
                 sort: {
-                    Event: '',
+                    order: 'asc' as const,
                     key: '',
                 },
             } as TableQueries,
@@ -81,23 +85,32 @@ const EventForm = (props: EventFormProps) => {
         },
     )
 
-    const {
-        control,
-        handleSubmit,
-        formState: { errors },
-        watch,
-    } = useForm<EventFormType>({
+    const methods = useForm<EventFormType>({
         resolver: zodResolver(EventFormSchema),
-        defaultValues,
+        defaultValues: props.defaultValues || defaultValues,
         mode: 'onTouched',
     })
 
     const { fields, append, remove } = useFieldArray({
-        control,
+        control: methods.control,
         name: 'membership_plans',
+        shouldUnregister: false,
     })
 
-    const plans = watch('membership_plans') || []
+    const plans = methods.watch('membership_plans') || []
+
+    console.log('Form defaultValues:', props.defaultValues)
+    console.log('Membership plans:', plans)
+    console.log('Fields:', fields)
+
+    // Initialize field array if empty
+    useEffect(() => {
+        if (fields.length === 0 && plans.length > 0) {
+            plans.forEach((plan) => {
+                append(plan)
+            })
+        }
+    }, [fields.length, plans, append])
 
     const onSubmit = async (values: EventFormType) => {
         try {
@@ -130,49 +143,51 @@ const EventForm = (props: EventFormProps) => {
 
     return (
         <div className="flex">
-            <Form
-                className="flex-1 flex flex-col overflow-hidden"
-                onSubmit={handleSubmit(onSubmit)}
-            >
-                <Container>
-                    <div className="flex gap-4">
-                        {larger.xl && (
-                            <div className="w-[360px]">
-                                <Affix offset={getTopGapValue()}>
-                                    <Card>
-                                        <Navigator />
-                                    </Card>
-                                </Affix>
-                            </div>
-                        )}
+            <FormProvider {...methods}>
+                <Form
+                    className="flex-1 flex flex-col overflow-hidden"
+                    onSubmit={methods.handleSubmit(onSubmit)}
+                >
+                    <Container>
+                        <div className="flex gap-4">
+                            {larger.xl && (
+                                <div className="w-[360px]">
+                                    <Affix offset={getTopGapValue()}>
+                                        <Card>
+                                            <Navigator />
+                                        </Card>
+                                    </Affix>
+                                </div>
+                            )}
 
-                        <div className="flex-1">
-                            <div className="flex flex-col gap-4">
-                                <CustomerDetailSection
-                                    control={control}
-                                    errors={errors}
-                                />
+                            <div className="flex-1">
+                                <div className="flex flex-col gap-4">
+                                    <CustomerDetailSection
+                                        control={methods.control}
+                                        errors={methods.formState.errors}
+                                    />
 
-                                <PaymentMethodSection
-                                    control={control}
-                                    errors={errors}
-                                    assets={assets}
-                                />
+                                    <PaymentMethodSection
+                                        control={methods.control}
+                                        errors={methods.formState.errors}
+                                        assets={assets}
+                                    />
 
-                                <BillingAddressSection
-                                    control={control}
-                                    errors={errors}
-                                    fields={fields}
-                                    append={() => append(defaultPlan)}
-                                    remove={remove}
-                                    plans={plans}
-                                />
+                                    <BillingAddressSection
+                                        control={methods.control}
+                                        errors={methods.formState.errors}
+                                        fields={fields}
+                                        append={() => append(defaultPlan)}
+                                        remove={remove}
+                                        plans={plans}
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </Container>
-                <BottomStickyBar>{children}</BottomStickyBar>
-            </Form>
+                    </Container>
+                    <BottomStickyBar>{children}</BottomStickyBar>
+                </Form>
+            </FormProvider>
         </div>
     )
 }

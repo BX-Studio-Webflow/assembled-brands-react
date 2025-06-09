@@ -9,11 +9,20 @@ export const MembershipPlanSchema = z.object({
         (val) => Number(val),
         z.number().min(0, 'Cost is required'),
     ),
-    isFree: z.boolean(),
+    isFree: z.boolean().default(false),
 })
 
 export const MembershipPlansSchema = z.object({
     membership_plans: z
         .array(MembershipPlanSchema)
-        .min(1, 'At least one plan is required'),
+        .min(1, 'At least one plan is required')
+        .default([
+            {
+                name: '',
+                isFree: false,
+                cost: 0,
+                date: new Date(),
+                payment_type: 'one_off',
+            },
+        ]),
 })
