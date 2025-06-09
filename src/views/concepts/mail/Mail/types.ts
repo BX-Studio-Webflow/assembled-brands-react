@@ -21,19 +21,23 @@ export type Message = {
     }[]
 }
 
-export type Mail = {
-    id: string
-    name: string
-    label: string
-    group: string
-    flagged: boolean
-    starred: boolean
-    from: string
-    avatar: string
+export interface Mail {
+    id: number
+    email: string
+    subject: string
     title: string
-    mail: string[]
-    message: Message[]
-    checked: boolean
+    subtitle: string
+    body: string
+    button_text: string
+    button_link: string
+    created_at: string
+    host_id: number
+    status: string
+    updated_at: string
+    checked?: boolean
+    starred?: boolean
+    flagged?: boolean
+    avatar?: string
 }
 
 export type MenuBase = {

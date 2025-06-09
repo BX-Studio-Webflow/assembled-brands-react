@@ -12,13 +12,13 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { ZodType } from 'zod'
-import { apiCreateMail } from '@/services/MailService'
+import { apiCreateMail, apiSearchMails } from '@/services/MailService'
 import { AxiosError } from 'axios'
 import Radio from '@/components/ui/Radio'
 import Select from '@/components/ui/Select'
+import type { MultiValue } from 'react-select'
 
 type FormSchema = {
-    to: string
     content: string
     title: string
     button_text: string
@@ -27,13 +27,7 @@ type FormSchema = {
     recipients: number[]
 }
 
-const recipientOptions = [
-    { value: 102, label: 'User 102' },
-    { value: 180, label: 'User 180' },
-]
-
 const validationSchema: ZodType<FormSchema> = z.object({
-    to: z.string().min(1, { message: 'Please enter recipient' }),
     title: z.string().min(1, { message: 'Please enter title' }),
     content: z.string().min(1, { message: 'Please enter message' }),
     button_text: z.string().min(1, { message: 'Please enter button text' }),
@@ -42,24 +36,102 @@ const validationSchema: ZodType<FormSchema> = z.object({
     recipients: z.array(z.number()),
 })
 
+interface Lead {
+    id: number
+    name: string
+    email: string
+    phone: string
+    event_id: number | null
+    registered_date: string | null
+    membership_active: boolean
+    form_identifier: string | null
+    host_id: number
+    token: string
+    created_at: string
+    updated_at: string
+    status_identifier: string
+    lead_status: string | null
+    dates: string | null
+    source_url: string | null
+    membership_level: string | null
+}
+
+interface Event {
+    id: number
+    event_name: string
+    event_description: string
+    event_type: string
+    asset_id: number
+    created_at: string
+    status: string
+    live_video_url: string
+    success_url: string
+    instructions: string
+    landing_page_url: string
+    calendar_url: string | null
+    live_venue_address: string
+    updated_at: string
+    host_id: number
+}
+
+type SearchResult = Lead | Event
+
+interface SearchResponse {
+    search_by: string
+    search_value: string
+    results: SearchResult[]
+}
+
+type SearchType = 'name' | 'tag' | 'event'
+
 const MailEditor = () => {
     const { mail, messageDialog, toggleMessageDialog } = useMailStore()
-
     const [formSubmiting, setFormSubmiting] = useState(false)
+    const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+    const [searchLoading, setSearchLoading] = useState(false)
+    const [selectedOptions, setSelectedOptions] = useState<
+        { value: number; label: string }[]
+    >([])
 
     const {
         handleSubmit,
         reset,
         formState: { errors },
         control,
+        watch,
     } = useForm<FormSchema>({
         resolver: zodResolver(validationSchema),
     })
 
+    const handleSearch = async (inputValue: string) => {
+        if (!inputValue || typeof inputValue !== 'string') return
+
+        setSearchLoading(true)
+        try {
+            const searchType = (watch('type') || 'name') as SearchType
+            const response = (await apiSearchMails({
+                search_by: searchType,
+                search_value: inputValue.toLowerCase(),
+            })) as SearchResponse
+
+            if (response?.results) {
+                setSearchResults(response.results)
+            }
+        } catch (error) {
+            console.error('Search error:', error)
+            toast.push(
+                <Notification type="danger">
+                    Failed to search recipients
+                </Notification>,
+            )
+        } finally {
+            setSearchLoading(false)
+        }
+    }
+
     useEffect(() => {
         if (messageDialog.mode === 'reply') {
             reset({
-                to: mail.from,
                 title: `Re:${mail.title}`,
             })
         }
@@ -72,9 +144,12 @@ const MailEditor = () => {
             open: false,
         })
         reset({
-            to: '',
             title: '',
             content: '',
+            button_text: '',
+            button_link: '',
+            type: 'name',
+            recipients: [],
         })
     }
 
@@ -85,13 +160,13 @@ const MailEditor = () => {
         try {
             const payload = {
                 subject: value.title,
-                title: 'XXXXXXXXXXX',
-                subtitle: '3TheMind',
+                title: value.title,
+                subtitle: value.title,
                 body: value.content,
-                button_text: 'View Event',
-                type: 'name',
-                button_link: 'https://3themind.com',
-                recipients: [102, 180], // TODO: Replace with actual recipient IDs
+                button_text: value.button_text,
+                type: value.type,
+                button_link: value.button_link,
+                recipients: value.recipients,
             }
             await apiCreateMail(payload)
             toast.push(
@@ -176,14 +251,70 @@ const MailEditor = () => {
                         render={({ field }) => (
                             <Select
                                 isMulti
+                                isLoading={searchLoading}
                                 placeholder="Type to search recipients"
-                                defaultValue={recipientOptions}
-                                options={recipientOptions}
-                                onChange={(selected) =>
-                                    field.onChange(
-                                        selected.map((option) => option.value),
+                                defaultValue={selectedOptions}
+                                options={searchResults.reduce<
+                                    {
+                                        value: number
+                                        label: string
+                                        title: string
+                                    }[]
+                                >((acc, result) => {
+                                    if ('name' in result) {
+                                        // It's a Lead
+                                        const option = {
+                                            value: result.id,
+                                            label: `${result.name} - ${result.email}`,
+                                            title: `${result.name} - ${result.email}`,
+                                        }
+                                        // Only add if email is not already in the accumulator
+                                        if (
+                                            !acc.some((item) =>
+                                                item.title.includes(
+                                                    result.email,
+                                                ),
+                                            )
+                                        ) {
+                                            acc.push(option)
+                                        }
+                                    } else {
+                                        // It's an Event
+                                        const option = {
+                                            value: result.id,
+                                            label: result.event_name,
+                                            title: result.event_description,
+                                        }
+                                        // Only add if event name is not already in the accumulator
+                                        if (
+                                            !acc.some(
+                                                (item) =>
+                                                    item.label ===
+                                                    result.event_name,
+                                            )
+                                        ) {
+                                            acc.push(option)
+                                        }
+                                    }
+                                    return acc
+                                }, [])}
+                                onInputChange={(inputValue) => {
+                                    if (typeof inputValue === 'string') {
+                                        handleSearch(inputValue)
+                                    }
+                                }}
+                                onChange={(
+                                    selected: MultiValue<{
+                                        value: number
+                                        label: string
+                                    }>,
+                                ) => {
+                                    const values = selected.map(
+                                        (option) => option.value,
                                     )
-                                }
+                                    field.onChange(values)
+                                    setSelectedOptions([...selected])
+                                }}
                             />
                         )}
                     />
@@ -202,19 +333,6 @@ const MailEditor = () => {
                                 placeholder="Add a subject"
                                 {...field}
                             />
-                        )}
-                    />
-                </FormItem>
-                <FormItem
-                    label="To:"
-                    invalid={Boolean(errors.to)}
-                    errorMessage={errors.to?.message}
-                >
-                    <Controller
-                        name="to"
-                        control={control}
-                        render={({ field }) => (
-                            <Input autoComplete="off" {...field} />
                         )}
                     />
                 </FormItem>

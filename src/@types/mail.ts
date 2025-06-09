@@ -8,3 +8,7 @@ export interface MailRequestBody {
     button_link: string
     recipients: number[]
 }
+export interface MailSearchRequestBody {
+    search_by: 'name' | 'tag' | 'event'
+    search_value: string
+}
