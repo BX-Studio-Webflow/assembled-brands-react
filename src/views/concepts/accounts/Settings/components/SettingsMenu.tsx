@@ -8,6 +8,7 @@ import {
     TbBell,
     TbFileDollar,
     TbRefreshDot,
+    TbUsers,
 } from 'react-icons/tb'
 import type { View } from '../types'
 import type { ReactNode } from 'react'
@@ -20,6 +21,7 @@ const menuList: { label: string; value: View; icon: ReactNode }[] = [
     { label: 'Notification', value: 'notification', icon: <TbBell /> },
     { label: 'Billing', value: 'billing', icon: <TbFileDollar /> },
     { label: 'Integration', value: 'integration', icon: <TbRefreshDot /> },
+    { label: 'Team', value: 'team', icon: <TbUsers /> },
 ]
 
 export const SettingsMenu = ({ onChange }: { onChange?: () => void }) => {

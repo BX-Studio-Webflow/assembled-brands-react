@@ -4,6 +4,7 @@ export type View =
     | 'notification'
     | 'billing'
     | 'integration'
+    | 'team'
 
 export type CreditCard = {
     cardHolderName: string

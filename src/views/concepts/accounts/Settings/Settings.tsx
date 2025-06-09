@@ -10,6 +10,7 @@ const Security = lazy(() => import('./components/SettingsSecurity'))
 const Notification = lazy(() => import('./components/SettingsNotification'))
 const Billing = lazy(() => import('./components/SettingsBilling'))
 const Integration = lazy(() => import('./components/SettingIntegration'))
+const Team = lazy(() => import('./components/SettingsTeam'))
 
 const Settings = () => {
     const { currentView } = useSettingsStore()
@@ -33,6 +34,7 @@ const Settings = () => {
                     <Suspense fallback={<></>}>
                         {currentView === 'profile' && <Profile />}
                         {currentView === 'security' && <Security />}
+                        {currentView === 'team' && <Team />}
                         {currentView === 'notification' && <Notification />}
                         {currentView === 'billing' && <Billing />}
                         {currentView === 'integration' && <Integration />}
