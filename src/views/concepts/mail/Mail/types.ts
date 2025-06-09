@@ -32,12 +32,14 @@ export interface Mail {
     button_link: string
     created_at: string
     host_id: number
-    status: string
+    status: 'draft' | 'sent'
     updated_at: string
     checked?: boolean
     starred?: boolean
     flagged?: boolean
     avatar?: string
+    name?: string
+    label?: string
 }
 
 export type MenuBase = {
@@ -54,10 +56,15 @@ export type Label = MenuBase & {
     dotClass: string
 }
 
-export type GetMailsRequest = Category
+export interface GetMailsRequest {
+    category?: string
+    label?: string
+}
 
-export type GetMailsResponse = Mail[]
+export interface GetMailsResponse extends Array<Mail> {}
 
-export type GetMailRequest = { id: string }
+export interface GetMailRequest {
+    id: string
+}
 
-export type GetMailResponse = Mail
+export interface GetMailResponse extends Mail {}

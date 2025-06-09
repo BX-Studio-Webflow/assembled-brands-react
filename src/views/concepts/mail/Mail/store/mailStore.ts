@@ -1,53 +1,51 @@
 import { create } from 'zustand'
-import type { Mail, Category } from '../types'
+import { Mail } from '../types'
 
-type MessageDialog = {
-    mode: '' | 'reply' | 'new'
-    open: boolean
-}
-
-export type MailState = {
+interface MailState {
+    mail: Mail | null
     mailList: Mail[]
     mailListFetched: boolean
-    mail: Partial<Mail>
-    selectedMailId: string[]
+    selectedMailId: number[]
+    selectedCategory: {
+        value: string
+        label: string
+    }
     mobileSideBarExpand: boolean
-    selectedCategory: Partial<Category>
-    messageDialog: MessageDialog
+    messageDialog: {
+        mode: string
+        open: boolean
+    }
+    setMail: (mail: Mail | null) => void
+    setMailList: (mailList: Mail[]) => void
+    setMailListFetched: (fetched: boolean) => void
+    setSelectedMail: (selectedMailId: number[]) => void
+    setSelectedCategory: (category: { value: string; label: string }) => void
+    toggleMobileSidebar: (expand: boolean) => void
+    toggleMessageDialog: (messageDialog: {
+        mode: string
+        open: boolean
+    }) => void
 }
 
-type MailAction = {
-    setMailList: (payload: Mail[]) => void
-    setMailListFetched: (payload: boolean) => void
-    setMail: (payload: Partial<Mail>) => void
-    setSelectedMail: (payload: string[]) => void
-    setSelectedCategory: (payload: Partial<Category>) => void
-    toggleMessageDialog: (payload: MessageDialog) => void
-    toggleMobileSidebar: (payload: boolean) => void
-}
-
-const initialState: MailState = {
+export const useMailStore = create<MailState>((set) => ({
+    mail: null,
     mailList: [],
     mailListFetched: false,
-    mail: {},
     selectedMailId: [],
+    selectedCategory: {
+        value: 'inbox',
+        label: 'Inbox',
+    },
     mobileSideBarExpand: false,
-    selectedCategory: {},
     messageDialog: {
         mode: '',
         open: false,
     },
-}
-
-export const useMailStore = create<MailState & MailAction>((set) => ({
-    ...initialState,
-    setMailList: (payload) => set(() => ({ mailList: payload })),
-    setMailListFetched: (payload) => set(() => ({ mailListFetched: payload })),
-    setMail: (payload) => set(() => ({ mail: payload })),
-    setSelectedMail: (payload) => set(() => ({ selectedMailId: payload })),
-    setSelectedCategory: (payload) =>
-        set(() => ({ selectedCategory: payload })),
-    toggleMessageDialog: (payload) => set(() => ({ messageDialog: payload })),
-    toggleMobileSidebar: (payload) =>
-        set(() => ({ mobileSideBarExpand: payload })),
+    setMail: (mail) => set({ mail }),
+    setMailList: (mailList) => set({ mailList }),
+    setMailListFetched: (mailListFetched) => set({ mailListFetched }),
+    setSelectedMail: (selectedMailId) => set({ selectedMailId }),
+    setSelectedCategory: (selectedCategory) => set({ selectedCategory }),
+    toggleMobileSidebar: (mobileSideBarExpand) => set({ mobileSideBarExpand }),
+    toggleMessageDialog: (messageDialog) => set({ messageDialog }),
 }))

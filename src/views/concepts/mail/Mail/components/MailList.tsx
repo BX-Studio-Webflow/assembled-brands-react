@@ -10,7 +10,6 @@ import classNames from '@/utils/classNames'
 import { useMailStore } from '../store/mailStore'
 import useMail from '../hooks/useMail'
 import useMailAction from '../hooks/useMailAction'
-import { labelList } from '../constants'
 import useQuery from '@/utils/hooks/useQuery'
 import useResponsive from '@/utils/hooks/useResponsive'
 import isLastChild from '@/utils/isLastChild'
@@ -67,18 +66,18 @@ const MailList = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname, location.search])
 
-    const renderSubject = (title: string, content: string) => {
-        const text = content.replace(htmlReg, '')
-        const titleOffsetNumber = title.length
+    const renderSubject = (subject: string, body: string) => {
+        const text = body.replace(htmlReg, '')
+        const subjectOffsetNumber = subject.length
 
         return (
             <div className="flex items-center gap-3">
                 <span className="font-semibold heading-text text-nowrap">
-                    {title}
+                    {subject}
                 </span>
                 <span className="text-nowrap">
-                    {text.length > 45 - titleOffsetNumber
-                        ? text.substring(0, 42 - titleOffsetNumber) + '...'
+                    {text.length > 45 - subjectOffsetNumber
+                        ? text.substring(0, 42 - subjectOffsetNumber) + '...'
                         : text}
                 </span>
             </div>
@@ -197,35 +196,32 @@ const MailList = () => {
                                             </Td>
                                             <Td>
                                                 <span className="font-bold heading-text truncate">
-                                                    {mail.name}
+                                                    {mail.name || mail.email}
                                                 </span>
                                             </Td>
                                             <Td>
                                                 <div className="flex justify-end">
-                                                    {labelList.some(
-                                                        (label) =>
-                                                            label.value ===
-                                                            mail.label,
-                                                    ) && (
-                                                        <Badge
-                                                            className={
-                                                                labelList.find(
-                                                                    (label) =>
-                                                                        label.value ===
-                                                                        mail.label,
-                                                                )?.dotClass
-                                                            }
-                                                        />
-                                                    )}
+                                                    <Badge
+                                                        className={classNames(
+                                                            mail.status ===
+                                                                'sent'
+                                                                ? 'bg-emerald-500'
+                                                                : 'bg-amber-500',
+                                                        )}
+                                                    />
                                                 </div>
                                             </Td>
                                             <Td className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                                                 {renderSubject(
-                                                    mail.title,
-                                                    mail.message[0].content,
+                                                    mail.subject,
+                                                    mail.body,
                                                 )}
                                             </Td>
-                                            <Td>{mail.message[0].date}</Td>
+                                            <Td>
+                                                {new Date(
+                                                    mail.created_at,
+                                                ).toLocaleDateString()}
+                                            </Td>
                                             <Td>
                                                 <div className="flex items-center text-lg gap-2">
                                                     <button
@@ -272,7 +268,9 @@ const MailList = () => {
                                                                 {
                                                                     open: true,
                                                                     selected:
-                                                                        mail.id,
+                                                                        String(
+                                                                            mail.id,
+                                                                        ),
                                                                 },
                                                             )
                                                         }}
@@ -338,11 +336,11 @@ const MailList = () => {
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <div className="font-bold heading-text truncate">
-                                                    {mail.name}
+                                                    {mail.name || mail.email}
                                                 </div>
                                                 <div className="min-w-0">
                                                     <div className="text-nowrap truncate">
-                                                        {mail.message[0].content.replace(
+                                                        {mail.body.replace(
                                                             htmlReg,
                                                             '',
                                                         )}
@@ -393,7 +391,9 @@ const MailList = () => {
                                                                 {
                                                                     open: true,
                                                                     selected:
-                                                                        mail.id,
+                                                                        String(
+                                                                            mail.id,
+                                                                        ),
                                                                 },
                                                             )
                                                         }}
@@ -405,7 +405,9 @@ const MailList = () => {
                                         </div>
                                         <div className="">
                                             <span className="text-nowrap font-semibold">
-                                                {mail.message[0].date}
+                                                {new Date(
+                                                    mail.created_at,
+                                                ).toLocaleDateString()}
                                             </span>
                                         </div>
                                     </div>

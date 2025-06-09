@@ -14,7 +14,12 @@ const { MenuItem, MenuGroup } = Menu
 const MailSideBarContent = ({ title }: { title?: string }) => {
     const navigate = useNavigate()
 
-    const { selectedCategory, setMail, setMailListFetched } = useMailStore()
+    const {
+        selectedCategory,
+        setMail,
+        setMailListFetched,
+        setSelectedCategory,
+    } = useMailStore()
 
     const query = useQuery()
 
@@ -27,8 +32,12 @@ const MailSideBarContent = ({ title }: { title?: string }) => {
         category: string
         label: string
     }) => {
-        setMail({})
+        setMail(null)
         setMailListFetched(false)
+        setSelectedCategory({
+            value: category || label,
+            label: category || label,
+        })
 
         const params: {
             category?: string
@@ -65,7 +74,7 @@ const MailSideBarContent = ({ title }: { title?: string }) => {
                             key={menu.value}
                             eventKey={menu.value}
                             className={`mb-2 ${
-                                selectedCategory.value === menu.value
+                                selectedCategory?.value === menu.value
                                     ? 'bg-gray-100 dark:bg-gray-700'
                                     : ''
                             }`}
@@ -88,7 +97,7 @@ const MailSideBarContent = ({ title }: { title?: string }) => {
                                 key={label.value}
                                 eventKey={label.value}
                                 className={`mb-2 ${
-                                    selectedCategory.value === label.value
+                                    selectedCategory?.value === label.value
                                         ? 'bg-gray-100 dark:bg-gray-700'
                                         : ''
                                 }`}
