@@ -1,6 +1,7 @@
 import { useMailStore } from '../store/mailStore'
 import cloneDeep from 'lodash/cloneDeep'
 import type { Mail } from '../types'
+import { apiToggleMail } from '@/services/MailService'
 
 const useMailAction = () => {
     const { mailList, setMail, setMailList, setSelectedMail } = useMailStore()
@@ -15,22 +16,32 @@ const useMailAction = () => {
         setMailList(newMailList)
     }
 
-    const onStarToggle = (mail: Mail, shouldSetMail: boolean = true) => {
-        const newMail = cloneDeep(mail)
-        newMail.starred = !newMail.starred
-        if (shouldSetMail) {
-            setMail(newMail)
+    const onStarToggle = async (mail: Mail, shouldSetMail: boolean = true) => {
+        try {
+            await apiToggleMail(mail.id, 'star')
+            const newMail = cloneDeep(mail)
+            newMail.starred = !newMail.starred
+            if (shouldSetMail) {
+                setMail(newMail)
+            }
+            updateMailList(newMail)
+        } catch (error) {
+            console.error('Error toggling star:', error)
         }
-        updateMailList(newMail)
     }
 
-    const onFlagToggle = (mail: Mail, shouldSetMail: boolean = true) => {
-        const newMail = cloneDeep(mail)
-        newMail.flagged = !newMail.flagged
-        if (shouldSetMail) {
-            setMail(newMail)
+    const onFlagToggle = async (mail: Mail, shouldSetMail: boolean = true) => {
+        try {
+            await apiToggleMail(mail.id, 'flag')
+            const newMail = cloneDeep(mail)
+            newMail.flagged = !newMail.flagged
+            if (shouldSetMail) {
+                setMail(newMail)
+            }
+            updateMailList(newMail)
+        } catch (error) {
+            console.error('Error toggling flag:', error)
         }
-        updateMailList(newMail)
     }
 
     const onCheckboxToggle = (mail: Mail) => {
@@ -41,25 +52,24 @@ const useMailAction = () => {
 
     const onMoveMailClick = (mail: Mail, destination: string) => {
         const newMail = cloneDeep(mail)
-        newMail.label = destination
+        newMail.status = destination
         updateMailList(newMail)
     }
 
-    const onBatchMoveMailClick = (mailsId: string[], destination: string) => {
+    const onBatchMoveMailClick = (mailsId: number[], destination: string) => {
         setMailList(
             mailList.map((mail) => {
                 if (mailsId.includes(mail.id)) {
-                    mail.label = destination
+                    mail.status = destination
                     mail.checked = false
                 }
-
                 return mail
             }),
         )
         setSelectedMail([])
     }
 
-    const onMailDelete = (mailsId: string[]) => {
+    const onMailDelete = (mailsId: number[]) => {
         setMailList(mailList.filter((mail) => !mailsId.includes(mail.id)))
         setSelectedMail([])
     }

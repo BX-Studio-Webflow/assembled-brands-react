@@ -31,3 +31,11 @@ export async function apiSearchMails(data: MailSearchRequestBody) {
         data,
     })
 }
+
+export async function apiToggleMail(id: number, action: 'flag' | 'star') {
+    return ApiService.fetchDataWithAxios({
+        url: '/email/toggle',
+        method: 'post',
+        data: { id, action },
+    })
+}
