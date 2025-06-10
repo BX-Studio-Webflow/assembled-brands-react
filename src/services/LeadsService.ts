@@ -2,6 +2,7 @@ import ApiService from './ApiService'
 import type {
     Lead,
     LeadSearchParams,
+    PurchaseMembershipResponse,
     Tag,
     TagAssignment,
     TagAssignmentBody,
@@ -123,7 +124,7 @@ export async function apiPurchaseMembership(data: {
     email: string
     dates: number[]
 }) {
-    return ApiService.fetchDataWithAxios<Lead>({
+    return ApiService.fetchDataWithAxios<PurchaseMembershipResponse>({
         url: '/lead/purchase-membership',
         method: 'post',
         data,

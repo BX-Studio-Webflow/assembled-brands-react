@@ -4,7 +4,7 @@ import Card from '@/components/ui/Card'
 import Avatar from '@/components/ui/Avatar'
 import IconText from '@/components/shared/IconText'
 import { TbMail, TbExternalLink } from 'react-icons/tb'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import Radio from '@/components/ui/Radio'
 import Checkbox from '@/components/ui/Checkbox'
 import type { EventWithDetailsAndCount } from '@/@types/events'
@@ -28,6 +28,7 @@ interface GatewayFormProps extends CommonProps {
 }
 
 const GatewayForm = (props: GatewayFormProps) => {
+    const navigate = useNavigate()
     const [isSubmitting, setSubmitting] = useState<boolean>(false)
     const [selectedMembershipId, setSelectedMembershipId] = useState<
         number | null
@@ -55,6 +56,13 @@ const GatewayForm = (props: GatewayFormProps) => {
         }
     }, [event, selectedMembershipId])
 
+    // Auto-select the date if only one is available
+    useEffect(() => {
+        if (selectedMembership && selectedMembership.dates?.length === 1) {
+            setSelectedDates([selectedMembership.dates[0].id.toString()])
+        }
+    }, [selectedMembershipId, event])
+
     // When membership changes, reset selected dates
     const handleMembershipChange = (id: string) => {
         setSelectedMembershipId(Number(id))
@@ -65,7 +73,7 @@ const GatewayForm = (props: GatewayFormProps) => {
     const onFormSubmit = async () => {
         try {
             // Example: send selectedMembershipId and selectedDates
-            await apiPurchaseMembership({
+            const purchase = await apiPurchaseMembership({
                 event_id: Number(params.code),
                 token: params.token,
                 email: params.email,
@@ -74,6 +82,7 @@ const GatewayForm = (props: GatewayFormProps) => {
             })
             setSubmitting(false)
             setResetComplete(true)
+            navigate(purchase.redirect_url)
         } catch (error) {
             setMessage?.((error as AxiosError).message)
             setSubmitting(false)
@@ -134,7 +143,7 @@ const GatewayForm = (props: GatewayFormProps) => {
                                     : ''
                             }
                             onChange={handleMembershipChange}
-                            className="w-full"
+                            className="w-full flex-col"
                         >
                             {event.memberships?.map((m) => (
                                 <Radio
@@ -161,7 +170,7 @@ const GatewayForm = (props: GatewayFormProps) => {
                                 <Checkbox
                                     key={date.id}
                                     value={date.id.toString()}
-                                    className="block mb-2 mr-2"
+                                    className="block mb-2 w-full flex items-center gap-x-2"
                                 >
                                     {new Date(
                                         Number(date.date) * 1000,

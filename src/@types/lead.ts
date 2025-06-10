@@ -148,3 +148,9 @@ export interface LeadResponse {
     list: Lead[]
     total: number
 }
+
+export interface PurchaseMembershipResponse {
+    success: boolean
+    redirect_url: string
+    message: string
+}
