@@ -6,6 +6,8 @@ import useScrollTop from '@/utils/hooks/useScrollTop'
 import { MODE_DARK, MODE_LIGHT } from '@/constants/theme.constant'
 import { TbMenu2 } from 'react-icons/tb'
 import type { Mode } from '@/@types/theme'
+import { useNavigate } from 'react-router'
+import { useAuth } from '@/auth'
 
 type NavigationProps = {
     toggleMode: () => void
@@ -23,11 +25,7 @@ const navMenu = [
         value: 'demos',
         to: 'demos',
     },
-    {
-        title: 'Components',
-        value: 'components',
-        to: 'components',
-    },
+
     {
         title: 'Documentations',
         value: 'documentations',
@@ -37,8 +35,9 @@ const navMenu = [
 
 const Navigation = ({ toggleMode, mode }: NavigationProps) => {
     const { isSticky } = useScrollTop()
-
+    const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
+    const { user } = useAuth()
 
     const openDrawer = () => {
         setIsOpen(true)
@@ -46,6 +45,11 @@ const Navigation = ({ toggleMode, mode }: NavigationProps) => {
 
     const onDrawerClose = () => {
         setIsOpen(false)
+    }
+
+    const handleDashboard = () => {
+        console.log('handleDashboard')
+        navigate('/concepts/dashboards/information')
     }
 
     return (
@@ -82,7 +86,7 @@ const Navigation = ({ toggleMode, mode }: NavigationProps) => {
                         <NavList tabs={navMenu} onTabClick={onDrawerClose} />
                     </div>
                 </Drawer>
-                <a href="/">
+                <a href="/" className="pointer-events-auto relative z-50">
                     {mode === MODE_LIGHT && (
                         <img
                             src="/img/logo/logo-light-full.png"
@@ -146,13 +150,20 @@ const Navigation = ({ toggleMode, mode }: NavigationProps) => {
                         </svg>
                         <span className="sr-only">Toggle theme</span>
                     </button>
-                    <div className="border border-gray-200 dark:border-gray-700 rounded-full inline-flex items-center justify-center gap-2 py-1 px-2 bg-white dark:bg-gray-800">
+                    <div
+                        className="border border-gray-200 dark:border-gray-700 rounded-full inline-flex items-center justify-center gap-2 py-1.5 px-4 bg-white dark:bg-gray-800 cursor-pointer pointer-events-auto relative z-50"
+                        onClick={() => {
+                            handleDashboard()
+                        }}
+                    >
                         <img
                             src="/img/landing/tech/vite.png"
                             alt="vite"
                             className="w-6 h-6"
                         />
-                        <span className="heading-text">Vite</span>
+                        <span className="heading-text">
+                            {user?.email ? 'Dashboard' : 'Sign in'}
+                        </span>
                     </div>
                 </div>
             </div>
