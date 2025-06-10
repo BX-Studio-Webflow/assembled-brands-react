@@ -6,6 +6,7 @@ import { useFileManagerStore } from '../store/useFileManagerStore'
 import { apiRenameAsset } from '@/services/AssetService'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
+import { AxiosError } from 'axios'
 
 type FileManagerRenameDialogProps = {
     onRenameSuccess?: () => void
@@ -46,10 +47,10 @@ const FileManagerRenameDialog = ({
             )
             if (onRenameSuccess) onRenameSuccess()
             handleDialogClose()
-        } catch (e: unknown) {
+        } catch (error) {
             toast.push(
                 <Notification
-                    title={e instanceof Error ? e.message : 'Rename failed'}
+                    title={(error as AxiosError).message}
                     type="danger"
                 />,
                 { placement: 'top-center' },
