@@ -37,6 +37,18 @@ const othersRoute: Routes = [
             pageBackgroundType: 'plain',
         },
     },
+    {
+        key: 'stream',
+        path: `/stream`,
+        component: lazy(() => import('@/views/concepts/events/EventStream')),
+        authority: [],
+        meta: {
+            layout: 'blank',
+            footer: false,
+            pageContainerType: 'gutterless',
+            pageBackgroundType: 'plain',
+        },
+    },
 ]
 
 export default othersRoute
