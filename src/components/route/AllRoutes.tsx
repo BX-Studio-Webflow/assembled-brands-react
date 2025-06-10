@@ -3,11 +3,16 @@ import PublicRoute from './PublicRoute'
 import AuthorityGuard from './AuthorityGuard'
 import AppRoute from './AppRoute'
 import PageContainer from '@/components/template/PageContainer'
-import { protectedRoutes, publicRoutes } from '@/configs/routes.config'
+import {
+    protectedRoutes,
+    publicRoutes,
+    openRoutes,
+} from '@/configs/routes.config'
 import appConfig from '@/configs/app.config'
 import { useAuth } from '@/auth'
 import { Routes, Route, Navigate } from 'react-router'
 import type { LayoutType } from '@/@types/theme'
+import type { Route as RouteType } from '@/@types/routes'
 
 interface ViewsProps {
     pageContainerType?: 'default' | 'gutterless' | 'contained'
@@ -23,8 +28,24 @@ const AllRoutes = (props: AllRoutesProps) => {
 
     return (
         <Routes>
+            {/* Open Routes - Accessible without any authentication */}
+            {openRoutes.map((route: RouteType) => (
+                <Route
+                    key={route.path}
+                    path={route.path}
+                    element={
+                        <AppRoute
+                            routeKey={route.key}
+                            component={route.component}
+                            {...route.meta}
+                        />
+                    }
+                />
+            ))}
+
+            {/* Public Routes - Authentication related routes */}
             <Route path="/" element={<PublicRoute />}>
-                {publicRoutes.map((route) => (
+                {publicRoutes.map((route: RouteType) => (
                     <Route
                         key={route.path}
                         path={route.path}
@@ -38,12 +59,14 @@ const AllRoutes = (props: AllRoutesProps) => {
                     />
                 ))}
             </Route>
+
+            {/* Protected Routes - Require authentication */}
             <Route path="/" element={<ProtectedRoute />}>
                 <Route
                     path="/"
                     element={<Navigate replace to={authenticatedEntryPath} />}
                 />
-                {protectedRoutes.map((route, index) => (
+                {protectedRoutes.map((route: RouteType, index) => (
                     <Route
                         key={route.key + index}
                         path={route.path}
