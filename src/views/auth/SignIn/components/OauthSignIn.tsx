@@ -1,9 +1,8 @@
 import Button from '@/components/ui/Button'
 import { useAuth } from '@/auth'
-import {
-    apiGoogleOauthSignIn,
-    apiGithubOauthSignIn,
-} from '@/services/OAuthServices'
+import { apiGithubOauthSignIn } from '@/services/OAuthServices'
+import { apiGoogleInitiate, apiGoogleContinue } from '@/services/AuthService'
+import { useEffect } from 'react'
 
 type OauthSignInProps = {
     setMessage?: (message: string) => void
@@ -13,13 +12,18 @@ type OauthSignInProps = {
 const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
     const { oAuthSignIn } = useAuth()
 
-    const handleGoogleSignIn = async () => {
-        if (!disableSubmit) {
+    useEffect(() => {
+        // Check if we're on the callback URL with a code
+        const urlParams = new URLSearchParams(window.location.search)
+        const code = urlParams.get('code')
+        console.log('code', code)
+
+        if (code) {
             oAuthSignIn(async ({ redirect, onSignIn }) => {
                 try {
-                    const resp = await apiGoogleOauthSignIn()
-                    if (resp) {
-                        const { token, user } = resp
+                    const resp = await apiGoogleContinue(code)
+                    if (resp?.data) {
+                        const { token, user } = resp.data
                         onSignIn({ accessToken: token }, user)
                         redirect()
                     }
@@ -27,6 +31,19 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
                     setMessage?.((error as string)?.toString() || '')
                 }
             })
+        }
+    }, [oAuthSignIn, setMessage])
+
+    const handleGoogleSignIn = async () => {
+        if (!disableSubmit) {
+            try {
+                const resp = await apiGoogleInitiate()
+                if (resp?.authUrl) {
+                    window.location.href = resp.authUrl
+                }
+            } catch (error) {
+                setMessage?.((error as string)?.toString() || '')
+            }
         }
     }
 

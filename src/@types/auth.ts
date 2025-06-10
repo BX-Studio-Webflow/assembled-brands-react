@@ -124,3 +124,14 @@ export type ResetPasswordInAppBody = {
 export type InitiateStripeConnectResponse = {
     url: string
 }
+
+export type GoogleInitiateResponse = {
+    success: boolean
+    authUrl: string
+}
+
+export type GoogleContinueResponse = {
+    success: boolean
+    token: string
+    user: User
+}

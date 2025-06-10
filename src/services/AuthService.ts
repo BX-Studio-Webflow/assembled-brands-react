@@ -11,6 +11,8 @@ import type {
     UploadProfileImageBody,
     ResetPasswordInAppBody,
     InitiateStripeConnectResponse,
+    GoogleInitiateResponse,
+    GoogleContinueResponse,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -93,6 +95,20 @@ export async function apiGetStripeSubscriptions<T>() {
 export async function apiInitateStripeConnect() {
     return ApiService.fetchDataWithAxios<InitiateStripeConnectResponse>({
         url: '/stripe/connect/oauth',
+        method: 'get',
+    })
+}
+
+export async function apiGoogleInitiate() {
+    return ApiService.fetchDataWithAxios<GoogleInitiateResponse>({
+        url: '/user/auth/google',
+        method: 'get',
+    })
+}
+
+export async function apiGoogleContinue(code: string) {
+    return ApiService.fetchDataWithAxios<SignInResponse>({
+        url: `/user/auth/google/callback?code=${code}`,
         method: 'get',
     })
 }
