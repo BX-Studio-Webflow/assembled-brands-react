@@ -9,16 +9,20 @@ type DebouceInputProps = InputProps & {
 }
 
 const DebouceInput = (props: DebouceInputProps) => {
-    const { wait = 500, ref, ...rest } = props
-
-    function handleDebounceFn(value: ChangeEvent<HTMLInputElement>) {
-        props.onChange?.(value)
-    }
-
-    const debounceFn = useDebounce(handleDebounceFn, wait)
+    const { wait = 500, ref, onChange, ...rest } = props
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        debounceFn(e)
+        // Call onChange immediately to update the input value
+        onChange?.(e)
+
+        // Debounce the actual value update
+        const debouncedFn = useDebounce(
+            (value: ChangeEvent<HTMLInputElement>) => {
+                onChange?.(value)
+            },
+            wait,
+        )
+        debouncedFn(e)
     }
 
     return <Input ref={ref} {...rest} onChange={handleInputChange} />
