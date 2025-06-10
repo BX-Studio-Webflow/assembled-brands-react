@@ -100,7 +100,7 @@ export async function apiValidateEventLink(data: { event_id: string }) {
     })
 }
 
-export async function apiValidateTicketPayment(data: { event_id: string, token: string, email: string }) {
+export async function apiValidateTicketPayment(data: { event_id: number, token: string, email: string }) {
     return ApiService.fetchDataWithAxios<{ valid: boolean }>({
         url: '/lead/validate-ticket-payment',
         method: 'post',
@@ -117,8 +117,11 @@ export async function apiHandleExternalForm(data: Partial<Lead>) {
 }
 
 export async function apiPurchaseMembership(data: {
-    membership_id: string
-    lead_id: string
+    event_id: number
+    membership_id: number
+    token: string
+    email: string
+    dates: number[]
 }) {
     return ApiService.fetchDataWithAxios<Lead>({
         url: '/lead/purchase-membership',

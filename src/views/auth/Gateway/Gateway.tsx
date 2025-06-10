@@ -65,7 +65,7 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
             apiValidateTicketPayment({
                 token: params.token,
                 email: params.email,
-                event_id: params.code,
+                event_id: Number(params.code),
             }),
         {
             revalidateOnFocus: false,
@@ -98,6 +98,7 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
                         isValidateTicketPaymentLoading={
                             isValidateTicketPaymentLoading
                         }
+                        params={params}
                         isEventLoading={isEventLoading}
                         purchaseComplete={purchaseComplete}
                         setMessage={setMessage}
@@ -112,17 +113,6 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
                             Continue
                         </Button>
                     </GatewayForm>
-
-                    <div className="mt-4 text-center">
-                        <span>Back to </span>
-                        <ActionLink
-                            to={signInUrl}
-                            className="heading-text font-bold"
-                            themeColor={false}
-                        >
-                            Sign in
-                        </ActionLink>
-                    </div>
                 </div>
             </Split>
         </div>

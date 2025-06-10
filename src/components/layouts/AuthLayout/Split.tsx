@@ -17,12 +17,11 @@ const Split = ({ children, content, ...rest }: SplitProps) => {
                     />
                     <div className="text-center max-w-[550px]">
                         <h1 className="text-neutral">
-                            The easiest way to build your admin app
+                            The easiest way to purchase tickets
                         </h1>
                         <p className="text-neutral opacity-80 mx-auto mt-8 font-semibold">
-                            Experience seamless project management with Ecme.
-                            Simplify your workflow, and achieve your goals
-                            efficiently with our powerful and intuitive tools.
+                            Experience seamless ticket purchasing with
+                            Elevnt.io. This purchase is secured with Stripe.
                         </p>
                     </div>
                 </div>

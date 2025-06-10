@@ -3,7 +3,7 @@ import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Avatar from '@/components/ui/Avatar'
 import IconText from '@/components/shared/IconText'
-import { TbMail, TbExternalLink, TbPhone } from 'react-icons/tb'
+import { TbMail, TbExternalLink } from 'react-icons/tb'
 import { Link } from 'react-router'
 import Radio from '@/components/ui/Radio'
 import Checkbox from '@/components/ui/Checkbox'
@@ -20,6 +20,11 @@ interface GatewayFormProps extends CommonProps {
     purchaseComplete: boolean
     setMessage: (message: string) => void
     setResetComplete: (complete: boolean) => void
+    params: {
+        code: string
+        token: string
+        email: string
+    }
 }
 
 const GatewayForm = (props: GatewayFormProps) => {
@@ -36,6 +41,7 @@ const GatewayForm = (props: GatewayFormProps) => {
         purchaseComplete,
         children,
         event,
+        params,
     } = props
 
     // Find the selected membership object
@@ -60,8 +66,11 @@ const GatewayForm = (props: GatewayFormProps) => {
         try {
             // Example: send selectedMembershipId and selectedDates
             await apiPurchaseMembership({
-                membership_id: selectedMembershipId,
-                date_ids: selectedDates.map((id) => Number(id)),
+                event_id: Number(params.code),
+                token: params.token,
+                email: params.email,
+                dates: selectedDates.map((id) => Number(id)),
+                membership_id: Number(selectedMembershipId),
             })
             setSubmitting(false)
             setResetComplete(true)
@@ -160,15 +169,16 @@ const GatewayForm = (props: GatewayFormProps) => {
                                 </Checkbox>
                             ))}
                         </Checkbox.Group>
+                        <Button
+                            block
+                            className="mt-4"
+                            loading={isSubmitting}
+                            variant="solid"
+                            type="submit"
+                        >
+                            {isSubmitting ? 'Placing Order...' : 'Purchase'}
+                        </Button>
                     </Card>
-                    <Button
-                        block
-                        loading={isSubmitting}
-                        variant="solid"
-                        type="submit"
-                    >
-                        {isSubmitting ? 'Submitting...' : 'Submit'}
-                    </Button>
                 </form>
             ) : (
                 <>{children}</>
