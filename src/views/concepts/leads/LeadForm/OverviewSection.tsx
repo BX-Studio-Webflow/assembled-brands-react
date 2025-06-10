@@ -144,7 +144,7 @@ const OverviewSection = ({
                         Boolean(errors.phoneNumber) || Boolean(errors.dialCode)
                     }
                 >
-                    <label className="form-label mb-2">Country Code</label>
+                    <label className="form-label mb-2">Dial Code</label>
                     <Controller
                         name="dialCode"
                         control={control}
@@ -181,6 +181,7 @@ const OverviewSection = ({
                         control={control}
                         render={({ field }) => (
                             <NumericInput
+                                type="tel"
                                 autoComplete="off"
                                 placeholder="Phone Number"
                                 value={field.value}

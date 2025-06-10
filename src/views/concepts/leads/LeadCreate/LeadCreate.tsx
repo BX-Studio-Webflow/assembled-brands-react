@@ -9,6 +9,7 @@ import { TbTrash } from 'react-icons/tb'
 import { useNavigate, useSearchParams } from 'react-router'
 import { apiCreateLead } from '@/services/LeadsService'
 import { useAuth } from '@/auth'
+import { AxiosError } from 'axios'
 
 const LeadCreate = () => {
     const navigate = useNavigate()
@@ -33,13 +34,26 @@ const LeadCreate = () => {
             host_id: user?.id || 0,
             event_id: eventId,
         }
-
-        // Make API call
-        await apiCreateLead(leadData)
-        toast.push(<Notification type="success">Lead created!</Notification>, {
-            placement: 'top-center',
-        })
-        navigate('/concepts/lead/lead-list')
+        try {
+            // Make API call
+            await apiCreateLead(leadData)
+            toast.push(
+                <Notification type="success">Lead created successfully!</Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            navigate('/concepts/lead/lead-list')
+        } catch (error) {
+            console.error('Error creating lead:', error)
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            throw error
+        }
     }
 
     const handleConfirmDiscard = () => {
