@@ -11,7 +11,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
     {
         key: 'concepts',
         path: '',
-        title: 'Concepts',
+        title: 'Main menu',
         translateKey: 'nav.concepts',
         icon: 'concepts',
         type: NAV_ITEM_TYPE_TITLE,
@@ -193,23 +193,6 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },*/
                 ],
             },
-
-            {
-                key: 'concepts.fileManager',
-                path: `${CONCEPTS_PREFIX_PATH}/file-manager`,
-                title: 'File Manager',
-                translateKey: 'nav.fileManager',
-                icon: 'fileManager',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.fileManagerDesc',
-                        label: 'Manage your files',
-                    },
-                },
-                subMenu: [],
-            },
             {
                 key: 'concepts.products',
                 path: '',
@@ -278,6 +261,23 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 ],
             },
+            {
+                key: 'concepts.fileManager',
+                path: `${CONCEPTS_PREFIX_PATH}/file-manager`,
+                title: 'File Manager',
+                translateKey: 'nav.fileManager',
+                icon: 'fileManager',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.fileManagerDesc',
+                        label: 'Manage your files',
+                    },
+                },
+                subMenu: [],
+            },
+
             {
                 key: 'concepts.memberships',
                 path: '',
@@ -348,7 +348,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 ],
             },
 
-           /* {
+            /* {
                 key: 'concepts.projects',
                 path: '',
                 title: 'Projects',
@@ -701,7 +701,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 },
                 subMenu: [],
             },
-           /* {
+            /* {
                 key: 'concepts.chat',
                 path: `${CONCEPTS_PREFIX_PATH}/chat`,
                 title: 'Chat',

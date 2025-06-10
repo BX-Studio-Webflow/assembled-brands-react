@@ -2,12 +2,12 @@
     "nav": {
         "dashboard": {
             "dashboard": "Dashboard",
-            "information": "Information",
+            "information": "Overview",
             "analytic": "Analytic",
             "project": "Project",
             "marketing": "Marketing"
         },
-        "concepts": "Concepts",
+        "concepts": "Main menu",
         "conceptsAi": {
             "ai": "AI",
             "chat": "Chat",
@@ -64,7 +64,7 @@
             "faq": "FAQ"
         },
         "calendar": "Calendar",
-        "fileManager": "File Manager",
+        "fileManager": "File Uploads",
         "mail": "Mail",
         "chat": "Chat",
         "uiComponents": "UI Components",
