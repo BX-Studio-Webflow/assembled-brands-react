@@ -36,7 +36,7 @@ export async function apiRenameAsset(id: number, newName: string) {
     return ApiService.fetchDataWithAxios<Asset>({
         url: `/asset/${id}/rename`,
         method: 'put',
-        data: { name: newName },
+        data: { fileName: newName },
     })
 }
 
