@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import Avatar from '@/components/ui/Avatar'
 import Tag from '@/components/ui/Tag'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
@@ -23,13 +22,6 @@ const statusColor: Record<string, string> = {
 const NameColumn = ({ row }: { row: Lead }) => {
     return (
         <div className="flex items-center">
-            <Avatar
-                size={40}
-                shape="circle"
-                src={
-                    'https://cdn.prod.website-files.com/6835c75868daca6e9cfac75f/6835c75968daca6e9cfac934_Testimonial%20Avatar%20(1).webp'
-                }
-            />
             <Link
                 className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
                 to={`/concepts/lead/lead-edit/${row.id}`}

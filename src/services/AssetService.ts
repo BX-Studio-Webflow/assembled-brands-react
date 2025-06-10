@@ -59,7 +59,7 @@ export const apiCreateMultipartAsset = async (payload: {
         uploadId: string
         key: string
         presignedUrls: string[]
-        asset: Asset
+        asset: number
     }>({
         url: '/asset/multipart',
         method: 'post',

@@ -130,7 +130,7 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
         }
 
         // Complete multipart upload
-        await apiCompleteMultipartUpload(asset.id, parts)
+        await apiCompleteMultipartUpload(asset, parts)
         setProgressArr((prev) => {
             const updated = [...prev]
             updated[idx] = 100
