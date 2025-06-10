@@ -1,16 +1,19 @@
-import { useState } from 'react'
-import Card from '@/components/ui/Card'
+import React, { useState, useEffect, useRef } from 'react'
 import Button from '@/components/ui/Button'
-import Avatar from '@/components/ui/Avatar/Avatar'
 import Notification from '@/components/ui/Notification'
-import Tooltip from '@/components/ui/Tooltip'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import dayjs from 'dayjs'
-import { HiPencil, HiOutlineTrash } from 'react-icons/hi'
+import { HiOutlineTrash } from 'react-icons/hi'
 import { useNavigate } from 'react-router'
 import type { Lead } from '@/@types/lead'
-import { apiDeleteLead } from '@/services/LeadsService'
+import {
+    apiDeleteLead,
+    apiCreateTagAssignment,
+    apiDeleteTag,
+} from '@/services/LeadsService'
+import CreatableSelect from 'react-select/creatable'
+import type { MultiValue } from 'react-select'
 
 type CustomerInfoFieldProps = {
     title?: string
@@ -33,6 +36,30 @@ const CustomerInfoField = ({ title, value }: CustomerInfoFieldProps) => {
 const ProfileSection = ({ data }: ProfileSectionProps) => {
     const navigate = useNavigate()
     const [dialogOpen, setDialogOpen] = useState(false)
+    const initialOptions: { value: number; label: string }[] = (
+        data.tags ?? []
+    ).map((ev) => ({
+        value: ev.tag.id,
+        label: ev.tag.tag,
+    }))
+    const [tagOptions, setTagOptions] =
+        useState<{ value: number; label: string }[]>(initialOptions)
+    const [selectedTags, setSelectedTags] =
+        useState<{ value: number; label: string }[]>(initialOptions)
+    const prevTagsRef =
+        useRef<{ value: number; label: string }[]>(initialOptions)
+
+    useEffect(() => {
+        const opts: { value: number; label: string }[] = (data.tags ?? []).map(
+            (ev) => ({
+                value: ev.tag.id,
+                label: ev.tag.tag,
+            }),
+        )
+        setTagOptions(opts)
+        setSelectedTags(opts)
+        prevTagsRef.current = opts
+    }, [data.tags])
 
     const handleDialogClose = () => {
         setDialogOpen(false)
@@ -69,31 +96,106 @@ const ProfileSection = ({ data }: ProfileSectionProps) => {
         navigate('/concepts/mail')
     }
 
-    const handleEdit = () => {
-        navigate(`/concepts/lead/lead-edit/${data.id}`)
+    const handleChange = (
+        newValue: MultiValue<{ value: number; label: string }>,
+    ) => {
+        const arr = Array.isArray(newValue)
+            ? (newValue as { value: number; label: string }[])
+            : []
+
+        // Find removed tags
+        const removedTags = prevTagsRef.current.filter(
+            (prevTag) => !arr.some((tag) => tag.value === prevTag.value),
+        )
+
+        // Find added tags
+        const addedTags = arr.filter(
+            (newTag) =>
+                !prevTagsRef.current.some(
+                    (prevTag) => prevTag.value === newTag.value,
+                ),
+        )
+
+        // Remove tags via API
+        removedTags.forEach(async (tag) => {
+            try {
+                await apiDeleteTag(String(tag.value), String(data.id))
+            } catch {
+                toast.push(
+                    <Notification type="danger">
+                        Failed to remove tag. Please try again.
+                    </Notification>,
+                    { placement: 'top-center' },
+                )
+            }
+        })
+
+        // Add tags via API
+        addedTags.forEach(async (tag) => {
+            try {
+                await apiCreateTagAssignment({
+                    lead_id: data.id,
+                    tag: String(tag.value),
+                })
+            } catch {
+                toast.push(
+                    <Notification type="danger">
+                        Failed to add tag. Please try again.
+                    </Notification>,
+                    { placement: 'top-center' },
+                )
+            }
+        })
+
+        // Update state
+        setSelectedTags(arr)
+        prevTagsRef.current = arr
+    }
+
+    const handleCreate = async (inputValue: string) => {
+        try {
+            const newTag = await apiCreateTagAssignment({
+                lead_id: data.id,
+                tag: inputValue,
+            })
+
+            const newOption = {
+                value: newTag.id,
+                label: inputValue,
+            }
+
+            setTagOptions((prev) => [...prev, newOption])
+            setSelectedTags((prev) => [...prev, newOption])
+            prevTagsRef.current = [...selectedTags, newOption]
+
+            return newOption
+        } catch {
+            toast.push(
+                <Notification type="danger">
+                    Failed to create tag. Please try again.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            // Return option even on error to maintain UI state
+            return { value: Date.now(), label: inputValue }
+        }
     }
 
     return (
-        <Card className="w-full">
-            <div className="flex justify-end">
-                <Tooltip title="Edit lead">
-                    <button
-                        className="close-button button-press-feedback"
-                        type="button"
-                        onClick={handleEdit}
-                    >
-                        <HiPencil />
-                    </button>
-                </Tooltip>
-            </div>
+        <>
+            <CreatableSelect
+                isMulti
+                isClearable={false}
+                onChange={handleChange}
+                onCreateOption={handleCreate}
+                options={tagOptions}
+                value={selectedTags}
+                placeholder="Select or type to add tags"
+                isSearchable={true}
+                closeMenuOnSelect={true}
+                name="tags"
+            />
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
-                <div className="flex xl:flex-col items-center gap-4 mt-6">
-                    <Avatar size={90} shape="circle">
-                        {data.name.charAt(0)}
-                    </Avatar>
-                    <h4 className="font-bold">{data.name}</h4>
-                    <p className="text-gray-500">{data.status_identifier}</p>
-                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-10">
                     <CustomerInfoField title="Email" value={data.email} />
                     <CustomerInfoField
@@ -106,21 +208,6 @@ const ProfileSection = ({ data }: ProfileSectionProps) => {
                             'DD MMM YYYY hh:mm A',
                         )}
                     />
-                    {data.tags && data.tags.length > 0 && (
-                        <div className="mb-7">
-                            <span>Tags</span>
-                            <div className="flex flex-wrap mt-4 gap-2">
-                                {data.tags.map((tagAssignment) => (
-                                    <span
-                                        key={tagAssignment.id}
-                                        className="px-2 py-1 bg-primary-50 text-primary-500 rounded-full text-xs"
-                                    >
-                                        {tagAssignment.tag.tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
                 <div className="flex flex-col gap-4 mt-8">
                     <Button block variant="solid" onClick={handleSendMessage}>
@@ -153,7 +240,7 @@ const ProfileSection = ({ data }: ProfileSectionProps) => {
                     </p>
                 </ConfirmDialog>
             </div>
-        </Card>
+        </>
     )
 }
 

@@ -1,5 +1,12 @@
 import ApiService from './ApiService'
-import type { Lead, LeadSearchParams, Tag, TagAssignment } from '@/@types/lead'
+import type {
+    Lead,
+    LeadSearchParams,
+    Tag,
+    TagAssignment,
+    TagAssignmentBody,
+    TagAssignmentResponse,
+} from '@/@types/lead'
 
 export async function apiGetLeads<T>(params?: Record<string, unknown>) {
     return ApiService.fetchDataWithAxios<T>({
@@ -18,7 +25,15 @@ export async function apiGetLead<T>(id: string) {
 
 export async function apiCreateLead(data: Partial<Lead>) {
     return ApiService.fetchDataWithAxios<Lead>({
-        url: '/lead',
+        url: '/v1/lead/tag',
+        method: 'post',
+        data,
+    })
+}
+
+export async function apiCreateTagAssignment(data: TagAssignmentBody) {
+    return ApiService.fetchDataWithAxios<TagAssignmentResponse>({
+        url: '/lead/tag',
         method: 'post',
         data,
     })
@@ -54,26 +69,10 @@ export async function apiGetUniqueLeads() {
     })
 }
 
-// Tag related functions
-export async function apiCreateTag(data: Partial<Tag>) {
-    return ApiService.fetchDataWithAxios<Tag>({
-        url: '/lead/tag',
-        method: 'post',
-        data,
-    })
-}
-
-export async function apiDeleteTag(id: string) {
+export async function apiDeleteTag(id: string, leadId: string) {
     return ApiService.fetchDataWithAxios<void>({
-        url: `/lead/tag/${id}`,
+        url: `/lead/tag/${id}/lead/${leadId}`,
         method: 'delete',
-    })
-}
-
-export async function apiGetTags() {
-    return ApiService.fetchDataWithAxios<Tag[]>({
-        url: '/lead/tags/host',
-        method: 'get',
     })
 }
 

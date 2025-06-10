@@ -1,9 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
-import BottomStickyBar from '@/components/template/BottomStickyBar'
 import OverviewSection from './OverviewSection'
-import TagsSection from './TagsSection'
 import isEmpty from 'lodash/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -11,6 +9,9 @@ import { z } from 'zod'
 import type { ZodType } from 'zod'
 import type { CommonProps } from '@/@types/common'
 import type { LeadFormSchema } from './types'
+import useSWR from 'swr'
+import { apiGetEvents } from '@/services/EventService'
+import { GetEventsResponse } from '@/@types/events'
 
 type LeadFormProps = {
     onFormSubmit: (values: LeadFormSchema) => void
@@ -26,12 +27,12 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
     dialCode: z.string().min(1, 'Please select your country code'),
     phoneNumber: z.string().min(1, 'Please input your mobile number'),
     img: z.string(),
-    tags: z.array(z.object({ value: z.string(), label: z.string() })),
+    event_id: z.number().min(1, 'Please select an event'),
 })
 
 const LeadForm = (props: LeadFormProps) => {
-    const { onFormSubmit, defaultValues = {}, children } = props
-
+    const { onFormSubmit, defaultValues = {}, children, newLead } = props
+    const [events, setEvents] = useState<GetEventsResponse | undefined>()
     const {
         handleSubmit,
         reset,
@@ -60,7 +61,18 @@ const LeadForm = (props: LeadFormProps) => {
             throw error
         }
     }
-
+    useSWR(
+        ['/event'],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        () => apiGetEvents(),
+        {
+            revalidateOnFocus: false,
+            onSuccess: (response) => {
+                console.log(response)
+                setEvents(response)
+            },
+        },
+    )
     return (
         <Form
             className="flex w-full h-full"
@@ -70,14 +82,16 @@ const LeadForm = (props: LeadFormProps) => {
             <Container>
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="gap-4 flex flex-col flex-auto">
-                        <OverviewSection control={control} errors={errors} />
-                    </div>
-                    <div className="md:w-[370px] gap-4 flex flex-col">
-                        <TagsSection control={control} errors={errors} />
+                        <OverviewSection
+                            control={control}
+                            errors={errors}
+                            actions={children}
+                            events={events}
+                            newLead={newLead}
+                        />
                     </div>
                 </div>
             </Container>
-            <BottomStickyBar>{children}</BottomStickyBar>
         </Form>
     )
 }

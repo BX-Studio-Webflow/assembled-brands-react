@@ -7,6 +7,7 @@ export type OverviewFields = {
     dialCode: string
     phoneNumber: string
     img: string
+    event_id: number
 }
 
 export type AddressFields = {

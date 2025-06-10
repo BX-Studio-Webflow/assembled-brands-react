@@ -93,6 +93,7 @@ const LeadEdit = () => {
                 city: '',
                 postcode: '',
                 tags: [],
+                event_id: data.event_id,
             }
         }
 
@@ -129,89 +130,104 @@ const LeadEdit = () => {
             )}
             {!isLoading && data && (
                 <>
-                    <LeadForm
-                        defaultValues={getDefaultValues() as LeadFormSchema}
-                        newLead={false}
-                        onFormSubmit={handleFormSubmit}
-                    >
-                        <Container>
-                            <div className="flex items-center justify-between px-8">
-                                <Button
-                                    className="ltr:mr-3 rtl:ml-3"
-                                    type="button"
-                                    variant="plain"
-                                    icon={<TbArrowNarrowLeft />}
-                                    onClick={handleBack}
-                                >
-                                    Back
-                                </Button>
-                                <div className="flex items-center">
-                                    <Button
-                                        className="ltr:mr-3 rtl:ml-3"
-                                        type="button"
-                                        customColorClass={() =>
-                                            'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
-                                        }
-                                        icon={<TbTrash />}
-                                        onClick={handleDelete}
-                                    >
-                                        Delete
-                                    </Button>
-                                    <Button
-                                        variant="solid"
-                                        type="submit"
-                                        loading={isSubmiting}
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                            </div>
-                        </Container>
-                    </LeadForm>
                     <Loading loading={isLoading}>
                         {!isEmpty(data) && (
                             <div className="flex flex-col xl:flex-row gap-4">
-                                <div className="min-w-[330px] 2xl:min-w-[400px]">
-                                    <ProfileSection data={data} />
+                                <div className="w-full xl:w-1/2">
+                                    <LeadForm
+                                        defaultValues={
+                                            getDefaultValues() as LeadFormSchema
+                                        }
+                                        newLead={false}
+                                        onFormSubmit={handleFormSubmit}
+                                    >
+                                        <Container>
+                                            <div className="flex items-center justify-between px-8">
+                                                <Button
+                                                    className="ltr:mr-3 rtl:ml-3"
+                                                    type="button"
+                                                    variant="plain"
+                                                    icon={<TbArrowNarrowLeft />}
+                                                    onClick={handleBack}
+                                                >
+                                                    Back
+                                                </Button>
+                                                <div className="flex items-center">
+                                                    <Button
+                                                        className="ltr:mr-3 rtl:ml-3"
+                                                        type="button"
+                                                        customColorClass={() =>
+                                                            'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
+                                                        }
+                                                        icon={<TbTrash />}
+                                                        onClick={handleDelete}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                    <Button
+                                                        variant="solid"
+                                                        type="submit"
+                                                        loading={isSubmiting}
+                                                    >
+                                                        Save
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </Container>
+                                    </LeadForm>
                                 </div>
-                                <Card className="w-full">
-                                    <Tabs defaultValue="billing">
-                                        <TabList>
-                                            <TabNav value="billing">
-                                                Billing
-                                            </TabNav>
-                                            <TabNav value="activity">
-                                                Events
-                                            </TabNav>
-                                        </TabList>
-                                        <div className="p-4">
-                                            <TabContent value="billing">
-                                                <BillingSection data={data} />
-                                            </TabContent>
-                                            <TabContent value="activity">
-                                                <ActivitySection
-                                                    bookings={
-                                                        data.bookings || []
-                                                    }
-                                                />
-                                            </TabContent>
-                                        </div>
-                                    </Tabs>
-                                </Card>
+                                <div className="w-full xl:w-1/2">
+                                    <div className="flex flex-col gap-4">
+                                        <Card className="w-full">
+                                            <Tabs defaultValue="billing">
+                                                <TabList>
+                                                    <TabNav value="billing">
+                                                        Billing
+                                                    </TabNav>
+                                                    <TabNav value="activity">
+                                                        Events
+                                                    </TabNav>
+                                                    <TabNav value="profile">
+                                                        Profile
+                                                    </TabNav>
+                                                </TabList>
+                                                <div className="p-4">
+                                                    <TabContent value="billing">
+                                                        <BillingSection
+                                                            data={data}
+                                                        />
+                                                    </TabContent>
+                                                    <TabContent value="activity">
+                                                        <ActivitySection
+                                                            bookings={
+                                                                data.bookings ||
+                                                                []
+                                                            }
+                                                        />
+                                                    </TabContent>
+                                                    <TabContent value="profile">
+                                                        <ProfileSection
+                                                            data={data}
+                                                        />
+                                                    </TabContent>
+                                                </div>
+                                            </Tabs>
+                                        </Card>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </Loading>
                     <ConfirmDialog
                         isOpen={deleteConfirmationOpen}
                         type="danger"
-                        title="Remove customers"
+                        title="Delete customer"
                         onClose={handleCancel}
                         onRequestClose={handleCancel}
-                        onCancel={handleCancel}
                         onConfirm={handleConfirmDelete}
                     >
                         <p>
-                            Are you sure you want to remove this customer? This
+                            Are you sure you want to delete this customer? This
                             action can&apos;t be undo.{' '}
                         </p>
                     </ConfirmDialog>

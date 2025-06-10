@@ -122,6 +122,16 @@ export interface TagAssignment {
     lead_id: string
 }
 
+export interface TagAssignmentBody {
+    lead_id: number
+    tag: string
+}
+
+export interface TagAssignmentResponse {
+    id: number
+    tag: string
+}
+
 export interface LeadSearchParams {
     query?: string
     status?: string
