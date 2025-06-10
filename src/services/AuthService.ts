@@ -12,7 +12,6 @@ import type {
     ResetPasswordInAppBody,
     InitiateStripeConnectResponse,
     GoogleInitiateResponse,
-    GoogleContinueResponse,
     User,
 } from '@/@types/auth'
 
@@ -105,12 +104,6 @@ export async function apiGoogleInitiate() {
         url: '/user/auth/google',
         method: 'get',
     })
-}
-
-export type GoogleContinueResponse = {
-    success: boolean
-    token: string
-    user: User
 }
 
 export async function apiGoogleContinue(code: string) {
