@@ -31,6 +31,7 @@ const LeadCreate = () => {
             dial_code: values.dialCode,
             phone: values.phoneNumber,
             host_id: user?.id || 0,
+            event_id: eventId,
         }
 
         // Make API call
@@ -70,7 +71,7 @@ const LeadCreate = () => {
                     img: '',
                     phoneNumber: '',
                     dialCode: '',
-                    tags: [],
+                    event_id: 0,
                 }}
                 onFormSubmit={handleFormSubmit}
             >

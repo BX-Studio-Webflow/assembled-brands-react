@@ -17,7 +17,7 @@ type LeadFormProps = {
     onFormSubmit: (values: LeadFormSchema) => void
     defaultValues?: LeadFormSchema
     newLead?: boolean
-    eventId?: number
+    eventId?: number | undefined
 } & CommonProps
 
 const validationSchema: ZodType<LeadFormSchema> = z.object({
@@ -27,7 +27,7 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
     dialCode: z.string().min(1, 'Please select your country code'),
     phoneNumber: z.string().min(1, 'Please input your mobile number'),
     img: z.string(),
-    event_id: z.number().min(1, 'Please select an event'),
+    event_id: z.number().min(1, 'Please select an event').optional(),
 })
 
 const LeadForm = (props: LeadFormProps) => {

@@ -26,7 +26,7 @@ export async function apiGetLead<T>(id: string) {
 
 export async function apiCreateLead(data: Partial<Lead>) {
     return ApiService.fetchDataWithAxios<Lead>({
-        url: '/v1/lead/tag',
+        url: '/v1/lead',
         method: 'post',
         data,
     })
