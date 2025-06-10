@@ -16,6 +16,8 @@ export type ForgotPassword = {
 
 export type ResetPassword = {
     password: string
+    token: number
+    email: string
 }
 
 export type User = {
