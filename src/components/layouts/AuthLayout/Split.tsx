@@ -27,7 +27,7 @@ const Split = ({ children, content, ...rest }: SplitProps) => {
                 </div>
             </div>
             <div className="flex flex-col justify-center items-center ">
-                <div className="w-full xl:max-w-[450px] px-8 max-w-[380px]">
+                <div className="w-full xl:max-w-[600px] px-8 max-w-[380px]">
                     <div className="mb-8">{content}</div>
                     {children
                         ? cloneElement(children as React.ReactElement, {
