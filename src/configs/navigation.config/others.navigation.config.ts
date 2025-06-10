@@ -47,6 +47,22 @@ const othersNavigationConfig: NavigationTree[] = [
                 },
                 subMenu: [],
             },
+            {
+                key: 'others.gateway',
+                path: `/gateway`,
+                title: 'Gateway',
+                translateKey: 'nav.others.gateway',
+                icon: 'landing',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.others.landingDesc',
+                        label: 'Shared component usage',
+                    },
+                },
+                subMenu: [],
+            },
         ],
     },
 ]

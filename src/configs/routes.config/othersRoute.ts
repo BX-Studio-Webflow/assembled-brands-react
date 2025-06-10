@@ -25,6 +25,18 @@ const othersRoute: Routes = [
             pageBackgroundType: 'plain',
         },
     },
+    {
+        key: 'gateway',
+        path: `/gateway`,
+        component: lazy(() => import('@/views/auth/Gateway')),
+        authority: [],
+        meta: {
+            layout: 'blank',
+            footer: false,
+            pageContainerType: 'gutterless',
+            pageBackgroundType: 'plain',
+        },
+    },
 ]
 
 export default othersRoute
