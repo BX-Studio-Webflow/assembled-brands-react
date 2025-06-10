@@ -1,10 +1,8 @@
 import HeroContent from './components/HeroContent'
 import NavigationBar from './components/NavigationBar'
 import Features from './components/Features'
-import Demos from './components/Demos'
 import TechStack from './components/TechStack'
 import OtherFeatures from './components/OtherFeatures'
-import Components from './components/Components'
 import LandingFooter from './components/LandingFooter'
 import { useThemeStore } from '@/store/themeStore'
 import useDarkMode from '@/utils/hooks/useDarkMode'
@@ -40,10 +38,9 @@ const Landing = () => {
                 setSchema={setSchema}
                 onModeChange={(value) => setMode(value ? 'dark' : 'light')}
             />
-            <Demos mode={mode} />
+
             <TechStack />
             <OtherFeatures />
-            <Components />
             <LandingFooter mode={mode} />
         </main>
     )

@@ -35,9 +35,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                         >
                             <h2 className="text-5xl">Ready to Get Started?</h2>
                             <p className="mt-4 max-w-[400px] mx-auto">
-                                Build modern, scalable applications effortlessly
-                                with Ecme. Take your project to the next level
-                                today!
+                                Elevnt.io is a platform that allows you to create, manage, and promote your events, courses, and podcasts.
                             </p>
                             <div className="mt-6">
                                 <Button variant="solid" onClick={handlePreview}>
@@ -68,7 +66,7 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                             )}
                         </a>
                         <p className="text-center">
-                            Copyright © {year} Theme_Nate. All rights reserved.
+                            Copyright © {year} Elevnt.io. All rights reserved.
                         </p>
                     </div>
                 </div>

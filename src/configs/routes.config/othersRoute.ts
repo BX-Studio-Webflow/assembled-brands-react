@@ -15,7 +15,7 @@ const othersRoute: Routes = [
     },
     {
         key: 'landing',
-        path: `/landing`,
+        path: `/`,
         component: lazy(() => import('@/views/others/Landing')),
         authority: [ADMIN, USER],
         meta: {

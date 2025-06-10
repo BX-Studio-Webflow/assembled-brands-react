@@ -8,7 +8,7 @@ import othersRoute from './othersRoute'
 import type { Routes } from '@/@types/routes'
 import onboardingRoute from './onboardingRoute'
 
-export const publicRoutes: Routes = [...authRoute]
+export const publicRoutes: Routes = [...authRoute, ...othersRoute]
 
 export const protectedRoutes: Routes = [
     ...dashboardsRoute,
@@ -16,6 +16,5 @@ export const protectedRoutes: Routes = [
     ...uiComponentsRoute,
     ...authDemoRoute,
     ...guideRoute,
-    ...othersRoute,
     ...onboardingRoute,
 ]

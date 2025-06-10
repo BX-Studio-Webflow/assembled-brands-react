@@ -202,12 +202,10 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                     viewport={{ once: true }}
                 >
                     <motion.h2 className="my-6 text-5xl">
-                        Discover the Power of Ecme
+                        Discover the Power of Elevnt.io
                     </motion.h2>
                     <motion.p className="mx-auto max-w-[600px]">
-                        Crafted for performance, scalability, and ease of
-                        use—experience a template built to meet all your project
-                        needs
+                        Elevnt.io is a platform that allows you to create, manage, and promote your events, courses, and podcasts.
                     </motion.p>
                 </motion.div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -270,11 +268,10 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                 </div>
                                 <div className="mt-6">
                                     <h4 className="font-bold">
-                                        Customizable Themes
+                                        Host Events
                                     </h4>
                                     <p className="mt-2">
-                                        Effortlessly switch between light and
-                                        dark modes or create your custom theme.
+                                        Effortlessly create and manage your events, add leads and track attendance.
                                     </p>
                                 </div>
                             </Card>
@@ -327,11 +324,10 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                 </div>
                                 <div className="mt-6">
                                     <h4 className="font-bold">
-                                        Comprehensive Documentation
+                                        Comprehensive Podcasts
                                     </h4>
                                     <p className="mt-2">
-                                        Detailed step-by-step guides to help you
-                                        get started and master the template.
+                                        Create and manage your podcasts, add guests and track listenership.
                                     </p>
                                 </div>
                             </Card>
@@ -361,14 +357,10 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                 </div>
                                 <div className="mt-6">
                                     <h4 className="font-bold">
-                                        Multiple Layouts
+                                        Sell Courses
                                     </h4>
                                     <p className="mt-2">
-                                        Choose from various layout options to
-                                        match your needs. Whether it&apos;s
-                                        vertical, horizontal, or RTL
-                                        (right-to-left), we provide flexibility
-                                        for any design style or language.
+                                        Create and manage your courses, add students and track progress. Add modules and lessons and sell and make money from your courses directly to your stripe account.
                                     </p>
                                 </div>
                             </Card>
@@ -417,12 +409,10 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                 </div>
                                 <div className="mt-6">
                                     <h4 className="font-bold">
-                                        Handcrafted Tailwind Components
+                                        A complete CRM solution
                                     </h4>
                                     <p className="mt-2">
-                                        A collection of custom-made, highly
-                                        flexible Tailwind components that fit
-                                        any use case.
+                                        A complete CRM solution for your business, track leads, customers and sales.
                                     </p>
                                 </div>
                             </div>

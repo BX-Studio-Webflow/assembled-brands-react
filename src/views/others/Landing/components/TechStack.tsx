@@ -66,12 +66,11 @@ const TechStack = () => {
                 viewport={{ once: true }}
             >
                 <motion.h2 className="my-6 text-5xl">
-                    Core Technologies Powering
+                    Trusted by the best
                 </motion.h2>
                 <motion.p className="mx-auto max-w-[600px]">
-                    Ecme built using cutting-edge technologies to ensure
-                    streamlined, scalability, and a seamless developer
-                    experience.
+                    Elevnt.io is built using cutting-edge technologies to ensure
+                    streamlined, scalability, and a seamless experience.
                 </motion.p>
             </motion.div>
             <Container>

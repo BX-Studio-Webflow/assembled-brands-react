@@ -33,7 +33,7 @@ const othersNavigationConfig: NavigationTree[] = [
             },
             {
                 key: 'others.landing',
-                path: `/landing`,
+                path: `/`,
                 title: 'Landing',
                 translateKey: 'nav.others.landing',
                 icon: 'landing',

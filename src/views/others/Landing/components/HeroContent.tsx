@@ -25,13 +25,13 @@ const HeroContent = ({ mode }: { mode: Mode }) => {
                 <div>
                     <TextGenerateEffect
                         wordClassName="text-2xl md:text-4xl lg:text-8xl font-bold max-w-7xl mx-auto text-center mt-6 relative z-10"
-                        words="Unlock Ultimate Control with the Perfect Template"
+                        words="Elevate your events with ease"
                         wordsCallbackClass={({ word }) => {
-                            if (word === 'Perfect') {
+                            if (word === 'events') {
                                 return 'bg-gradient-to-r from-indigo-600 to-[#be598a] bg-clip-text text-transparent'
                             }
 
-                            if (word === 'Template') {
+                            if (word === 'ease') {
                                 return 'bg-gradient-to-r from-[#be598a] to-[#ff6a55] bg-clip-text text-transparent'
                             }
 
@@ -44,10 +44,13 @@ const HeroContent = ({ mode }: { mode: Mode }) => {
                         transition={{ duration: 0.3, delay: 0.5 }}
                         className="text-center mt-6 text-base md:text-xl text-muted dark:text-muted-dark max-w-5xl mx-auto relative z-10 font-normal"
                     >
-                        Experience a powerful, intuitive, and customizable admin
-                        dashboard that adapts to your needs. Built for
-                        developers, by developers, to simplify workflow
-                        management and enhance user experiences.
+                        Our platform is designed to be your all-in-one solution
+                        for seamlessly managing courses, events, and podcasts,
+                        offering unparalleled customization to perfectly align
+                        with your brand. Experience blazing-fast performance and
+                        a suite of intuitive tools that transform even the most
+                        complex workflows into effortless tasks, empowering you
+                        to focus on creating and engaging with your audience.
                     </motion.p>
                     <motion.div
                         initial={{ opacity: 0, translateY: 40 }}
@@ -56,10 +59,10 @@ const HeroContent = ({ mode }: { mode: Mode }) => {
                         className="flex items-center gap-4 justify-center mt-10 relative z-10"
                     >
                         <Button variant="solid" onClick={handlePreview}>
-                            Preview
+                            Get started
                         </Button>
                         <Button onClick={handleGetTemplate}>
-                            Get this template
+                            Learn more
                         </Button>
                     </motion.div>
                 </div>
