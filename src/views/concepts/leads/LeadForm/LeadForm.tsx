@@ -27,7 +27,7 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
     dialCode: z.string().min(1, 'Please select your country code'),
     phoneNumber: z.string().min(1, 'Please input your mobile number'),
     img: z.string(),
-    event_id: z.number().min(1, 'Please select an event').optional(),
+    event_id: z.number().optional(),
 })
 
 const LeadForm = (props: LeadFormProps) => {
