@@ -16,15 +16,13 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
         // Check if we're on the callback URL with a code
         const urlParams = new URLSearchParams(window.location.search)
         const code = urlParams.get('code')
-        console.log('code', code)
 
         if (code) {
             oAuthSignIn(async ({ redirect, onSignIn }) => {
                 try {
                     const resp = await apiGoogleContinue(code)
-                    if (resp?.data) {
-                        const { token, user } = resp.data
-                        onSignIn({ accessToken: token }, user)
+                    if (resp?.token && resp?.user) {
+                        onSignIn({ accessToken: resp.token }, resp.user)
                         redirect()
                     }
                 } catch (error) {

@@ -13,6 +13,7 @@ import type {
     InitiateStripeConnectResponse,
     GoogleInitiateResponse,
     GoogleContinueResponse,
+    User,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -106,8 +107,14 @@ export async function apiGoogleInitiate() {
     })
 }
 
+export type GoogleContinueResponse = {
+    success: boolean
+    token: string
+    user: User
+}
+
 export async function apiGoogleContinue(code: string) {
-    return ApiService.fetchDataWithAxios<SignInResponse>({
+    return ApiService.fetchDataWithAxios<GoogleContinueResponse>({
         url: `/user/auth/google/callback?code=${code}`,
         method: 'get',
     })
