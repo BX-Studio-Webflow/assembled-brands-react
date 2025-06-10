@@ -144,7 +144,7 @@ const OverviewSection = ({
                         Boolean(errors.phoneNumber) || Boolean(errors.dialCode)
                     }
                 >
-                    <label className="form-label mb-2">Phone number</label>
+                    <label className="form-label mb-2">Country Code</label>
                     <Controller
                         name="dialCode"
                         control={control}
@@ -175,6 +175,7 @@ const OverviewSection = ({
                     }
                     errorMessage={errors.phoneNumber?.message}
                 >
+                    <label className="form-label mb-2">Phone Number</label>
                     <Controller
                         name="phoneNumber"
                         control={control}
