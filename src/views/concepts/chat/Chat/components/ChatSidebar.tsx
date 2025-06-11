@@ -1,10 +1,15 @@
 import ChatList from './ChatList'
 import { useChatStore } from '../store/chatStore'
 import classNames from '@/utils/classNames'
+import { EventStreamResponse } from '@/@types/events'
 
-const ChatSidebar = () => {
+interface ChatSidebarProps {
+    event: EventStreamResponse
+}
+
+const ChatSidebar = ({ event }: ChatSidebarProps) => {
     const selectedChat = useChatStore((state) => state.selectedChat)
-
+    console.log(event)
     return (
         <div
             className={classNames(
@@ -12,7 +17,7 @@ const ChatSidebar = () => {
                 selectedChat.id && 'hidden',
             )}
         >
-            <ChatList />
+            <ChatList event={event} />
         </div>
     )
 }

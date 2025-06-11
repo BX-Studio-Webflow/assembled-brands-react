@@ -3,16 +3,26 @@ import ChatSegment from './ChatSegment'
 import { useChatStore } from '../store/chatStore'
 import useChat from '../hooks/useChat'
 import useDebounce from '@/utils/hooks/useDebounce'
-import { TbSearch, TbX } from 'react-icons/tb'
+import { TbExternalLink, TbMail, TbSearch, TbX } from 'react-icons/tb'
 import type { ChangeEvent } from 'react'
 import ChatStats from './ChatStats'
+import { Link, useSearchParams } from 'react-router'
+import { Avatar, Card } from '@/components/ui'
+import { IconText } from '@/components/shared'
+import { EventStreamResponse } from '@/@types/events'
 
-const ChatList = () => {
+interface ChatListProps {
+    event: EventStreamResponse
+}
+
+const ChatList = ({ event }: ChatListProps) => {
+    const [searchParams] = useSearchParams()
+    const token = searchParams.get('token')
+    const email = searchParams.get('email')
+    const code = searchParams.get('code')
     const chatsFetched = useChatStore((state) => state.chatsFetched)
-    const setSelectedChatType = useChatStore(
-        (state) => state.setSelectedChatType,
-    )
-
+    const setSelectedChat = useChatStore((state) => state.setSelectedChat)
+    console.log(event)
     const inputRef = useRef<HTMLInputElement>(null)
 
     const [showSearchBar, setShowSearchBar] = useState(false)
@@ -37,11 +47,11 @@ const ChatList = () => {
 
     function handleDebounceFn(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.value.length > 0) {
-            setSelectedChatType('')
+            setSelectedChat({})
         }
 
         if (e.target.value.length === 0) {
-            setSelectedChatType('personal')
+            setSelectedChat({})
         }
 
         setQueryText(e.target.value)
@@ -81,35 +91,73 @@ const ChatList = () => {
                 </div>
                 <ChatSegment />
             </div>
-            <ChatStats
-                data={{
-                    visitors: 2000,
-                    channels: [
-                        {
-                            id: '1',
-                            name: 'Facebook',
-                            img: 'https://www.facebook.com/favicon.ico',
-                            total: 1000,
-                            percentage: 50,
-                        },
-                        {
-                            id: '2',
-                            name: 'Facebook',
-                            img: 'https://www.facebook.com/favicon.ico',
-                            total: 1000,
-                            percentage: 50,
-                        },
-                        {
-                            id: '3',
-                            name: 'Facebook',
-                            img: 'https://www.facebook.com/favicon.ico',
-                            total: 1000,
-                            percentage: 50,
-                        },
-                        // You can add more channels here if needed
-                    ],
-                }}
-            />
+            {token && email && code ? (
+                <Card>
+                    <h4 className="mb-4">Host</h4>
+                    {event?.event?.host && (
+                        <Link
+                            className="group flex items-center justify-between"
+                            to="/concepts/customers/customer-details/11"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Avatar
+                                    shape="circle"
+                                    src={event.event.host.profile_image || ''}
+                                />
+                                <div>
+                                    <div className="font-bold heading-text">
+                                        {event.event.host.name || ''}
+                                    </div>
+                                    <span>
+                                        <span className="font-semibold">
+                                            {event.event.host.email || ''}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <TbExternalLink className="text-xl hidden group-hover:block" />
+                        </Link>
+                    )}
+                    <hr className="my-5" />
+                    {event?.event?.host && (
+                        <IconText
+                            className="mb-4"
+                            icon={<TbMail className="text-xl opacity-70" />}
+                        >
+                            <span>{event.event.host.email || ''}</span>
+                        </IconText>
+                    )}
+                </Card>
+            ) : (
+                <ChatStats
+                    data={{
+                        visitors: 2000,
+                        channels: [
+                            {
+                                id: '1',
+                                name: 'Facebook',
+                                percentage: 50,
+                                total: 1000,
+                                img: 'https://www.facebook.com/favicon.ico',
+                            },
+                            {
+                                id: '2',
+                                name: 'Facebook',
+                                percentage: 50,
+                                total: 1000,
+                                img: 'https://www.facebook.com/favicon.ico',
+                            },
+                            {
+                                id: '3',
+                                name: 'Facebook',
+                                percentage: 50,
+                                total: 1000,
+                                img: 'https://www.facebook.com/favicon.ico',
+                            },
+                        ],
+                    }}
+                />
+            )}
         </div>
     )
 }
