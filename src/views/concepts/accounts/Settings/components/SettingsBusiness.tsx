@@ -24,8 +24,7 @@ import Notification from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
 
 type BusinessProfileSchema = {
-    firstName: string
-    lastName: string
+    businessName: string
     email: string
     dialCode: string
     phoneNumber: string
@@ -42,8 +41,7 @@ type CountryOption = {
 const { Control } = components
 
 const validationSchema: ZodType<BusinessProfileSchema> = z.object({
-    firstName: z.string().min(1, { message: 'First name required' }),
-    lastName: z.string().min(1, { message: 'Last name required' }),
+    businessName: z.string().min(1, { message: 'Business name required' }),
     email: z
         .string()
         .min(1, { message: 'Email required' })
@@ -143,9 +141,7 @@ const SettingsBusiness = () => {
     useEffect(() => {
         if (data?.business) {
             const formData = {
-                firstName: data.business.name.split(' ')[0] || '',
-                lastName:
-                    data.business.name.split(' ').slice(1).join(' ') || '',
+                businessName: data.business.name || '',
                 email: data.business.email || '',
                 dialCode: data.business.dial_code || '',
                 phoneNumber: data.business.phone || '',
@@ -160,7 +156,7 @@ const SettingsBusiness = () => {
         try {
             console.log('Form submitted with values:', values)
             const formData = {
-                name: `${values.firstName} ${values.lastName}`.trim(),
+                name: values.businessName,
                 address: values.address,
                 email: values.email,
                 dial_code: values.dialCode,
@@ -278,44 +274,26 @@ const SettingsBusiness = () => {
                         )}
                     />
                 </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                    <FormItem
-                        label="First name"
-                        invalid={Boolean(errors.firstName)}
-                        errorMessage={errors.firstName?.message}
-                    >
-                        <Controller
-                            name="firstName"
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    type="text"
-                                    autoComplete="off"
-                                    placeholder="First Name"
-                                    {...field}
-                                />
-                            )}
-                        />
-                    </FormItem>
-                    <FormItem
-                        label="Last name"
-                        invalid={Boolean(errors.lastName)}
-                        errorMessage={errors.lastName?.message}
-                    >
-                        <Controller
-                            name="lastName"
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    type="text"
-                                    autoComplete="off"
-                                    placeholder="Last Name"
-                                    {...field}
-                                />
-                            )}
-                        />
-                    </FormItem>
-                </div>
+
+                <FormItem
+                    label="Business name"
+                    invalid={Boolean(errors.businessName)}
+                    errorMessage={errors.businessName?.message}
+                >
+                    <Controller
+                        name="businessName"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                autoComplete="off"
+                                placeholder="Business Name"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+
                 <FormItem
                     label="Email"
                     invalid={Boolean(errors.email)}

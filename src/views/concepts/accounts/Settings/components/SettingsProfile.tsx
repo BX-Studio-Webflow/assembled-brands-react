@@ -32,6 +32,7 @@ type ProfileSchema = {
     email: string
     dialCode: string
     phoneNumber: string
+    img: string
 }
 
 type CountryOption = {
@@ -53,6 +54,7 @@ const validationSchema: ZodType<ProfileSchema> = z.object({
     phoneNumber: z
         .string()
         .min(1, { message: 'Please input your mobile number' }),
+    img: z.string(),
 })
 
 const CustomSelectOption = (
