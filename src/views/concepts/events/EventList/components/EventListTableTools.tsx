@@ -11,7 +11,7 @@ const EventListTableTools = () => {
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const val = event.target.value
         const newTableData = cloneDeep(tableData)
-        newTableData.query = val
+        newTableData.search = val
         newTableData.pageIndex = 1
         if (typeof val === 'string' && val.length > 1) {
             setTableData(newTableData)

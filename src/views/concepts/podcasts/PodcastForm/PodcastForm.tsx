@@ -77,7 +77,7 @@ const PodcastForm = (props: PodcastFormProps) => {
             {
                 pageIndex: 1,
                 pageSize: 10,
-                query: '',
+                search: '',
                 sort: {
                     order: '',
                     key: '',
@@ -99,7 +99,7 @@ const PodcastForm = (props: PodcastFormProps) => {
             {
                 pageIndex: 1,
                 pageSize: 10,
-                query: '',
+                search: '',
                 sort: {
                     order: '',
                     key: '',

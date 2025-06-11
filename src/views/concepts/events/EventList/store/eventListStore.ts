@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 export const initialTableData: TableQueries = {
     pageIndex: 1,
     pageSize: 10,
-    query: '',
+    search: '',
     sort: {
         Event: '',
         key: '',

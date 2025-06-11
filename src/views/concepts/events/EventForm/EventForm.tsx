@@ -67,7 +67,7 @@ const EventForm = (props: EventFormProps) => {
             {
                 pageIndex: 1,
                 pageSize: 10,
-                query: '',
+                search: '',
                 sort: {
                     order: 'asc' as const,
                     key: '',

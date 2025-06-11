@@ -8,7 +8,7 @@ const ProducListTableTools = () => {
 
     const handleInputChange = (val: string) => {
         const newTableData = cloneDeep(tableData)
-        newTableData.query = val
+        newTableData.search = val
         newTableData.pageIndex = 1
         if (typeof val === 'string' && val.length > 1) {
             setTableData(newTableData)
