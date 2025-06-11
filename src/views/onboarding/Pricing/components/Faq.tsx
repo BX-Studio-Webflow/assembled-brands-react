@@ -9,7 +9,7 @@ const Faq = () => {
     const [selectedCategory, setSelectedCategory] = useState('subscription')
 
     return (
-        <Card>
+        <Card className="mr-10 ml-10">
             <h3 className="mt-2">FAQ</h3>
             <div className="flex flex-col md:flex-row gap-4 md:gap-20 mt-8">
                 <div className="min-w-[230px]">

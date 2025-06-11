@@ -15,6 +15,17 @@ const onboardingRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'onboarding.pricing',
+        path: `${ONBOARDING_PREFIX_PATH}/pricing`,
+        component: lazy(() => import('@/views/onboarding/Pricing')),
+        authority: [ADMIN, USER],
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default onboardingRoute

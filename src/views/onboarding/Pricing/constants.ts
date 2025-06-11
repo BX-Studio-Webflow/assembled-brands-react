@@ -137,7 +137,7 @@ export const questionList: Record<
         {
             title: 'How do I contact customer support?',
             content:
-                'Our customer support team is here to help with any questions or issues you may have. You can reach us by emailing support@ecme.com, calling our support line at 1-800-123-4567, or using the live chat feature on our website. We are committed to providing you with prompt and effective assistance.',
+                'Our customer support team is here to help with any questions or issues you may have. You can reach us by emailing support@elevnt.io, calling our support line at 1-800-123-4567, or using the live chat feature on our website. We are committed to providing you with prompt and effective assistance.',
             defaultExpand: true,
         },
         {
@@ -159,4 +159,70 @@ export const questionCategory: Record<string, string> = {
     subscription: 'Subscription details',
     billing: 'Billing and payments',
     others: 'Other',
+}
+
+export const pricingPlansData = {
+    featuresModel: [
+        {
+            id: '',
+            description: '',
+        },
+    ],
+    plans: [
+        {
+            id: 'basic',
+            name: 'Basic',
+            description:
+                'Ideal for individuals or small teams. Includes essential task and project management features.',
+            price: {
+                monthly: 59,
+                annually: 500,
+            },
+            features: [
+                'taskManagement',
+                'managementTools',
+                'reporting',
+                'support',
+            ],
+            recommended: false,
+        },
+        {
+            id: 'standard',
+            name: 'Standard',
+            description:
+                'Perfect for growing teams. Offers advanced features for better productivity and collaboration.',
+            price: {
+                monthly: 79,
+                annually: 700,
+            },
+            features: [
+                'taskManagement',
+                'managementTools',
+                'reporting',
+                'support',
+                'fileSharing',
+            ],
+            recommended: false,
+        },
+        {
+            id: 'pro',
+            name: 'Pro',
+            description:
+                'Best for large teams. Includes premium features and dedicated support for optimal workflow.',
+            price: {
+                monthly: 129,
+                annually: 1000,
+            },
+            features: [
+                'taskManagement',
+                'managementTools',
+                'reporting',
+                'support',
+                'fileSharing',
+                'advancedSecurity',
+                'customIntegrations',
+            ],
+            recommended: true,
+        },
+    ],
 }

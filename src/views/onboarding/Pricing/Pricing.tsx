@@ -7,7 +7,7 @@ import PaymentDialog from './components/PaymentDialog'
 const Pricing = () => {
     return (
         <>
-            <Card className="mb-4">
+            <Card className="mb-4 mt-10 mr-10 ml-10">
                 <div className="flex items-center justify-between mb-8">
                     <h3>Pricing</h3>
                     <PaymentCycleToggle />

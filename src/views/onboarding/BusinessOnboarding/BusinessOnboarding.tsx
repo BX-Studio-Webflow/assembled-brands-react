@@ -1,18 +1,26 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import { FormItem, Form } from '@/components/ui/Form'
+import { useAuth } from '@/auth'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import Select, { Option as DefaultOption } from '@/components/ui/Select'
+import { components } from 'react-select'
+import type { OptionProps, ControlProps } from 'react-select'
+import { countryList } from '@/constants/countries.constant'
+import { NumericInput } from '@/components/shared'
+import { Avatar, toast } from '@/components/ui'
+import type { BusinessDetails } from '@/@types/auth'
 import Side from '@/components/layouts/AuthLayout/Side'
 import Logo from '@/components/template/Logo'
 import Alert from '@/components/ui/Alert'
 import { useThemeStore } from '@/store/themeStore'
-import { useAuth } from '@/auth'
 import Upload from '@/components/ui/Upload'
-import { isValidPhoneNumber } from 'libphonenumber-js'
-
+import Notification from '@/components/ui/Notification'
+import { useNavigate } from 'react-router'
+import { AxiosError } from 'axios'
 const BeforeUpload = ({
     onFileSelect,
 }: {
@@ -65,86 +73,156 @@ const BeforeUpload = ({
     )
 }
 
+type CountryOption = {
+    label: string
+    dialCode: string
+    value: string
+}
+
+const { Control } = components
+
+const CustomSelectOption = (props: OptionProps<CountryOption>) => {
+    return (
+        <DefaultOption<CountryOption>
+            {...props}
+            customLabel={(data) => (
+                <span className="flex items-center gap-2">
+                    <Avatar
+                        shape="circle"
+                        size={20}
+                        src={`/img/countries/${data.value}.png`}
+                    />
+                    <span>{data.dialCode}</span>
+                </span>
+            )}
+        />
+    )
+}
+
+const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
+    const selected = props.getValue()[0]
+    return (
+        <Control {...props}>
+            {selected && (
+                <Avatar
+                    className="ltr:ml-4 rtl:mr-4"
+                    shape="circle"
+                    size={20}
+                    src={`/img/countries/${selected.value}.png`}
+                />
+            )}
+            {children}
+        </Control>
+    )
+}
+
 const BusinessOnboarding = () => {
-    const [isSubmitting, setSubmitting] = useState(false)
     const [message, setMessage] = useState('')
+    const [isSubmitting, setSubmitting] = useState(false)
     const [logoBase64, setLogoBase64] = useState('')
     const [logoFileName, setLogoFileName] = useState('')
     const { saveBusinessDetails } = useAuth()
     const mode = useThemeStore((state) => state.mode)
-
+    const navigate = useNavigate()
     const handleFileSelect = (base64: string, fileName: string) => {
         setLogoBase64(base64)
         setLogoFileName(fileName)
+        setValue('logo', base64)
+        setValue('logoFileName', fileName)
+    }
+
+    type BusinessOnboardingSchema = {
+        name: string
+        address: string
+        phone: string
+        dial_code: string
+        email: string
+        description: string
+        logo: string
+        logoFileName: string
     }
 
     const validationSchema = z.object({
+        name: z.string().min(1, 'Business name is required'),
+        address: z.string().min(1, 'Business address is required'),
+        phone: z.string().min(1, 'Phone number is required'),
+        dial_code: z.string().min(1, 'Please select a dial code'),
         email: z
-            .string({ required_error: 'Please enter your email' })
+            .string()
+            .min(1, 'Email is required')
             .email('Please enter a valid email'),
-        name: z
-            .string({ required_error: 'Please enter your business name' })
-            .min(2, 'Business name must be at least 2 characters'),
-        address: z
-            .string({ required_error: 'Please enter your address' })
-            .min(5, 'Address is required'),
-        phone: z
-            .string({ required_error: 'Please enter your phone number' })
-            .refine(
-                (phone) => {
-                    try {
-                        return isValidPhoneNumber(phone)
-                    } catch {
-                        return false
-                    }
-                },
-                {
-                    message: 'Include country code (e.g., +1, +44)',
-                },
-            ),
+        description: z.string().min(1, 'Business description is required'),
+        logo: z.string().min(1, 'Business logo is required'),
+        logoFileName: z.string().min(1, 'Business logo file name is required'),
     })
-
-    type BusinessOnboardingSchema = z.infer<typeof validationSchema>
 
     const {
         handleSubmit,
         formState: { errors },
         control,
+        setValue,
     } = useForm<BusinessOnboardingSchema>({
         resolver: zodResolver(validationSchema),
         defaultValues: {
             name: '',
-            email: '',
             address: '',
             phone: '',
+            dial_code: '',
+            email: '',
+            description: '',
+            logo: '',
+            logoFileName: '',
         },
     })
 
-    const onSubmit = async (values: BusinessOnboardingSchema) => {
-        const { name, email, phone, address } = values
-
-        if (!logoBase64 || !logoFileName) {
-            console.log('logoBase64', logoBase64)
-            console.log('logoFileName', logoFileName)
-            setMessage('Please upload a business logo')
-            return
-        }
-
-        setSubmitting(true)
-        const result = await saveBusinessDetails({
-            name,
-            email,
-            phone,
-            address,
-            logo: logoBase64,
-            logoFileName: logoFileName,
+    const dialCodeList = useMemo(() => {
+        const newCountryList: Array<CountryOption> = JSON.parse(
+            JSON.stringify(countryList),
+        )
+        return newCountryList.map((country) => {
+            country.label = country.dialCode
+            return country
         })
+    }, [])
 
-        if (result?.status === 'failed') {
-            setMessage?.(result.message)
+    const onSubmit = async (values: BusinessOnboardingSchema) => {
+        try {
+            const formData: BusinessDetails = {
+                ...values,
+                logo: logoBase64 || '',
+                logoFileName: logoFileName || '',
+            }
+
+            if (!logoBase64 || !logoFileName) {
+                setMessage('Please upload a logo')
+                return
+            }
+
+            setSubmitting(true)
+            const result = await saveBusinessDetails(formData)
+
+            if (result?.status === 'failed') {
+                setMessage(result.message)
+            }
+
+            toast.push(
+                <Notification type="success">Business onboarded!</Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            navigate('/onboarding/pricing')
+            setSubmitting(false)
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
         }
-
-        setSubmitting(false)
     }
 
     return (
@@ -159,9 +237,9 @@ const BusinessOnboarding = () => {
                     />
                 </div>
                 <div className="mb-8">
-                    <h3 className="mb-1">Business Details</h3>
+                    <h3 className="mb-1">Business Onboarding</h3>
                     <p className="font-semibold heading-text">
-                        Enter your business information below
+                        Complete your business profile
                     </p>
                 </div>
                 {message && (
@@ -206,6 +284,57 @@ const BusinessOnboarding = () => {
                             )}
                         />
                     </FormItem>
+                    <div className="flex items-end gap-4 w-full">
+                        <FormItem invalid={Boolean(errors.dial_code)}>
+                            <label className="form-label mb-2">Dial Code</label>
+                            <Controller
+                                name="dial_code"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select<CountryOption>
+                                        options={dialCodeList}
+                                        {...field}
+                                        className="w-[150px]"
+                                        components={{
+                                            Option: CustomSelectOption,
+                                            Control: CustomControl,
+                                        }}
+                                        placeholder=""
+                                        value={dialCodeList.filter(
+                                            (option) =>
+                                                option.dialCode === field.value,
+                                        )}
+                                        onChange={(option) =>
+                                            field.onChange(option?.dialCode)
+                                        }
+                                    />
+                                )}
+                            />
+                        </FormItem>
+                        <FormItem
+                            className="w-full"
+                            invalid={Boolean(errors.phone)}
+                            errorMessage={errors.phone?.message}
+                        >
+                            <label className="form-label mb-2">
+                                Business Phone
+                            </label>
+                            <Controller
+                                name="phone"
+                                control={control}
+                                render={({ field }) => (
+                                    <NumericInput
+                                        type="tel"
+                                        autoComplete="off"
+                                        placeholder="Business Phone"
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        onBlur={field.onBlur}
+                                    />
+                                )}
+                            />
+                        </FormItem>
+                    </div>
                     <FormItem
                         label="Business Address"
                         invalid={Boolean(errors.address)}
@@ -225,17 +354,17 @@ const BusinessOnboarding = () => {
                         />
                     </FormItem>
                     <FormItem
-                        label="Business Phone"
-                        invalid={Boolean(errors.phone)}
-                        errorMessage={errors.phone?.message}
+                        label="Business Description"
+                        invalid={Boolean(errors.description)}
+                        errorMessage={errors.description?.message}
                     >
                         <Controller
-                            name="phone"
+                            name="description"
                             control={control}
                             render={({ field }) => (
                                 <Input
-                                    type="tel"
-                                    placeholder="Business Phone"
+                                    type="text"
+                                    placeholder="Business Description"
                                     autoComplete="off"
                                     {...field}
                                 />

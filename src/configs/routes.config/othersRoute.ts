@@ -49,6 +49,7 @@ const othersRoute: Routes = [
             pageBackgroundType: 'plain',
         },
     },
+    
 ]
 
 export default othersRoute

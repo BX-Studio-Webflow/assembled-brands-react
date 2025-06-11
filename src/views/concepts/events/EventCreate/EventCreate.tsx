@@ -32,7 +32,7 @@ const EventCreate = () => {
             })),
         }
         await apiCreateEvent(payload as CreateEventRequest)
-        navigate('/concepts/event/event-list')
+
         setIsSubmiting(false)
         toast.push(<Notification type="success">Event created!</Notification>, {
             placement: 'top-center',

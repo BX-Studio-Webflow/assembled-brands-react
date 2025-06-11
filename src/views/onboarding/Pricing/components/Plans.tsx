@@ -1,15 +1,14 @@
 import Button from '@/components/ui/Button'
 import Tag from '@/components/ui/Tag'
 import { usePricingStore } from '../store/pricingStore'
-import { apiGetPricingPlans } from '@/services/AccontsService'
-import { featuresList } from '../constants'
+import { featuresList, pricingPlansData } from '../constants'
 import classNames from '@/utils/classNames'
 import isLastChild from '@/utils/isLastChild'
 import useQuery from '@/utils/hooks/useQuery'
-import useSWR from 'swr'
 import { NumericFormat } from 'react-number-format'
 import { TbCheck } from 'react-icons/tb'
-import type { GetPricingPanResponse } from '../types'
+
+
 
 const Plans = () => {
     const { paymentCycle, setPaymentDialog, setSelectedPlan } =
@@ -19,24 +18,14 @@ const Plans = () => {
     const subcription = query.get('subcription')
     const cycle = query.get('cycle')
 
-    const { data } = useSWR(
-        ['/api/pricing'],
-        () => apiGetPricingPlans<GetPricingPanResponse>(),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-        },
-    )
-
     return (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 xl:gap-4">
-            {data?.plans.map((plan, index) => (
+            {pricingPlansData?.plans.map((plan, index) => (
                 <div
                     key={plan.id}
                     className={classNames(
                         'px-6 pt-2 flex flex-col justify-between',
-                        !isLastChild(data.plans, index) &&
+                        !isLastChild(pricingPlansData?.plans, index) &&
                             'border-r-0 xl:border-r border-gray-200 dark:border-gray-700',
                     )}
                 >
