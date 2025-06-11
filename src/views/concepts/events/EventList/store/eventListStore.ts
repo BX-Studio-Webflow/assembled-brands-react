@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import type { TableQueries } from '@/@types/common'
 import type { EventItems, Filter } from '../types'
-import dayjs from 'dayjs'
 
 export const initialTableData: TableQueries = {
     pageIndex: 1,
@@ -14,8 +13,7 @@ export const initialTableData: TableQueries = {
 }
 
 export const initialFilterData: Filter = {
-    date: [dayjs().subtract(1, 'week').toDate(), new Date()] as [Date, Date],
-    eventType: '',
+    eventType: 'all',
     sortOrder: 'desc',
 }
 

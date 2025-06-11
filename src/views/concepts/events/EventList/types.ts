@@ -52,7 +52,6 @@ export type EventItem = {
 export type EventItems = EventItem[]
 
 export type Filter = {
-    date: [Date, Date]
     eventType: string
     sortOrder: string
 }

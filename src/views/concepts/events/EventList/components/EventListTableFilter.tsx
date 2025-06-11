@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Button from '@/components/ui/Button'
-import DatePicker from '@/components/ui/DatePicker'
 import Drawer from '@/components/ui/Drawer'
 import Badge from '@/components/ui/Badge'
 import Select, { Option as DefaultOption } from '@/components/ui/Select'
@@ -16,7 +15,6 @@ import type { ControlProps, OptionProps } from 'react-select'
 import classNames from '@/utils/classNames'
 
 type FormSchema = {
-    date: [Date, Date]
     eventType: string
     sortOrder: string
 }
@@ -72,7 +70,6 @@ const CustomControl = ({ children, ...props }: ControlProps<Option>) => {
 }
 
 const validationSchema: ZodType<FormSchema> = z.object({
-    date: z.tuple([z.date(), z.date()]),
     eventType: z.string(),
     sortOrder: z.string(),
 })
@@ -84,7 +81,6 @@ const EventListTableFilter = () => {
 
     const { handleSubmit, control, reset } = useForm<FormSchema>({
         defaultValues: {
-            date: filterData?.date || [new Date('2020-01-01'), new Date()],
             eventType: filterData?.eventType || 'all',
             sortOrder: filterData?.sortOrder || 'desc',
         },
@@ -98,12 +94,10 @@ const EventListTableFilter = () => {
 
     const handleReset = () => {
         reset({
-            date: [new Date('2020-01-01'), new Date()],
             eventType: 'all',
             sortOrder: 'desc',
         })
         setFilterData({
-            date: [new Date('2020-01-01'), new Date()],
             eventType: 'all',
             sortOrder: 'desc',
         })
@@ -127,20 +121,6 @@ const EventListTableFilter = () => {
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <div className="space-y-4">
-                        <FormItem label="Created at">
-                            <div className="flex items-center gap-2">
-                                <Controller
-                                    name="date"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <DatePicker.DatePickerRange
-                                            value={field.value}
-                                            onChange={field.onChange}
-                                        />
-                                    )}
-                                />
-                            </div>
-                        </FormItem>
                         <FormItem label="Event type">
                             <Controller
                                 name="eventType"
