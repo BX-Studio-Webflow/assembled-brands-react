@@ -9,6 +9,7 @@ import {
     apiSaveBusinessDetails,
 } from '@/services/AuthService'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
+import { ONBOARDING_PREFIX_PATH } from '@/constants/route.constant'
 import { useNavigate } from 'react-router'
 import type {
     SignInCredential,
@@ -61,6 +62,12 @@ function AuthProvider({ children }: AuthProviderProps) {
 
         navigatorRef.current?.navigate(
             redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath,
+        )
+    }
+
+    const redirectToOnboarding = () => {
+        navigatorRef.current?.navigate(
+            `${ONBOARDING_PREFIX_PATH}/business-onboarding`,
         )
     }
 
@@ -131,7 +138,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             const resp = await apiSignUp(values)
             if (resp?.data) {
                 handleSignIn({ accessToken: resp.data.token }, resp.data.user)
-                redirect()
+                redirectToOnboarding()
                 return {
                     status: 'success',
                     message: '',

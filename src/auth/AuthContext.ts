@@ -23,7 +23,7 @@ type Auth = {
 const defaultFunctionPlaceHolder = async (): AuthResult => {
     await new Promise((resolve) => setTimeout(resolve, 0))
     return {
-        status: '',
+        status: 'success',
         message: '',
     }
 }

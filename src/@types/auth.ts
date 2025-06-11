@@ -8,6 +8,7 @@ export type SignUpCredential = {
     email: string
     password: string
     phone: string
+    dial_code: string
 }
 
 export type ForgotPassword = {
