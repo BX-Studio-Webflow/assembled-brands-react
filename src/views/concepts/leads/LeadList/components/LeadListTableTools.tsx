@@ -1,6 +1,6 @@
 import useLeadList from '../hooks/useLeadList'
 import LeadListSearch from './LeadListSearch'
-import LeadTableFilter from './LeadListTableFilter'
+
 import cloneDeep from 'lodash/cloneDeep'
 
 const LeadsListTableTools = () => {
@@ -22,7 +22,6 @@ const LeadsListTableTools = () => {
     return (
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <LeadListSearch onInputChange={handleInputChange} />
-            <LeadTableFilter />
         </div>
     )
 }
