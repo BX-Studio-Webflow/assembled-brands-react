@@ -82,7 +82,7 @@ const GatewayForm = (props: GatewayFormProps) => {
             })
             setSubmitting(false)
             setResetComplete(true)
-            navigate(purchase.redirect_url)
+            window.open(purchase.redirect_url, '_blank')
         } catch (error) {
             setMessage?.((error as AxiosError).message)
             setSubmitting(false)
