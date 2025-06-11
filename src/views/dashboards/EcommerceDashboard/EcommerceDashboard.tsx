@@ -4,6 +4,8 @@ import type { StatisticData } from './types'
 import Overview from './components/Overview'
 import RecentOrder from './components/RecentOrder'
 import { apiGetDashboard } from '@/services/AuthService'
+import CurrentTasks from './components/CurrentTasks'
+import RecentActivity from './components/RecentActivity'
 
 const EcommerceDashboard = () => {
     const { data, isLoading } = useSWR(
@@ -184,15 +186,22 @@ const EcommerceDashboard = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            <div className="col-span-1 lg:col-span-2 xl:col-span-3">
+        <div className="grid grid-cols-1 gap-4">
+            <div className="col-span-1">
                 <Overview data={overviewData} />
             </div>
 
-            <div className="col-span-1 lg:col-span-2 xl:col-span-3">
-                <RecentOrder
-                    data={data?.data.revenue.recent_successful_payments}
-                />
+            <div className="col-span-1">
+                <RecentOrder data={data?.revenue?.recent_successful_payments} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="col-span-1">
+                    <CurrentTasks data={data?.engagement} />
+                </div>
+                <div className="col-span-1">
+                    <RecentActivity data={data?.content} />
+                </div>
             </div>
         </div>
     )
