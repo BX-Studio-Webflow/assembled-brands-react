@@ -49,7 +49,18 @@ const othersRoute: Routes = [
             pageBackgroundType: 'plain',
         },
     },
-    
+    {
+        key: 'thankYou',
+        path: `/thank-you`,
+        component: lazy(() => import('@/views/auth/ThankYou')),
+        authority: [],
+        meta: {
+            layout: 'blank',
+            footer: false,
+            pageContainerType: 'gutterless',
+            pageBackgroundType: 'plain',
+        },
+    },
 ]
 
 export default othersRoute
