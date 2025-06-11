@@ -1,5 +1,4 @@
 import Header from '@/components/template/Header'
-import SidePanel from '@/components/template/SidePanel'
 import UserProfileDropdown from '@/components//template/UserProfileDropdown'
 import LanguageSelector from '@/components/template/LanguageSelector'
 import Notification from '@/components/template/Notification'
@@ -37,12 +36,13 @@ const TopBarClassic = ({ children }: CommonProps) => {
                                 <Search />
                                 <LanguageSelector />
                                 <Notification />
-                                <SidePanel />
                                 <UserProfileDropdown hoverable={false} />
                             </>
                         }
                     />
-                    {children}
+                    <div className="flex flex-auto flex-col pt-header-height">
+                        {children}
+                    </div>
                 </div>
             </div>
         </LayoutBase>

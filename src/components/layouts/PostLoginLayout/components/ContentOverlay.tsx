@@ -1,5 +1,4 @@
 import Header from '@/components/template/Header'
-import SidePanel from '@/components/template/SidePanel'
 import UserProfileDropdown from '@/components//template/UserProfileDropdown'
 import LanguageSelector from '@/components/template/LanguageSelector'
 import Notification from '@/components/template/Notification'
@@ -118,7 +117,6 @@ const ContentOverlay = ({ children }: CommonProps) => {
                                 <Search />
                                 <LanguageSelector />
                                 <Notification />
-                                <SidePanel />
                                 <UserProfileDropdown hoverable={false} />
                             </>
                         }
@@ -126,7 +124,12 @@ const ContentOverlay = ({ children }: CommonProps) => {
                     <div className="h-[400px] bg-[linear-gradient(220deg,_rgb(9,_12,_17)_10%,_#15122f_35%,_#2b1e38_55%,_#0c2239_70%,_rgb(9,_12,_17)_90%)]">
                         <div className="container mx-auto h-full"></div>
                     </div>
-                    {children}
+                    <div className="flex flex-col min-h-screen">
+                        <Header />
+                        <div className="flex flex-auto flex-col pt-header-height">
+                            {children}
+                        </div>
+                    </div>
                 </div>
             </div>
         </LayoutBase>
