@@ -4,7 +4,7 @@ import Card from '@/components/ui/Card'
 import Avatar from '@/components/ui/Avatar'
 import IconText from '@/components/shared/IconText'
 import { TbMail, TbExternalLink } from 'react-icons/tb'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import Radio from '@/components/ui/Radio'
 import Checkbox from '@/components/ui/Checkbox'
 import type { EventWithDetailsAndCount } from '@/@types/events'
@@ -28,7 +28,6 @@ interface GatewayFormProps extends CommonProps {
 }
 
 const GatewayForm = (props: GatewayFormProps) => {
-    const navigate = useNavigate()
     const [isSubmitting, setSubmitting] = useState<boolean>(false)
     const [selectedMembershipId, setSelectedMembershipId] = useState<
         number | null
