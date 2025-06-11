@@ -101,7 +101,11 @@ export async function apiValidateEventLink(data: { event_id: string }) {
     })
 }
 
-export async function apiValidateTicketPayment(data: { event_id: number, token: string, email: string }) {
+export async function apiValidateTicketPayment(data: {
+    event_id: number
+    token: string
+    email: string
+}) {
     return ApiService.fetchDataWithAxios<{ valid: boolean }>({
         url: '/lead/validate-ticket-payment',
         method: 'post',

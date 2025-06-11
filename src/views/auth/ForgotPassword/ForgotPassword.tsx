@@ -51,7 +51,6 @@ export const ForgotPasswordBase = ({
                 emailSent={emailSent}
                 setMessage={setMessage}
                 setEmailSent={setEmailSent}
-                
             >
                 <Button
                     block

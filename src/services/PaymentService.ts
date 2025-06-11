@@ -1,4 +1,7 @@
-import { CreateSubscriptionRequestBody, CreateSubscriptionResponse } from '@/@types/payment'
+import {
+    CreateSubscriptionRequestBody,
+    CreateSubscriptionResponse,
+} from '@/@types/payment'
 import ApiService from './ApiService'
 
 export const apiCreateSubscription = (data: CreateSubscriptionRequestBody) => {

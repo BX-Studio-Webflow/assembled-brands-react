@@ -62,7 +62,7 @@ const LeadForm = (props: LeadFormProps) => {
     }
     useSWR(
         ['/event'],
-         
+
         () => apiGetEvents(),
         {
             revalidateOnFocus: false,

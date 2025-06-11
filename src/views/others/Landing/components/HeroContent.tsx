@@ -61,9 +61,7 @@ const HeroContent = ({ mode }: { mode: Mode }) => {
                         <Button variant="solid" onClick={handlePreview}>
                             Get started
                         </Button>
-                        <Button onClick={handleGetTemplate}>
-                            Learn more
-                        </Button>
+                        <Button onClick={handleGetTemplate}>Learn more</Button>
                     </motion.div>
                 </div>
                 <div className="p-2 lg:p-4 border border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-700 rounded-2xl lg:rounded-[32px] mt-20 relative">

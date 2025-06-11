@@ -5,12 +5,8 @@ import Segment from '@/components/ui/Segment'
 import classNames from '@/utils/classNames'
 import sleep from '@/utils/sleep'
 import { usePricingStore } from '../store/pricingStore'
-import { TbCheck, TbCreditCard, TbMail } from 'react-icons/tb'
-import {
-    NumericFormat,
-    PatternFormat,
-    NumberFormatBase,
-} from 'react-number-format'
+import { TbCheck } from 'react-icons/tb'
+import { NumericFormat } from 'react-number-format'
 import { useNavigate } from 'react-router'
 import { PaymentCycle } from '../types'
 import { apiCreateSubscription } from '@/services/PaymentService'
@@ -18,29 +14,6 @@ import toast from '@/components/ui/toast'
 import { AxiosError } from 'axios'
 import Notification from '@/components/ui/Notification'
 import { pricingPlansData } from '../constants'
-
-function limit(val: string, max: string) {
-    if (val.length === 1 && val[0] > max[0]) {
-        val = '0' + val
-    }
-
-    if (val.length === 2) {
-        if (Number(val) === 0) {
-            val = '01'
-        } else if (val > max) {
-            val = max
-        }
-    }
-
-    return val
-}
-
-function cardExpiryFormat(val: string) {
-    const month = limit(val.substring(0, 2), '12')
-    const date = limit(val.substring(2, 4), '31')
-
-    return month + (date.length ? '/' + date : '')
-}
 
 const PaymentDialog = () => {
     const [loading, setLoading] = useState(false)

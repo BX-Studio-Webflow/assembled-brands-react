@@ -30,7 +30,6 @@ const MailBody = () => {
             bodyClass="h-full flex flex-col"
         >
             <div className="flex flex-auto h-full">
-            
                 <div className="lg:ltr:pl-6 lg:rtl:pr-6 flex-1">
                     <MailBodyTop />
                     <div className="relative h-[calc(100%-70px)]">

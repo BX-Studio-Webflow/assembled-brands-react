@@ -63,11 +63,7 @@ const TimeLineContent = (props: { booking: EventBooking }) => {
     )
 }
 
-const ActivitySection = ({
-    bookings,
-}: {
-    bookings: EventBooking[]
-}) => {
+const ActivitySection = ({ bookings }: { bookings: EventBooking[] }) => {
     return (
         <>
             {bookings.map((booking) => (

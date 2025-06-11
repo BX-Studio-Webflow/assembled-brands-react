@@ -205,7 +205,8 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                         Discover the Power of Elevnt.io
                     </motion.h2>
                     <motion.p className="mx-auto max-w-[600px]">
-                        Elevnt.io is a platform that allows you to create, manage, and promote your events, courses, and podcasts.
+                        Elevnt.io is a platform that allows you to create,
+                        manage, and promote your events, courses, and podcasts.
                     </motion.p>
                 </motion.div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -267,11 +268,10 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                     </div>
                                 </div>
                                 <div className="mt-6">
-                                    <h4 className="font-bold">
-                                        Host Events
-                                    </h4>
+                                    <h4 className="font-bold">Host Events</h4>
                                     <p className="mt-2">
-                                        Effortlessly create and manage your events, add leads and track attendance.
+                                        Effortlessly create and manage your
+                                        events, add leads and track attendance.
                                     </p>
                                 </div>
                             </Card>
@@ -327,7 +327,8 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                         Comprehensive Podcasts
                                     </h4>
                                     <p className="mt-2">
-                                        Create and manage your podcasts, add guests and track listenership.
+                                        Create and manage your podcasts, add
+                                        guests and track listenership.
                                     </p>
                                 </div>
                             </Card>
@@ -356,11 +357,13 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                     </div>
                                 </div>
                                 <div className="mt-6">
-                                    <h4 className="font-bold">
-                                        Sell Courses
-                                    </h4>
+                                    <h4 className="font-bold">Sell Courses</h4>
                                     <p className="mt-2">
-                                        Create and manage your courses, add students and track progress. Add modules and lessons and sell and make money from your courses directly to your stripe account.
+                                        Create and manage your courses, add
+                                        students and track progress. Add modules
+                                        and lessons and sell and make money from
+                                        your courses directly to your stripe
+                                        account.
                                     </p>
                                 </div>
                             </Card>
@@ -412,7 +415,9 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                         A complete CRM solution
                                     </h4>
                                     <p className="mt-2">
-                                        A complete CRM solution for your business, track leads, customers and sales.
+                                        A complete CRM solution for your
+                                        business, track leads, customers and
+                                        sales.
                                     </p>
                                 </div>
                             </div>

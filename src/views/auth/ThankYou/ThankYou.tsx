@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import Alert from '@/components/ui/Alert'
 import Button from '@/components/ui/Button'
 import ThankYouForm from './components/ThankYouForm'
-import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import { useNavigate } from 'react-router'
 import Split from '@/components/layouts/AuthLayout/Split'
 import { apiValidateTicketPayment } from '@/services/LeadsService'
@@ -15,9 +13,6 @@ type ThankYouProps = {
 }
 
 export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
-    const [purchaseComplete, setResetComplete] = useState(false)
-
-    const [message, setMessage] = useTimeOutMessage()
     const [params, setParams] = useState<{
         code: string
         token: string
@@ -85,11 +80,6 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
                             </p>
                         </>
                     </div>
-                    {message && (
-                        <Alert showIcon className="mb-4" type="danger">
-                            <span className="break-all">{message}</span>
-                        </Alert>
-                    )}
 
                     <ThankYouForm
                         event={event}
@@ -97,11 +87,7 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
                         isValidateTicketPaymentLoading={
                             isValidateTicketPaymentLoading
                         }
-                        params={params}
                         isEventLoading={isEventLoading}
-                        purchaseComplete={purchaseComplete}
-                        setMessage={setMessage}
-                        setResetComplete={setResetComplete}
                     >
                         <Button
                             block

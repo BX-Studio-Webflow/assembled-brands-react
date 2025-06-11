@@ -21,6 +21,7 @@ import Upload from '@/components/ui/Upload'
 import Notification from '@/components/ui/Notification'
 import { useNavigate } from 'react-router'
 import { AxiosError } from 'axios'
+
 const BeforeUpload = ({
     onFileSelect,
 }: {
