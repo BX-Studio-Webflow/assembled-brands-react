@@ -127,6 +127,14 @@ export interface TagAssignmentBody {
     tag: string
 }
 
+export interface CreateLeadRequestBody {
+    name: string
+    email: string
+    phone: string
+    dial_code: string
+    event_id?: number
+}
+
 export interface TagAssignmentResponse {
     id: number
     tag: string

@@ -17,7 +17,6 @@ type LeadFormProps = {
     onFormSubmit: (values: LeadFormSchema) => void
     defaultValues?: LeadFormSchema
     newLead?: boolean
-    eventId?: number | undefined
 } & CommonProps
 
 const validationSchema: ZodType<LeadFormSchema> = z.object({

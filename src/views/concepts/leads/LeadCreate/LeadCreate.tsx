@@ -14,10 +14,6 @@ import { AxiosError } from 'axios'
 const LeadCreate = () => {
     const navigate = useNavigate()
     const { user } = useAuth()
-    const [searchParams] = useSearchParams()
-    const eventId = searchParams.get('eventId')
-        ? Number(searchParams.get('eventId'))
-        : undefined
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
@@ -32,13 +28,15 @@ const LeadCreate = () => {
             dial_code: values.dialCode,
             phone: values.phoneNumber,
             host_id: user?.id || 0,
-            event_id: eventId,
+            event_id: values.event_id,
         }
         try {
             // Make API call
             await apiCreateLead(leadData)
             toast.push(
-                <Notification type="success">Lead created successfully!</Notification>,
+                <Notification type="success">
+                    Lead created successfully!
+                </Notification>,
                 {
                     placement: 'top-center',
                 },
@@ -77,7 +75,6 @@ const LeadCreate = () => {
         <>
             <LeadForm
                 newLead
-                eventId={eventId}
                 defaultValues={{
                     firstName: '',
                     lastName: '',

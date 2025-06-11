@@ -1,5 +1,6 @@
 import ApiService from './ApiService'
 import type {
+    CreateLeadRequestBody,
     Lead,
     LeadSearchParams,
     PurchaseMembershipResponse,
@@ -24,7 +25,7 @@ export async function apiGetLead<T>(id: string) {
     })
 }
 
-export async function apiCreateLead(data: Partial<Lead>) {
+export async function apiCreateLead(data: CreateLeadRequestBody) {
     return ApiService.fetchDataWithAxios<Lead>({
         url: '/lead',
         method: 'post',

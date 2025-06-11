@@ -49,7 +49,7 @@ const Navigation = ({ toggleMode, mode }: NavigationProps) => {
 
     const handleDashboard = () => {
         console.log('handleDashboard')
-        navigate('/concepts/dashboards/information')
+        navigate('/dashboards/information')
     }
 
     return (
