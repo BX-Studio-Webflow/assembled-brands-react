@@ -1,11 +1,23 @@
 /* eslint-disable react-refresh/only-export-components */
+import { useState } from 'react'
 import Card from '@/components/ui/Card'
-import {
-    HiOutlineCalendar,
-    HiOutlineUserGroup,
-    HiOutlinePhone,
-    HiOutlineMail,
-} from 'react-icons/hi'
+import Tag from '@/components/ui/Tag'
+import classNames from '@/utils/classNames'
+import { TbCircleCheck, TbCircleCheckFilled, TbCalendar } from 'react-icons/tb'
+
+const labelClass: Record<string, string> = {
+    High: 'bg-red-200 dark:bg-red-200 dark:text-gray-900',
+    Medium: 'bg-orange-200 dark:bg-orange-200 dark:text-gray-900',
+    Low: 'bg-purple-200 dark:bg-purple-200 dark:text-gray-900',
+}
+
+type EngagementMetric = {
+    id: string
+    name: string
+    value: number
+    checked: boolean
+    priority: 'High' | 'Medium' | 'Low'
+}
 
 interface EngagementMetricsProps {
     data?: {
@@ -16,75 +28,103 @@ interface EngagementMetricsProps {
     }
 }
 
+const initialMetrics = (
+    data?: EngagementMetricsProps['data'],
+): EngagementMetric[] => [
+    {
+        id: 'active_bookings',
+        name: 'Active Bookings',
+        value: data?.active_bookings || 0,
+        checked: false,
+        priority: 'High',
+    },
+    {
+        id: 'pending_callbacks',
+        name: 'Pending Callbacks',
+        value: data?.pending_callbacks || 0,
+        checked: false,
+        priority: 'Medium',
+    },
+    {
+        id: 'team_members',
+        name: 'Team Members',
+        value: data?.team_members || 0,
+        checked: false,
+        priority: 'Low',
+    },
+    {
+        id: 'pending_invitations',
+        name: 'Pending Invitations',
+        value: data?.pending_invitations || 0,
+        checked: false,
+        priority: 'Medium',
+    },
+]
+
 const EngagementMetrics = ({ data }: EngagementMetricsProps) => {
-    const metrics = [
-        {
-            title: 'Active Bookings',
-            value: data?.active_bookings || 0,
-            icon: <HiOutlineCalendar className="text-xl" />,
-            color: 'text-blue-500',
-            bgColor: 'bg-blue-100',
-            priority: 'High',
-        },
-        {
-            title: 'Pending Callbacks',
-            value: data?.pending_callbacks || 0,
-            icon: <HiOutlinePhone className="text-xl" />,
-            color: 'text-orange-500',
-            bgColor: 'bg-orange-100',
-            priority: 'Medium',
-        },
-        {
-            title: 'Team Members',
-            value: data?.team_members || 0,
-            icon: <HiOutlineUserGroup className="text-xl" />,
-            color: 'text-green-500',
-            bgColor: 'bg-green-100',
-            priority: 'Low',
-        },
-        {
-            title: 'Pending Invitations',
-            value: data?.pending_invitations || 0,
-            icon: <HiOutlineMail className="text-xl" />,
-            color: 'text-purple-500',
-            bgColor: 'bg-purple-100',
-            priority: 'Medium',
-        },
-    ]
+    const [metrics, setMetrics] = useState<EngagementMetric[]>(
+        initialMetrics(data),
+    )
+
+    const handleChange = (id: string) => {
+        setMetrics((metrics) =>
+            metrics.map((metric) =>
+                metric.id === id
+                    ? { ...metric, checked: !metric.checked }
+                    : metric,
+            ),
+        )
+    }
 
     return (
         <Card>
-            <div className="p-4">
-                <h4 className="mb-4">Engagement Overview</h4>
-                <div className="grid grid-cols-1 gap-4">
-                    {metrics.map((metric, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div
-                                    className={`p-2 rounded-full ${metric.bgColor} ${metric.color}`}
-                                >
-                                    {metric.icon}
-                                </div>
-                                <div>
-                                    <div className="text-sm font-medium">
-                                        {metric.title}
-                                    </div>
-                                    <div className="text-2xl font-semibold">
-                                        {metric.value}
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                className={`text-sm font-medium ${metric.color}`}
+            <div className="flex items-center justify-between">
+                <h4>Engagement Overview</h4>
+            </div>
+            <div className="mt-4">
+                {metrics.map((metric, index) => (
+                    <div
+                        key={metric.id}
+                        className={classNames(
+                            'flex items-center justify-between py-4 border-gray-200 dark:border-gray-600',
+                            index !== metrics.length - 1 && 'border-b',
+                        )}
+                    >
+                        <div className="flex items-center gap-4">
+                            <button
+                                className="text-[26px] cursor-pointer"
+                                role="button"
+                                onClick={() => handleChange(metric.id)}
                             >
-                                {metric.priority}
+                                {metric.checked ? (
+                                    <TbCircleCheckFilled className="text-primary" />
+                                ) : (
+                                    <TbCircleCheck className="hover:text-primary" />
+                                )}
+                            </button>
+                            <div>
+                                <div
+                                    className={classNames(
+                                        'heading-text font-bold mb-1',
+                                        metric.checked &&
+                                            'line-through opacity-50',
+                                    )}
+                                >
+                                    {metric.name}
+                                </div>
+                                <div className="flex items-center gap-1 text-gray-500 text-sm">
+                                    <TbCalendar className="text-lg" />
+                                    {metric.value}
+                                </div>
                             </div>
                         </div>
-                    ))}
-                </div>
+                        <div>
+                            <Tag className={labelClass[metric.priority]}>
+                                {metric.priority}
+                            </Tag>
+                        </div>
+                    </div>
+                ))}
             </div>
         </Card>
     )
