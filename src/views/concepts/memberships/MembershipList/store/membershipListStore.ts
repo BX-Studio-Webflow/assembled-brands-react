@@ -6,7 +6,7 @@ import type { Membership } from '@/@types/membership'
 export const initialTableData: TableQueries = {
     pageIndex: 1,
     pageSize: 10,
-    query: '',
+    search: '',
     sort: {
         order: '',
         key: '',
