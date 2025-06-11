@@ -138,3 +138,33 @@ export type GoogleContinueResponse = {
     token: string
     user: User
 }
+
+export type UpdateUserProfileBody = {
+    name: string
+    email: string
+    dial_code: string
+    phone: string
+}
+
+export type UpdateUserProfileResponse = {
+    data: {
+        success: boolean
+        message: string
+        user: {
+            id: number
+            email: string
+            name: string
+            createdAt: string
+            is_verified: boolean
+            role: string
+            phone: string
+            profile_picture: string
+            bio: string | null
+            is_banned: boolean
+            is_deleted: boolean
+            stripe_account_id: string
+            subscription_status: 'active' | 'inactive' | 'expired'
+            auth_provider: 'google' | 'email'
+        }
+    }
+}

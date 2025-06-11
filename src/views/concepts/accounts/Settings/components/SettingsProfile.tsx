@@ -9,7 +9,6 @@ import NumericInput from '@/components/shared/NumericInput'
 import { countryList } from '@/constants/countries.constant'
 import { components } from 'react-select'
 import type { ControlProps, OptionProps } from 'react-select'
-import sleep from '@/utils/sleep'
 import useSWR from 'swr'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, Controller } from 'react-hook-form'
@@ -18,7 +17,11 @@ import { HiOutlineUser } from 'react-icons/hi'
 import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
-import { apiGetUserMe, apiUploadProfileImage } from '@/services/AuthService'
+import {
+    apiGetUserMe,
+    apiUpdateUserProfile,
+    apiUploadProfileImage,
+} from '@/services/AuthService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
@@ -29,11 +32,6 @@ type ProfileSchema = {
     email: string
     dialCode: string
     phoneNumber: string
-    img: string
-    country: string
-    address: string
-    postcode: string
-    city: string
 }
 
 type CountryOption = {
@@ -55,11 +53,6 @@ const validationSchema: ZodType<ProfileSchema> = z.object({
     phoneNumber: z
         .string()
         .min(1, { message: 'Please input your mobile number' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
-    address: z.string().min(1, { message: 'Addrress required' }),
-    postcode: z.string().min(1, { message: 'Postcode required' }),
-    city: z.string().min(1, { message: 'City required' }),
-    img: z.string(),
 })
 
 const CustomSelectOption = (
@@ -162,9 +155,34 @@ const SettingsProfile = () => {
     }, [data, reset])
 
     const onSubmit = async (values: ProfileSchema) => {
-        await sleep(500)
-        if (data) {
-            mutate({ ...data, ...values }, false)
+        try {
+            // Make API call
+            const result = await apiUpdateUserProfile({
+                name: `${values.firstName} ${values.lastName}`,
+                email: values.email,
+                dial_code: values.dialCode,
+                phone: values.phoneNumber,
+            })
+            toast.push(
+                <Notification type="success">
+                    Profile updated successfully!
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            if (result.data.success) {
+                mutate()
+            }
+        } catch (error) {
+            console.error('Error creating lead:', error)
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            throw error
         }
     }
 

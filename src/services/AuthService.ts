@@ -12,6 +12,9 @@ import type {
     ResetPasswordInAppBody,
     InitiateStripeConnectResponse,
     GoogleInitiateResponse,
+    GoogleContinueResponse,
+    UpdateUserProfileBody,
+    UpdateUserProfileResponse,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -54,7 +57,7 @@ export async function apiResetPassword<T>(data: ResetPassword) {
 }
 
 export async function apiSaveBusinessDetails(data: BusinessDetails) {
-    return ApiService.fetchDataWithAxios<T>({
+    return ApiService.fetchDataWithAxios({
         url: endpointConfig.saveBusinessDetails,
         method: 'post',
         data,
@@ -109,5 +112,13 @@ export async function apiGoogleContinue(code: string) {
     return ApiService.fetchDataWithAxios<GoogleContinueResponse>({
         url: `/user/auth/google/callback?code=${code}`,
         method: 'get',
+    })
+}
+
+export async function apiUpdateUserProfile(data: UpdateUserProfileBody) {
+    return ApiService.fetchDataWithAxios<UpdateUserProfileResponse>({
+        url: '/user/details',
+        method: 'put',
+        data,
     })
 }
