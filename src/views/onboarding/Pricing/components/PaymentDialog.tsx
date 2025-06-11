@@ -13,6 +13,11 @@ import {
 } from 'react-number-format'
 import { useNavigate } from 'react-router'
 import { PaymentCycle } from '../types'
+import { apiCreateSubscription } from '@/services/PaymentService'
+import toast from '@/components/ui/toast'
+import { AxiosError } from 'axios'
+import Notification from '@/components/ui/Notification'
+import { pricingPlansData } from '../constants'
 
 function limit(val: string, max: string) {
     if (val.length === 1 && val[0] > max[0]) {
@@ -62,7 +67,49 @@ const PaymentDialog = () => {
 
     const handlePay = async () => {
         setLoading(true)
-        await sleep(500)
+        try {
+            const plan = pricingPlansData.plans.find(
+                (p) => p.id === selectedPlan.planId,
+            )
+
+            if (!plan) {
+                console.log({ plan, pricingPlansData, selectedPlan })
+                throw new Error('Plan not found')
+            }
+
+            const env: 'production' | 'development' = 'production'
+
+            if (!plan[env]) {
+                console.log(plan)
+                throw new Error('Invalid plan configuration')
+            }
+
+            const result = await apiCreateSubscription({
+                priceId: plan[env].priceId,
+                productId: plan[env].productId,
+                successUrl: pricingPlansData.successUrl,
+                cancelUrl: pricingPlansData.cancelUrl,
+            })
+
+            toast.push(
+                <Notification type="success">
+                    Please proceed to make the payment via stripe.
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            window.open(result.data.url, '_blank')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+        }
         setLoading(false)
         setPaymentSuccessful(true)
     }
@@ -86,11 +133,14 @@ const PaymentDialog = () => {
                             <TbCheck className="text-5xl text-white" />
                         </div>
                         <div className="mt-6">
-                            <h4>Thank you for your purchase!</h4>
+                            <h4>
+                                Continue to payment to complete your purchase!
+                            </h4>
                             <p className="text-base max-w-[400px] mx-auto mt-4 leading-relaxed">
-                                We&apos;ve received your order and are
-                                processing it now. You&apos;ll get an email with
-                                your order details soon
+                                We&apos;ve sent you to a Stripe checkout page to
+                                complete your purchase. You&apos;ll get an email
+                                with your order details as soon as you complete
+                                the payment.
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-2 mt-8">
@@ -144,7 +194,7 @@ const PaymentDialog = () => {
                                                             <NumericFormat
                                                                 displayType="text"
                                                                 value={value}
-                                                                prefix={'$'}
+                                                                prefix={'£'}
                                                                 thousandSeparator={
                                                                     true
                                                                 }
@@ -169,46 +219,7 @@ const PaymentDialog = () => {
                             )}
                         </Segment>
                     </div>
-                    <div className="mt-6 border border-gray-200 dark:border-gray-600 rounded-lg">
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-600">
-                            <div className="w-full">
-                                <span>Billing email</span>
-                                <div className="flex items-center gap-2 mt-2">
-                                    <TbMail className="text-2xl" />
-                                    <input
-                                        className="focus:outline-hidden heading-text flex-1"
-                                        placeholder="Enter email"
-                                        type="email"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-between p-4">
-                            <div className="w-full">
-                                <span>Credit card</span>
-                                <div className="flex items-center gap-2 mt-2">
-                                    <div className="flex-1">
-                                        <TbCreditCard className="text-2xl" />
-                                    </div>
-                                    <PatternFormat
-                                        className="focus:outline-hidden heading-text w-full"
-                                        placeholder="Credit card number"
-                                        format="#### #### #### ####"
-                                    />
-                                    <NumberFormatBase
-                                        className="focus:outline-hidden heading-text max-w-12 sm:max-w-28"
-                                        placeholder="MM/YY"
-                                        format={cardExpiryFormat}
-                                    />
-                                    <PatternFormat
-                                        className="focus:outline-hidden heading-text max-w-12 sm:max-w-28"
-                                        placeholder="CVC"
-                                        format="###"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div className="mt-6 flex flex-col items-end">
                         <h4>
                             <span>Bill now: </span>
@@ -220,16 +231,25 @@ const PaymentDialog = () => {
                                             selectedPlan.paymentCycle as PaymentCycle
                                         ]
                                     }
-                                    prefix={'$'}
+                                    prefix={'£'}
                                     thousandSeparator={true}
                                 />
                             </span>
                         </h4>
-                        <div className="max-w-[350px] ltr:text-right rtl:text-left leading-none mt-2 opacity-80">
+                        <div className="  leading-none mt-2 opacity-80">
                             <small>
                                 By clicking &quot;Pay&quot;, you agree to be
-                                charged $399 every month, you can cancel this
-                                subscription any time.
+                                charged £
+                                <span className="font-bold">
+                                    {
+                                        selectedPlan.price?.[
+                                            selectedPlan.paymentCycle as PaymentCycle
+                                        ]
+                                    }
+                                </span>{' '}
+                                every month, you can cancel this subscription
+                                any time. Terms and conditions of the website
+                                apply. Thank you!
                             </small>
                         </div>
                     </div>

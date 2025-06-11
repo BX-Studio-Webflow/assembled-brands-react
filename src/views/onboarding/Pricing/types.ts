@@ -1,12 +1,10 @@
 export type PaymentCycle = 'monthly' | 'annually'
 
-export type SelectedPlan = {
+export interface SelectedPlan {
     planName: string
+    price: Record<PaymentCycle, number>
     paymentCycle: PaymentCycle
-    price: {
-        monthly: number
-        annually: number
-    }
+    planId: string
 }
 
 export type GetPricingPanResponse = {

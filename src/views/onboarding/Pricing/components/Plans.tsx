@@ -8,8 +8,6 @@ import useQuery from '@/utils/hooks/useQuery'
 import { NumericFormat } from 'react-number-format'
 import { TbCheck } from 'react-icons/tb'
 
-
-
 const Plans = () => {
     const { paymentCycle, setPaymentDialog, setSelectedPlan } =
         usePricingStore()
@@ -44,7 +42,7 @@ const Plans = () => {
                                 className="h1"
                                 displayType="text"
                                 value={plan.price[paymentCycle]}
-                                prefix={'$'}
+                                prefix={'£'}
                                 thousandSeparator={true}
                             />
                             <span className="text-lg font-bold">
@@ -96,6 +94,7 @@ const Plans = () => {
                                     paymentCycle,
                                     planName: plan.name,
                                     price: plan.price,
+                                    planId: plan.id,
                                 })
                                 setPaymentDialog(true)
                             }}

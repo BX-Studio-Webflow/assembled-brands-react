@@ -3,59 +3,51 @@ export const featuresList: {
     description: Record<string, string>
 }[] = [
     {
-        id: 'taskManagement',
+        id: 'leadCRM',
         description: {
-            basic: 'Task management',
-            standard: 'Task management',
-            pro: 'Task management',
+            basic: 'Lead CRM',
+            standard: 'Advanced Lead CRM',
+            pro: 'Enterprise Lead CRM with Analytics',
         },
     },
     {
-        id: 'managementTools',
+        id: 'streamingEvents',
         description: {
-            basic: 'Basic management tools',
-            standard: 'Advance management tools',
-            pro: 'Advance management tools',
+            basic: 'Create Streaming Events',
+            standard: 'Create & Manage Streaming Events',
+            pro: 'Advanced Streaming Events with Analytics',
         },
     },
     {
-        id: 'reporting',
+        id: 'venueEvents',
         description: {
-            basic: 'Report generator',
-            standard: 'Report generator',
-            pro: 'Detailed report generator',
+            basic: 'Manage Life Venue Events',
+            standard: 'Manage & Track Venue Events',
+            pro: 'Full Venue Event Management Suite',
         },
     },
     {
-        id: 'support',
+        id: 'podcasts',
         description: {
-            basic: 'Email support',
-            standard: 'Chat & email support',
-            pro: '24/7 chat & email support',
+            basic: 'Manage & Host Podcasts',
+            standard: 'Advanced Podcast Management',
+            pro: 'Enterprise Podcast Platform',
         },
     },
     {
-        id: 'fileSharing',
+        id: 'stripeIntegration',
         description: {
-            basic: 'Files sharing',
-            standard: 'Files sharing',
-            pro: 'Files sharing',
+            basic: 'Create & Manage Price Plan Directly with Stripe',
+            standard: 'Advanced Stripe Integration',
+            pro: 'Full Stripe Integration Suite',
         },
     },
     {
-        id: 'advancedSecurity',
+        id: 'emailAutomation',
         description: {
-            basic: 'Advanced security protocols',
-            standard: 'Advanced security protocols',
-            pro: 'Advanced security protocols',
-        },
-    },
-    {
-        id: 'customIntegrations',
-        description: {
-            basic: 'Third party service integration',
-            standard: 'Third party service integration',
-            pro: 'Third party service integration',
+            basic: 'Automated Email to keep your customers in the loop',
+            standard: 'Advanced Email Automation',
+            pro: 'Enterprise Email Automation Suite',
         },
     },
 ]
@@ -162,6 +154,8 @@ export const questionCategory: Record<string, string> = {
 }
 
 export const pricingPlansData = {
+    successUrl: `${window.location.origin}/dashboards/information?action=success`,
+    cancelUrl: `${window.location.origin}/onboarding/pricing?action=cancelled`,
     featuresModel: [
         {
             id: '',
@@ -171,19 +165,29 @@ export const pricingPlansData = {
     plans: [
         {
             id: 'basic',
-            name: 'Basic',
+            name: 'Early Bird Special',
             description:
-                'Ideal for individuals or small teams. Includes essential task and project management features.',
+                'Ideal for individuals or small teams. Billed Monthly, No locked in periods..',
             price: {
-                monthly: 59,
-                annually: 500,
+                monthly: 299,
+                annually: 3588,
             },
             features: [
-                'taskManagement',
-                'managementTools',
-                'reporting',
-                'support',
+                'leadCRM',
+                'streamingEvents',
+                'venueEvents',
+                'podcasts',
+                'stripeIntegration',
+                'emailAutomation',
             ],
+            production: {
+                productId: 'prod_SB7HDumob3GYpw',
+                priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+            },
+            development: {
+                productId: 'prod_S0AzGhVZfAqbc4',
+                priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+            },
             recommended: false,
         },
         {
@@ -192,16 +196,25 @@ export const pricingPlansData = {
             description:
                 'Perfect for growing teams. Offers advanced features for better productivity and collaboration.',
             price: {
-                monthly: 79,
-                annually: 700,
+                monthly: 499,
+                annually: 5988,
             },
             features: [
-                'taskManagement',
-                'managementTools',
-                'reporting',
-                'support',
-                'fileSharing',
+                'leadCRM',
+                'streamingEvents',
+                'venueEvents',
+                'podcasts',
+                'stripeIntegration',
+                'emailAutomation',
             ],
+            production: {
+                productId: 'prod_SB7HDumob3GYpw',
+                priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+            },
+            development: {
+                productId: 'prod_S0AzGhVZfAqbc4',
+                priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+            },
             recommended: false,
         },
         {
@@ -210,19 +223,41 @@ export const pricingPlansData = {
             description:
                 'Best for large teams. Includes premium features and dedicated support for optimal workflow.',
             price: {
-                monthly: 129,
-                annually: 1000,
+                monthly: 999,
+                annually: 7988,
             },
             features: [
-                'taskManagement',
-                'managementTools',
-                'reporting',
-                'support',
-                'fileSharing',
-                'advancedSecurity',
-                'customIntegrations',
+                'leadCRM',
+                'streamingEvents',
+                'venueEvents',
+                'podcasts',
+                'stripeIntegration',
+                'emailAutomation',
             ],
+            production: {
+                productId: 'prod_SB7HDumob3GYpw',
+                priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+            },
+            development: {
+                productId: 'prod_S0AzGhVZfAqbc4',
+                priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+            },
             recommended: true,
         },
     ],
+}
+
+export const subscriptionConfig = {
+    production: {
+        productId: 'prod_SB7HDumob3GYpw',
+        priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+        successUrl: `${window.location.origin}/dashboards/information?action=success`,
+        cancelUrl: `${window.location.origin}/onboarding/pricing?action=cancelled`,
+    },
+    development: {
+        productId: 'prod_S0AzGhVZfAqbc4',
+        priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+        successUrl: `${window.location.origin}/dashboards/information?action=success`,
+        cancelUrl: `${window.location.origin}/onboarding/pricing?action=cancelled`,
+    },
 }
