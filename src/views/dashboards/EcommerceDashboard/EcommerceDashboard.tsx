@@ -1,8 +1,6 @@
 import Loading from '@/components/shared/Loading'
 import useSWR from 'swr'
-import type {
-    StatisticData,
-} from './types'
+import type { StatisticData } from './types'
 import Overview from './components/Overview'
 import RecentOrder from './components/RecentOrder'
 import { apiGetDashboard } from '@/services/AuthService'
@@ -192,7 +190,9 @@ const EcommerceDashboard = () => {
             </div>
 
             <div className="col-span-1 lg:col-span-2 xl:col-span-3">
-                <RecentOrder data={data?.revenue?.recent_successful_payments} />
+                <RecentOrder
+                    data={data?.data.revenue.recent_successful_payments}
+                />
             </div>
         </div>
     )

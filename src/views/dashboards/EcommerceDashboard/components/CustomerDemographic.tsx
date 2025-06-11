@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Card from '@/components/ui/Card'
 import Progress from '@/components/ui/Progress'
-import RegionMap from '@/components/shared/RegionMap'
 import classNames from '@/utils/classNames'
 import type { CustomerDemographicData } from '../types'
 

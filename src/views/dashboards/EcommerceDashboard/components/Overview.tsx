@@ -3,10 +3,8 @@ import Card from '@/components/ui/Card'
 import Select from '@/components/ui/Select'
 import GrowShrinkValue from '@/components/shared/GrowShrinkValue'
 import AbbreviateNumber from '@/components/shared/AbbreviateNumber'
-import Chart from '@/components/shared/Chart'
 import { useThemeStore } from '@/store/themeStore'
 import classNames from '@/utils/classNames'
-import { COLOR_1, COLOR_2, COLOR_4 } from '@/constants/chart.constant'
 import { options } from '../constants'
 import { NumericFormat } from 'react-number-format'
 import { TbCoin, TbShoppingBagCheck, TbEye } from 'react-icons/tb'
@@ -29,11 +27,6 @@ type StatisticGroupsProps = {
     data: StatisticData
 }
 
-const chartColors: Record<StatisticCategory, string> = {
-    totalProfit: COLOR_1,
-    totalOrder: COLOR_2,
-    totalImpression: COLOR_4,
-}
 
 const StatisticCard = (props: StatisticCardProps) => {
     const {

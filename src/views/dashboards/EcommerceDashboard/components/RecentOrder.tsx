@@ -12,6 +12,7 @@ import {
 import { useNavigate } from 'react-router'
 import { NumericFormat } from 'react-number-format'
 import dayjs from 'dayjs'
+import { DashboardResponse } from '@/@types/auth'
 
 type Payment = {
     id: number
@@ -42,8 +43,10 @@ type Payment = {
     updated_at: string
 }
 
-type RecentOrderProps = {
-    data: Payment[]
+type PaymentData = {
+    data:
+        | DashboardResponse['revenue']['recent_successful_payments']
+        | DashboardResponse['revenue']['recent_failed_payments']
 }
 
 const { Tr, Td, TBody, THead, Th } = Table
@@ -158,7 +161,7 @@ const columns = [
     }),
 ]
 
-const RecentOrder = ({ data = [] }: RecentOrderProps) => {
+const RecentOrder = ({ data = [] }: PaymentData) => {
     const navigate = useNavigate()
 
     const table = useReactTable({
