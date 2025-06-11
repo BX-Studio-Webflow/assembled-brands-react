@@ -446,13 +446,13 @@ const SettingsTeam = () => {
             <EmailDialog
                 title="Invite Team Member"
                 dialogOpen={inviteDialog.open}
+                defaultValues={inviteDialog.defaultValues}
                 onDialogClose={() =>
                     setInviteDialog({
                         open: false,
                         defaultValues: { email: '' },
                     })
                 }
-                defaultValues={inviteDialog.defaultValues}
                 onSubmit={handleInviteSubmit}
             />
 

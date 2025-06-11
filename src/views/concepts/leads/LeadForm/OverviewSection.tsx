@@ -203,9 +203,6 @@ const OverviewSection = ({
                         control={control}
                         render={({ field }) => (
                             <Select<{ value: number; label: string }>
-                                onChange={(option) =>
-                                    field.onChange(option?.value)
-                                }
                                 options={(events?.events ?? []).map((ev) => ({
                                     value: ev.event.id,
                                     label: ev.event.event_name,
@@ -221,6 +218,9 @@ const OverviewSection = ({
                                         ) || null
                                 }
                                 name={field.name}
+                                onChange={(option) =>
+                                    field.onChange(option?.value)
+                                }
                                 onBlur={field.onBlur}
                             />
                         )}

@@ -1,33 +1,30 @@
 import React, { useMemo } from 'react'
 import Loading from '@/components/shared/Loading'
 import useSWR, { mutate } from 'swr'
-import { useParams, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { EventStreamResponse } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
+import { Card } from '@/components/ui'
+import ChatBody from '@/views/concepts/chat/Chat/components/ChatBody'
+import ChatSidebar from '@/views/concepts/chat/Chat/components/ChatSidebar'
+import EventHeader from '@/views/concepts/events/EventStream/components/EventHeader'
+import EventHeaderExtra from '@/views/concepts/events/EventStream/components/EventHeaderExtra'
+import EventWaitingCard from '@/views/concepts/events/EventStream/components/EventWaitingCard'
+import { EventProvider } from '@/views/concepts/events/EventStream/context/EventContext'
 
-import ChatBody from '../../chat/Chat/components/ChatBody'
-import ChatSidebar from '../../chat/Chat/components/ChatSidebar'
-import Card from '@/components/ui/Card'
-import { EventProvider } from './context/EventContext'
-import EventHeader from './components/EventHeader'
-import EventHeaderExtra from './components/EventHeaderExtra'
-import EventWaitingCard from './components/EventWaitingCard'
-
-const EventStream = () => {
-    const { id } = useParams()
+const Stream = () => {
     const [searchParams] = useSearchParams()
     const token = searchParams.get('token')
     const email = searchParams.get('email')
     const code = searchParams.get('code')
-    console.log({ token, email, code, id })
-    const swrKey = [`/event/stream/${id}`]
+    const swrKey = [`/event/stream/${code}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
         swrKey,
         () =>
             apiStreamEvent({
                 email: email,
                 token: token,
-                event_id: Number(code || id),
+                event_id: Number(code),
                 isHost: !token && !email && !code, // If no token/email/code provided, assume it's a host
             }),
         {
@@ -77,30 +74,35 @@ const EventStream = () => {
         <EventProvider
             value={{ data: data || null, isLoading, eventStatus, nextDate }}
         >
-            <Loading loading={isLoading}>
-                <div className="flex flex-row justify-between gap-4 mb-4 ">
-                    <EventHeader />
-                    <EventHeaderExtra />
+            <Loading
+                loading={isLoading}
+                className="h-screen w-screen mr-16 ml-16 py-8"
+            >
+                <div className="flex flex-col w-full h-full m-2">
+                    <div className="flex flex-row justify-between gap-4 mb-4 w-full">
+                        <EventHeader />
+                        <EventHeaderExtra />
+                    </div>
+                    {data && eventStatus === 'live' && (
+                        <>
+                            <Card
+                                className="w-full h-full border-0"
+                                bodyClass="h-full flex flex-col"
+                            >
+                                <div className="flex flex-auto h-full gap-8">
+                                    <ChatSidebar />
+                                    <ChatBody data={data} />
+                                </div>
+                            </Card>
+                        </>
+                    )}
+                    {data && eventStatus !== 'live' && (
+                        <EventWaitingCard onCountdownEnd={handleCountdownEnd} />
+                    )}
                 </div>
-                {data && eventStatus === 'live' && (
-                    <>
-                        <Card
-                            className="h-full border-0"
-                            bodyClass="h-full flex flex-col"
-                        >
-                            <div className="flex flex-auto h-full gap-8">
-                                <ChatSidebar />
-                                <ChatBody data={data} />
-                            </div>
-                        </Card>
-                    </>
-                )}
-                {data && eventStatus !== 'live' && (
-                    <EventWaitingCard onCountdownEnd={handleCountdownEnd} />
-                )}
             </Loading>
         </EventProvider>
     )
 }
 
-export default EventStream
+export default Stream

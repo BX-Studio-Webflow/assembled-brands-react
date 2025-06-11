@@ -4,7 +4,6 @@ import type {
     Lead,
     LeadSearchParams,
     PurchaseMembershipResponse,
-    Tag,
     TagAssignment,
     TagAssignmentBody,
     TagAssignmentResponse,

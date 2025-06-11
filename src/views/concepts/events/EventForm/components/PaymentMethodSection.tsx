@@ -4,12 +4,11 @@ import { FormItem } from '@/components/ui/Form'
 import Checkbox from '@/components/ui/Checkbox'
 import Radio from '@/components/ui/Radio'
 import Select from '@/components/ui/Select'
-import { Controller } from 'react-hook-form'
+import { Controller , useFormContext } from 'react-hook-form'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
 import { useState, useEffect } from 'react'
 import type { Asset } from '@/@types/asset'
-import { useFormContext } from 'react-hook-form'
 
 type Props = {
     control: Control<EventFormType>

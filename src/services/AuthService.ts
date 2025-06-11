@@ -12,7 +12,6 @@ import type {
     ResetPasswordInAppBody,
     InitiateStripeConnectResponse,
     GoogleInitiateResponse,
-    User,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {

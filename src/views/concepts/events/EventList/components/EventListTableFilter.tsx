@@ -129,6 +129,7 @@ const EventListTableFilter = () => {
                                     <Select<Option>
                                         options={eventTypeOptions}
                                         {...field}
+                                        isClearable
                                         value={eventTypeOptions.find(
                                             (option) =>
                                                 option.value === field.value,
@@ -140,7 +141,6 @@ const EventListTableFilter = () => {
                                         onChange={(option) =>
                                             field.onChange(option?.value)
                                         }
-                                        isClearable
                                     />
                                 )}
                             />
@@ -180,8 +180,8 @@ const EventListTableFilter = () => {
                         <Button
                             variant="plain"
                             type="button"
-                            onClick={handleReset}
                             className="flex-1"
+                            onClick={handleReset}
                         >
                             Reset
                         </Button>

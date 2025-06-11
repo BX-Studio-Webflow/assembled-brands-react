@@ -186,14 +186,14 @@ const ProfileSection = ({ data }: ProfileSectionProps) => {
             <CreatableSelect
                 isMulti
                 isClearable={false}
-                onChange={handleChange}
-                onCreateOption={handleCreate}
                 options={tagOptions}
                 value={selectedTags}
                 placeholder="Select or type to add tags"
                 isSearchable={true}
                 closeMenuOnSelect={true}
                 name="tags"
+                onChange={handleChange}
+                onCreateOption={handleCreate}
             />
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-10">

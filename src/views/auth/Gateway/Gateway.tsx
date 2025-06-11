@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Alert from '@/components/ui/Alert'
 import Button from '@/components/ui/Button'
-import ActionLink from '@/components/shared/ActionLink'
 import GatewayForm from './components/GatewayForm'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import { useNavigate } from 'react-router'

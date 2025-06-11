@@ -62,7 +62,7 @@ const LeadForm = (props: LeadFormProps) => {
     }
     useSWR(
         ['/event'],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         () => apiGetEvents(),
         {
             revalidateOnFocus: false,

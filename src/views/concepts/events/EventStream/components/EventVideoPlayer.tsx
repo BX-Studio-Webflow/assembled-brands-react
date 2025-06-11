@@ -20,7 +20,12 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 }) => {
     return (
         <Card className="w-full h-full p-0 m-0">
-            <MediaPlayer title="..." src={src} className="w-full h-full">
+            <MediaPlayer
+                autoPlay
+                title="..."
+                src={src}
+                className="w-full h-full"
+            >
                 <MediaProvider className="w-full h-full">
                     <Poster src={poster} alt="..." className="w-full h-full" />
                 </MediaProvider>

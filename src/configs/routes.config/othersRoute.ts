@@ -40,7 +40,7 @@ const othersRoute: Routes = [
     {
         key: 'stream',
         path: `/stream`,
-        component: lazy(() => import('@/views/concepts/events/EventStream')),
+        component: lazy(() => import('@/views/auth/Stream')),
         authority: [],
         meta: {
             layout: 'blank',
