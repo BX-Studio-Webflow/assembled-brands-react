@@ -22,7 +22,7 @@ const ChatList = ({ event }: ChatListProps) => {
     const code = searchParams.get('code')
     const chatsFetched = useChatStore((state) => state.chatsFetched)
     const setSelectedChat = useChatStore((state) => state.setSelectedChat)
-    console.log(event)
+
     const inputRef = useRef<HTMLInputElement>(null)
 
     const [showSearchBar, setShowSearchBar] = useState(false)

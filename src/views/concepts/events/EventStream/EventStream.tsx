@@ -68,7 +68,7 @@ const EventStream = () => {
         }
         return { eventStatus: status, nextDate: next }
     }, [data])
-
+    console.log(data)
     const handleCountdownEnd = () => {
         mutate(swrKey)
     }

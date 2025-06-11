@@ -90,7 +90,7 @@ const Stream = () => {
                                 bodyClass="h-full flex flex-col"
                             >
                                 <div className="flex flex-auto h-full gap-8">
-                                    <ChatSidebar />
+                                    <ChatSidebar event={data} />
                                     <ChatBody data={data} />
                                 </div>
                             </Card>
