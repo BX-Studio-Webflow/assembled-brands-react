@@ -267,15 +267,6 @@ const conceptsRoute: Routes = [
         },
     },
     {
-        key: 'concepts.account.pricing',
-        path: `${CONCEPTS_PREFIX_PATH}/account/pricing`,
-        component: lazy(() => import('@/views/concepts/accounts/Pricing')),
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-        },
-    },
-    {
         key: 'concepts.helpCenter.supportHub',
         path: `${CONCEPTS_PREFIX_PATH}/help-center/support-hub`,
         component: lazy(
