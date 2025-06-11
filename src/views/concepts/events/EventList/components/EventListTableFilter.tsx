@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import DatePicker from '@/components/ui/DatePicker'
 import Drawer from '@/components/ui/Drawer'
-import Checkbox from '@/components/ui/Checkbox'
 import Badge from '@/components/ui/Badge'
 import Select, { Option as DefaultOption } from '@/components/ui/Select'
 import { components } from 'react-select'
@@ -18,8 +17,8 @@ import classNames from '@/utils/classNames'
 
 type FormSchema = {
     date: [Date, Date]
-    status: string
-    paymentMethod: Array<string>
+    eventType: string
+    sortOrder: string
 }
 
 type Option = {
@@ -30,19 +29,20 @@ type Option = {
 
 const { Control } = components
 
-const statusOption: Option[] = [
-    { value: 'paid', label: 'Paid', className: 'bg-emerald-500' },
-    { value: 'failed', label: 'Failed', className: 'bg-red-500' },
-    { value: 'pending', label: 'Pending', className: 'bg-amber-500' },
+const eventTypeOptions: Option[] = [
+    {
+        value: 'prerecorded',
+        label: 'Pre-recorded',
+        className: 'bg-emerald-500',
+    },
+    { value: 'live-video', label: 'Live video', className: 'bg-red-500' },
+    { value: 'live-venue', label: 'Live venue', className: 'bg-amber-500' },
     { value: 'all', label: 'All', className: 'bg-gray-400' },
 ]
 
-const paymentMethodList = [
-    'Credit card',
-    'Debit card',
-    'Paypal',
-    'Stripe',
-    'Cash',
+const sortByOptions: Option[] = [
+    { value: 'asc', label: 'Ascending', className: 'bg-emerald-500' },
+    { value: 'desc', label: 'Descending', className: 'bg-red-500' },
 ]
 
 const CustomSelectOption = (props: OptionProps<Option>) => {
@@ -73,8 +73,8 @@ const CustomControl = ({ children, ...props }: ControlProps<Option>) => {
 
 const validationSchema: ZodType<FormSchema> = z.object({
     date: z.tuple([z.date(), z.date()]),
-    status: z.string(),
-    paymentMethod: z.array(z.string()),
+    eventType: z.string(),
+    sortOrder: z.string(),
 })
 
 const EventListTableFilter = () => {
@@ -82,13 +82,31 @@ const EventListTableFilter = () => {
 
     const { filterData, setFilterData } = useEventlist()
 
-    const { handleSubmit, control } = useForm<FormSchema>({
-        defaultValues: filterData,
+    const { handleSubmit, control, reset } = useForm<FormSchema>({
+        defaultValues: {
+            date: filterData?.date || [new Date('2020-01-01'), new Date()],
+            eventType: filterData?.eventType || 'all',
+            sortOrder: filterData?.sortOrder || 'desc',
+        },
         resolver: zodResolver(validationSchema),
     })
 
     const onSubmit = (values: FormSchema) => {
         setFilterData(values)
+        setFilterIsOpen(false)
+    }
+
+    const handleReset = () => {
+        reset({
+            date: [new Date('2020-01-01'), new Date()],
+            eventType: 'all',
+            sortOrder: 'desc',
+        })
+        setFilterData({
+            date: [new Date('2020-01-01'), new Date()],
+            eventType: 'all',
+            sortOrder: 'desc',
+        })
         setFilterIsOpen(false)
     }
 
@@ -108,8 +126,8 @@ const EventListTableFilter = () => {
                     containerClassName="flex flex-col justify-between h-full"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    <div>
-                        <FormItem label="Product price">
+                    <div className="space-y-4">
+                        <FormItem label="Created at">
                             <div className="flex items-center gap-2">
                                 <Controller
                                     name="date"
@@ -123,15 +141,39 @@ const EventListTableFilter = () => {
                                 />
                             </div>
                         </FormItem>
-                        <FormItem label="Product status">
+                        <FormItem label="Event type">
                             <Controller
-                                name="status"
+                                name="eventType"
                                 control={control}
                                 render={({ field }) => (
                                     <Select<Option>
-                                        options={statusOption}
+                                        options={eventTypeOptions}
                                         {...field}
-                                        value={statusOption.filter(
+                                        value={eventTypeOptions.find(
+                                            (option) =>
+                                                option.value === field.value,
+                                        )}
+                                        components={{
+                                            Option: CustomSelectOption,
+                                            Control: CustomControl,
+                                        }}
+                                        onChange={(option) =>
+                                            field.onChange(option?.value)
+                                        }
+                                        isClearable
+                                    />
+                                )}
+                            />
+                        </FormItem>
+                        <FormItem label="Sort by date">
+                            <Controller
+                                name="sortOrder"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select<Option>
+                                        options={sortByOptions}
+                                        {...field}
+                                        value={sortByOptions.find(
                                             (option) =>
                                                 option.value === field.value,
                                         )}
@@ -146,38 +188,24 @@ const EventListTableFilter = () => {
                                 )}
                             />
                         </FormItem>
-                        <FormItem label="Product type">
-                            <div className="mt-4">
-                                <Controller
-                                    name="paymentMethod"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Checkbox.Group
-                                            vertical
-                                            className="flex"
-                                            {...field}
-                                        >
-                                            {paymentMethodList.map(
-                                                (type, index) => (
-                                                    <Checkbox
-                                                        key={type + index}
-                                                        name={field.name}
-                                                        value={type}
-                                                        className="justify-between flex-row-reverse heading-text"
-                                                    >
-                                                        {type}
-                                                    </Checkbox>
-                                                ),
-                                            )}
-                                        </Checkbox.Group>
-                                    )}
-                                />
-                            </div>
-                        </FormItem>
                     </div>
-                    <Button variant="solid" type="submit">
-                        Query
-                    </Button>
+                    <div className="flex gap-2 mt-4">
+                        <Button
+                            variant="solid"
+                            type="submit"
+                            className="flex-1"
+                        >
+                            Apply Filters
+                        </Button>
+                        <Button
+                            variant="plain"
+                            type="button"
+                            onClick={handleReset}
+                            className="flex-1"
+                        >
+                            Reset
+                        </Button>
+                    </div>
                 </Form>
             </Drawer>
         </>

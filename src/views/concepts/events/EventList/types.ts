@@ -53,8 +53,8 @@ export type EventItems = EventItem[]
 
 export type Filter = {
     date: [Date, Date]
-    status: string
-    paymentMethod: string[]
+    eventType: string
+    sortOrder: string
 }
 
 export type GetEventsResponse = {
