@@ -1,187 +1,128 @@
-import Loading from '@/components/shared/Loading'
+import { useEffect } from 'react'
 import useSWR from 'swr'
-import type { StatisticData } from './types'
+import Loading from '@/components/shared/Loading'
 import Overview from './components/Overview'
 import RecentOrder from './components/RecentOrder'
+import EngagementMetrics from './components/EngagementMetrics'
+import ContentMetrics from './components/ContentMetrics'
 import { apiGetDashboard } from '@/services/AuthService'
-import CurrentTasks from './components/CurrentTasks'
-import RecentActivity from './components/RecentActivity'
 
 const EcommerceDashboard = () => {
-    const { data, isLoading } = useSWR(
-        ['/user/dashboard'],
-        () => apiGetDashboard(),
+    const { data, error, isLoading } = useSWR(
+        '/api/dashboard',
+        apiGetDashboard,
         {
             revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
         },
     )
 
+    useEffect(() => {
+        if (data) {
+            console.log('Dashboard data:', data)
+        }
+    }, [data])
+
     if (isLoading) {
-        return (
-            <div className="flex h-full w-full items-center justify-center">
-                <Loading loading={true} />
-            </div>
-        )
+        return <Loading loading={true} />
     }
 
-    // Transform data for Overview component
-    const overviewData: StatisticData = {
+    if (error) {
+        return <div>Error loading dashboard data</div>
+    }
+
+    const createPeriodData = (value: number, growShrink: number) => ({
+        value,
+        growShrink,
+        comparePeriod: 'vs last period',
+        chartData: {
+            series: [
+                {
+                    name: 'Value',
+                    data: [value],
+                },
+            ],
+            date: [new Date().toISOString()],
+        },
+    })
+
+    const overviewData = {
         totalProfit: {
-            thisMonth: {
-                value: parseFloat(data?.revenue?.total_revenue || '0'),
-                growShrink: 0,
-                comparePeriod: 'vs last month',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Revenue',
-                            data: [
-                                parseFloat(data?.revenue?.total_revenue || '0'),
-                            ],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
-            thisWeek: {
-                value: parseFloat(data?.revenue?.revenue_last_30_days || '0'),
-                growShrink: 0,
-                comparePeriod: 'vs last week',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Revenue',
-                            data: [
-                                parseFloat(
-                                    data?.revenue?.revenue_last_30_days || '0',
-                                ),
-                            ],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
-            thisYear: {
-                value: parseFloat(data?.revenue?.total_revenue || '0'),
-                growShrink: 0,
-                comparePeriod: 'vs last year',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Revenue',
-                            data: [
-                                parseFloat(data?.revenue?.total_revenue || '0'),
-                            ],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
+            thisWeek: createPeriodData(
+                data?.data.revenue?.total_revenue || 0,
+                data?.data.revenue?.revenue_last_30_days
+                    ? (data.data.revenue.revenue_last_30_days /
+                          (data.data.revenue.total_revenue || 1)) *
+                          100
+                    : 0,
+            ),
+            thisMonth: createPeriodData(
+                data?.data.revenue?.total_revenue || 0,
+                data?.data.revenue?.revenue_last_30_days
+                    ? (data.data.revenue.revenue_last_30_days /
+                          (data.data.revenue.total_revenue || 1)) *
+                          100
+                    : 0,
+            ),
+            thisYear: createPeriodData(
+                data?.data.revenue?.total_revenue || 0,
+                data?.data.revenue?.revenue_last_30_days
+                    ? (data.data.revenue.revenue_last_30_days /
+                          (data.data.revenue.total_revenue || 1)) *
+                          100
+                    : 0,
+            ),
         },
         totalOrder: {
-            thisMonth: {
-                value: data?.revenue?.successful_payments || 0,
-                growShrink: 0,
-                comparePeriod: 'vs last month',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Orders',
-                            data: [data?.revenue?.successful_payments || 0],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
-            thisWeek: {
-                value: data?.revenue?.successful_payments || 0,
-                growShrink: 0,
-                comparePeriod: 'vs last week',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Orders',
-                            data: [data?.revenue?.successful_payments || 0],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
-            thisYear: {
-                value: data?.revenue?.successful_payments || 0,
-                growShrink: 0,
-                comparePeriod: 'vs last year',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Orders',
-                            data: [data?.revenue?.successful_payments || 0],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
+            thisWeek: createPeriodData(
+                data?.data.revenue?.successful_payments || 0,
+                data?.data.engagement?.new_bookings_last_30_days
+                    ? (data.data.engagement.new_bookings_last_30_days /
+                          (data.data.revenue.successful_payments || 1)) *
+                          100
+                    : 0,
+            ),
+            thisMonth: createPeriodData(
+                data?.data.revenue?.successful_payments || 0,
+                data?.data.engagement?.new_bookings_last_30_days
+                    ? (data.data.engagement.new_bookings_last_30_days /
+                          (data.data.revenue.successful_payments || 1)) *
+                          100
+                    : 0,
+            ),
+            thisYear: createPeriodData(
+                data?.data.revenue?.successful_payments || 0,
+                data?.data.engagement?.new_bookings_last_30_days
+                    ? (data.data.engagement.new_bookings_last_30_days /
+                          (data.data.revenue.successful_payments || 1)) *
+                          100
+                    : 0,
+            ),
         },
         totalImpression: {
-            thisMonth: {
-                value:
-                    (data?.content?.total_leads || 0) +
-                    (data?.content?.total_contacts || 0),
-                growShrink: 0,
-                comparePeriod: 'vs last month',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Impressions',
-                            data: [
-                                (data?.content?.total_leads || 0) +
-                                    (data?.content?.total_contacts || 0),
-                            ],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
-            thisWeek: {
-                value:
-                    (data?.content?.total_leads || 0) +
-                    (data?.content?.total_contacts || 0),
-                growShrink: 0,
-                comparePeriod: 'vs last week',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Impressions',
-                            data: [
-                                (data?.content?.total_leads || 0) +
-                                    (data?.content?.total_contacts || 0),
-                            ],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
-            thisYear: {
-                value:
-                    (data?.content?.total_leads || 0) +
-                    (data?.content?.total_contacts || 0),
-                growShrink: 0,
-                comparePeriod: 'vs last year',
-                chartData: {
-                    series: [
-                        {
-                            name: 'Impressions',
-                            data: [
-                                (data?.content?.total_leads || 0) +
-                                    (data?.content?.total_contacts || 0),
-                            ],
-                        },
-                    ],
-                    date: [new Date().toISOString()],
-                },
-            },
+            thisWeek: createPeriodData(
+                data?.data.content?.total_contacts || 0,
+                data?.data.engagement?.new_contacts_last_30_days
+                    ? (data.data.engagement.new_contacts_last_30_days /
+                          (data.data.content.total_contacts || 1)) *
+                          100
+                    : 0,
+            ),
+            thisMonth: createPeriodData(
+                data?.data.content?.total_contacts || 0,
+                data?.data.engagement?.new_contacts_last_30_days
+                    ? (data.data.engagement.new_contacts_last_30_days /
+                          (data.data.content.total_contacts || 1)) *
+                          100
+                    : 0,
+            ),
+            thisYear: createPeriodData(
+                data?.data.content?.total_contacts || 0,
+                data?.data.engagement?.new_contacts_last_30_days
+                    ? (data.data.engagement.new_contacts_last_30_days /
+                          (data.data.content.total_contacts || 1)) *
+                          100
+                    : 0,
+            ),
         },
     }
 
@@ -192,19 +133,21 @@ const EcommerceDashboard = () => {
             </div>
 
             <div className="col-span-1">
-                <RecentOrder data={data?.revenue?.recent_successful_payments} />
+                <RecentOrder
+                    data={data?.data.revenue?.recent_successful_payments}
+                />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-1">
-                    <CurrentTasks data={data?.engagement} />
+                    <EngagementMetrics data={data?.data.engagement} />
                 </div>
                 <div className="col-span-1">
-                    <RecentActivity data={data?.content} />
+                    <ContentMetrics data={data?.data.content} />
                 </div>
             </div>
         </div>
     )
 }
 
-export { EcommerceDashboard }
+export default EcommerceDashboard
