@@ -179,16 +179,6 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     onClick={setSelectedCategory}
                 />
             </div>
-            <Chart
-                type="line"
-                series={data[selectedCategory][selectedPeriod].chartData.series}
-                xAxis={data[selectedCategory][selectedPeriod].chartData.date}
-                height="410px"
-                customOptions={{
-                    legend: { show: false },
-                    colors: [chartColors[selectedCategory]],
-                }}
-            />
         </Card>
     )
 }

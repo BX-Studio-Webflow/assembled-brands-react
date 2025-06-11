@@ -33,47 +33,6 @@ const CustomerDemographic = ({ data }: CustomerDemographicProps) => {
         <Card>
             <h4>Top countries</h4>
             <div className="flex flex-col xl:flex-row items-center gap-4 mt-4">
-                <div className="px-4 flex flex-col justify-center flex-1 w-full">
-                    <RegionMap
-                        data={data}
-                        valueSuffix="%"
-                        hoverable={false}
-                        marker={(Marker) => (
-                            <>
-                                {data.map(
-                                    ({ name, coordinates, value, id }) => (
-                                        <Marker
-                                            key={name}
-                                            coordinates={coordinates}
-                                            className="cursor-pointer group"
-                                            onMouseEnter={() => setHovering(id)}
-                                            onMouseLeave={() => setHovering('')}
-                                        >
-                                            <g transform="translate(-12, -24)">
-                                                <circle
-                                                    cx="12"
-                                                    cy="12"
-                                                    r={value * 1.5}
-                                                    className="fill-gray-900 opacity-10"
-                                                />
-                                                <circle
-                                                    cx="12"
-                                                    cy="12"
-                                                    r={(value * 1.5) / 2.5}
-                                                    className={classNames(
-                                                        'fill-gray-400 opacity-80 group-hover:fill-primary transition-colors duration-150',
-                                                        hovering === id &&
-                                                            'fill-primary',
-                                                    )}
-                                                />
-                                            </g>
-                                        </Marker>
-                                    ),
-                                )}
-                            </>
-                        )}
-                    />
-                </div>
                 <div className="flex flex-col justify-center px-4 2xl:min-w-[340px] xl:w-[300px] w-full">
                     {getMapMeta(data).map((item) => (
                         <div

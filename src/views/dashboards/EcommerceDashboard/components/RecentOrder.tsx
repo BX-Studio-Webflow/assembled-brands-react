@@ -13,39 +13,86 @@ import { useNavigate } from 'react-router'
 import { NumericFormat } from 'react-number-format'
 import dayjs from 'dayjs'
 
-import type { Order } from '../types'
+type Payment = {
+    id: number
+    contact_id: number
+    lead_id: number
+    event_id: number
+    membership_id: number
+    beneficiary_id: number
+    stripe_customer_id: string
+    checkout_session_id: string
+    amount: string
+    currency: string
+    status:
+        | 'succeeded'
+        | 'failed'
+        | 'pending'
+        | 'processing'
+        | 'canceled'
+        | 'refunded'
+    payment_type: 'one_off' | 'subscription'
+    metadata: {
+        dates: number[]
+        eventName: string
+        sessionId: string
+        membershipName: string
+    }
+    created_at: string
+    updated_at: string
+}
 
 type RecentOrderProps = {
-    data: Order[]
+    data: Payment[]
 }
+
 const { Tr, Td, TBody, THead, Th } = Table
 
-const orderStatusColor: Record<
-    number,
+const paymentStatusColor: Record<
+    string,
     {
         label: string
         dotClass: string
         textClass: string
     }
 > = {
-    0: {
-        label: 'Paid',
+    succeeded: {
+        label: 'Success',
         dotClass: 'bg-emerald-500',
         textClass: 'text-emerald-500',
     },
-    1: {
+    failed: {
+        label: 'Failed',
+        dotClass: 'bg-red-500',
+        textClass: 'text-red-500',
+    },
+    pending: {
         label: 'Pending',
         dotClass: 'bg-amber-500',
         textClass: 'text-amber-500',
     },
-    2: { label: 'Failed', dotClass: 'bg-red-500', textClass: 'text-red-500' },
+    processing: {
+        label: 'Processing',
+        dotClass: 'bg-blue-500',
+        textClass: 'text-blue-500',
+    },
+    canceled: {
+        label: 'Canceled',
+        dotClass: 'bg-gray-500',
+        textClass: 'text-gray-500',
+    },
+    refunded: {
+        label: 'Refunded',
+        dotClass: 'bg-purple-500',
+        textClass: 'text-purple-500',
+    },
 }
 
-const OrderColumn = ({ row }: { row: Order }) => {
+const PaymentColumn = ({ row }: { row: Payment }) => {
     const navigate = useNavigate()
 
     const handleView = useCallback(() => {
-        navigate(`/concepts/orders/order-details/${row.id}`)
+        navigate(`/payments/${row.id}`)
     }, [navigate, row])
 
     return (
@@ -58,12 +105,12 @@ const OrderColumn = ({ row }: { row: Order }) => {
     )
 }
 
-const columnHelper = createColumnHelper<Order>()
+const columnHelper = createColumnHelper<Payment>()
 
 const columns = [
     columnHelper.accessor('id', {
-        header: 'Order',
-        cell: (props) => <OrderColumn row={props.row.original} />,
+        header: 'Payment',
+        cell: (props) => <PaymentColumn row={props.row.original} />,
     }),
     columnHelper.accessor('status', {
         header: 'Status',
@@ -71,36 +118,39 @@ const columns = [
             const { status } = props.row.original
             return (
                 <div className="flex items-center">
-                    <Badge className={orderStatusColor[status].dotClass} />
+                    <Badge className={paymentStatusColor[status].dotClass} />
                     <span
-                        className={`ml-2 rtl:mr-2 capitalize font-semibold ${orderStatusColor[status].textClass}`}
+                        className={`ml-2 rtl:mr-2 capitalize font-semibold ${paymentStatusColor[status].textClass}`}
                     >
-                        {orderStatusColor[status].label}
+                        {paymentStatusColor[status].label}
                     </span>
                 </div>
             )
         },
     }),
-    columnHelper.accessor('date', {
+    columnHelper.accessor('created_at', {
         header: 'Date',
         cell: (props) => {
             const row = props.row.original
-            return <span>{dayjs.unix(row.date).format('DD/MM/YYYY')}</span>
+            return <span>{dayjs(row.created_at).format('DD/MM/YYYY')}</span>
         },
     }),
-    columnHelper.accessor('customer', {
-        header: 'Customer',
+    columnHelper.accessor('metadata.eventName', {
+        header: 'Event',
     }),
-    columnHelper.accessor('totalAmount', {
-        header: 'Amount spent',
+    columnHelper.accessor('metadata.membershipName', {
+        header: 'Membership',
+    }),
+    columnHelper.accessor('amount', {
+        header: 'Amount',
         cell: (props) => {
-            const { totalAmount } = props.row.original
+            const { amount, currency } = props.row.original
             return (
                 <NumericFormat
                     className="heading-text font-bold"
                     displayType="text"
-                    value={(Math.round(totalAmount * 100) / 100).toFixed(2)}
-                    prefix={'$'}
+                    value={amount}
+                    prefix={currency === 'gbp' ? '£' : '$'}
                     thousandSeparator={true}
                 />
             )
@@ -120,12 +170,9 @@ const RecentOrder = ({ data = [] }: RecentOrderProps) => {
     return (
         <Card>
             <div className="flex items-center justify-between mb-6">
-                <h4>Recent Orders</h4>
-                <Button
-                    size="sm"
-                    onClick={() => navigate('/concepts/orders/order-list')}
-                >
-                    View Orders
+                <h4>Recent Payments</h4>
+                <Button size="sm" onClick={() => navigate('/payments')}>
+                    View All Payments
                 </Button>
             </div>
             <Table>

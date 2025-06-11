@@ -122,3 +122,10 @@ export async function apiUpdateUserProfile(data: UpdateUserProfileBody) {
         data,
     })
 }
+
+export async function apiGetDashboard() {
+    return ApiService.fetchDataWithAxios<DashboardResponse>({
+        url: `/user/dashboard`,
+        method: 'get',
+    })
+}
