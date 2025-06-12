@@ -27,7 +27,6 @@ type StatisticGroupsProps = {
     data: StatisticData
 }
 
-
 const StatisticCard = (props: StatisticCardProps) => {
     const {
         title,

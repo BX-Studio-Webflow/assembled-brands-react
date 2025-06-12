@@ -10,7 +10,10 @@ import {
 import { useAuth } from '@/auth'
 import { User } from '@/@types/auth'
 import { ONBOARDING_PREFIX_PATH } from '@/constants/route.constant'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useSessionUser } from '@/store/authStore'
+import useSWR from 'swr'
+import { apiGetBusiness } from '@/services/BusinessService'
 
 const { unAuthenticatedEntryPath } = appConfig
 
@@ -19,6 +22,17 @@ const ProtectedRoute = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const pathName = location.pathname
+    const setUser = useSessionUser((state) => state.setUser)
+    const hasUpdated = useRef(false)
+
+    // Fetch business data
+    const { data: businessData } = useSWR(
+        authenticated && user ? '/business/my' : null,
+        apiGetBusiness,
+        {
+            revalidateOnFocus: false,
+        },
+    )
 
     const getPathName =
         pathName === '/' ? '' : `?${REDIRECT_URL_KEY}=${pathName}`
@@ -32,9 +46,26 @@ const ProtectedRoute = () => {
                 return
             }
 
+            // Only update if we haven't updated yet and have business data
+            if (!hasUpdated.current && businessData) {
+                const { user } = businessData
+                setUser({
+                    ...user,
+                })
+
+                hasUpdated.current = true
+            }
+            //check subscription status
             checkSubscriptionStatus(user, navigate)
         }
-    }, [authenticated, user, navigate, location.pathname])
+    }, [
+        authenticated,
+        user,
+        navigate,
+        location.pathname,
+        setUser,
+        businessData,
+    ])
 
     if (!authenticated) {
         return (

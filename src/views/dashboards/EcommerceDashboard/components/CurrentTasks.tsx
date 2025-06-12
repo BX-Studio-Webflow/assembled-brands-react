@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import Card from '@/components/ui/Card'
 import {
     HiOutlineCalendar,

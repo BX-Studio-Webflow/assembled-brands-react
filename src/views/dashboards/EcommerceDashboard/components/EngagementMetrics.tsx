@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react'
 import Card from '@/components/ui/Card'
 import Tag from '@/components/ui/Tag'

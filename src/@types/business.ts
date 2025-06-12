@@ -1,3 +1,5 @@
+import { User } from './auth'
+
 export interface Business {
     id: number
     name: string
@@ -10,6 +12,7 @@ export interface Business {
 
 export interface GetBusinessResponse {
     business: Business
+    user: User
 }
 
 export interface UpdateBusinessRequest extends Record<string, unknown> {
