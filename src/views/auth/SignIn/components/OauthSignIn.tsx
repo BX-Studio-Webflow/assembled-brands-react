@@ -2,6 +2,8 @@ import Button from '@/components/ui/Button'
 import { useAuth } from '@/auth'
 import { apiGoogleInitiate, apiGoogleContinue } from '@/services/AuthService'
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
+import { ONBOARDING_PREFIX_PATH } from '@/constants/route.constant'
 
 type OauthSignInProps = {
     setMessage?: (message: string) => void
@@ -10,6 +12,7 @@ type OauthSignInProps = {
 
 const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
     const { oAuthSignIn } = useAuth()
+    const navigate = useNavigate()
 
     useEffect(() => {
         // Check if we're on the callback URL with a code
@@ -22,6 +25,18 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
                     const resp = await apiGoogleContinue(code)
                     if (resp?.token && resp?.user) {
                         onSignIn({ accessToken: resp.token }, resp.user)
+                        if (
+                            ['active', 'trialing'].includes(
+                                resp.user.subscription_status,
+                            )
+                        ) {
+                            navigate(
+                                `${ONBOARDING_PREFIX_PATH}/business-onboarding`,
+                            )
+                        } else {
+                            redirect()
+                        }
+
                         redirect()
                     }
                 } catch (error) {
@@ -29,7 +44,7 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
                 }
             })
         }
-    }, [oAuthSignIn, setMessage])
+    }, [oAuthSignIn, setMessage, navigate])
 
     const handleGoogleSignIn = async () => {
         if (!disableSubmit) {
