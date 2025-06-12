@@ -74,9 +74,13 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
                 <div>
                     <div className="mb-6">
                         <>
-                            <h3 className="mb-1">{event?.event_name}</h3>
-                            <p className="font-semibold heading-text">
-                                {event?.event_description}
+                            <h3 className="mb-1">All done!</h3>
+                            <p className="font-semibold">
+                                You have successfully registered for the{' '}
+                                <span className="font-bold text-primary">
+                                    {event?.event_name}
+                                </span>{' '}
+                                event and your space has been reserved.
                             </p>
                         </>
                     </div>

@@ -2,7 +2,7 @@ import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Avatar from '@/components/ui/Avatar'
 import IconText from '@/components/shared/IconText'
-import { TbMail, TbExternalLink } from 'react-icons/tb'
+import { TbMail } from 'react-icons/tb'
 import { Link } from 'react-router'
 import type { EventWithDetailsAndCount } from '@/@types/events'
 import type { CommonProps } from '@/@types/common'
@@ -34,7 +34,13 @@ const ThankYouForm = (props: ThankYouFormProps) => {
                     to="/concepts/customers/customer-details/11"
                 >
                     <div className="flex items-center gap-2">
-                        <Avatar shape="circle" src={event.host.profile_image} />
+                        <Avatar
+                            shape="circle"
+                            src={
+                                event.host.profile_image ||
+                                '/img/avatars/man.png'
+                            }
+                        />
                         <div>
                             <div className="font-bold heading-text">
                                 {event.host.name}
@@ -46,7 +52,6 @@ const ThankYouForm = (props: ThankYouFormProps) => {
                             </span>
                         </div>
                     </div>
-                    <TbExternalLink className="text-xl hidden group-hover:block" />
                 </Link>
                 <hr className="my-5" />
                 <IconText
