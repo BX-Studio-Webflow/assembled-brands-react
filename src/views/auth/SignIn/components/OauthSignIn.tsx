@@ -25,21 +25,28 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
                     const resp = await apiGoogleContinue(code)
                     if (resp?.token && resp?.user) {
                         onSignIn({ accessToken: resp.token }, resp.user)
-                        if (
-                            !resp.user.subscription_status ||
-                            [
-                                'past_due',
-                                'canceled',
-                                'incomplete',
-                                'incomplete_expired',
-                                'paused',
-                                'unpaid',
-                            ].includes(resp.user.subscription_status)
-                        ) {
+
+                        const BAD_SUBSCRIPTION_STATUSES = [
+                            'past_due',
+                            'canceled',
+                            'incomplete',
+                            'incomplete_expired',
+                            'paused',
+                            'unpaid',
+                        ]
+
+                        const status = resp.user.subscription_status
+
+                        if (!status) {
+                            // No subscription at all — likely new user
                             navigate(
                                 `${ONBOARDING_PREFIX_PATH}/business-onboarding`,
                             )
+                        } else if (BAD_SUBSCRIPTION_STATUSES.includes(status)) {
+                            // Subscription exists but has issues
+                            navigate(`${ONBOARDING_PREFIX_PATH}/pricing`)
                         } else {
+                            // Valid subscription — proceed
                             redirect()
                         }
                     }
