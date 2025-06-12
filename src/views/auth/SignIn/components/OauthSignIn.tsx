@@ -37,8 +37,6 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
                         } else {
                             redirect()
                         }
-
-                        redirect()
                     }
                 } catch (error) {
                     setMessage?.((error as string)?.toString() || '')
