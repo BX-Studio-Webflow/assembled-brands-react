@@ -11,7 +11,7 @@ import Select, { Option as DefaultOption } from '@/components/ui/Select'
 import type { CommonProps } from '@/@types/common'
 import { useNavigate } from 'react-router'
 import { ONBOARDING_PREFIX_PATH } from '@/constants/route.constant'
-import { NumericInput } from '@/components/shared'
+import { NumericInput, PasswordInput } from '@/components/shared'
 import { Avatar } from '@/components/ui'
 import type { OptionProps, ControlProps } from 'react-select'
 import { components } from 'react-select'
@@ -242,8 +242,8 @@ const SignUpForm = (props: SignUpFormProps) => {
                         name="password"
                         control={control}
                         render={({ field }) => (
-                            <Input
-                                type="password"
+                            <PasswordInput
+                                type="text"
                                 autoComplete="off"
                                 placeholder="Password"
                                 {...field}
