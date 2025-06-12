@@ -15,6 +15,7 @@ import type {
     GoogleContinueResponse,
     UpdateUserProfileBody,
     UpdateUserProfileResponse,
+    DashboardResponse,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
