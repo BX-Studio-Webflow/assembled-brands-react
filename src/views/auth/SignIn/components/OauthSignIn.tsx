@@ -26,7 +26,8 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
                     if (resp?.token && resp?.user) {
                         onSignIn({ accessToken: resp.token }, resp.user)
                         if (
-                            ['active', 'trialing'].includes(
+                            !resp.user.subscription_status ||
+                            !['inactive', 'expired'].includes(
                                 resp.user.subscription_status,
                             )
                         ) {

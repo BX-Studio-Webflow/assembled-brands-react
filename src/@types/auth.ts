@@ -35,7 +35,7 @@ export type User = {
     is_banned: boolean
     is_deleted: boolean
     stripe_account_id: string | null
-    subscription_status: 'active' | 'inactive' | 'expired'
+    subscription_status: 'active' | 'inactive' | 'expired' | null
     auth_provider: 'google' | 'email'
 }
 
