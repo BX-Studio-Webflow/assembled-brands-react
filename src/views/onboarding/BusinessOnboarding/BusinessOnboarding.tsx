@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import { FormItem, Form } from '@/components/ui/Form'
@@ -157,6 +157,23 @@ const BusinessOnboarding = () => {
         logo: z.string().min(1, 'Business logo is required'),
         logoFileName: z.string().min(1, 'Business logo file name is required'),
     })
+
+    useEffect(() => {
+        // Check if we're on the callback URL with a code
+        const urlParams = new URLSearchParams(window.location.search)
+        const action = urlParams.get('action')
+        if (action === 'add-subscription') {
+            toast.push(
+                <Notification type="danger">
+                    Thank you for signing up! Your subscription is not active.
+                    Please add a subscription to continue using the platform.
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+        }
+    }, [])
 
     const {
         handleSubmit,
