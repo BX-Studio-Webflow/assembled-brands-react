@@ -1,6 +1,12 @@
 import appConfig from '@/configs/app.config'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
-import { Navigate, NavigateFunction, Outlet, useNavigate } from 'react-router'
+import {
+    Navigate,
+    NavigateFunction,
+    Outlet,
+    useNavigate,
+    useLocation,
+} from 'react-router'
 import { useAuth } from '@/auth'
 import { User } from '@/@types/auth'
 import { ONBOARDING_PREFIX_PATH } from '@/constants/route.constant'
@@ -11,16 +17,24 @@ const { unAuthenticatedEntryPath } = appConfig
 const ProtectedRoute = () => {
     const { authenticated, user } = useAuth()
     const navigate = useNavigate()
+    const location = useLocation()
     const pathName = location.pathname
 
     const getPathName =
         pathName === '/' ? '' : `?${REDIRECT_URL_KEY}=${pathName}`
 
     useEffect(() => {
-        if (authenticated) {
+        if (authenticated && user) {
+            const currentPath = location.pathname
+
+            // Don't redirect if we're already on the onboarding or pricing pages
+            if (currentPath.includes(ONBOARDING_PREFIX_PATH)) {
+                return
+            }
+
             checkSubscriptionStatus(user, navigate)
         }
-    }, [authenticated, user, navigate])
+    }, [authenticated, user, navigate, location.pathname])
 
     if (!authenticated) {
         return (
@@ -35,7 +49,6 @@ const ProtectedRoute = () => {
 }
 
 const checkSubscriptionStatus = (user: User, navigate: NavigateFunction) => {
-    console.log('subscription status', user.subscription_status)
     const BAD_SUBSCRIPTION_STATUSES = [
         'past_due',
         'canceled',
