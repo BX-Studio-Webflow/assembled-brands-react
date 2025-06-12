@@ -69,6 +69,12 @@ export interface Lesson {
         created_at: string
         updated_at: string
     } | null
+    host?: {
+        name: string
+        email: string
+        profile_image: string
+        id: number
+    }
 }
 
 // Progress type

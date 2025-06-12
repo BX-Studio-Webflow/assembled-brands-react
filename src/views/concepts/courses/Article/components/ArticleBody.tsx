@@ -7,6 +7,7 @@ interface ArticleBodyProps {
 }
 
 const ArticleBody = ({ lesson }: ArticleBodyProps) => {
+    console.log({ lesson })
     return (
         <>
             <h3>{lesson.title}</h3>
@@ -24,7 +25,7 @@ const ArticleBody = ({ lesson }: ArticleBodyProps) => {
                     <div className="mb-1">
                         Created by:
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            xxxxx
+                            {lesson[0].host?.name}
                         </span>
                     </div>
                     <div>
