@@ -5,14 +5,16 @@ import Loading from '@/components/shared/Loading'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { TbCircleCheck } from 'react-icons/tb'
 import type { CourseWithDetails } from '@/@types/course'
+import { useNavigate } from 'react-router'
 
 const { Td, Tr, TBody } = Table
 
 interface ModulesProps {
-    modules?: CourseWithDetails['modules']
+    course: CourseWithDetails
 }
 
-const Modules = ({ modules }: ModulesProps) => {
+const Modules = (course: ModulesProps) => {
+    const navigate = useNavigate()
     const [selectedLesson, setSelectedLesson] = useState<{
         moduleId: number
         lessonId: number
@@ -31,11 +33,21 @@ const Modules = ({ modules }: ModulesProps) => {
         setSelectedLesson(null)
     }
 
+    const handleLessonClick = (
+        courseId: number,
+        moduleId: number,
+        lessonId: number,
+    ) => {
+        navigate(
+            `/concepts/courses/article?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`,
+        )
+    }
+
     return (
         <>
-            <Loading loading={!modules}>
+            <Loading loading={!course.course.modules}>
                 <div className="flex flex-col gap-12">
-                    {modules?.map((module) => (
+                    {course.course.modules?.map((module) => (
                         <div key={module.id}>
                             <h4 className="mb-4">{module.title}</h4>
                             <p className="mb-4 text-gray-500">
@@ -59,7 +71,16 @@ const Modules = ({ modules }: ModulesProps) => {
                                                     <TbCircleCheck className="hover:text-primary" />
                                                 </button>
                                             </Td>
-                                            <Td className="w-[500px]">
+                                            <Td
+                                                className="w-[500px]"
+                                                onClick={() => {
+                                                    handleLessonClick(
+                                                        course.course.course.id,
+                                                        module.id,
+                                                        lesson.id,
+                                                    )
+                                                }}
+                                            >
                                                 <span className="heading-text font-bold">
                                                     {lesson.title}
                                                 </span>

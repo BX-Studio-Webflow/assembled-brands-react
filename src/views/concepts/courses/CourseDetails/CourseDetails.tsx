@@ -110,7 +110,7 @@ const CourseDetails = () => {
                                     />
                                 )}
                                 {selectedNav === 'modules' && (
-                                    <Modules modules={data.modules} />
+                                    <Modules course={data} />
                                 )}
                                 {selectedNav === 'settings' && (
                                     <Setting

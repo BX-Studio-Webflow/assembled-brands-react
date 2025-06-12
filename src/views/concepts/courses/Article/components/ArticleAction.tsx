@@ -50,19 +50,6 @@ const ArticleAction = () => {
                     </Button>
                 </div>
             </Card>
-            <div className="mt-12">
-                <h3 className="mb-4">Comments</h3>
-                <Input
-                    ref={commentInput}
-                    textArea
-                    placeholder="Enter your comment here..."
-                />
-                <div className="mt-3 flex justify-end">
-                    <Button variant="solid" onClick={onCommentSubmit}>
-                        Submit
-                    </Button>
-                </div>
-            </div>
         </>
     )
 }

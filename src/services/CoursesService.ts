@@ -173,6 +173,17 @@ export async function apiGetProgress() {
     })
 }
 
+export async function apiGetLesson(
+    courseId: number,
+    moduleId: number,
+    lessonId: number,
+) {
+    return ApiService.fetchDataWithAxios<Lesson>({
+        url: `/course/${courseId}/modules/${moduleId}/lessons/${lessonId}`,
+        method: 'get',
+    })
+}
+
 export async function apiUpdateCourseMemberships(
     courseId: number,
     data: UpdateCourseMembershipsRequest,

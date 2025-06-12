@@ -27,7 +27,7 @@ const Article = ({
     const navigate = useNavigate()
 
     const handleArticleClick = () => {
-        navigate(`/concepts/courses/article/${id}`)
+        navigate(`/concepts/courses/course-details/${id}`)
     }
 
     return (

@@ -267,7 +267,7 @@ const conceptsRoute: Routes = [
     },
     {
         key: 'concepts.helpCenter.article',
-        path: `${CONCEPTS_PREFIX_PATH}/courses/article/:id`,
+        path: `${CONCEPTS_PREFIX_PATH}/courses/article`,
         component: lazy(() => import('@/views/concepts/courses/Article')),
         authority: [ADMIN, USER],
         meta: {

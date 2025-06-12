@@ -7,15 +7,43 @@ import ArticleAction from './components/ArticleAction'
 import ArticleTableOfContent from './components/ArticleTableOfContent'
 import { useParams } from 'react-router'
 import useSWR from 'swr'
-import { apiGetCourse } from '@/services/CoursesService'
+import { apiGetCourse, apiGetLesson } from '@/services/CoursesService'
+import { useState } from 'react'
+import { useEffect } from 'react'
 
 const Article = () => {
-    const { id } = useParams()
+    const [params, setParams] = useState<{
+        courseId: string
+        moduleId: string
+        lessonId: string
+    }>({
+        courseId: '',
+        moduleId: '',
+        lessonId: '',
+    })
 
+    useEffect(() => {
+        // Check if we're on the callback URL with a code
+        const urlParams = new URLSearchParams(window.location.search)
+        const courseId = urlParams.get('courseId')
+        const moduleId = urlParams.get('moduleId')
+        const lessonId = urlParams.get('lessonId')
+
+        if (courseId && moduleId && lessonId) {
+            setParams({ courseId, moduleId, lessonId })
+        }
+    }, [])
     const { data, isLoading } = useSWR(
-        [`/course/${id}`],
+        [
+            `/course/${params.courseId}/modules/${params.moduleId}/lessons/${params.lessonId}`,
+        ],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        () => apiGetCourse(Number(id)),
+        () =>
+            apiGetLesson(
+                Number(params.courseId),
+                Number(params.moduleId),
+                Number(params.lessonId),
+            ),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -38,13 +66,10 @@ const Article = () => {
                             </div>
                         }
                     >
-                        {data && <ArticleBody course={data} />}
+                        {data && <ArticleBody lesson={data} />}
                     </Loading>
                     <ArticleAction />
                 </div>
-                {data && (
-                    <ArticleTableOfContent content={data.tableOfContent} />
-                )}
             </div>
         </Container>
     )

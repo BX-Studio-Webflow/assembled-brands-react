@@ -617,7 +617,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'concepts.helpCenter.article',
-                        path: `${CONCEPTS_PREFIX_PATH}/courses/article/pWBKE_0UiQ`,
+                        path: `${CONCEPTS_PREFIX_PATH}/courses/article`,
                         title: 'Article',
                         translateKey: 'nav.conceptsHelpCenter.article',
                         icon: 'helpCeterArticle',

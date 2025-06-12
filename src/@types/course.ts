@@ -45,11 +45,14 @@ export interface Lesson {
     id?: number
     title: string
     description?: string
+    lesson_duration?: number
     content?: string
     video_asset_id?: number
     duration?: number
     order: number
     module_id?: number
+    created_at?: string
+    updated_at?: string
 }
 
 // Progress type
