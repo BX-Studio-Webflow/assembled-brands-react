@@ -42,34 +42,20 @@ export interface Module {
 
 // Lesson type
 export interface Lesson {
-    id?: number
-    title: string
-    description?: string
-    content?: string
-    video_asset_id?: number
-    duration?: number
-    lesson_duration?: number
-    order: number
-    module_id?: number
-    created_at?: string
-    updated_at?: string
-    video?: {
+    lesson: {
         id: number
-        asset_name: string
-        asset_type: string
-        content_type: string
-        asset_url: string
-        asset_size: string
-        duration: number
-        hls_url: string | null
-        processing_status: string
-        upload_id: string | null
-        upload_status: string
-        user_id: number
+        module_id: number
+        title: string
+        description: string
+        content: string
+        video_asset_id: number
+        lesson_duration: number
+        order: number
         created_at: string
         updated_at: string
-    } | null
-    host?: {
+    }
+    video: null
+    host: {
         name: string
         email: string
         profile_image: string

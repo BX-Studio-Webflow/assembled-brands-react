@@ -10,7 +10,7 @@ const ArticleBody = ({ lesson }: ArticleBodyProps) => {
     console.log({ lesson })
     return (
         <>
-            <h3>{lesson.title}</h3>
+            <h3>{lesson.lesson.title}</h3>
             <div className="flex items-center mt-6 gap-4">
                 <UsersAvatarGroup
                     avatarProps={{ size: 40 }}
@@ -25,18 +25,18 @@ const ArticleBody = ({ lesson }: ArticleBodyProps) => {
                     <div className="mb-1">
                         Created by:
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            {lesson[0].host?.name}
+                            {lesson.host?.name}
                         </span>
                     </div>
                     <div>
-                        <span>Last updated: {lesson.updated_at}</span>
+                        <span>Last updated: {lesson.lesson.updated_at}</span>
                         <span className="mx-2">•</span>
-                        <span>{lesson.lesson_duration} min read</span>
+                        <span>{lesson.lesson.lesson_duration} min read</span>
                     </div>
                 </div>
             </div>
             <div className="mt-8 prose dark:prose-invert max-w-none prose-p:mt-2 prose-headings:font-bold">
-                {ReactHtmlParser(lesson.content || '')}
+                {ReactHtmlParser(lesson.lesson.content || '')}
             </div>
         </>
     )
