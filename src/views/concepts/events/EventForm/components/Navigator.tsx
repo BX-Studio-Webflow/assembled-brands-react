@@ -12,8 +12,8 @@ const navigationList = [
         icon: <TbUserSquare />,
     },
     {
-        label: 'Membership plans',
-        description: 'Add membership plans to the event.',
+        label: 'Price plans',
+        description: 'Add price plans to the event.',
         link: 'addressInformation',
         icon: <TbMapPin />,
     },

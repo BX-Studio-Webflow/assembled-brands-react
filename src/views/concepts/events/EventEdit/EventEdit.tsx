@@ -13,6 +13,8 @@ import { TbTrash } from 'react-icons/tb'
 import type { EventFormType } from '../EventForm/validation/eventFormSchema'
 import type { EventWithDetailsAndCount } from '@/@types/events'
 import { AxiosError } from 'axios'
+import { PiClockCountdown } from 'react-icons/pi'
+import { FaLink, FaRegCopy } from 'react-icons/fa'
 
 const EventEdit = () => {
     const { id } = useParams()
@@ -154,13 +156,171 @@ const EventEdit = () => {
         }
     }, [data])
 
+    const handleCopy = () => {
+        let form = `<form action="https://api.3themind.com/v1/lead/external-form" method="post" id="lead_form" name="lead_form" class="lead_form">
+<!------------>
+    <label class="textbig">SIGNUP HERE</label>
+    
+    <input class="lead_form_name" maxlength="256" name="name" placeholder="Name" type="text" id="lead_form_name" required>
+    <!------------>
+    <input class="lead_form_email" maxlength="256" name="email" placeholder="@" type="email" id="lead_form_email" required>
+    <!------------>
+    <input class="lead_form_phone" maxlength="256" name="phone" placeholder="Phone" type="text" id="lead_form_phone" required>
+    <!------------>
+    <div class="capcon" id="captcha_container">
+      <label class="textsmall" id="">Security Question</label>
+      <label class="textmed" id="captcha_question"></label>
+      <input class="lead_form_name answerbox" type="text" id="captcha_answer" name="captcha_answer" placeholder="Answer" required />
+    </div>
+    <!------------>
+    <input type="hidden" name="event_id" value="YOUR_EVENT_ID">
+    <input type="hidden" name="host_id" value="YOUR_HOST_ID">
+    <input type="hidden" name="redirect_url" value="YOUR_REDIRECT_URL">
+    <!------------>
+    <div id="lead_form_error" class="lead_form_error" style="display:none;"></div>
+		<!------------>
+    <input type="submit" id="lead_form_submit" class="lead_form_submit" value="Register">
+<!------------>
+</form>
+
+<style>
+.lead_form {width:100%;max-width: 100%; min-height:100%; Padding: 30px 30px;border-radius: 5px; background-color: #efefef; margin:10px;border: 1px solid #cccccc; align-content: left;}
+
+.lead_form_name, .lead_form_email, .lead_form_phone {border: 1px solid #222;background-color: #fff0;border-radius: 5px;height: 45px;margin-bottom: 10px;padding: 8px 12px;transition: all .5s; width:100%; font-size:16px;background-color: #ffffff;}
+
+.textbig{font-size:18px; font-weight:Medium; text-align:Left; Margin-bottom: 15px;}
+
+.textsmall{font-size:10px; font-weight:normal; margin:7px 0px -2px 0px;}
+
+.textmed{font-size:15px; font-weight:normal;}
+
+.answerbox{margin:7px 0px 7px 0px;}
+
+.capcon {text-align: left;}
+
+.lead_form_error {color: red;background-color: #fff0f0;border-radius: 5px;padding: 12px 12px;border-style: none;height: auto;font-weight: 400;display: block;margin-bottom: 20px;font-size:16px;}
+
+.lead_form_submit {background-color: #222;color: #fff;text-align: center;white-space: nowrap;border-radius: 5px;justify-content: center;align-items: center;height: 4vh;padding-top: 7px;padding-bottom: 7px;font-size: 16px;font-weight: 500;display: flex;width:100%;height: 45px; margin: 5px 0px 5px 0px;}
+
+.lead_form_dates {border: 1px solid #222;background-color: #fff0;border-radius: 3px;height: 45px;margin-bottom: 20px;padding: 8px 12px;transition: all .5s; width:100%; font-size:16px;background-color: #ffffff;}
+input[type=text], input[type=email], .lead_form_dates{
+border: .5px solid #222;
+}
+input:focus, .lead_form_dates{
+border: .5px solid #222;
+outline: none;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/f.js"></script>`
+
+        form = form.replace('YOUR_EVENT_ID', data?.id?.toString() || '0')
+        form = form.replace('YOUR_HOST_ID', data?.host_id?.toString() || '0')
+        form = form.replace(
+            'YOUR_REDIRECT_URL',
+            data?.success_url || 'https://elevnt.io',
+        )
+
+        navigator.clipboard.writeText(form)
+        toast.push(
+            <Notification type="success">
+                Form copied to clipboard!
+            </Notification>,
+            { placement: 'top-center' },
+        )
+    }
+    const handleLink = () => {
+        const link = `https://elevnt.io/concepts/event/stream/${data?.id}`
+        navigator.clipboard.writeText(link)
+        toast.push(
+            <Notification type="success">
+                Your event link has been copied to clipboard!
+            </Notification>,
+            { placement: 'top-center' },
+        )
+    }
+    const handleCountdown = () => {
+        let form = `<script>
+// Set the date we're counting down to, the time in PST
+const countDownDate = new Date("COMPLETE_DATE");
+// Update the count down every 1 second
+const x = setInterval(function () {
+  // Get today's date and time
+  const now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  const distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds and use minimumInteger to make sure all elements have 2 digits
+  const days = Math.floor(
+    distance / (1000 * 60 * 60 * 24)
+  ).toLocaleString(undefined, { minimumIntegerDigits: 2 });
+  const hours = Math.floor(
+    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  ).toLocaleString(undefined, { minimumIntegerDigits: 2 });
+  const minutes = Math.floor(
+    (distance % (1000 * 60 * 60)) / (1000 * 60)
+  ).toLocaleString(undefined, { minimumIntegerDigits: 2 });
+  const seconds = Math.floor(
+    (distance % (1000 * 60)) / 1000
+  ).toLocaleString(undefined, { minimumIntegerDigits: 2 });
+
+  // Display the result in the elements with id="days", id="hours", id="minutes", and id = "seconds"
+
+  document.getElementById("days").innerHTML = days;
+  document.getElementById("hours").innerHTML = hours;
+  document.getElementById("minutes").innerHTML = minutes;
+  document.getElementById("seconds").innerHTML = seconds;
+
+  // If the count down is finished, remove the countdown element and copy, remove a combo class to reveal launch message
+  if (distance < 0) {
+    clearInterval(x);
+    const itsTime = document.getElementById("itshere");
+    const timeWrapper = document.getElementById("gone");
+    timeWrapper.remove();
+    itsTime.classList.remove("itshere");
+  }
+}, 500);
+</script>
+`
+        form = form.replace(
+            'COMPLETE_DATE',
+            data?.memberships?.[0]?.dates?.[0]?.date || '',
+        )
+        navigator.clipboard.writeText(form)
+        toast.push(
+            <Notification type="success">
+                Your countdown script has been copied to clipboard!
+            </Notification>,
+            { placement: 'top-center' },
+        )
+    }
+
     return (
         <Loading loading={isLoading}>
             <EventForm onFormSubmit={handleFormSubmit} {...EventFormProps}>
                 <Container>
                     <div className="flex items-center justify-between px-8">
-                        <span></span>
-                        <div className="flex items-center">
+                        <span>
+                            <div className="flex-wrap inline-flex xl:flex items-center gap-2 ml-2">
+                                <Button
+                                    type="button"
+                                    icon={<FaRegCopy />}
+                                    onClick={handleCopy}
+                                />
+                                <Button
+                                    type="button"
+                                    icon={<FaLink />}
+                                    onClick={handleLink}
+                                />
+                                <Button
+                                    type="button"
+                                    icon={<PiClockCountdown />}
+                                    onClick={handleCountdown}
+                                />
+                            </div>
+                        </span>
+                        <div className="flex items-center mr-2">
                             <Button
                                 className="ltr:mr-3 rtl:ml-3"
                                 type="button"

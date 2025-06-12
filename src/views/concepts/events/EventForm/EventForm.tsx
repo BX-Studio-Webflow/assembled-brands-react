@@ -79,7 +79,6 @@ const EventForm = (props: EventFormProps) => {
         {
             revalidateOnFocus: false,
             onSuccess: (response) => {
-                console.log(response)
                 setAssets(response.assets)
             },
         },
@@ -98,10 +97,6 @@ const EventForm = (props: EventFormProps) => {
     })
 
     const plans = methods.watch('membership_plans') || []
-
-    console.log('Form defaultValues:', props.defaultValues)
-    console.log('Membership plans:', plans)
-    console.log('Fields:', fields)
 
     // Initialize field array if empty
     useEffect(() => {
@@ -129,7 +124,6 @@ const EventForm = (props: EventFormProps) => {
                 await props.onFormSubmit(payload)
             }
         } catch (error) {
-            console.error(error)
             toast.push(
                 <Notification type="danger">
                     {error instanceof Error
