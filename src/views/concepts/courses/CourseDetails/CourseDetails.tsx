@@ -3,38 +3,30 @@ import Spinner from '@/components/ui/Spinner'
 import ProjectDetailsHeader from './components/ProjectDetailsHeader'
 import ProjectDetailsNavigation from './components/ProjectDetailsNavigation'
 import useResponsive from '@/utils/hooks/useResponsive'
-import { apiGetProject } from '@/services/ProjectService'
 import useSWR from 'swr'
 import { useParams } from 'react-router'
 import type { GetProjectDetailsResponse } from './types'
+import { apiGetCourse } from '@/services/CoursesService'
+
+import Overview from './components/Overview'
 
 const defaultNavValue = 'overview'
 const settingsNavValue = 'settings'
 
-const ProjectDetailsOverview = lazy(
-    () => import('./components/ProjectDetailsOverview'),
-)
-const ProjectDetailsTask = lazy(() => import('./components/ProjectDetailsTask'))
-const ProjectDetailsAttachments = lazy(
-    () => import('./components/ProjectDetailsAttachments'),
-)
-const ProjectDetailsActivity = lazy(
-    () => import('./components/ProjectDetailsActivity'),
-)
-const ProjectDetailsSetting = lazy(
-    () => import('./components/ProjectDetailsSetting'),
-)
+const Modules = lazy(() => import('./components/Modules'))
+const Setting = lazy(() => import('./components/Setting'))
 
-const ProjectDetails = () => {
+const CourseDetails = () => {
     const { id } = useParams()
 
-    const { data, mutate } = useSWR<GetProjectDetailsResponse, { id: string }>(
-        [`/api/project/${id}`],
-        () => apiGetProject({ id }),
+    const { data, mutate } = useSWR(
+        [`/course/${id}`],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        () => apiGetCourse(Number(id)),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
-            revalidateOnReconnect: false,
+            evalidateOnFocus: false,
         },
     )
 
@@ -110,29 +102,19 @@ const ProjectDetails = () => {
                                 }
                             >
                                 {selectedNav === defaultNavValue && (
-                                    <ProjectDetailsOverview
-                                        content={data.content}
-                                        client={data.client}
-                                        schedule={data.schedule}
+                                    <Overview
+                                        course={data}
                                         isContentEdit={isContentEdit}
                                         setIsContentEdit={setIsContentEdit}
                                         onContentChange={handleContentChange}
                                     />
                                 )}
-                                {selectedNav === 'tasks' && (
-                                    <ProjectDetailsTask />
-                                )}
-                                {selectedNav === 'attachments' && (
-                                    <ProjectDetailsAttachments />
-                                )}
-                                {selectedNav === 'activity' && (
-                                    <ProjectDetailsActivity />
+                                {selectedNav === 'modules' && (
+                                    <Modules modules={data.modules} />
                                 )}
                                 {selectedNav === 'settings' && (
-                                    <ProjectDetailsSetting
-                                        name={data.name}
-                                        content={data.content}
-                                        dueDate={data.schedule.dueDate}
+                                    <Setting
+                                        course={data}
                                         onUpdate={handleUpdate}
                                     />
                                 )}
@@ -145,4 +127,4 @@ const ProjectDetails = () => {
     )
 }
 
-export default ProjectDetails
+export default CourseDetails

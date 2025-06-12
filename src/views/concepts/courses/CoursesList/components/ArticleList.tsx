@@ -81,7 +81,7 @@ const Articles = ({ query, topic, courses, isLoading }: ArticlesProps) => {
                     <Article
                         key={item.course?.id}
                         id={String(item.course?.id)}
-                        category={item.host?.name || 'Unknown'}
+                        category={'survey'}
                         title={item.course?.course_name || 'Untitled'}
                         timeToRead={0}
                         viewCount={0}

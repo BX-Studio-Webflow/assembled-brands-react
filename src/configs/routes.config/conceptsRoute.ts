@@ -203,18 +203,7 @@ const conceptsRoute: Routes = [
             pageBackgroundType: 'plain',
         },
     },
-    {
-        key: 'concepts.projects.projectDetails',
-        path: `${CONCEPTS_PREFIX_PATH}/projects/project-details/:id`,
-        component: lazy(
-            () => import('@/views/concepts/projects/ProjectDetails'),
-        ),
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-            pageBackgroundType: 'plain',
-        },
-    },
+
     {
         key: 'concepts.projects.projectTasks',
         path: `${CONCEPTS_PREFIX_PATH}/projects/tasks`,
@@ -269,9 +258,7 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.helpCenter.supportHub',
         path: `${CONCEPTS_PREFIX_PATH}/courses/courses-list`,
-        component: lazy(
-            () => import('@/views/concepts/courses/CoursesList'),
-        ),
+        component: lazy(() => import('@/views/concepts/courses/CoursesList')),
         authority: [ADMIN, USER],
         meta: {
             pageContainerType: 'gutterless',
@@ -291,9 +278,7 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.helpCenter.editArticle',
         path: `${CONCEPTS_PREFIX_PATH}/courses/edit-article/:id`,
-        component: lazy(
-            () => import('@/views/concepts/courses/EditArticle'),
-        ),
+        component: lazy(() => import('@/views/concepts/courses/EditArticle')),
         authority: [ADMIN, USER],
         meta: {
             pageBackgroundType: 'plain',
@@ -303,13 +288,23 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.helpCenter.manageArticle',
         path: `${CONCEPTS_PREFIX_PATH}/courses/manage-article`,
-        component: lazy(
-            () => import('@/views/concepts/courses/ManageArticle'),
-        ),
+        component: lazy(() => import('@/views/concepts/courses/ManageArticle')),
         authority: [ADMIN, USER],
         meta: {
             pageBackgroundType: 'plain',
             footer: false,
+        },
+    },
+    {
+        key: 'concepts.projects.projectDetails',
+        path: `${CONCEPTS_PREFIX_PATH}/courses/course-details/:id`,
+        component: lazy(
+            () => import('@/views/concepts/courses/CourseDetails'),
+        ),
+        authority: [ADMIN, USER],
+        meta: {
+            pageContainerType: 'contained',
+            pageBackgroundType: 'plain',
         },
     },
     {

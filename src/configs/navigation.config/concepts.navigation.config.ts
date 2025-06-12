@@ -666,6 +666,23 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
+                    {
+                        key: 'concepts.projects.projectDetails',
+                        path: `${CONCEPTS_PREFIX_PATH}/courses/course-details/27`,
+                        title: 'Details',
+                        translateKey: 'nav.conceptsProjects.projectDetails',
+                        icon: 'courseDetails',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsProjects.projectDetailsDesc',
+                                label: 'Project detailed information',
+                            },
+                        },
+                        subMenu: [],
+                    },
                 ],
             } /*
             {

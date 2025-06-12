@@ -14,9 +14,7 @@ type ProjectDetailsNavigationProps = {
 
 const navigation = [
     { label: 'Overview', value: 'overview', icon: <TbFileInfo /> },
-    { label: 'Tasks', value: 'tasks', icon: <TbChecklist /> },
-    { label: 'Attachments', value: 'attachments', icon: <TbPaperclip /> },
-    { label: 'Activities', value: 'activity', icon: <TbCalendarStats /> },
+    { label: 'Modules', value: 'modules', icon: <TbChecklist /> },
     { label: 'Settings', value: 'settings', icon: <TbSettings /> },
 ]
 
