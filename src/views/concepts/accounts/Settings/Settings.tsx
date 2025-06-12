@@ -19,14 +19,17 @@ const Team = lazy(() => import('./components/SettingsTeam'))
 const Business = lazy(() => import('./components/SettingsBusiness'))
 
 const Settings = () => {
-    const { currentView } = useSettingsStore()
     const { smaller, larger } = useResponsive()
+    const { currentView, setCurrentView } = useSettingsStore()
+
     const [params, setParams] = useState<{
         code: string
         state: string
+        action: string | null
     }>({
         state: '',
         code: '',
+        action: '',
     })
 
     useEffect(() => {
@@ -34,8 +37,9 @@ const Settings = () => {
         const urlParams = new URLSearchParams(window.location.search)
         const state = urlParams.get('state')
         const code = urlParams.get('code')
+        const action = urlParams.get('action')
         if (state && code) {
-            setParams({ state, code })
+            setParams({ state, code, action })
         }
     }, [])
 
@@ -56,11 +60,21 @@ const Settings = () => {
     )
 
     useEffect(() => {
+        if (params.action == 'billing') {
+            setCurrentView('billing')
+        }
         if (params.code && params.state) {
+            toast.push(
+                <NotificationComponent type="success">
+                    Please wait while we finalize your connection to stripe.
+                </NotificationComponent>,
+                { placement: 'top-center' },
+            )
             if (data) {
                 toast.push(
                     <NotificationComponent type="success">
-                        Please wait while we finalize your connection to stripe.
+                        Congratulations! Your account is now connected to Stripe
+                        and are able to receive payments.
                     </NotificationComponent>,
                     { placement: 'top-center' },
                 )
@@ -74,7 +88,7 @@ const Settings = () => {
                 )
             }
         }
-    }, [data, error, params.code, params.state])
+    }, [data, error, params.code, params.state, params.action])
 
     console.log({ params })
     return (

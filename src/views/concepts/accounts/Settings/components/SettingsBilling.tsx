@@ -142,7 +142,7 @@ const SettingsBilling = () => {
                                     </span>
                                 </Tag>
                             </div>
-                            <div className="font-semibold">
+                            <div className="font-semibold mt-1">
                                 <span>
                                     {user?.stripe_account_id
                                         ? 'Connected'
@@ -151,20 +151,24 @@ const SettingsBilling = () => {
                                 <span> | </span>
                                 <span>
                                     {user?.stripe_account_id
-                                        ? 'All set to receive payouts'
+                                        ? 'All set for payouts'
                                         : 'Please link your account'}
                                 </span>
                             </div>
                         </div>
                     </div>
                     <div className="flex">
-                        <Button
-                            size="sm"
-                            variant="solid"
-                            onClick={handleStripeConnect}
-                        >
-                            Connect account
-                        </Button>
+                        {user?.stripe_account_id ? (
+                            <></>
+                        ) : (
+                            <Button
+                                size="sm"
+                                variant="solid"
+                                onClick={handleStripeConnect}
+                            >
+                                Connect account
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>
