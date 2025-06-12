@@ -16,6 +16,8 @@ import type {
     UpdateUserProfileBody,
     UpdateUserProfileResponse,
     DashboardResponse,
+    SaveOauthStateBody,
+    SaveOauthStateResponse,
 } from '@/@types/auth'
 
 export async function apiSignIn(data: SignInCredential) {
@@ -128,5 +130,15 @@ export async function apiGetDashboard() {
     return ApiService.fetchDataWithAxios<DashboardResponse>({
         url: `/user/dashboard`,
         method: 'get',
+    })
+}
+
+
+
+export async function apiSaveStripeOauthState(data: SaveOauthStateBody) {
+    return ApiService.fetchDataWithAxios<SaveOauthStateResponse>({
+        url: `/stripe/connect/oauth/callback?code=${data.code}&state=${data.state}`,
+        method: 'get',
+        data,
     })
 }

@@ -303,3 +303,12 @@ export type DashboardResponse = {
         }
     }
 }
+export type SaveOauthStateBody = {
+    code: string
+    state: string
+}
+
+export type SaveOauthStateResponse = {
+    success: boolean
+    accountId: string
+}
