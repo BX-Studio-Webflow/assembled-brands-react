@@ -54,9 +54,10 @@ const ProtectedRoute = () => {
                 })
 
                 hasUpdated.current = true
+
+                //check subscription status after updating user data
+                checkSubscriptionStatus(user, navigate)
             }
-            //check subscription status
-            checkSubscriptionStatus(user, navigate)
         }
     }, [
         authenticated,
