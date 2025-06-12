@@ -60,13 +60,7 @@ const checkSubscriptionStatus = (user: User, navigate: NavigateFunction) => {
 
     const status = user.subscription_status
 
-    if (!status) {
-        // No subscription at all — likely new user
-        navigate(
-            `${ONBOARDING_PREFIX_PATH}/business-onboarding?action=add-subscription`,
-        )
-    } else if (BAD_SUBSCRIPTION_STATUSES.includes(status)) {
-        // Subscription exists but has issues
+    if (!status || BAD_SUBSCRIPTION_STATUSES.includes(status)) {
         navigate(`${ONBOARDING_PREFIX_PATH}/pricing?action=add-subscription`)
     }
 }
