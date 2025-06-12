@@ -582,7 +582,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         subMenu: [],
                     },
                 ],
-            },
+            },*/
             {
                 key: 'concepts.helpCenter',
                 path: '',
@@ -600,7 +600,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 subMenu: [
                     {
                         key: 'concepts.helpCenter.supportHub',
-                        path: `${CONCEPTS_PREFIX_PATH}/help-center/support-hub`,
+                        path: `${CONCEPTS_PREFIX_PATH}/courses/courses-list`,
                         title: 'Support Hub',
                         translateKey: 'nav.conceptsHelpCenter.supportHub',
                         icon: 'helpCeterSupportHub',
@@ -610,14 +610,14 @@ const conceptsNavigationConfig: NavigationTree[] = [
                             description: {
                                 translateKey:
                                     'nav.conceptsHelpCenter.supportHubDesc',
-                                label: 'Central support hub',
+                                label: 'Courses list',
                             },
                         },
                         subMenu: [],
                     },
                     {
                         key: 'concepts.helpCenter.article',
-                        path: `${CONCEPTS_PREFIX_PATH}/help-center/article/pWBKE_0UiQ`,
+                        path: `${CONCEPTS_PREFIX_PATH}/courses/article/pWBKE_0UiQ`,
                         title: 'Article',
                         translateKey: 'nav.conceptsHelpCenter.article',
                         icon: 'helpCeterArticle',
@@ -634,7 +634,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'concepts.helpCenter.editArticle',
-                        path: `${CONCEPTS_PREFIX_PATH}/help-center/edit-article/pWBKE_0UiQ`,
+                        path: `${CONCEPTS_PREFIX_PATH}/courses/edit-article/pWBKE_0UiQ`,
                         title: 'Edit Article',
                         translateKey: 'nav.conceptsHelpCenter.editArticle',
                         icon: 'helpCeterEditArticle',
@@ -651,7 +651,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'concepts.helpCenter.manageArticle',
-                        path: `${CONCEPTS_PREFIX_PATH}/help-center/manage-article`,
+                        path: `${CONCEPTS_PREFIX_PATH}/courses/manage-article`,
                         title: 'Manage Article',
                         translateKey: 'nav.conceptsHelpCenter.manageArticle',
                         icon: 'helpCeterManageArticle',
@@ -667,7 +667,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         subMenu: [],
                     },
                 ],
-            },
+            } /*
             {
                 key: 'concepts.calendar',
                 path: `${CONCEPTS_PREFIX_PATH}/calendar`,
@@ -683,7 +683,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 },
                 subMenu: [],
-            },*/
+            },*/,
 
             {
                 key: 'concepts.mail',

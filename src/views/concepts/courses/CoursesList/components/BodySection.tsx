@@ -1,9 +1,16 @@
 import Container from '@/components/shared/Container'
-import Categories from './Categories'
+
 import ArticleList from './ArticleList'
 import { useHelpCenterStore } from '../store/helpCenterStore'
+import { GetCoursesResponse } from '@/@types/course'
 
-const BodySection = () => {
+const BodySection = ({
+    courses,
+    isLoading,
+}: {
+    courses: GetCoursesResponse | undefined
+    isLoading: boolean
+}) => {
     const queryText = useHelpCenterStore((state) => state.queryText)
     const selectedTopic = useHelpCenterStore((state) => state.selectedTopic)
 
@@ -11,11 +18,12 @@ const BodySection = () => {
         <div className="my-12">
             <Container>
                 <div className="max-w-[1200px] mx-auto px-6">
-                    {queryText || selectedTopic ? (
-                        <ArticleList query={queryText} topic={selectedTopic} />
-                    ) : (
-                        <Categories />
-                    )}
+                    <ArticleList
+                        courses={courses}
+                        query={queryText}
+                        topic={selectedTopic}
+                        isLoading={isLoading}
+                    />
                 </div>
             </Container>
         </div>

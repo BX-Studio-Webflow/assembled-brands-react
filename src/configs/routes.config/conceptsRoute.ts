@@ -268,9 +268,9 @@ const conceptsRoute: Routes = [
     },
     {
         key: 'concepts.helpCenter.supportHub',
-        path: `${CONCEPTS_PREFIX_PATH}/help-center/support-hub`,
+        path: `${CONCEPTS_PREFIX_PATH}/courses/courses-list`,
         component: lazy(
-            () => import('@/views/concepts/help-center/SupportHub'),
+            () => import('@/views/concepts/courses/CoursesList'),
         ),
         authority: [ADMIN, USER],
         meta: {
@@ -280,8 +280,8 @@ const conceptsRoute: Routes = [
     },
     {
         key: 'concepts.helpCenter.article',
-        path: `${CONCEPTS_PREFIX_PATH}/help-center/article/:id`,
-        component: lazy(() => import('@/views/concepts/help-center/Article')),
+        path: `${CONCEPTS_PREFIX_PATH}/courses/article/:id`,
+        component: lazy(() => import('@/views/concepts/courses/Article')),
         authority: [ADMIN, USER],
         meta: {
             pageContainerType: 'contained',
@@ -290,9 +290,9 @@ const conceptsRoute: Routes = [
     },
     {
         key: 'concepts.helpCenter.editArticle',
-        path: `${CONCEPTS_PREFIX_PATH}/help-center/edit-article/:id`,
+        path: `${CONCEPTS_PREFIX_PATH}/courses/edit-article/:id`,
         component: lazy(
-            () => import('@/views/concepts/help-center/EditArticle'),
+            () => import('@/views/concepts/courses/EditArticle'),
         ),
         authority: [ADMIN, USER],
         meta: {
@@ -302,9 +302,9 @@ const conceptsRoute: Routes = [
     },
     {
         key: 'concepts.helpCenter.manageArticle',
-        path: `${CONCEPTS_PREFIX_PATH}/help-center/manage-article`,
+        path: `${CONCEPTS_PREFIX_PATH}/courses/manage-article`,
         component: lazy(
-            () => import('@/views/concepts/help-center/ManageArticle'),
+            () => import('@/views/concepts/courses/ManageArticle'),
         ),
         authority: [ADMIN, USER],
         meta: {

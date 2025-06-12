@@ -5,19 +5,17 @@ import TextBlockSkeleton from '@/components/shared/loaders/TextBlockSkeleton'
 import ArticleBody from './components/ArticleBody'
 import ArticleAction from './components/ArticleAction'
 import ArticleTableOfContent from './components/ArticleTableOfContent'
-import { apiGetSupportHubArticle } from '@/services/HelpCenterService'
 import { useParams } from 'react-router'
 import useSWR from 'swr'
-import type { GetSupportHubArticleResponse } from './types'
+import { apiGetCourse } from '@/services/CoursesService'
 
 const Article = () => {
     const { id } = useParams()
 
     const { data, isLoading } = useSWR(
-        [`/api/helps/articles/${id}`, { id: id as string }],
+        [`/course/${id}`],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) =>
-            apiGetSupportHubArticle<GetSupportHubArticleResponse>(params),
+        () => apiGetCourse(Number(id)),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
@@ -40,7 +38,7 @@ const Article = () => {
                             </div>
                         }
                     >
-                        {data && <ArticleBody data={data} />}
+                        {data && <ArticleBody course={data} />}
                     </Loading>
                     <ArticleAction />
                 </div>

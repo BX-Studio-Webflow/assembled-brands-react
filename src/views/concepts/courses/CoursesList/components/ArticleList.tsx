@@ -8,13 +8,16 @@ import NoDataFound from '@/assets/svg/NoDataFound'
 import useSWRMutation from 'swr/mutation'
 import { TbArrowNarrowLeft } from 'react-icons/tb'
 import type { GetSupportHubArticlesResponse } from '../types'
+import { GetCoursesResponse } from '@/@types/course'
 
 type ArticlesProps = {
     query: string
     topic: string
+    courses: GetCoursesResponse | undefined
+    isLoading: boolean
 }
 
-const Articles = ({ query, topic }: ArticlesProps) => {
+const Articles = ({ query, topic, courses, isLoading }: ArticlesProps) => {
     const { trigger, data } = useSWRMutation(
         [`/api/helps/articles`, { query, topic }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -73,17 +76,17 @@ const Articles = ({ query, topic }: ArticlesProps) => {
                     </h4>
                 </div>
             )}
-            {data &&
-                data.map((article, index) => (
+            {courses &&
+                courses.courses.map((item, index) => (
                     <Article
-                        key={article.id}
-                        id={article.id}
-                        category={article.category}
-                        title={article.title}
-                        timeToRead={article.timeToRead}
-                        viewCount={article.viewCount}
-                        commentCount={article.commentCount}
-                        isLastChild={!isLastChild(data, index)}
+                        key={item.course?.id}
+                        id={String(item.course?.id)}
+                        category={item.host?.name || 'Unknown'}
+                        title={item.course?.course_name || 'Untitled'}
+                        timeToRead={0}
+                        viewCount={0}
+                        commentCount={0}
+                        isLastChild={!isLastChild(courses.courses, index)}
                     />
                 ))}
         </div>

@@ -1,33 +1,30 @@
 import UsersAvatarGroup from '@/components/shared/UsersAvatarGroup'
 import ReactHtmlParser from 'html-react-parser'
 import type { ArticleContent } from '../types'
+import { CourseWithDetails } from '@/@types/course'
 
-type ArticleProps = {
-    data: ArticleContent
-}
-
-const ArticleBody = ({ data }: ArticleProps) => {
+const ArticleBody = (course: CourseWithDetails) => {
     return (
         <>
-            <h3>{data.title}</h3>
+            <h3>{course.course.course_name}</h3>
             <div className="flex items-center mt-6 gap-4">
                 <UsersAvatarGroup
                     avatarProps={{ size: 40 }}
-                    users={data.authors || []}
+                    users={[course.host]}
                 />
                 <div className="text-xs">
                     <div className="mb-1">
                         Created by:
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            {data.createdBy}
+                            {course.host.name}
                         </span>
                     </div>
                     <div>
-                        <span>Last updated: {data.updateTime}</span>
+                        <span>Last updated: {course.course.updated_at}</span>
                         <span className="mx-2">•</span>
-                        <span>{data.timeToRead} min read</span>
+                        <span>{course.course.created_at} min read</span>
                         <span className="mx-2">•</span>
-                        <span>{data.viewCount} viewed</span>
+                        <span>{course.course.created_at} viewed</span>
                     </div>
                 </div>
             </div>

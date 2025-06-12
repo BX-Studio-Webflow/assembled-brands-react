@@ -56,11 +56,11 @@
             "rolesPermissions": "Roles & Permissions"
         },
         "conceptsHelpCenter": {
-            "helpCenter": "Help Center",
-            "supportHub": "Support Hub",
-            "article": "Article",
-            "editArticle": "Edit Article",
-            "manageArticle": "Manage Article",
+            "helpCenter": "Courses",
+            "supportHub": "My Profile",
+            "article": "Course",
+            "editArticle": "Edit Course",
+            "manageArticle": "Manage Course",
             "faq": "FAQ"
         },
         "calendar": "Calendar",

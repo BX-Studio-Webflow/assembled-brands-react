@@ -3,8 +3,15 @@ import Button from '@/components/ui/Button'
 import Container from '@/components/shared/Container'
 import { useHelpCenterStore } from '../store/helpCenterStore'
 import { TbSearch } from 'react-icons/tb'
+import { Course, GetCoursesResponse } from '@/@types/course'
 
-const TopSection = () => {
+const TopSection = ({
+    courses,
+    isLoading,
+}: {
+    courses: GetCoursesResponse
+    isLoading: boolean
+}) => {
     const inputRef = useRef<HTMLInputElement>(null)
 
     const setQueryText = useHelpCenterStore((state) => state.setQueryText)
