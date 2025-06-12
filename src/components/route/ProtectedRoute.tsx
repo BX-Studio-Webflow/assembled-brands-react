@@ -4,6 +4,7 @@ import { Navigate, NavigateFunction, Outlet, useNavigate } from 'react-router'
 import { useAuth } from '@/auth'
 import { User } from '@/@types/auth'
 import { ONBOARDING_PREFIX_PATH } from '@/constants/route.constant'
+import { useEffect } from 'react'
 
 const { unAuthenticatedEntryPath } = appConfig
 
@@ -15,6 +16,12 @@ const ProtectedRoute = () => {
     const getPathName =
         pathName === '/' ? '' : `?${REDIRECT_URL_KEY}=${pathName}`
 
+    useEffect(() => {
+        if (authenticated) {
+            checkSubscriptionStatus(user, navigate)
+        }
+    }, [authenticated, user, navigate])
+
     if (!authenticated) {
         return (
             <Navigate
@@ -23,8 +30,6 @@ const ProtectedRoute = () => {
             />
         )
     }
-    //if the user is authenticated, check the subscription status
-    checkSubscriptionStatus(user, navigate)
 
     return <Outlet />
 }
@@ -44,7 +49,9 @@ const checkSubscriptionStatus = (user: User, navigate: NavigateFunction) => {
 
     if (!status) {
         // No subscription at all — likely new user
-        navigate(`${ONBOARDING_PREFIX_PATH}/business-onboarding?action=add-subscription`)
+        navigate(
+            `${ONBOARDING_PREFIX_PATH}/business-onboarding?action=add-subscription`,
+        )
     } else if (BAD_SUBSCRIPTION_STATUSES.includes(status)) {
         // Subscription exists but has issues
         navigate(`${ONBOARDING_PREFIX_PATH}/pricing?action=add-subscription`)
