@@ -27,9 +27,14 @@ const OauthSignIn = ({ setMessage, disableSubmit }: OauthSignInProps) => {
                         onSignIn({ accessToken: resp.token }, resp.user)
                         if (
                             !resp.user.subscription_status ||
-                            !['inactive', 'expired'].includes(
-                                resp.user.subscription_status,
-                            )
+                            [
+                                'past_due',
+                                'canceled',
+                                'incomplete',
+                                'incomplete_expired',
+                                'paused',
+                                'unpaid',
+                            ].includes(resp.user.subscription_status)
                         ) {
                             navigate(
                                 `${ONBOARDING_PREFIX_PATH}/business-onboarding`,
