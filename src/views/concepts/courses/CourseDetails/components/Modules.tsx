@@ -33,6 +33,8 @@ const Modules = (course: ModulesProps) => {
         setSelectedLesson(null)
     }
 
+    console.log(course.course.modules)
+
     const handleLessonClick = (
         courseId: number,
         moduleId: number,
@@ -93,7 +95,12 @@ const Modules = (course: ModulesProps) => {
                                             </Td>
                                             <Td className="w-[150px]">
                                                 <span className="font-semibold">
-                                                    {lesson.description || '-'}
+                                                    {lesson.created_at || '-'}
+                                                </span>
+                                            </Td>
+                                            <Td className="w-[150px]">
+                                                <span className="font-semibold">
+                                                    {lesson.updated_at || '-'}
                                                 </span>
                                             </Td>
                                             <Td>
