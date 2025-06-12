@@ -1,38 +1,59 @@
+import Container from '@/components/shared/Container'
+import Loading from '@/components/shared/Loading'
+import MediaSkeleton from '@/components/shared/loaders/MediaSkeleton'
+import TextBlockSkeleton from '@/components/shared/loaders/TextBlockSkeleton'
 import EditArticleHeader from './components/EditArticleHeader'
 import EditArticleBody from './components/EditArticleBody'
-import EditArticleFooter from './components/EditArticleFooter'
-import { apiGetSupportHubArticle } from '@/services/HelpCenterService'
-import { useParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import useSWR from 'swr'
-import type { GetSupportHubArticleResponse } from './types'
+import { apiGetLesson } from '@/services/CoursesService'
 
 const EditArticle = () => {
-    const { id } = useParams()
+    const [searchParams] = useSearchParams()
+    const courseId = searchParams.get('courseId')
+    const moduleId = searchParams.get('moduleId')
+    const lessonId = searchParams.get('lessonId')
 
-    const { data } = useSWR(
-        [`/api/helps/articles/${id}`, { id: id as string }],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) =>
-            apiGetSupportHubArticle<GetSupportHubArticleResponse>(params),
+    const { data, isLoading } = useSWR(
+        courseId && moduleId && lessonId
+            ? [`/course/${courseId}/modules/${moduleId}/lessons/${lessonId}`]
+            : null,
+        () =>
+            apiGetLesson(Number(courseId), Number(moduleId), Number(lessonId)),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
-            evalidateOnFocus: false,
         },
     )
 
     return (
-        <>
-            <div className="max-w-[1200px] mx-auto w-full">
-                {data && (
-                    <div className="flex flex-col gap-2">
-                        <EditArticleHeader {...data} />
-                        <EditArticleBody content={data.content} />
-                    </div>
-                )}
+        <Container>
+            <div className="lg:flex gap-4">
+                <div className="my-6 max-w-[800px] w-full mx-auto">
+                    <Loading
+                        loading={isLoading}
+                        customLoader={
+                            <div className="flex flex-col gap-8">
+                                <MediaSkeleton />
+                                <TextBlockSkeleton rowCount={6} />
+                                <TextBlockSkeleton rowCount={4} />
+                                <TextBlockSkeleton rowCount={8} />
+                            </div>
+                        }
+                    >
+                        {data && (
+                            <>
+                                <EditArticleHeader
+                                    lesson={data.lesson}
+                                    host={data.host}
+                                />
+                                <EditArticleBody lesson={data.lesson} />
+                            </>
+                        )}
+                    </Loading>
+                </div>
             </div>
-            <EditArticleFooter />
-        </>
+        </Container>
     )
 }
 

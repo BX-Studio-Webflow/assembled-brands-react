@@ -2,14 +2,14 @@ import { useState, useRef, useEffect } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Tag from '@/components/ui/Tag'
 import uniqueId from 'lodash/uniqueId'
-import type { ArticleContent } from '../types'
 import type { CommonProps } from '@/@types/common'
 import type { ReactNode } from 'react'
+import type { Lesson } from '@/@types/course'
 
-type EditArticleHeaderProps = Pick<
-    ArticleContent,
-    'title' | 'category' | 'tags' | 'authors' | 'updateTime'
->
+interface EditArticleHeaderProps {
+    lesson: Lesson['lesson']
+    host: Lesson['host']
+}
 
 export interface FieldProps extends CommonProps {
     title: string
@@ -31,10 +31,12 @@ const Field = (props: FieldProps) => {
 }
 
 const EditArticleHeader = (props: EditArticleHeaderProps) => {
-    const { title, authors, updateTime, tags } = props
+    const { lesson, host } = props
 
-    const [articleTitle, setArticleTitle] = useState(title)
-    const [articleTags, setArticleTags] = useState(tags)
+    const [articleTitle, setArticleTitle] = useState(lesson.title)
+    const [articleTags, setArticleTags] = useState<
+        { id: string; label: string }[]
+    >([])
 
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -48,23 +50,28 @@ const EditArticleHeader = (props: EditArticleHeaderProps) => {
         <div>
             <input
                 className="ring-0 outline-hidden block w-full p-2 bg-transparent heading-text h3"
-                placeholder="Untitle article"
+                placeholder="Untitled lesson"
                 value={articleTitle}
                 onChange={(e) => setArticleTitle(e.target.value)}
             />
             <div className="mt-3 flex flex-col gap-6 border-t border-gray-200 dark:border-gray-700 py-6">
                 <Field title="Created by:">
-                    {authors.length > 0 && (
-                        <div className="flex items-center gap-2">
-                            <Avatar size={25} src={authors[0].img} />
-                            <span className="heading-text font-bold">
-                                {authors[0].name}
-                            </span>
-                        </div>
-                    )}
+                    <div className="flex items-center gap-2">
+                        <Avatar size={25} src={host.profile_image} />
+                        <span className="heading-text font-bold">
+                            {host.name}
+                        </span>
+                    </div>
                 </Field>
                 <Field title="Last updated:">
-                    <span className="heading-text font-bold">{updateTime}</span>
+                    <span className="heading-text font-bold">
+                        {lesson.updated_at}
+                    </span>
+                </Field>
+                <Field title="Duration:">
+                    <span className="heading-text font-bold">
+                        {lesson.lesson_duration} minutes
+                    </span>
                 </Field>
                 <Field title="Tags:">
                     <div className="flex flex-wrap items-center gap-2">

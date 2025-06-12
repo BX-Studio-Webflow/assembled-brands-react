@@ -3,9 +3,10 @@ import Table from '@/components/ui/Table'
 import Tag from '@/components/ui/Tag'
 import Loading from '@/components/shared/Loading'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { TbCircleCheck } from 'react-icons/tb'
+import { TbCircleCheck, TbPencil, TbTrash } from 'react-icons/tb'
 import type { CourseWithDetails } from '@/@types/course'
 import { useNavigate } from 'react-router'
+import Tooltip from '@/components/ui/Tooltip'
 
 const { Td, Tr, TBody } = Table
 
@@ -19,6 +20,7 @@ const Modules = (course: ModulesProps) => {
         moduleId: number
         lessonId: number
     } | null>(null)
+    const [lessonToDelete, setLessonToDelete] = useState<number | null>(null)
 
     const handleCheckClick = (moduleId: number, lessonId: number) => {
         setSelectedLesson({ moduleId, lessonId })
@@ -33,7 +35,15 @@ const Modules = (course: ModulesProps) => {
         setSelectedLesson(null)
     }
 
-    console.log(course.course.modules)
+    const handleDeleteConfirm = () => {
+        // Here you would typically make an API call to delete the lesson
+        console.log('Deleting lesson:', lessonToDelete)
+        setLessonToDelete(null)
+    }
+
+    const handleDeleteClose = () => {
+        setLessonToDelete(null)
+    }
 
     const handleLessonClick = (
         courseId: number,
@@ -44,6 +54,22 @@ const Modules = (course: ModulesProps) => {
             `/concepts/courses/article?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`,
         )
     }
+
+    const onEdit = (
+        courseId: number,
+        moduleId: number,
+        lessonId: number,
+    ) => {
+        navigate(
+            `/concepts/courses/edit-article?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`,
+        )
+    }
+
+    const onDelete = (lessonId: number) => {
+        setLessonToDelete(lessonId)
+    }
+
+    console.log(course.course.modules)
 
     return (
         <>
@@ -98,21 +124,38 @@ const Modules = (course: ModulesProps) => {
                                                     {lesson.created_at || '-'}
                                                 </span>
                                             </Td>
-                                            <Td className="w-[150px]">
-                                                <span className="font-semibold">
-                                                    {lesson.updated_at || '-'}
-                                                </span>
-                                            </Td>
+
                                             <Td>
-                                                {lesson.video ? (
-                                                    <span className="text-green-500">
-                                                        Video Available
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-gray-500">
-                                                        No Video
-                                                    </span>
-                                                )}
+                                                <div className="flex items-center gap-3">
+                                                    <Tooltip title="Edit">
+                                                        <div
+                                                            className={`text-xl cursor-pointer select-none font-semibold`}
+                                                            role="button"
+                                                            onClick={() =>
+                                                                onEdit(
+                                                                    course.course.course.id,
+                                                                    module.id,
+                                                                    lesson.id,
+                                                                )
+                                                            }
+                                                        >
+                                                            <TbPencil />
+                                                        </div>
+                                                    </Tooltip>
+                                                    <Tooltip title="Delete">
+                                                        <div
+                                                            className={`text-xl cursor-pointer select-none font-semibold`}
+                                                            role="button"
+                                                            onClick={() =>
+                                                                onDelete(
+                                                                    lesson.id,
+                                                                )
+                                                            }
+                                                        >
+                                                            <TbTrash />
+                                                        </div>
+                                                    </Tooltip>
+                                                </div>
                                             </Td>
                                         </Tr>
                                     ))}
@@ -132,6 +175,20 @@ const Modules = (course: ModulesProps) => {
                 onConfirm={handleDialogConfirmClick}
             >
                 <p>Are you sure you want to mark this lesson as completed?</p>
+            </ConfirmDialog>
+            <ConfirmDialog
+                isOpen={Boolean(lessonToDelete)}
+                type="danger"
+                title="Delete Lesson"
+                onClose={handleDeleteClose}
+                onRequestClose={handleDeleteClose}
+                onCancel={handleDeleteClose}
+                onConfirm={handleDeleteConfirm}
+            >
+                <p>
+                    Are you sure you want to delete this lesson? This action
+                    cannot be undone.
+                </p>
             </ConfirmDialog>
         </>
     )

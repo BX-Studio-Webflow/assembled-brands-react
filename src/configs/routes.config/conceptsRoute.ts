@@ -277,18 +277,8 @@ const conceptsRoute: Routes = [
     },
     {
         key: 'concepts.helpCenter.editArticle',
-        path: `${CONCEPTS_PREFIX_PATH}/courses/edit-article/:id`,
+        path: `${CONCEPTS_PREFIX_PATH}/courses/edit-article`,
         component: lazy(() => import('@/views/concepts/courses/EditArticle')),
-        authority: [ADMIN, USER],
-        meta: {
-            pageBackgroundType: 'plain',
-            footer: false,
-        },
-    },
-    {
-        key: 'concepts.helpCenter.manageArticle',
-        path: `${CONCEPTS_PREFIX_PATH}/courses/manage-article`,
-        component: lazy(() => import('@/views/concepts/courses/ManageArticle')),
         authority: [ADMIN, USER],
         meta: {
             pageBackgroundType: 'plain',
@@ -298,9 +288,7 @@ const conceptsRoute: Routes = [
     {
         key: 'concepts.projects.projectDetails',
         path: `${CONCEPTS_PREFIX_PATH}/courses/course-details/:id`,
-        component: lazy(
-            () => import('@/views/concepts/courses/CourseDetails'),
-        ),
+        component: lazy(() => import('@/views/concepts/courses/CourseDetails')),
         authority: [ADMIN, USER],
         meta: {
             pageContainerType: 'contained',

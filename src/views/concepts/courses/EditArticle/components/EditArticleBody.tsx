@@ -10,12 +10,13 @@ import ToolButtonHeading from '@/components/shared/RichTextEditor/toolButtons/To
 import ToolButtonBulletList from '@/components/shared/RichTextEditor/toolButtons/ToolButtonBulletList'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import type { Lesson } from '@/@types/course'
 
-type EditArticleBodyProps = {
-    content?: string
+interface EditArticleBodyProps {
+    lesson: Lesson['lesson']
 }
 
-const EditArticleBody = ({ content }: EditArticleBodyProps) => {
+const EditArticleBody = ({ lesson }: EditArticleBodyProps) => {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -32,7 +33,7 @@ const EditArticleBody = ({ content }: EditArticleBodyProps) => {
                 class: 'm-2 focus:outline-hidden',
             },
         },
-        content,
+        content: lesson.content,
     })
 
     if (!editor) return null
