@@ -29,6 +29,7 @@ export type User = {
     is_verified: boolean
     role: string
     phone: string
+    dial_code: string
     profile_picture: string
     authority: string[]
     bio: string | null

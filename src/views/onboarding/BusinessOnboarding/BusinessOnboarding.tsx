@@ -118,6 +118,7 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
 }
 
 const BusinessOnboarding = () => {
+    const { user } = useAuth()
     const [message, setMessage] = useState('')
     const [isSubmitting, setSubmitting] = useState(false)
     const [logoBase64, setLogoBase64] = useState('')
@@ -165,11 +166,11 @@ const BusinessOnboarding = () => {
     } = useForm<BusinessOnboardingSchema>({
         resolver: zodResolver(validationSchema),
         defaultValues: {
-            name: '',
+            name: user?.name || '',
             address: '',
-            phone: '',
-            dial_code: '',
-            email: '',
+            phone: user?.phone || '',
+            dial_code: user?.dial_code || '',
+            email: user?.email || '',
             description: '',
             logo: '',
             logoFileName: '',
