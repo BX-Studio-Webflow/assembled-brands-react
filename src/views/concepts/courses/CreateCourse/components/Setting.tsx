@@ -3,6 +3,7 @@ import Button from '@/components/ui/Button'
 import Switcher from '@/components/ui/Switcher'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { FormItem, Form } from '@/components/ui/Form'
+import Select from '@/components/ui/Select'
 import useResponsive from '@/utils/hooks/useResponsive'
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,7 +12,11 @@ import type { ZodType } from 'zod'
 import ModuleList from './ModuleList'
 import Membership from './Membership'
 import type { Module } from '../types'
-
+import type { Asset } from '@/@types/asset'
+import { apiCreateCourse } from '@/services/CoursesService'
+import Notification from '@/components/ui/Notification'
+import toast from '@/components/ui/toast'
+import { AxiosError } from 'axios'
 // Membership plan type for course
 export type MembershipPlan = {
     name: string
@@ -29,6 +34,7 @@ type FormSchema = {
     status: 'draft' | 'published' | 'archived'
     membership_plans: MembershipPlan[]
     modules: Module[]
+    asset_id?: string
 }
 
 const validationSchema: ZodType<FormSchema> = z.object({
@@ -49,6 +55,7 @@ const validationSchema: ZodType<FormSchema> = z.object({
         }),
     ),
     modules: z.array(z.any()),
+    asset_id: z.string().optional(),
 })
 
 const defaultValues: FormSchema = {
@@ -69,7 +76,17 @@ const defaultValues: FormSchema = {
     modules: [],
 }
 
-const Setting = () => {
+type AssetOption = {
+    value: string
+    label: string
+    color: string
+}
+
+interface SettingProps {
+    assets: Asset[]
+}
+
+const Setting = ({ assets }: SettingProps) => {
     const {
         handleSubmit,
         formState: { errors },
@@ -89,6 +106,17 @@ const Setting = () => {
     const plans = watch('membership_plans') || []
     const modules = watch('modules') || []
     const { smaller } = useResponsive()
+
+    const assetOptions: AssetOption[] = assets
+        .filter(
+            (asset) =>
+                asset.asset_type === 'video' || asset.asset_type === 'image',
+        )
+        .map((asset) => ({
+            value: asset.id.toString(),
+            label: asset.asset_name,
+            color: '#00B8D9',
+        }))
 
     const handleModuleChange = (taskId: string) => {
         setValue(
@@ -110,12 +138,46 @@ const Setting = () => {
         )
     }
 
-    const onSubmit = (values: FormSchema) => {
+    const onSubmit = async (values: FormSchema) => {
         // TODO: Implement course creation logic
         console.log('Creating new course:', values)
         const course = {
             ...values,
-            membershipPlans: values.membership_plans,
+            trailer_asset_id: Number(values.asset_id),
+            membership_plans: values.membership_plans.map((plan) => ({
+                id: 0, // This will be set by the backend
+                name: plan.name,
+                price: plan.cost,
+                isFree: plan.isFree,
+                payment_type: plan.payment_type,
+                price_point: 'course' as const,
+                billing: 'package' as const,
+                description: '',
+            })),
+            modules: values.modules.map((module) => ({
+                title: module.title || 'Untitled module',
+                description: module.description,
+            })),
+        }
+        try {
+            await apiCreateCourse(course)
+            toast.push(
+                <Notification type="success">Course created!</Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            //navigate('/concepts/event/event-list')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            console.error('Error creating course:', error)
         }
     }
 
@@ -159,6 +221,28 @@ const Setting = () => {
                                 onChange={({ html }) => {
                                     field.onChange(html)
                                 }}
+                            />
+                        )}
+                    />
+                </FormItem>
+                <FormItem
+                    label="Cover Asset"
+                    invalid={Boolean(errors.asset_id)}
+                    errorMessage={errors.asset_id?.message}
+                >
+                    <Controller
+                        name="asset_id"
+                        control={control}
+                        render={({ field: { onChange, value, ...field } }) => (
+                            <Select<AssetOption>
+                                placeholder="Please Select"
+                                options={assetOptions}
+                                value={assetOptions.find(
+                                    (option) =>
+                                        option.value === value?.toString(),
+                                )}
+                                onChange={(option) => onChange(option?.value)}
+                                {...field}
                             />
                         )}
                     />

@@ -14,7 +14,7 @@ export type Member = {
 
 export type Module = {
     id: string
-    name: string
+    title: string
     description: string
     progress: string
     assignee?: Member

@@ -30,7 +30,7 @@ const ModuleList = ({
         <div className="flex flex-col gap-10 mb-4">
             <Table className="lg:overflow-hidden">
                 <TBody>
-                    {modules.map((item) => (
+                    {modules?.map((item) => (
                         <TaskItem
                             key={item.id}
                             ref={null}

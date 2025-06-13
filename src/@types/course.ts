@@ -8,14 +8,7 @@ export interface CreateCourseRequest {
     trailer_asset_id: number
     course_type: 'self_paced' | 'instructor_led'
     status: 'draft' | 'published' | 'archived'
-    lessons: {
-        title: string
-        description: string
-        content: string
-        video_asset_id: number
-        lesson_duration: number
-    }[]
-    module: {
+    modules: {
         title: string
         description: string
     }[]

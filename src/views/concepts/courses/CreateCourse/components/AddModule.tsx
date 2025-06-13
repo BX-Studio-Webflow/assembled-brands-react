@@ -98,6 +98,7 @@ const AddModule = ({
             ) : (
                 <Button
                     block
+                    type="button"
                     icon={<TbPlus />}
                     customColorClass={() =>
                         'border-dashed border-2 hover:ring-transparent bg-gray-50'

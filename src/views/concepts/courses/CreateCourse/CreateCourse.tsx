@@ -1,52 +1,21 @@
 import useSWR from 'swr'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
-import { useTasksStore } from './store/tasksStore'
-import {
-    apiGetProjectTasks,
-    apiGetProjectMembers,
-} from '@/services/ProjectService'
-import type { GetModulesResponse, GetProjectMembersResponse } from './types'
+import { apiGetAssets } from '@/services/AssetService'
 import Setting from './components/Setting'
 
 const CreateCourse = () => {
-    const {
-        updateOrdered,
-        updateGroups,
-        updateBoardMembers,
-        updateAllMembers,
-    } = useTasksStore()
+    const { data: assetsData } = useSWR(
+        '/asset',
 
-    useSWR(
-        ['/api/projects/tasks'],
-        () => apiGetProjectTasks<GetModulesResponse>(),
+        () => apiGetAssets(),
         {
             revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-            onSuccess: (data) => {
-                updateOrdered(Object.keys(data))
-                updateGroups(data)
-            },
-        },
-    )
-
-    useSWR(
-        ['/api/projects/task/members'],
-        () => apiGetProjectMembers<GetProjectMembersResponse>(),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-            onSuccess: (data) => {
-                updateBoardMembers(data.participantMembers)
-                updateAllMembers(data.allMembers)
-            },
         },
     )
 
     return (
         <AdaptiveCard>
-            <Setting />
+            <Setting assets={assetsData?.assets || []} />
         </AdaptiveCard>
     )
 }
