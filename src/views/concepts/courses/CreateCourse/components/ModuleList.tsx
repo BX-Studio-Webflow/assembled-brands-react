@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import Table from '@/components/ui/Table'
-import TaskItem from '@/components/view/TaskItem'
 import AddModule from './AddModule'
 import { labelClass } from '../utils'
 import type { Module } from '../types'
+import TaskItem from './TaskItem'
 
 const { TBody } = Table
 
