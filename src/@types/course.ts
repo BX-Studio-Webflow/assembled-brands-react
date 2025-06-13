@@ -61,6 +61,15 @@ export interface Lesson {
     }
 }
 
+export interface CreateLessonRequest {
+    title: string
+    description: string
+    content: string
+    video_asset_id: number
+    duration: number
+    order: number
+}
+
 // Progress type
 export interface Progress {
     lesson_id: number

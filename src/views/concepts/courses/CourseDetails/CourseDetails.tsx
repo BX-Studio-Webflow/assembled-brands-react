@@ -37,13 +37,12 @@ const CourseDetails = () => {
         // Check if we're on the callback URL with a code
         const urlParams = new URLSearchParams(window.location.search)
         const action = urlParams.get('action')
-        if (action === 'add-lesson') {
+        if (action === 'add-lesson' || action === 'added-lesson') {
             toast.push(
                 <Notification type="success">
-                    Great! Your course was just created. Time to add some
-                    lessons to your modules. Click the{' '}
-                    <span className="font-bold">add lesson</span> icon on a
-                    module to get started.
+                    {action === 'add-lesson'
+                        ? 'Great! Your course was just created. Time to add some lessons to your modules. Click the add lesson icon on a module to get started.'
+                        : 'Great! Your lesson was just created. You can add more lessons to this module by clicking the add lesson icon on a module.'}
                 </Notification>,
                 {
                     placement: 'top-center',

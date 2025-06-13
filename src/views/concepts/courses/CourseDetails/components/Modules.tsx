@@ -3,10 +3,12 @@ import Table from '@/components/ui/Table'
 import Tag from '@/components/ui/Tag'
 import Loading from '@/components/shared/Loading'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { TbCircleCheck, TbPencil, TbTrash } from 'react-icons/tb'
+import { TbCircleCheck, TbPencil, TbPlus, TbTrash } from 'react-icons/tb'
 import type { CourseWithDetails } from '@/@types/course'
 import { useNavigate } from 'react-router'
 import Tooltip from '@/components/ui/Tooltip'
+import Button from '@/components/ui/Button'
+import { HiPlus } from 'react-icons/hi'
 
 const { Td, Tr, TBody } = Table
 
@@ -55,13 +57,15 @@ const Modules = (course: ModulesProps) => {
         )
     }
 
-    const onEdit = (
-        courseId: number,
-        moduleId: number,
-        lessonId: number,
-    ) => {
+    const onEdit = (courseId: number, moduleId: number, lessonId: number) => {
         navigate(
             `/concepts/courses/edit-article?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`,
+        )
+    }
+
+    const handleAddLesson = (moduleId: number) => {
+        navigate(
+            `/concepts/courses/add-article?courseId=${course.course.course.id}&moduleId=${moduleId}`,
         )
     }
 
@@ -77,7 +81,19 @@ const Modules = (course: ModulesProps) => {
                 <div className="flex flex-col gap-12">
                     {course.course.modules?.map((module) => (
                         <div key={module.id}>
-                            <h4 className="mb-4">{module.title}</h4>
+                            <div className="flex justify-between items-center gap-2">
+                                <h4 className="mb-4">{module.title}</h4>
+                                <Button
+                                    className="mr-2"
+                                    icon={<HiPlus />}
+                                    onClick={() => handleAddLesson(module.id)}
+                                >
+                                    <span>
+                                        <span>Add lesson</span>
+                                    </span>
+                                </Button>
+                            </div>
+
                             <p className="mb-4 text-gray-500">
                                 {module.description}
                             </p>
@@ -133,7 +149,10 @@ const Modules = (course: ModulesProps) => {
                                                             role="button"
                                                             onClick={() =>
                                                                 onEdit(
-                                                                    course.course.course.id,
+                                                                    course
+                                                                        .course
+                                                                        .course
+                                                                        .id,
                                                                     module.id,
                                                                     lesson.id,
                                                                 )

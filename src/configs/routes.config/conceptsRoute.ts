@@ -296,6 +296,16 @@ const conceptsRoute: Routes = [
         },
     },
     {
+        key: 'concepts.helpCenter.addArticle',
+        path: `${CONCEPTS_PREFIX_PATH}/courses/add-article`,
+        component: lazy(() => import('@/views/concepts/courses/AddArticle')),
+        authority: [ADMIN, USER],
+        meta: {
+            pageContainerType: 'contained',
+            pageBackgroundType: 'plain',
+        },
+    },
+    {
         key: 'concepts.projects.projectDetails',
         path: `${CONCEPTS_PREFIX_PATH}/courses/course-details/:id`,
         component: lazy(() => import('@/views/concepts/courses/CourseDetails')),
