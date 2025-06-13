@@ -48,6 +48,7 @@ const CourseDetails = () => {
                     placement: 'top-center',
                 },
             )
+            mutate()
             setSelectedNav(modulesNavValue)
         }
     }, [])

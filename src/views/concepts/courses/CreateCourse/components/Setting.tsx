@@ -66,7 +66,7 @@ const defaultValues: FormSchema = {
     instructions: '',
     landing_page_url: '',
     course_type: 'self_paced',
-    status: 'draft',
+    status: 'published',
     membership_plans: [
         {
             name: 'Free',
