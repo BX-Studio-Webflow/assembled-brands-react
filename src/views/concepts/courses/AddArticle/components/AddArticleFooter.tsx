@@ -11,6 +11,7 @@ interface AddArticleFooterProps {
     moduleId: string | null
     title: string
     content: string
+    videoAssetId: number
 }
 
 const AddArticleFooter = ({
@@ -18,6 +19,7 @@ const AddArticleFooter = ({
     moduleId,
     title,
     content,
+    videoAssetId,
 }: AddArticleFooterProps) => {
     const [isPublishing, setIsPublishing] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
@@ -40,12 +42,31 @@ const AddArticleFooter = ({
 
         setIsPublishing(true)
         try {
+            if (!videoAssetId) {
+                showErrorMessage(
+                    'Please add a video to your lesson so learners have something to watch and learn from.',
+                )
+                return
+            }
+            if (!title) {
+                showErrorMessage(
+                    'Please add a title for your lesson to let learners know what it’s about.',
+                )
+                return
+            }
+            if (!content) {
+                showErrorMessage(
+                    'Please add some content to give more context and value to your lesson.',
+                )
+                return
+            }
+
             await apiCreateLesson(Number(courseId), Number(moduleId), {
                 title: title || 'Untitled article',
                 content: content,
                 description: '', // Empty description for now
-                video_asset_id: 0, // No video asset for now
-                duration: 0, // Duration will be calculated based on content
+                video_asset_id: videoAssetId,
+                duration: 10, // Duration will be calculated based on content
                 order: 0, // Will be set by the backend
             })
             toast.push(
@@ -71,6 +92,11 @@ const AddArticleFooter = ({
         } finally {
             setIsPublishing(false)
         }
+    }
+    const showErrorMessage = (error: string) => {
+        toast.push(<Notification type="danger">{error}</Notification>, {
+            placement: 'top-center',
+        })
     }
 
     return (

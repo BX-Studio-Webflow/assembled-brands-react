@@ -5,11 +5,21 @@ import uniqueId from 'lodash/uniqueId'
 import type { CommonProps } from '@/@types/common'
 import type { ReactNode } from 'react'
 import type { Lesson } from '@/@types/course'
+import { Select } from '@/components/ui'
+import type { Asset } from '@/@types/asset'
+
+interface AssetOption {
+    value: string
+    label: string
+    color: string
+}
 
 interface AddArticleHeaderProps {
     host: Lesson['host']
     title: string
     onTitleChange: (title: string) => void
+    assets: Asset[]
+    onVideoAssetChange: (assetId: number) => void
 }
 
 export interface FieldProps extends CommonProps {
@@ -32,7 +42,7 @@ const Field = (props: FieldProps) => {
 }
 
 const AddArticleHeader = (props: AddArticleHeaderProps) => {
-    const { host, title, onTitleChange } = props
+    const { host, title, onTitleChange, assets, onVideoAssetChange } = props
 
     const [articleTags, setArticleTags] = useState<
         { id: string; label: string }[]
@@ -45,6 +55,14 @@ const AddArticleHeader = (props: AddArticleHeaderProps) => {
             inputRef.current.value = ''
         }
     }, [articleTags])
+
+    const assetOptions: AssetOption[] = assets
+        .filter((asset) => asset.asset_type === 'video')
+        .map((asset) => ({
+            value: asset.id.toString(),
+            label: asset.asset_name,
+            color: '#00B8D9',
+        }))
 
     return (
         <div>
@@ -70,6 +88,16 @@ const AddArticleHeader = (props: AddArticleHeaderProps) => {
                 </Field>
                 <Field title="Duration:">
                     <span className="heading-text font-bold">10 minutes</span>
+                </Field>
+                <Field title="Video Asset:">
+                    <Select<AssetOption>
+                        className="w-1/2"
+                        placeholder="Select a video for your lesson"
+                        options={assetOptions}
+                        onChange={(option) =>
+                            option && onVideoAssetChange(Number(option.value))
+                        }
+                    />
                 </Field>
                 <Field title="Tags:">
                     <div className="flex flex-wrap items-center gap-2">

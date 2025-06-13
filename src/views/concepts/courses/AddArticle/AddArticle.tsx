@@ -9,14 +9,16 @@ import useSWR from 'swr'
 import { apiGetCourse } from '@/services/CoursesService'
 import AddArticleFooter from './components/AddArticleFooter'
 import { useState } from 'react'
+import { apiGetAssets } from '@/services/AssetService'
 
 const AddArticle = () => {
     const [searchParams] = useSearchParams()
     const courseId = searchParams.get('courseId')
     const moduleId = searchParams.get('moduleId')
-    const lessonId = searchParams.get('lessonId')
+
     const [articleTitle, setArticleTitle] = useState('')
     const [articleContent, setArticleContent] = useState('')
+    const [videoAssetId, setVideoAssetId] = useState(0)
 
     const { data, isLoading } = useSWR(
         `/course/${courseId}`,
@@ -26,7 +28,10 @@ const AddArticle = () => {
             revalidateIfStale: false,
         },
     )
-    console.log(data)
+    const { data: assetsData } = useSWR('/asset', () => apiGetAssets(), {
+        revalidateOnFocus: false,
+    })
+    console.log(assetsData)
 
     return (
         <Container>
@@ -49,6 +54,8 @@ const AddArticle = () => {
                                     host={data.host}
                                     title={articleTitle}
                                     onTitleChange={setArticleTitle}
+                                    assets={assetsData?.assets || []}
+                                    onVideoAssetChange={setVideoAssetId}
                                 />
                                 <AddArticleBody
                                     onContentChange={setArticleContent}
@@ -56,9 +63,9 @@ const AddArticle = () => {
                                 <AddArticleFooter
                                     courseId={courseId}
                                     moduleId={moduleId}
-                                    lessonId={lessonId}
                                     title={articleTitle}
                                     content={articleContent}
+                                    videoAssetId={videoAssetId}
                                 />
                             </>
                         )}
