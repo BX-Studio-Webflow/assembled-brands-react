@@ -615,6 +615,23 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
+                    {
+                        key: 'concepts.helpCenter.createCourse',
+                        path: `${CONCEPTS_PREFIX_PATH}/courses/create-course`,
+                        title: 'Create Course',
+                        translateKey: 'nav.conceptsHelpCenter.createCourse',
+                        icon: 'helpCeterSupportHub',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsHelpCenter.supportHubDesc',
+                                label: 'Courses list',
+                            },
+                        },
+                        subMenu: [],
+                    },
                 ],
             } /*
             {
