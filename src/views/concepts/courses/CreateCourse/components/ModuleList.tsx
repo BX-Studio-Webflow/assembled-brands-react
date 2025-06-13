@@ -33,13 +33,11 @@ const ModuleList = ({
                     {modules?.map((item) => (
                         <TaskItem
                             key={item.id}
-                            ref={null}
                             taskId={item.id}
-                            progress={item.progress}
                             checked={item.checked}
-                            name={item.name}
-                            dueDate={item.dueDate as number}
-                            assignee={item.assignee}
+                            title={item.title}
+                            description={item.description}
+                            progress={item.progress}
                             priority={item.priority}
                             labelClass={labelClass}
                             onChange={() => onModuleChange(item.id)}

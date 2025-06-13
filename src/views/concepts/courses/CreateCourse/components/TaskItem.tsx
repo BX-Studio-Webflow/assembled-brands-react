@@ -2,25 +2,16 @@ import classNames from '@/utils/classNames'
 import Table from '@/components/ui/Table'
 import Tag from '@/components/ui/Tag'
 import { TbCircleCheck, TbCircleCheckFilled, TbTrash } from 'react-icons/tb'
-import dayjs from 'dayjs'
-import type { ReactNode, Ref } from 'react'
+import type { Ref } from 'react'
 
-type TaskItemProps = Partial<{
-    progress: string
-    name: string
-    checked: boolean
-    dueDate: number
-    priority: string
-    assignee: {
-        name: string
-        img: string
-    }
-    labelClass: Record<string, string>
-    showDragger: boolean
-    dragger: ReactNode
-    showAssignee: boolean
-}> & {
+type TaskItemProps = {
     taskId: string
+    title: string
+    description: string
+    checked: boolean
+    progress: string
+    priority: string
+    labelClass: Record<string, string>
     onChange: (taskId: string) => void
     ref?: Ref<HTMLTableRowElement>
 }
@@ -30,24 +21,19 @@ const { Td, Tr } = Table
 const TaskItem = (props: TaskItemProps) => {
     const {
         taskId,
-        progress,
+        title,
+        description,
         checked,
-        name,
-        dueDate,
-        onChange,
-
-        dragger,
+        progress,
         priority,
         labelClass = {},
-        showDragger = true,
-
+        onChange,
         ref,
         ...rest
     } = props
 
     return (
         <Tr ref={ref} {...rest}>
-            {showDragger && <Td className="w-[40px] text-lg">{dragger}</Td>}
             <Td className="w-[40px]">
                 <button
                     className="text-2xl cursor-pointer pt-1"
@@ -68,8 +54,9 @@ const TaskItem = (props: TaskItemProps) => {
                         checked && 'line-through opacity-50',
                     )}
                 >
-                    {name}
+                    {title}
                 </span>
+                <p className="text-gray-500 mt-1">{description}</p>
             </Td>
             <Td className="w-[150px]">
                 <Tag
@@ -88,11 +75,6 @@ const TaskItem = (props: TaskItemProps) => {
                 >
                     {priority}
                 </Tag>
-            </Td>
-            <Td className="w-[150px]">
-                <span className="font-semibold">
-                    {dueDate ? dayjs(dueDate).format('MMMM DD') : '-'}
-                </span>
             </Td>
             <Td>
                 <TbTrash />
