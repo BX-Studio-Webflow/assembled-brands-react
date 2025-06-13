@@ -7,55 +7,43 @@ import type { Module } from '../types'
 
 const { TBody } = Table
 
-const ModuleList = () => {
-    // Only one list: modules
-    const [modules, setModules] = useState<Module[]>([])
+interface ModuleListProps {
+    modules: Module[]
+    onModuleChange: (taskId: string) => void
+    onCreateModule: (task: Module) => void
+    onRemoveModule: (taskId: string) => void
+}
+
+const ModuleList = ({
+    modules,
+    onModuleChange,
+    onCreateModule,
+}: ModuleListProps) => {
     const [isAdding, setIsAdding] = useState(false)
 
-    const handleChange = (taskId: string) => {
-        setModules((prev) =>
-            prev.map((mod) =>
-                mod.id === taskId ? { ...mod, checked: !mod.checked } : mod,
-            ),
-        )
-    }
-
     const handleCreateModule = (task: Module) => {
-        setModules((prev) => [...prev, task])
+        onCreateModule(task)
         setIsAdding(false)
     }
 
-    const handleRemoveModule = (taskId: string) => {
-        setModules((prev) => prev.filter((mod) => mod.id !== taskId))
-    }
-
     return (
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-10 mb-4">
             <Table className="lg:overflow-hidden">
                 <TBody>
                     {modules.map((item) => (
-                        <tr key={item.id}>
-                            <TaskItem
-                                ref={null}
-                                taskId={item.id}
-                                progress={item.progress}
-                                checked={item.checked}
-                                name={item.name}
-                                dueDate={item.dueDate as number}
-                                assignee={item.assignee}
-                                priority={item.priority}
-                                labelClass={labelClass}
-                                onChange={() => handleChange(item.id)}
-                            />
-                            <td>
-                                <button
-                                    className="text-red-500 hover:underline"
-                                    onClick={() => handleRemoveModule(item.id)}
-                                >
-                                    Remove
-                                </button>
-                            </td>
-                        </tr>
+                        <TaskItem
+                            key={item.id}
+                            ref={null}
+                            taskId={item.id}
+                            progress={item.progress}
+                            checked={item.checked}
+                            name={item.name}
+                            dueDate={item.dueDate as number}
+                            assignee={item.assignee}
+                            priority={item.priority}
+                            labelClass={labelClass}
+                            onChange={() => onModuleChange(item.id)}
+                        />
                     ))}
                 </TBody>
             </Table>
