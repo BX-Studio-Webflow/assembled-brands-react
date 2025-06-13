@@ -107,6 +107,13 @@ const Membership = ({
                                         step="0.01"
                                         placeholder="e.g. £120.99"
                                         {...field}
+                                        onChange={(e) => {
+                                            const value =
+                                                e.target.value === ''
+                                                    ? 0
+                                                    : parseFloat(e.target.value)
+                                            field.onChange(value)
+                                        }}
                                     />
                                 )}
                             />

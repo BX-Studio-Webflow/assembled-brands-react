@@ -17,6 +17,8 @@ import { apiCreateCourse } from '@/services/CoursesService'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { AxiosError } from 'axios'
+import { useNavigate } from 'react-router'
+
 // Membership plan type for course
 export type MembershipPlan = {
     name: string
@@ -87,6 +89,7 @@ interface SettingProps {
 }
 
 const Setting = ({ assets }: SettingProps) => {
+    const navigate = useNavigate()
     const {
         handleSubmit,
         formState: { errors },
@@ -139,8 +142,7 @@ const Setting = ({ assets }: SettingProps) => {
     }
 
     const onSubmit = async (values: FormSchema) => {
-        // TODO: Implement course creation logic
-        console.log('Creating new course:', values)
+        console.log(values)
         const course = {
             ...values,
             trailer_asset_id: Number(values.asset_id),
@@ -159,15 +161,28 @@ const Setting = ({ assets }: SettingProps) => {
                 description: module.description,
             })),
         }
+        if (values.modules.length <= 0) {
+            toast.push(
+                <Notification type="danger">
+                    Please add at least one module
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            return
+        }
         try {
-            await apiCreateCourse(course)
+            const response = await apiCreateCourse(course)
             toast.push(
                 <Notification type="success">Course created!</Notification>,
                 {
                     placement: 'top-center',
                 },
             )
-            //navigate('/concepts/event/event-list')
+            navigate(
+                `/concepts/courses/course-details/${response.id}?action=add-lesson`,
+            )
         } catch (error) {
             toast.push(
                 <Notification type="danger">

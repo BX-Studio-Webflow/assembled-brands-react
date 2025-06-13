@@ -8,8 +8,7 @@ import ArticleTableOfContent from './components/ArticleTableOfContent'
 import { useParams } from 'react-router'
 import useSWR from 'swr'
 import { apiGetCourse, apiGetLesson } from '@/services/CoursesService'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState , useEffect } from 'react'
 
 const Article = () => {
     const [params, setParams] = useState<{
@@ -37,7 +36,7 @@ const Article = () => {
         [
             `/course/${params.courseId}/modules/${params.moduleId}/lessons/${params.lessonId}`,
         ],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         () =>
             apiGetLesson(
                 Number(params.courseId),

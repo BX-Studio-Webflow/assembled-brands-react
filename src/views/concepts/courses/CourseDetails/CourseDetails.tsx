@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react'
+import { useState, lazy, Suspense, useEffect } from 'react'
 import Spinner from '@/components/ui/Spinner'
 import ProjectDetailsHeader from './components/ProjectDetailsHeader'
 import ProjectDetailsNavigation from './components/ProjectDetailsNavigation'
@@ -9,9 +9,12 @@ import type { GetProjectDetailsResponse } from './types'
 import { apiGetCourse } from '@/services/CoursesService'
 
 import Overview from './components/Overview'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 
 const defaultNavValue = 'overview'
 const settingsNavValue = 'settings'
+const modulesNavValue = 'modules'
 
 const Modules = lazy(() => import('./components/Modules'))
 const Setting = lazy(() => import('./components/Setting'))
@@ -21,7 +24,7 @@ const CourseDetails = () => {
 
     const { data, mutate } = useSWR(
         [`/course/${id}`],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         () => apiGetCourse(Number(id)),
         {
             revalidateOnFocus: false,
@@ -29,6 +32,26 @@ const CourseDetails = () => {
             evalidateOnFocus: false,
         },
     )
+
+    useEffect(() => {
+        // Check if we're on the callback URL with a code
+        const urlParams = new URLSearchParams(window.location.search)
+        const action = urlParams.get('action')
+        if (action === 'add-lesson') {
+            toast.push(
+                <Notification type="success">
+                    Great! Your course was just created. Time to add some
+                    lessons to your modules. Click the{' '}
+                    <span className="font-bold">add lesson</span> icon on a
+                    module to get started.
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            setSelectedNav(modulesNavValue)
+        }
+    }, [])
 
     const { larger } = useResponsive()
 

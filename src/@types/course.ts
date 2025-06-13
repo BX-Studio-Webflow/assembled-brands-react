@@ -24,6 +24,11 @@ export interface CreateCourseRequest {
     }[]
 }
 
+export interface CreateCourseResponse {
+    id: number
+    moduleIds: number[]
+}
+
 // Module type
 export interface Module {
     id?: number
