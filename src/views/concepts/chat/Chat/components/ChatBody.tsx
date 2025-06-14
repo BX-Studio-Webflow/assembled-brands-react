@@ -6,12 +6,7 @@ import { useChatStore } from '../store/chatStore'
 import classNames from '@/utils/classNames'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
-import {
-    TbChevronLeft,
-    TbPictureInPicture,
-    TbMaximize,
-    TbMinimize,
-} from 'react-icons/tb'
+import { TbChevronLeft, TbMaximize, TbMinimize, TbX } from 'react-icons/tb'
 
 import type { ScrollBarRef } from '@/components/view/ChatBox'
 import EventVideoPlayer from '@/views/concepts/events/EventStream/components/EventVideoPlayer'
@@ -111,10 +106,18 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     useEffect(() => {
         if (selectedChat.id) {
             setIsVideoPiP(true)
-        } else {
-            setIsVideoPiP(false)
         }
     }, [selectedChat.id])
+
+    // Keep PiP enabled when switching to chat tab
+    useEffect(() => {
+        if (selectedTabType === 'chat') {
+            setIsVideoPiP(true)
+        } else if (selectedTabType === 'event') {
+            setIsFullSize(false)
+            setIsVideoPiP(false)
+        }
+    }, [selectedTabType])
 
     const messageList = useMemo(() => {
         return messages.map((item) => ({
@@ -133,10 +136,10 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
     }, [messages])
 
     const togglePiP = () => {
-        setIsVideoPiP(!isVideoPiP)
-        if (!isVideoPiP) {
-            setIsFullSize(false)
-        }
+        setIsVideoPiP(false)
+        setIsFullSize(false)
+        // Switch to event tab
+        useChatStore.getState().setselectedTabType('event')
     }
 
     const toggleFullSize = () => {
@@ -167,7 +170,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                     <EventVideoPlayer src={data.event.asset.presignedUrl} />
                 </div>
             )}
-            {isVideoPiP && selectedTabType === 'event' && (
+            {isVideoPiP && (
                 <div
                     className={classNames(
                         'fixed z-50 rounded-lg overflow-hidden shadow-lg transition-all duration-300',
@@ -182,7 +185,7 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                             className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-75"
                             onClick={togglePiP}
                         >
-                            <TbPictureInPicture />
+                            <TbX />
                         </button>
                         <button
                             className="absolute top-2 right-12 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-75"
