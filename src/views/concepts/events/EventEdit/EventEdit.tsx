@@ -230,7 +230,7 @@ outline: none;
         )
     }
     const handleLink = () => {
-        const link = `https://elevnt.io/concepts/event/stream/${data?.id}`
+        const link = `https://elevnt.io/stream/${data?.id}`
         navigator.clipboard.writeText(link)
         toast.push(
             <Notification type="success">
