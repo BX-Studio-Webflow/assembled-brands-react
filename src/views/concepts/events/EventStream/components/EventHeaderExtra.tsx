@@ -56,24 +56,28 @@ const EventHeaderExtra = () => {
             >
                 Instant Call Back
             </Button>
-            <Button
-                variant="solid"
-                customColorClass={() =>
-                    'bg-teal-400 hover:bg-teal-500 text-white'
-                }
-                onClick={() => handleScheduleCallback()}
-            >
-                Schedule a Call Back
-            </Button>
-            <Button
-                variant="solid"
-                customColorClass={() =>
-                    'bg-amber-400 hover:bg-amber-500 text-white'
-                }
-                onClick={() => handleUpgradeClick()}
-            >
-                Upgrade Now
-            </Button>
+            {data.event.calendar_url && (
+                <Button
+                    variant="solid"
+                    customColorClass={() =>
+                        'bg-teal-400 hover:bg-teal-500 text-white'
+                    }
+                    onClick={() => handleScheduleCallback()}
+                >
+                    Schedule a Call Back
+                </Button>
+            )}
+            {data.event.calendar_url && (
+                <Button
+                    variant="solid"
+                    customColorClass={() =>
+                        'bg-amber-400 hover:bg-amber-500 text-white'
+                    }
+                    onClick={() => handleUpgradeClick()}
+                >
+                    Upgrade Now
+                </Button>
+            )}
         </div>
     )
 }
