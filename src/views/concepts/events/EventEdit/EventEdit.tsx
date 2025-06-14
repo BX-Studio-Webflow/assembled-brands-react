@@ -86,9 +86,14 @@ const EventEdit = () => {
 
     const handleConfirmDiscard = () => {
         setDiscardConfirmationOpen(true)
-        toast.push(<Notification type="success">Event deleted!</Notification>, {
-            placement: 'top-center',
-        })
+        toast.push(
+            <Notification type="success">
+                Your event was deleted successfully!
+            </Notification>,
+            {
+                placement: 'top-center',
+            },
+        )
         navigate('/concepts/event/event-list')
     }
 
@@ -101,9 +106,6 @@ const EventEdit = () => {
     }
 
     const EventFormProps = useMemo(() => {
-        console.log('Raw data:', data)
-        console.log('Memberships:', data?.memberships)
-
         const membershipPlans = (data?.memberships || []).map((plan) => {
             const isFree = plan.price === 0
             return {
@@ -116,8 +118,6 @@ const EventEdit = () => {
                 payment_type: plan.payment_type || 'one_off',
             }
         })
-
-        console.log('Mapped membership plans:', membershipPlans)
 
         const defaultValues: EventFormType = {
             event_name: data?.event_name || '',
@@ -160,7 +160,11 @@ const EventEdit = () => {
         let form = `<form action="https://api.3themind.com/v1/lead/external-form" method="post" id="lead_form" name="lead_form" class="lead_form">
 <!------------>
     <label class="textbig">SIGNUP HERE</label>
-    
+    <select name="ticket_date" id="ticket_date" class="lead_form_select" required>
+    <option value="" disabled selected>Select a date</option>
+    <option value="2025-07-03">July 3, 2025</option>
+    <!-- Add more dates as needed -->
+  </select>
     <input class="lead_form_name" maxlength="256" name="name" placeholder="Name" type="text" id="lead_form_name" required>
     <!------------>
     <input class="lead_form_email" maxlength="256" name="email" placeholder="@" type="email" id="lead_form_email" required>
@@ -173,9 +177,9 @@ const EventEdit = () => {
       <input class="lead_form_name answerbox" type="text" id="captcha_answer" name="captcha_answer" placeholder="Answer" required />
     </div>
     <!------------>
-    <input type="hidden" name="event_id" value="YOUR_EVENT_ID">
-    <input type="hidden" name="host_id" value="YOUR_HOST_ID">
-    <input type="hidden" name="redirect_url" value="YOUR_REDIRECT_URL">
+    <input type="hidden" name="event_id" value="56">
+    <input type="hidden" name="host_id" value="1">
+    <input type="hidden" name="redirect_url" value="https://bmw.com">
     <!------------>
     <div id="lead_form_error" class="lead_form_error" style="display:none;"></div>
 		<!------------>
@@ -186,7 +190,7 @@ const EventEdit = () => {
 <style>
 .lead_form {width:100%;max-width: 100%; min-height:100%; Padding: 30px 30px;border-radius: 5px; background-color: #efefef; margin:10px;border: 1px solid #cccccc; align-content: left;}
 
-.lead_form_name, .lead_form_email, .lead_form_phone {border: 1px solid #222;background-color: #fff0;border-radius: 5px;height: 45px;margin-bottom: 10px;padding: 8px 12px;transition: all .5s; width:100%; font-size:16px;background-color: #ffffff;}
+.lead_form_name, .lead_form_email, .lead_form_phone, .lead_form_select {border: 1px solid #222;background-color: #fff0;border-radius: 5px;height: 45px;margin-bottom: 10px;padding: 8px 12px;transition: all .5s; width:100%; font-size:16px;background-color: #ffffff;}
 
 .textbig{font-size:18px; font-weight:Medium; text-align:Left; Margin-bottom: 15px;}
 
@@ -211,8 +215,7 @@ border: .5px solid #222;
 outline: none;
 }
 </style>
-
-<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/f.js"></script>`
+<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/g.js"></script>`
 
         form = form.replace('YOUR_EVENT_ID', data?.id?.toString() || '0')
         form = form.replace('YOUR_HOST_ID', data?.host_id?.toString() || '0')
