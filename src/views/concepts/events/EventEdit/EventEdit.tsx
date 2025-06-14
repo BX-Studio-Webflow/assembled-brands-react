@@ -229,6 +229,7 @@ outline: none;
             { placement: 'top-center' },
         )
     }
+
     const handleLink = () => {
         const link = `https://elevnt.io/stream/${data?.id}`
         navigator.clipboard.writeText(link)
