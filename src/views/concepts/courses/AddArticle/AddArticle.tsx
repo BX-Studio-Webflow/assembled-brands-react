@@ -31,7 +31,6 @@ const AddArticle = () => {
     const { data: assetsData } = useSWR('/asset', () => apiGetAssets(), {
         revalidateOnFocus: false,
     })
-    console.log(assetsData)
 
     return (
         <Container>

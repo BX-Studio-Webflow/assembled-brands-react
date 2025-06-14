@@ -134,7 +134,7 @@ export async function apiUpdateLesson(
     courseId: number,
     moduleId: number,
     lessonId: number,
-    data: Lesson,
+    data: CreateLessonRequest,
 ) {
     return ApiService.fetchDataWithAxios<Lesson>({
         url: `/course/${courseId}/modules/${moduleId}/lessons/${lessonId}`,

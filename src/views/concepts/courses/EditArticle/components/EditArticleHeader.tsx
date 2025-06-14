@@ -5,10 +5,18 @@ import uniqueId from 'lodash/uniqueId'
 import type { CommonProps } from '@/@types/common'
 import type { ReactNode } from 'react'
 import type { Lesson } from '@/@types/course'
+import Select from '@/components/ui/Select'
+import { Asset } from '@/@types/asset'
 
 interface EditArticleHeaderProps {
     lesson: Lesson['lesson']
     host: Lesson['host']
+    assets: Asset[]
+}
+interface AssetOption {
+    value: string
+    label: string
+    color: string
 }
 
 export interface FieldProps extends CommonProps {
@@ -31,7 +39,7 @@ const Field = (props: FieldProps) => {
 }
 
 const EditArticleHeader = (props: EditArticleHeaderProps) => {
-    const { lesson, host } = props
+    const { lesson, host, assets } = props
 
     const [articleTitle, setArticleTitle] = useState(lesson.title)
     const [articleTags, setArticleTags] = useState<
@@ -45,6 +53,14 @@ const EditArticleHeader = (props: EditArticleHeaderProps) => {
             inputRef.current.value = ''
         }
     }, [articleTags])
+
+    const assetOptions: AssetOption[] = assets
+        .filter((asset) => asset.asset_type === 'video')
+        .map((asset) => ({
+            value: asset.id.toString(),
+            label: asset.asset_name,
+            color: '#00B8D9',
+        }))
 
     return (
         <div>
@@ -72,6 +88,23 @@ const EditArticleHeader = (props: EditArticleHeaderProps) => {
                     <span className="heading-text font-bold">
                         {lesson.lesson_duration} minutes
                     </span>
+                </Field>
+                <Field title="Video Asset:">
+                    <Select<AssetOption>
+                        className="w-1/2"
+                        placeholder="Select a video for your lesson"
+                        options={assetOptions}
+                        value={assetOptions.find(
+                            (option) =>
+                                option.value ===
+                                lesson.video_asset_id.toString(),
+                        )}
+                        onChange={(option) => {
+                            if (option) {
+                                setVideoAssetId(Number(option.value))
+                            }
+                        }}
+                    />
                 </Field>
                 <Field title="Tags:">
                     <div className="flex flex-wrap items-center gap-2">

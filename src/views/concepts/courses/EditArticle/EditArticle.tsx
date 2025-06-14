@@ -7,6 +7,8 @@ import EditArticleBody from './components/EditArticleBody'
 import { useSearchParams } from 'react-router'
 import useSWR from 'swr'
 import { apiGetLesson } from '@/services/CoursesService'
+import { apiGetAssets } from '@/services/AssetService'
+import EditArticleFooter from './components/EditArticleFooter'
 
 const EditArticle = () => {
     const [searchParams] = useSearchParams()
@@ -25,7 +27,9 @@ const EditArticle = () => {
             revalidateIfStale: false,
         },
     )
-
+    const { data: assetsData } = useSWR('/asset', () => apiGetAssets(), {
+        revalidateOnFocus: false,
+    })
     return (
         <Container>
             <div className="lg:flex gap-4">
@@ -46,8 +50,17 @@ const EditArticle = () => {
                                 <EditArticleHeader
                                     lesson={data.lesson}
                                     host={data.host}
+                                    assets={assetsData?.assets || []}
                                 />
                                 <EditArticleBody lesson={data.lesson} />
+                                <EditArticleFooter
+                                    courseId={courseId}
+                                    moduleId={moduleId}
+                                    lessonId={lessonId}
+                                    title={data.lesson.title}
+                                    content={data.lesson.content}
+                                    videoAssetId={data.lesson.video_asset_id}
+                                />
                             </>
                         )}
                     </Loading>
