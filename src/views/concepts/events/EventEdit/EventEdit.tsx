@@ -160,7 +160,7 @@ const EventEdit = () => {
         let form = `<form action="https://api.3themind.com/v1/lead/external-form" method="post" id="lead_form" name="lead_form" class="lead_form">
 <!------------>
     <label class="textbig">SIGNUP HERE</label>
-    <select name="ticket_date" id="ticket_date" class="lead_form_select" required>
+    <select name="membership_id" id="membership_id" class="lead_form_select" required>
     <option value="" disabled selected>Select a date</option>
     <option value="2025-07-03">July 3, 2025</option>
     <!-- Add more dates as needed -->
@@ -215,7 +215,7 @@ border: .5px solid #222;
 outline: none;
 }
 </style>
-<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/g.js"></script>`
+<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/j.js"></script>`
 
         form = form.replace('YOUR_EVENT_ID', data?.id?.toString() || '0')
         form = form.replace('YOUR_HOST_ID', data?.host_id?.toString() || '0')
