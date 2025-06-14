@@ -3,12 +3,13 @@ import Table from '@/components/ui/Table'
 import Tag from '@/components/ui/Tag'
 import Loading from '@/components/shared/Loading'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { TbCircleCheck, TbPencil, TbPlus, TbTrash } from 'react-icons/tb'
+import { TbCircleCheck, TbPencil, TbTrash } from 'react-icons/tb'
 import type { CourseWithDetails } from '@/@types/course'
 import { useNavigate } from 'react-router'
 import Tooltip from '@/components/ui/Tooltip'
 import Button from '@/components/ui/Button'
 import { HiPlus } from 'react-icons/hi'
+import UpdateDialog from './UpdateDialog'
 
 const { Td, Tr, TBody } = Table
 
@@ -23,6 +24,11 @@ const Modules = (course: ModulesProps) => {
         lessonId: number
     } | null>(null)
     const [lessonToDelete, setLessonToDelete] = useState<number | null>(null)
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false)
+    const [selectedModule, setSelectedModule] = useState<{
+        courseId: number
+        moduleId: number
+    } | null>(null)
 
     const handleCheckClick = (moduleId: number, lessonId: number) => {
         setSelectedLesson({ moduleId, lessonId })
@@ -34,7 +40,8 @@ const Modules = (course: ModulesProps) => {
     }
 
     const handleDialogClose = () => {
-        setSelectedLesson(null)
+        setIsUpdateDialogOpen(false)
+        setSelectedModule(null)
     }
 
     const handleDeleteConfirm = () => {
@@ -73,6 +80,11 @@ const Modules = (course: ModulesProps) => {
         setLessonToDelete(lessonId)
     }
 
+    const onEditModule = (courseId: number, moduleId: number) => {
+        setSelectedModule({ courseId, moduleId })
+        setIsUpdateDialogOpen(true)
+    }
+
     console.log(course.course.modules)
 
     return (
@@ -82,7 +94,18 @@ const Modules = (course: ModulesProps) => {
                     {course.course.modules?.map((module) => (
                         <div key={module.id}>
                             <div className="flex justify-between items-center gap-2">
-                                <h4 className="mb-4">{module.title}</h4>
+                                <h4 className="mb-4 flex items-center gap-2">
+                                    {module.title}
+                                    <TbPencil
+                                        className="text-xl cursor-pointer"
+                                        onClick={() =>
+                                            onEditModule(
+                                                course.course.course.id,
+                                                module.id,
+                                            )
+                                        }
+                                    />
+                                </h4>
                                 <Button
                                     className="mr-2"
                                     icon={<HiPlus />}
@@ -209,6 +232,26 @@ const Modules = (course: ModulesProps) => {
                     cannot be undone.
                 </p>
             </ConfirmDialog>
+            <UpdateDialog
+                isOpen={isUpdateDialogOpen}
+                courseId={selectedModule?.courseId || 0}
+                moduleId={selectedModule?.moduleId || 0}
+                initialTitle={
+                    course.course.modules?.find(
+                        (m) => m.id === selectedModule?.moduleId,
+                    )?.title
+                }
+                initialDescription={
+                    course.course.modules?.find(
+                        (m) => m.id === selectedModule?.moduleId,
+                    )?.description
+                }
+                onClose={handleDialogClose}
+                onSuccess={() => {
+                    // Trigger a refresh of the course data
+                    window.location.reload()
+                }}
+            />
         </>
     )
 }

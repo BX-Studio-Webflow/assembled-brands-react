@@ -9,12 +9,17 @@ import useSWR from 'swr'
 import { apiGetLesson } from '@/services/CoursesService'
 import { apiGetAssets } from '@/services/AssetService'
 import EditArticleFooter from './components/EditArticleFooter'
+import { useState, useEffect } from 'react'
 
 const EditArticle = () => {
     const [searchParams] = useSearchParams()
     const courseId = searchParams.get('courseId')
     const moduleId = searchParams.get('moduleId')
     const lessonId = searchParams.get('lessonId')
+
+    const [articleTitle, setArticleTitle] = useState('')
+    const [articleContent, setArticleContent] = useState('')
+    const [videoAssetId, setVideoAssetId] = useState(0)
 
     const { data, isLoading } = useSWR(
         courseId && moduleId && lessonId
@@ -23,13 +28,23 @@ const EditArticle = () => {
         () =>
             apiGetLesson(Number(courseId), Number(moduleId), Number(lessonId)),
         {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
+            revalidateOnFocus: true,
+            revalidateIfStale: true,
         },
     )
+
+    useEffect(() => {
+        if (data?.lesson) {
+            setArticleTitle(data.lesson.title)
+            setArticleContent(data.lesson.content)
+            setVideoAssetId(data.lesson.video_asset_id)
+        }
+    }, [data])
+
     const { data: assetsData } = useSWR('/asset', () => apiGetAssets(), {
         revalidateOnFocus: false,
     })
+
     return (
         <Container>
             <div className="lg:flex gap-4">
@@ -48,18 +63,24 @@ const EditArticle = () => {
                         {data && (
                             <>
                                 <EditArticleHeader
-                                    lesson={data.lesson}
+                                    lesson={data}
                                     host={data.host}
                                     assets={assetsData?.assets || []}
+                                    title={articleTitle}
+                                    onTitleChange={setArticleTitle}
+                                    onVideoAssetChange={setVideoAssetId}
                                 />
-                                <EditArticleBody lesson={data.lesson} />
+                                <EditArticleBody
+                                    content={articleContent}
+                                    onContentChange={setArticleContent}
+                                />
                                 <EditArticleFooter
                                     courseId={courseId}
                                     moduleId={moduleId}
                                     lessonId={lessonId}
-                                    title={data.lesson.title}
-                                    content={data.lesson.content}
-                                    videoAssetId={data.lesson.video_asset_id}
+                                    title={articleTitle}
+                                    content={articleContent}
+                                    videoAssetId={videoAssetId}
                                 />
                             </>
                         )}

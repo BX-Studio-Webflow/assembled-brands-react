@@ -18,6 +18,7 @@ import type {
     DeleteCourseMembershipsResponse,
     CreateCourseResponse,
     CreateLessonRequest,
+    UpdateModuleRequest,
 } from '@/@types/course'
 
 export async function apiGetCourses(params?: CourseQueryParams) {
@@ -96,7 +97,7 @@ export async function apiCreateModule(courseId: number, data: Module) {
 export async function apiUpdateModule(
     courseId: number,
     moduleId: number,
-    data: Module,
+    data: UpdateModuleRequest,
 ) {
     return ApiService.fetchDataWithAxios<Module>({
         url: `/course/${courseId}/modules/${moduleId}`,
@@ -134,7 +135,7 @@ export async function apiUpdateLesson(
     courseId: number,
     moduleId: number,
     lessonId: number,
-    data: CreateLessonRequest,
+    data: cRELesson,
 ) {
     return ApiService.fetchDataWithAxios<Lesson>({
         url: `/course/${courseId}/modules/${moduleId}/lessons/${lessonId}`,

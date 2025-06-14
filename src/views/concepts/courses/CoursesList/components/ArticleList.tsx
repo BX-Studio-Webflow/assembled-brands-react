@@ -17,7 +17,7 @@ type ArticlesProps = {
     isLoading: boolean
 }
 
-const Articles = ({ query, topic, courses, isLoading }: ArticlesProps) => {
+const Articles = ({ query, topic, courses }: ArticlesProps) => {
     const { trigger, data } = useSWRMutation(
         [`/api/helps/articles`, { query, topic }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

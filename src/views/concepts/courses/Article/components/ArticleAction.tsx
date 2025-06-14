@@ -1,23 +1,14 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-import Input from '@/components/ui/Input'
 import { TbCheck, TbX } from 'react-icons/tb'
 
 const ArticleAction = () => {
-    const commentInput = useRef<HTMLInputElement>(null)
-
     const [helpful, setHelpful] = useState('')
 
     const onHelpfulClick = useCallback((val: string) => {
         setHelpful(val)
     }, [])
-
-    const onCommentSubmit = () => {
-        if (commentInput.current) {
-            commentInput.current.value = ''
-        }
-    }
 
     return (
         <>

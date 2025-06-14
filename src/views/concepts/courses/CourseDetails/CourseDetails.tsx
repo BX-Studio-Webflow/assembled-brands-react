@@ -5,12 +5,14 @@ import ProjectDetailsNavigation from './components/ProjectDetailsNavigation'
 import useResponsive from '@/utils/hooks/useResponsive'
 import useSWR from 'swr'
 import { useParams } from 'react-router'
-import type { GetProjectDetailsResponse } from './types'
-import { apiGetCourse } from '@/services/CoursesService'
+import { apiGetCourse, apiUpdateCourse } from '@/services/CoursesService'
 
 import Overview from './components/Overview'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
+
+import { UpdateCourseRequest } from '@/@types/course'
+import { AxiosError } from 'axios'
 
 const defaultNavValue = 'overview'
 const settingsNavValue = 'settings'
@@ -24,7 +26,7 @@ const CourseDetails = () => {
 
     const { data, mutate } = useSWR(
         [`/course/${id}`],
-         
+
         () => apiGetCourse(Number(id)),
         {
             revalidateOnFocus: false,
@@ -37,12 +39,23 @@ const CourseDetails = () => {
         // Check if we're on the callback URL with a code
         const urlParams = new URLSearchParams(window.location.search)
         const action = urlParams.get('action')
-        if (action === 'add-lesson' || action === 'added-lesson') {
+        if (
+            action === 'add-lesson' ||
+            action === 'added-lesson' ||
+            action === 'updated-lesson' ||
+            action === 'updated-module'
+        ) {
             toast.push(
                 <Notification type="success">
                     {action === 'add-lesson'
                         ? 'Great! Your course was just created. Time to add some lessons to your modules. Click the add lesson icon on a module to get started.'
-                        : 'Great! Your lesson was just created. You can add more lessons to this module by clicking the add lesson icon on a module.'}
+                        : action === 'added-lesson'
+                          ? 'Great! Your lesson was just created. You can add more lessons to this module by clicking the add lesson icon on a module.'
+                          : action === 'updated-lesson'
+                            ? 'Great! Your lesson was just updated. You can add more lessons to this module by clicking the add lesson icon on a module.'
+                            : action === 'updated-module'
+                              ? 'Great! Your module was just updated. You can edit more modules by clicking the edit module icon on a module.'
+                              : ''}
                 </Notification>,
                 {
                     placement: 'top-center',
@@ -63,28 +76,29 @@ const CourseDetails = () => {
         setIsContentEdit(isEdit)
     }
 
-    const handleContentChange = (content: string) => {
-        mutate({ ...(data as GetProjectDetailsResponse), content }, false)
-        setIsContentEdit(false)
-    }
-
-    const handleUpdate = ({
-        name,
-        content,
-        dueDate,
-    }: {
-        name: string
-        content: string
-        dueDate: number
-    }) => {
-        const newData = { ...data }
-        newData.name = name
-        newData.content = content
-        if (newData.schedule) {
-            newData.schedule.dueDate = dueDate
+    const handleUpdate = async (values: UpdateCourseRequest) => {
+        try {
+            await apiUpdateCourse(Number(id), values)
+            toast.push(
+                <Notification type="success">
+                    Course updated successfully!
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
         }
 
-        mutate({ ...(newData as GetProjectDetailsResponse) }, false)
+        mutate()
         setIsContentEdit(false)
         setSelectedNav(defaultNavValue)
     }
@@ -103,7 +117,7 @@ const CourseDetails = () => {
             {data && (
                 <>
                     <ProjectDetailsHeader
-                        title={data.name}
+                        title={data.course.course_name}
                         isContentEdit={isContentEdit}
                         selected={selectedNav}
                         onEdit={handleEdit}
@@ -125,12 +139,7 @@ const CourseDetails = () => {
                                 }
                             >
                                 {selectedNav === defaultNavValue && (
-                                    <Overview
-                                        course={data}
-                                        isContentEdit={isContentEdit}
-                                        setIsContentEdit={setIsContentEdit}
-                                        onContentChange={handleContentChange}
-                                    />
+                                    <Overview course={data} />
                                 )}
                                 {selectedNav === 'modules' && (
                                     <Modules course={data} />

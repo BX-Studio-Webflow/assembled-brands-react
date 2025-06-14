@@ -52,8 +52,8 @@ const AddArticle = () => {
                                 <AddArticleHeader
                                     host={data.host}
                                     title={articleTitle}
-                                    onTitleChange={setArticleTitle}
                                     assets={assetsData?.assets || []}
+                                    onTitleChange={setArticleTitle}
                                     onVideoAssetChange={setVideoAssetId}
                                 />
                                 <AddArticleBody

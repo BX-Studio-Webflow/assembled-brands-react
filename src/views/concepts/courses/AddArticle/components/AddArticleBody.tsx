@@ -10,7 +10,6 @@ import ToolButtonHeading from '@/components/shared/RichTextEditor/toolButtons/To
 import ToolButtonBulletList from '@/components/shared/RichTextEditor/toolButtons/ToolButtonBulletList'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useEffect } from 'react'
 
 interface AddArticleBodyProps {
     onContentChange: (content: string) => void

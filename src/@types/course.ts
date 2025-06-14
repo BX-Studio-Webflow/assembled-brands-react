@@ -89,6 +89,12 @@ export interface CreateModuleResponse {
     id: number
 }
 
+export interface UpdateModuleRequest {
+    title: string
+    description: string
+    order: number
+}
+
 // Lesson API responses
 export interface CreateLessonResponse {
     id: number

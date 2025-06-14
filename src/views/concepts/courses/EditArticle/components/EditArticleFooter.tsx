@@ -68,14 +68,19 @@ const EditArticleFooter = ({
                 return
             }
 
-            await apiUpdateLesson(Number(courseId), Number(moduleId), Number(lessonId), {
-                title: title || 'Untitled article',
-                content: content,
-                description: '', // Empty description for now
-                video_asset_id: videoAssetId,
-                duration: 10, // Duration will be calculated based on content
-                order: 0, // Will be set by the backend
-            })
+            await apiUpdateLesson(
+                Number(courseId),
+                Number(moduleId),
+                Number(lessonId),
+                {
+                    title: title || 'Untitled article',
+                    content: content,
+                    description: '', // Empty description for now
+                    video_asset_id: videoAssetId,
+                    duration: 10, // Duration will be calculated based on content
+                    order: 0, // Will be set by the backend
+                },
+            )
             toast.push(
                 <Notification type="success">
                     Lesson updated successfully!

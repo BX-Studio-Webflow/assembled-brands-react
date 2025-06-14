@@ -1,22 +1,26 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Tag from '@/components/ui/Tag'
 import uniqueId from 'lodash/uniqueId'
 import type { CommonProps } from '@/@types/common'
 import type { ReactNode } from 'react'
 import type { Lesson } from '@/@types/course'
-import Select from '@/components/ui/Select'
-import { Asset } from '@/@types/asset'
+import { Select } from '@/components/ui'
+import type { Asset } from '@/@types/asset'
 
-interface EditArticleHeaderProps {
-    lesson: Lesson['lesson']
-    host: Lesson['host']
-    assets: Asset[]
-}
 interface AssetOption {
     value: string
     label: string
     color: string
+}
+
+interface EditArticleHeaderProps {
+    lesson: Lesson
+    host: Lesson['host']
+    assets: Asset[]
+    title: string
+    onTitleChange: (title: string) => void
+    onVideoAssetChange: (assetId: number) => void
 }
 
 export interface FieldProps extends CommonProps {
@@ -39,9 +43,9 @@ const Field = (props: FieldProps) => {
 }
 
 const EditArticleHeader = (props: EditArticleHeaderProps) => {
-    const { lesson, host, assets } = props
+    const { lesson, host, assets, title, onTitleChange, onVideoAssetChange } =
+        props
 
-    const [articleTitle, setArticleTitle] = useState(lesson.title)
     const [articleTags, setArticleTags] = useState<
         { id: string; label: string }[]
     >([])
@@ -67,8 +71,8 @@ const EditArticleHeader = (props: EditArticleHeaderProps) => {
             <input
                 className="ring-0 outline-hidden block w-full p-2 bg-transparent heading-text h3"
                 placeholder="Untitled lesson"
-                value={articleTitle}
-                onChange={(e) => setArticleTitle(e.target.value)}
+                value={title}
+                onChange={(e) => onTitleChange(e.target.value)}
             />
             <div className="mt-3 flex flex-col gap-6 border-t border-gray-200 dark:border-gray-700 py-6">
                 <Field title="Created by:">
@@ -81,12 +85,12 @@ const EditArticleHeader = (props: EditArticleHeaderProps) => {
                 </Field>
                 <Field title="Last updated:">
                     <span className="heading-text font-bold">
-                        {lesson.updated_at}
+                        {new Date().toLocaleDateString()}
                     </span>
                 </Field>
                 <Field title="Duration:">
                     <span className="heading-text font-bold">
-                        {lesson.lesson_duration} minutes
+                        {lesson?.lesson?.lesson_duration || 0} minutes
                     </span>
                 </Field>
                 <Field title="Video Asset:">
@@ -97,13 +101,11 @@ const EditArticleHeader = (props: EditArticleHeaderProps) => {
                         value={assetOptions.find(
                             (option) =>
                                 option.value ===
-                                lesson.video_asset_id.toString(),
+                                lesson?.lesson?.video_asset_id?.toString(),
                         )}
-                        onChange={(option) => {
-                            if (option) {
-                                setVideoAssetId(Number(option.value))
-                            }
-                        }}
+                        onChange={(option) =>
+                            option && onVideoAssetChange(Number(option.value))
+                        }
                     />
                 </Field>
                 <Field title="Tags:">

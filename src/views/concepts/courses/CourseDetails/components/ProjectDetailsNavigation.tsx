@@ -1,11 +1,5 @@
 import classNames from '@/utils/classNames'
-import {
-    TbFileInfo,
-    TbChecklist,
-    TbSettings,
-    TbCalendarStats,
-    TbPaperclip,
-} from 'react-icons/tb'
+import { TbFileInfo, TbChecklist, TbSettings } from 'react-icons/tb'
 
 type ProjectDetailsNavigationProps = {
     selected: string

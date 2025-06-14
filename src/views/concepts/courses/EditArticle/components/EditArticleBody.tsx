@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import ToolButtonBold from '@/components/shared/RichTextEditor/toolButtons/ToolButtonBold'
 import ToolButtonItalic from '@/components/shared/RichTextEditor/toolButtons/ToolButtonItalic'
 import ToolButtonStrike from '@/components/shared/RichTextEditor/toolButtons/ToolButtonStrike'
@@ -10,13 +11,16 @@ import ToolButtonHeading from '@/components/shared/RichTextEditor/toolButtons/To
 import ToolButtonBulletList from '@/components/shared/RichTextEditor/toolButtons/ToolButtonBulletList'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import type { Lesson } from '@/@types/course'
 
 interface EditArticleBodyProps {
-    lesson: Lesson['lesson']
+    content: string
+    onContentChange: (content: string) => void
 }
 
-const EditArticleBody = ({ lesson }: EditArticleBodyProps) => {
+const EditArticleBody = ({
+    content,
+    onContentChange,
+}: EditArticleBodyProps) => {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -33,8 +37,17 @@ const EditArticleBody = ({ lesson }: EditArticleBodyProps) => {
                 class: 'm-2 focus:outline-hidden',
             },
         },
-        content: lesson.content,
+        content: content,
+        onUpdate: ({ editor }) => {
+            onContentChange(editor.getHTML())
+        },
     })
+
+    useEffect(() => {
+        if (editor && content) {
+            editor.commands.setContent(content)
+        }
+    }, [editor, content])
 
     if (!editor) return null
 

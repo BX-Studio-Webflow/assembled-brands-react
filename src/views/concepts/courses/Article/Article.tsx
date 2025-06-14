@@ -4,11 +4,9 @@ import MediaSkeleton from '@/components/shared/loaders/MediaSkeleton'
 import TextBlockSkeleton from '@/components/shared/loaders/TextBlockSkeleton'
 import ArticleBody from './components/ArticleBody'
 import ArticleAction from './components/ArticleAction'
-import ArticleTableOfContent from './components/ArticleTableOfContent'
-import { useParams } from 'react-router'
 import useSWR from 'swr'
-import { apiGetCourse, apiGetLesson } from '@/services/CoursesService'
-import { useState , useEffect } from 'react'
+import { apiGetLesson } from '@/services/CoursesService'
+import { useState, useEffect } from 'react'
 
 const Article = () => {
     const [params, setParams] = useState<{
@@ -36,7 +34,7 @@ const Article = () => {
         [
             `/course/${params.courseId}/modules/${params.moduleId}/lessons/${params.lessonId}`,
         ],
-         
+
         () =>
             apiGetLesson(
                 Number(params.courseId),

@@ -133,8 +133,6 @@ export async function apiGetDashboard() {
     })
 }
 
-
-
 export async function apiSaveStripeOauthState(data: SaveOauthStateBody) {
     return ApiService.fetchDataWithAxios<SaveOauthStateResponse>({
         url: `/stripe/connect/oauth/callback?code=${data.code}&state=${data.state}`,
