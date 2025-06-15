@@ -7,7 +7,7 @@ import Loading from '@/components/shared/Loading'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import EventForm from '../EventForm'
 import { apiGetEvent, apiUpdateEvent } from '@/services/EventService'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { useParams, useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
 import type { EventFormType } from '../EventForm/validation/eventFormSchema'
@@ -23,11 +23,6 @@ const EventEdit = () => {
     const { data, isLoading } = useSWR<EventWithDetailsAndCount>(
         id ? `/event/${id}` : null,
         () => apiGetEvent(Number(id)),
-        {
-            revalidateOnFocus: true,
-            revalidateIfStale: true,
-            revalidateOnReconnect: true,
-        },
     )
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
@@ -70,6 +65,7 @@ const EventEdit = () => {
                 </Notification>,
                 { placement: 'top-center' },
             )
+            mutate(`/event/${id}`)
             navigate('/concepts/event/event-list')
         } catch (error) {
             console.error('Error updating event:', error)
@@ -149,8 +145,6 @@ const EventEdit = () => {
             invite_existing_leads: false,
         }
 
-        console.log('Final defaultValues:', defaultValues)
-
         return {
             defaultValues,
         }
@@ -158,62 +152,158 @@ const EventEdit = () => {
 
     const handleCopy = () => {
         let form = `<form action="https://api.3themind.com/v1/lead/external-form" method="post" id="lead_form" name="lead_form" class="lead_form">
-<!------------>
-    <label class="textbig">SIGNUP HERE</label>
-    <select name="membership_id" id="membership_id" class="lead_form_select" required>
+  <!------------>
+  <label class="textbig">SIGNUP HERE</label>
+  <select name="membership_id" id="membership_id" class="lead_form_select" required>
     <option value="" disabled selected>Select a date</option>
     <option value="2025-07-03">July 3, 2025</option>
     <!-- Add more dates as needed -->
   </select>
-    <input class="lead_form_name" maxlength="256" name="name" placeholder="Name" type="text" id="lead_form_name" required>
-    <!------------>
-    <input class="lead_form_email" maxlength="256" name="email" placeholder="@" type="email" id="lead_form_email" required>
-    <!------------>
-    <input class="lead_form_phone" maxlength="256" name="phone" placeholder="Phone" type="text" id="lead_form_phone" required>
-    <!------------>
-    <div class="capcon" id="captcha_container">
-      <label class="textsmall" id="">Security Question</label>
-      <label class="textmed" id="captcha_question"></label>
-      <input class="lead_form_name answerbox" type="text" id="captcha_answer" name="captcha_answer" placeholder="Answer" required />
-    </div>
-    <!------------>
-    <input type="hidden" name="event_id" value="56">
-    <input type="hidden" name="host_id" value="1">
-    <input type="hidden" name="redirect_url" value="https://bmw.com">
-    <!------------>
-    <div id="lead_form_error" class="lead_form_error" style="display:none;"></div>
-		<!------------>
-    <input type="submit" id="lead_form_submit" class="lead_form_submit" value="Register">
-<!------------>
+  <input class="lead_form_name" maxlength="256" name="name" placeholder="Name" type="text" id="lead_form_name" required>
+  <!------------>
+  <input class="lead_form_email" maxlength="256" name="email" placeholder="@" type="email" id="lead_form_email" required>
+  <!------------>
+  <input class="lead_form_phone" maxlength="256" name="phone" placeholder="Phone" type="text" id="lead_form_phone" required>
+  <!------------>
+  <div class="capcon" id="captcha_container">
+    <label class="textsmall" id="">Security Question</label>
+    <label class="textmed" id="captcha_question"></label>
+    <input class="lead_form_name answerbox" type="text" id="captcha_answer" name="captcha_answer" placeholder="Answer" required />
+  </div>
+  <!------------>
+  <input type="hidden" name="event_id" value="56">
+  <input type="hidden" name="host_id" value="1">
+  <input type="hidden" name="redirect_url" value="https://bmw.com">
+  <!------------>
+  <div id="lead_form_error" class="lead_form_error" style="display:none;"></div>
+  <!------------>
+  <input type="submit" id="lead_form_submit" class="lead_form_submit" value="Register">
+  <!------------>
 </form>
-
 <style>
-.lead_form {width:100%;max-width: 100%; min-height:100%; Padding: 30px 30px;border-radius: 5px; background-color: #efefef; margin:10px;border: 1px solid #cccccc; align-content: left;}
+  .lead_form {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    Padding: 30px 30px;
+    border-radius: 5px;
+    background-color: #efefef;
+    margin: 10px;
+    border: 1px solid #cccccc;
+    align-content: left;
+  }
 
-.lead_form_name, .lead_form_email, .lead_form_phone, .lead_form_select {border: 1px solid #222;background-color: #fff0;border-radius: 5px;height: 45px;margin-bottom: 10px;padding: 8px 12px;transition: all .5s; width:100%; font-size:16px;background-color: #ffffff;}
+  .lead_form_name,
+  .lead_form_email,
+  .lead_form_phone {
+    border: 1px solid #222;
+    background-color: #fff0;
+    border-radius: 5px;
+    height: 45px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    transition: all .5s;
+    width: 100%;
+    font-size: 16px;
+    background-color: #ffffff;
+  }
 
-.textbig{font-size:18px; font-weight:Medium; text-align:Left; Margin-bottom: 15px;}
+  .textbig {
+    font-size: 18px;
+    font-weight: Medium;
+    text-align: Left;
+    Margin-bottom: 15px;
+  }
 
-.textsmall{font-size:10px; font-weight:normal; margin:7px 0px -2px 0px;}
+  .textsmall {
+    font-size: 10px;
+    font-weight: normal;
+    margin: 7px 0px -2px 0px;
+  }
 
-.textmed{font-size:15px; font-weight:normal;}
+  .textmed {
+    font-size: 15px;
+    font-weight: normal;
+  }
 
-.answerbox{margin:7px 0px 7px 0px;}
+  .answerbox {
+    margin: 7px 0px 7px 0px;
+  }
 
-.capcon {text-align: left;}
+  .capcon {
+    text-align: left;
+  }
 
-.lead_form_error {color: red;background-color: #fff0f0;border-radius: 5px;padding: 12px 12px;border-style: none;height: auto;font-weight: 400;display: block;margin-bottom: 20px;font-size:16px;}
+  .lead_form_error {
+    color: red;
+    background-color: #fff0f0;
+    border-radius: 5px;
+    padding: 12px 12px;
+    border-style: none;
+    height: auto;
+    font-weight: 400;
+    display: block;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
 
-.lead_form_submit {background-color: #222;color: #fff;text-align: center;white-space: nowrap;border-radius: 5px;justify-content: center;align-items: center;height: 4vh;padding-top: 7px;padding-bottom: 7px;font-size: 16px;font-weight: 500;display: flex;width:100%;height: 45px; margin: 5px 0px 5px 0px;}
+  .lead_form_submit {
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    height: 4vh;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    width: 100%;
+    height: 45px;
+    margin: 5px 0px 5px 0px;
+  }
 
-.lead_form_dates {border: 1px solid #222;background-color: #fff0;border-radius: 3px;height: 45px;margin-bottom: 20px;padding: 8px 12px;transition: all .5s; width:100%; font-size:16px;background-color: #ffffff;}
-input[type=text], input[type=email], .lead_form_dates{
-border: .5px solid #222;
-}
-input:focus, .lead_form_dates{
-border: .5px solid #222;
-outline: none;
-}
+  .lead_form_select {
+    border: 0.5px solid #222;
+    background-color: #ffffff;
+    border-radius: 5px;
+    height: 45px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    transition: all 0.5s;
+    width: 100%;
+    font-size: 16px;
+    font-family: inherit;
+    /* optional: match font with inputs */
+  }
+
+  .lead_form_dates {
+    border: 1px solid #222;
+    background-color: #fff0;
+    border-radius: 3px;
+    height: 45px;
+    margin-bottom: 20px;
+    padding: 8px 12px;
+    transition: all .5s;
+    width: 100%;
+    font-size: 16px;
+    background-color: #ffffff;
+  }
+
+  input[type=text],
+  input[type=email],
+  .lead_form_dates {
+    border: .5px solid #222;
+  }
+
+  input:focus,
+  .lead_form_dates {
+    border: .5px solid #222;
+    outline: none;
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/j.js"></script>`
 

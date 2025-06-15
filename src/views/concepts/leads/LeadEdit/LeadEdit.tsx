@@ -34,17 +34,12 @@ const LeadEdit = () => {
         [`/lead/${id}`, { id: id as string }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, params]) => apiGetLead<Lead>(params.id),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-        },
     )
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values: LeadFormSchema) => {
-        console.log('Submitted values', values)
         setIsSubmiting(true)
         try {
             const leadData = {

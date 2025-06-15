@@ -27,10 +27,6 @@ const EditArticle = () => {
             : null,
         () =>
             apiGetLesson(Number(courseId), Number(moduleId), Number(lessonId)),
-        {
-            revalidateOnFocus: true,
-            revalidateIfStale: true,
-        },
     )
 
     useEffect(() => {
