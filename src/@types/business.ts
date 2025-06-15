@@ -22,3 +22,10 @@ export interface UpdateBusinessRequest extends Record<string, unknown> {
     dial_code: string
     phone: string
 }
+
+export interface UploadBusinessLogoRequest {
+    businessId: number
+    imageBase64: string
+    fileName: string
+    [key: string]: unknown
+}

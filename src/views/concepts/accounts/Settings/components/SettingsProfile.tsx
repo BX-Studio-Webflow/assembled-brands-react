@@ -16,7 +16,6 @@ import { z } from 'zod'
 import { HiOutlineUser } from 'react-icons/hi'
 import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
-import type { GetSettingsProfileResponse } from '../types'
 import {
     apiGetUserMe,
     apiUpdateUserProfile,
@@ -25,6 +24,7 @@ import {
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
+import { GetSettingsProfileResponse } from '../types'
 
 type ProfileSchema = {
     firstName: string
@@ -96,14 +96,8 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
 }
 
 const SettingsProfile = () => {
-    const { data, mutate } = useSWR(
-        '/user/me',
-        () => apiGetUserMe<GetSettingsProfileResponse>(),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-        },
+    const { data, mutate } = useSWR('/user/me', () =>
+        apiGetUserMe<GetSettingsProfileResponse>(),
     )
 
     const dialCodeList = useMemo(() => {

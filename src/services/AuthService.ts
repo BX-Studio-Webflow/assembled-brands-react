@@ -19,6 +19,7 @@ import type {
     SaveOauthStateBody,
     SaveOauthStateResponse,
 } from '@/@types/auth'
+import { UploadBusinessLogoRequest } from '@/@types/business'
 
 export async function apiSignIn(data: SignInCredential) {
     return ApiService.fetchDataWithAxios<SignInResponse>({
@@ -77,6 +78,16 @@ export async function apiGetUserMe<T>() {
 export async function apiUploadProfileImage<T>(data: UploadProfileImageBody) {
     return ApiService.fetchDataWithAxios<T>({
         url: '/user/upload-profile-image',
+        method: 'post',
+        data,
+    })
+}
+
+export async function apiUploadBusinessProfileImage<T>(
+    data: UploadBusinessLogoRequest,
+) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: '/business/logo',
         method: 'post',
         data,
     })

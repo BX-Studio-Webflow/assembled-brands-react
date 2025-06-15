@@ -17,7 +17,10 @@ import { HiOutlineUser } from 'react-icons/hi'
 import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
-import { apiGetUserMe, apiUploadProfileImage } from '@/services/AuthService'
+import {
+    apiGetUserMe,
+    apiUploadBusinessProfileImage,
+} from '@/services/AuthService'
 import { apiUpdateBusiness } from '@/services/BusinessService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -93,14 +96,8 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
 }
 
 const SettingsBusiness = () => {
-    const { data, mutate } = useSWR(
-        '/user/me',
-        () => apiGetUserMe<GetSettingsProfileResponse>(),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-        },
+    const { data, mutate } = useSWR('/user/me', () =>
+        apiGetUserMe<GetSettingsProfileResponse>(),
     )
 
     const dialCodeList = useMemo(() => {
@@ -154,7 +151,6 @@ const SettingsBusiness = () => {
 
     const onSubmit = async (values: BusinessProfileSchema) => {
         try {
-            console.log('Form submitted with values:', values)
             const formData = {
                 name: values.businessName,
                 address: values.address,
@@ -162,7 +158,7 @@ const SettingsBusiness = () => {
                 dial_code: values.dialCode,
                 phone: values.phoneNumber,
             }
-            console.log('Submitting form data:', formData)
+
             await apiUpdateBusiness(formData)
             toast.push(
                 <Notification type="success">
@@ -192,16 +188,15 @@ const SettingsBusiness = () => {
             reader.onload = async (e) => {
                 try {
                     const base64String = e.target?.result as string
-                    const response = await apiUploadProfileImage<{
-                        data: { url: string }
-                    }>({
+                    await apiUploadBusinessProfileImage({
+                        businessId: data?.business?.id || 0,
                         imageBase64: base64String,
                         fileName: file.name,
                     })
-                    resolve(response.data.url)
+                    resolve(null)
                     toast.push(
                         <Notification type="success">
-                            Your profile image has been updated!
+                            Your business profile image has been uploaded!
                         </Notification>,
                         { placement: 'top-center' },
                     )
