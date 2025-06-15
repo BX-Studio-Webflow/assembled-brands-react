@@ -29,8 +29,8 @@ const TaskItem = (props: TaskItemProps) => {
         <Tr ref={ref} {...rest}>
             <Td className="w-[40px]">
                 <button
+                    type="button"
                     className="text-2xl cursor-pointer pt-1"
-                    role="button"
                     onClick={() => onChange(taskId)}
                 >
                     <TbCircleCheckFilled className="text-primary" />

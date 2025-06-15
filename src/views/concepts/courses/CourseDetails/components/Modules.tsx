@@ -10,6 +10,11 @@ import Tooltip from '@/components/ui/Tooltip'
 import Button from '@/components/ui/Button'
 import { HiPlus } from 'react-icons/hi'
 import UpdateDialog from './UpdateDialog'
+import toast from '@/components/ui/toast'
+import { Notification } from '@/components/ui'
+import { AxiosError } from 'axios'
+import { mutate } from 'swr'
+import { apiDeleteLesson, apiDeleteModule } from '@/services/CoursesService'
 
 const { Td, Tr, TBody } = Table
 
@@ -23,12 +28,16 @@ const Modules = (course: ModulesProps) => {
         moduleId: number
         lessonId: number
     } | null>(null)
-    const [lessonToDelete, setLessonToDelete] = useState<number | null>(null)
+    const [lessonToDelete, setLessonToDelete] = useState<{
+        moduleId: number
+        lessonId: number
+    } | null>(null)
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false)
     const [selectedModule, setSelectedModule] = useState<{
         courseId: number
         moduleId: number
     } | null>(null)
+    const [moduleToDelete, setModuleToDelete] = useState<number | null>(null)
 
     const handleCheckClick = (moduleId: number, lessonId: number) => {
         setSelectedLesson({ moduleId, lessonId })
@@ -44,9 +53,31 @@ const Modules = (course: ModulesProps) => {
         setSelectedModule(null)
     }
 
-    const handleDeleteConfirm = () => {
-        // Here you would typically make an API call to delete the lesson
-        console.log('Deleting lesson:', lessonToDelete)
+    const handleDeleteConfirm = async () => {
+        if (!lessonToDelete) return
+        try {
+            await apiDeleteLesson(
+                Number(course.course.course.id),
+                lessonToDelete.moduleId,
+                lessonToDelete.lessonId,
+            )
+            toast.push(
+                <Notification type="success">
+                    Lesson deleted successfully!
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            mutate('/course')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
         setLessonToDelete(null)
     }
 
@@ -76,8 +107,8 @@ const Modules = (course: ModulesProps) => {
         )
     }
 
-    const onDelete = (lessonId: number) => {
-        setLessonToDelete(lessonId)
+    const onDelete = (moduleId: number, lessonId: number) => {
+        setLessonToDelete({ moduleId, lessonId })
     }
 
     const onEditModule = (courseId: number, moduleId: number) => {
@@ -85,7 +116,42 @@ const Modules = (course: ModulesProps) => {
         setIsUpdateDialogOpen(true)
     }
 
-    console.log(course.course.modules)
+    const onDeleteModule = (moduleId: number) => {
+        setModuleToDelete(moduleId)
+    }
+
+    const handleModuleDeleteClose = () => {
+        setModuleToDelete(null)
+    }
+
+    const handleModuleDeleteConfirm = async () => {
+        if (!moduleToDelete) return
+        try {
+            // Here you would typically make an API call to delete the module
+            console.log('Deleting module:', moduleToDelete)
+            await apiDeleteModule(
+                Number(course.course.course.id),
+                Number(moduleToDelete),
+            )
+            toast.push(
+                <Notification type="success">
+                    Module deleted successfully!
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            mutate('/course')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
+        setModuleToDelete(null)
+    }
 
     return (
         <>
@@ -103,6 +169,12 @@ const Modules = (course: ModulesProps) => {
                                                 course.course.course.id,
                                                 module.id,
                                             )
+                                        }
+                                    />
+                                    <TbTrash
+                                        className="text-xl cursor-pointer"
+                                        onClick={() =>
+                                            onDeleteModule(module.id)
                                         }
                                     />
                                 </h4>
@@ -190,6 +262,7 @@ const Modules = (course: ModulesProps) => {
                                                             role="button"
                                                             onClick={() =>
                                                                 onDelete(
+                                                                    module.id,
                                                                     lesson.id,
                                                                 )
                                                             }
@@ -232,6 +305,21 @@ const Modules = (course: ModulesProps) => {
                     cannot be undone.
                 </p>
             </ConfirmDialog>
+            <ConfirmDialog
+                isOpen={Boolean(moduleToDelete)}
+                type="danger"
+                title="Delete Module"
+                onClose={handleModuleDeleteClose}
+                onRequestClose={handleModuleDeleteClose}
+                onCancel={handleModuleDeleteClose}
+                onConfirm={handleModuleDeleteConfirm}
+            >
+                <p>
+                    Are you sure you want to delete this module? All lessons
+                    within this module will also be deleted. This action cannot
+                    be undone.
+                </p>
+            </ConfirmDialog>
             <UpdateDialog
                 isOpen={isUpdateDialogOpen}
                 courseId={selectedModule?.courseId || 0}
@@ -247,10 +335,6 @@ const Modules = (course: ModulesProps) => {
                     )?.description
                 }
                 onClose={handleDialogClose}
-                onSuccess={() => {
-                    // Trigger a refresh of the course data
-                    window.location.reload()
-                }}
             />
         </>
     )
