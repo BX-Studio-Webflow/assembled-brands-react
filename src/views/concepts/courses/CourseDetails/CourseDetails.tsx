@@ -25,14 +25,8 @@ const CourseDetails = () => {
     const { id } = useParams()
 
     const { data, mutate } = useSWR(
-        [`/course/${id}`],
-
+        `/course/${id}`,
         () => apiGetCourse(Number(id)),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            evalidateOnFocus: false,
-        },
     )
 
     useEffect(() => {

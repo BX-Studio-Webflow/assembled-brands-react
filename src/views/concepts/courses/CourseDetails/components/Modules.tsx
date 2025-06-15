@@ -69,7 +69,7 @@ const Modules = (course: ModulesProps) => {
                     placement: 'top-center',
                 },
             )
-            mutate('/course')
+            mutate(`/course/${course.course.course.id}`)
         } catch (error) {
             toast.push(
                 <Notification type="danger">
@@ -127,8 +127,6 @@ const Modules = (course: ModulesProps) => {
     const handleModuleDeleteConfirm = async () => {
         if (!moduleToDelete) return
         try {
-            // Here you would typically make an API call to delete the module
-            console.log('Deleting module:', moduleToDelete)
             await apiDeleteModule(
                 Number(course.course.course.id),
                 Number(moduleToDelete),
@@ -141,7 +139,7 @@ const Modules = (course: ModulesProps) => {
                     placement: 'top-center',
                 },
             )
-            mutate('/course')
+            mutate(`/course/${course.course.course.id}`)
         } catch (error) {
             toast.push(
                 <Notification type="danger">
