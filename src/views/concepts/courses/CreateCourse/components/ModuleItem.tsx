@@ -5,6 +5,7 @@ import { TbCircleCheckFilled, TbTrash } from 'react-icons/tb'
 import type { Ref } from 'react'
 import { useState } from 'react'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import { HiClock } from 'react-icons/hi'
 
 type ModuleItemProps = {
     moduleId: string
@@ -55,9 +56,21 @@ const ModuleItem = (props: ModuleItemProps) => {
                     <p className="text-gray-500 mt-1">{description}</p>
                 </Td>
                 <Td className="w-[150px]">
-                    <Tag className={`mr-2 rtl:ml-2 mb-2`}>
-                        {new Date().toLocaleDateString()}
-                    </Tag>
+                    <div className="mr-2 rtl:ml-2">
+                        <Tag
+                            prefix={
+                                <HiClock className="text-base text-gray-500 mr-1 rtl:ml-1" />
+                            }
+                        >
+                            {new Date().toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}
+                        </Tag>
+                    </div>
                 </Td>
                 <Td className="w-[150px]">
                     <Tag
