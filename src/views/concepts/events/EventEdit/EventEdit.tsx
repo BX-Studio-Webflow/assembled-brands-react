@@ -24,9 +24,9 @@ const EventEdit = () => {
         id ? `/event/${id}` : null,
         () => apiGetEvent(Number(id)),
         {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
+            revalidateOnFocus: true,
+            revalidateIfStale: true,
+            revalidateOnReconnect: true,
         },
     )
 
