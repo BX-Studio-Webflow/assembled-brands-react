@@ -60,7 +60,7 @@ const Settings = () => {
     )
 
     useEffect(() => {
-        if (params.action == 'billing') {
+        if (params.action == 'billing' || params.action == 'stripe-connect') {
             setCurrentView('billing')
         }
         if (params.code && params.state) {
