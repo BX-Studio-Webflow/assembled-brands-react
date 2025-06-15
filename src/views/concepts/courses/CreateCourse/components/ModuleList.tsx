@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Table from '@/components/ui/Table'
 import AddModule from './AddModule'
 import type { Module } from '../types'
-import TaskItem from './TaskItem'
+import ModuleItem from './ModuleItem'
 
 const { TBody } = Table
 
@@ -17,6 +17,7 @@ const ModuleList = ({
     modules,
     onModuleChange,
     onCreateModule,
+    onRemoveModule,
 }: ModuleListProps) => {
     const [isAdding, setIsAdding] = useState(false)
 
@@ -30,12 +31,13 @@ const ModuleList = ({
             <Table className="lg:overflow-hidden">
                 <TBody>
                     {modules?.map((item) => (
-                        <TaskItem
+                        <ModuleItem
                             key={item.id}
-                            taskId={item.id}
+                            moduleId={item.id}
                             title={item.title}
                             description={item.description}
                             onChange={() => onModuleChange(item.id)}
+                            onDelete={onRemoveModule}
                         />
                     ))}
                 </TBody>

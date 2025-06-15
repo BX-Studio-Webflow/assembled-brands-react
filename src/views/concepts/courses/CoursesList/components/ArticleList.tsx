@@ -84,8 +84,6 @@ const Articles = ({ query, topic, courses }: ArticlesProps) => {
                         category={'survey'}
                         title={item.course?.course_name || 'Untitled'}
                         timeToRead={0}
-                        viewCount={0}
-                        commentCount={0}
                         isLastChild={!isLastChild(courses.courses, index)}
                     />
                 ))}
