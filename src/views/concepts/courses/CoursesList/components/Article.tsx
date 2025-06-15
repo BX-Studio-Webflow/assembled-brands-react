@@ -3,7 +3,14 @@ import IconText from '@/components/shared/IconText'
 import { categoryIcon } from '../utils'
 import classNames from '@/utils/classNames'
 import { useNavigate } from 'react-router'
-import { TbEye, TbMessage } from 'react-icons/tb'
+import { TbEdit, TbTrash } from 'react-icons/tb'
+import { ConfirmDialog } from '@/components/shared'
+import { useState } from 'react'
+import toast from '@/components/ui/toast'
+import { apiDeleteCourse } from '@/services/CoursesService'
+import { Notification } from '@/components/ui'
+import { AxiosError } from 'axios'
+import { mutate } from 'swr'
 
 type ArticleProps = {
     id: string
@@ -11,8 +18,6 @@ type ArticleProps = {
     category: string
     title: string
     timeToRead: number
-    viewCount: number
-    commentCount: number
 }
 
 const Article = ({
@@ -21,13 +26,45 @@ const Article = ({
     category,
     title,
     timeToRead,
-    viewCount,
-    commentCount,
 }: ArticleProps) => {
     const navigate = useNavigate()
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
     const handleArticleClick = () => {
         navigate(`/concepts/courses/course-details/${id}`)
+    }
+
+    const handleDelete = () => {
+        setIsDeleteDialogOpen(true)
+    }
+
+    const handleDeleteClose = () => {
+        setIsDeleteDialogOpen(false)
+    }
+
+    const handleDeleteConfirm = async () => {
+        // Here you would typically make an API call to delete the article
+        console.log('Deleting article:', id)
+        try {
+            await apiDeleteCourse(Number(id))
+            toast.push(
+                <Notification type="success">
+                    Course deleted successfully!
+                </Notification>,
+                {
+                    placement: 'top-center',
+                },
+            )
+            mutate('/course')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
+        setIsDeleteDialogOpen(false)
     }
 
     return (
@@ -37,9 +74,11 @@ const Article = ({
                 isLastChild && 'border-b',
             )}
             role="buttton"
-            onClick={handleArticleClick}
         >
-            <div className="flex items-center gap-4">
+            <div
+                className="flex items-center gap-4"
+                onClick={handleArticleClick}
+            >
                 <Avatar
                     className="bg-gray-100 dark:bg-gray-700"
                     size={50}
@@ -64,17 +103,37 @@ const Article = ({
             <div className="flex items-center gap-3">
                 <IconText
                     className="font-semibold"
-                    icon={<TbEye className="text-xl" />}
-                >
-                    {viewCount}
-                </IconText>
+                    icon={
+                        <TbEdit
+                            className="text-xl"
+                            onClick={handleArticleClick}
+                        />
+                    }
+                ></IconText>
                 <IconText
                     className="font-semibold"
-                    icon={<TbMessage className="text-xl" />}
-                >
-                    {commentCount}
-                </IconText>
+                    icon={
+                        <TbTrash
+                            className="text-xl"
+                            onClick={() => handleDelete()}
+                        />
+                    }
+                ></IconText>
             </div>
+            <ConfirmDialog
+                isOpen={isDeleteDialogOpen}
+                type="danger"
+                title="Delete Course"
+                onClose={handleDeleteClose}
+                onRequestClose={handleDeleteClose}
+                onCancel={handleDeleteClose}
+                onConfirm={handleDeleteConfirm}
+            >
+                <p>
+                    Are you sure you want to delete this course? This action
+                    cannot be undone.
+                </p>
+            </ConfirmDialog>
         </div>
     )
 }

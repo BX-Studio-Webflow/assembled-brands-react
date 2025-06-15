@@ -16,11 +16,6 @@ export type Module = {
     id: string
     title: string
     description: string
-    progress: string
-    assignee?: Member
-    priority: string
-    dueDate: number | null
-    checked: boolean
 }
 
 export type Members = Member[]

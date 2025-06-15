@@ -1,17 +1,13 @@
 import classNames from '@/utils/classNames'
 import Table from '@/components/ui/Table'
 import Tag from '@/components/ui/Tag'
-import { TbCircleCheck, TbCircleCheckFilled, TbTrash } from 'react-icons/tb'
+import { TbCircleCheckFilled, TbTrash } from 'react-icons/tb'
 import type { Ref } from 'react'
 
 type TaskItemProps = {
     taskId: string
     title: string
     description: string
-    checked: boolean
-    progress: string
-    priority: string
-    labelClass: Record<string, string>
     onChange: (taskId: string) => void
     ref?: Ref<HTMLTableRowElement>
 }
@@ -23,10 +19,7 @@ const TaskItem = (props: TaskItemProps) => {
         taskId,
         title,
         description,
-        checked,
-        progress,
-        priority,
-        labelClass = {},
+
         onChange,
         ref,
         ...rest
@@ -40,41 +33,20 @@ const TaskItem = (props: TaskItemProps) => {
                     role="button"
                     onClick={() => onChange(taskId)}
                 >
-                    {checked ? (
-                        <TbCircleCheckFilled className="text-primary" />
-                    ) : (
-                        <TbCircleCheck className="hover:text-primary" />
-                    )}
+                    <TbCircleCheckFilled className="text-primary" />
                 </button>
             </Td>
             <Td className="w-[500px]">
-                <span
-                    className={classNames(
-                        'heading-text font-bold',
-                        checked && 'line-through opacity-50',
-                    )}
-                >
+                <span className={classNames('heading-text font-bold')}>
                     {title}
                 </span>
                 <p className="text-gray-500 mt-1">{description}</p>
             </Td>
             <Td className="w-[150px]">
-                <Tag
-                    className={`mr-2 rtl:ml-2 mb-2 ${
-                        progress ? labelClass[progress] : ''
-                    }`}
-                >
-                    {progress}
-                </Tag>
+                <Tag className={`mr-2 rtl:ml-2 mb-2`}>New</Tag>
             </Td>
             <Td className="w-[150px]">
-                <Tag
-                    className={`mr-2 rtl:ml-2 mb-2 ${
-                        priority ? labelClass[priority] : ''
-                    }`}
-                >
-                    {priority}
-                </Tag>
+                <Tag className={`mr-2 rtl:ml-2 mb-2`}>New</Tag>
             </Td>
             <Td>
                 <TbTrash />

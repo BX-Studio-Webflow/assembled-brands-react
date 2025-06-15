@@ -34,12 +34,8 @@ const AddModule = ({
     const handleCreateClick = () => {
         const task: Module = {
             id: uniqueId('task_'),
-            name: nameRef.current?.value || 'Untitled module',
+            title: nameRef.current?.value || 'Untitled module',
             description: descriptionRef.current?.value || '',
-            progress: 'Pending',
-            priority: 'Medium',
-            dueDate: null,
-            checked: false,
         }
 
         onCreateTask(task)

@@ -4,18 +4,10 @@ import useSWR from 'swr'
 import { apiGetCourses } from '@/services/CoursesService'
 
 const CoursesList = () => {
-    const { data, isLoading } = useSWR(
-        [`/course`, {}],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetCourses(),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-        },
-    )
+    const { data, isLoading } = useSWR(`/course`, () => apiGetCourses())
     return (
         <>
-            <TopSection courses={data} isLoading={isLoading} />
+            <TopSection />
             <BodySection courses={data} isLoading={isLoading} />
         </>
     )

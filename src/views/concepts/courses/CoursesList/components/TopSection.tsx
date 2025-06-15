@@ -26,11 +26,10 @@ const TopSection = () => {
             <Container className="flex flex-col items-center px-4">
                 <div className="mb-6 flex flex-col items-center">
                     <h2 className="mb-4 text-center">
-                        Assistance & Support Center
+                        My courses
                     </h2>
                     <p className="max-w-[350px] dark:text-gray-200 text-center">
-                        Search for answers, browse our FAQs, and access support
-                        resources all in one place.
+                        Browse your courses and access all related resources in one place.
                     </p>
                 </div>
                 <div className="border border-gray-200 dark:border-gray-700 rounded-xl min-h-[50px] px-3 flex flex-col bg-white max-w-[800px] w-full">
@@ -38,7 +37,7 @@ const TopSection = () => {
                         <input
                             ref={inputRef}
                             className="flex-1 h-full placeholder:text-gray-400 placeholder:font-semibold font-semibold bg-transparent focus:outline-hidden heading-text"
-                            placeholder="Type to search an article"
+                            placeholder="Type to search a course"
                             onKeyDown={(event) => {
                                 if (event.key === 'Enter') {
                                     handleSetQueryText()

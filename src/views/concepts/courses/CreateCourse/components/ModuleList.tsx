@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Table from '@/components/ui/Table'
 import AddModule from './AddModule'
-import { labelClass } from '../utils'
 import type { Module } from '../types'
 import TaskItem from './TaskItem'
 
@@ -34,12 +33,8 @@ const ModuleList = ({
                         <TaskItem
                             key={item.id}
                             taskId={item.id}
-                            checked={item.checked}
                             title={item.title}
                             description={item.description}
-                            progress={item.progress}
-                            priority={item.priority}
-                            labelClass={labelClass}
                             onChange={() => onModuleChange(item.id)}
                         />
                     ))}
