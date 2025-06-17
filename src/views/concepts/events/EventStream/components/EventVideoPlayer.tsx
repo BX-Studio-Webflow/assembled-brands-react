@@ -73,12 +73,12 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             <Plyr
                 ref={playerRef}
                 muted={true}
+                poster={poster}
                 source={{
                     type: 'video',
                     sources: [
                         {
                             src,
-                            type: 'video/mp4',
                         },
                     ],
                     poster,
