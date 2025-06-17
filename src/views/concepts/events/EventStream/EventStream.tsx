@@ -21,20 +21,13 @@ const EventStream = () => {
     const code = searchParams.get('code')
     console.log({ token, email, code, id })
     const swrKey = [`/event/stream/${id}`]
-    const { data, isLoading } = useSWR<EventStreamResponse>(
-        swrKey,
-        () =>
-            apiStreamEvent({
-                email: email,
-                token: token,
-                event_id: Number(code || id),
-                isHost: !token && !email && !code, // If no token/email/code provided, assume it's a host
-            }),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-        },
+    const { data, isLoading } = useSWR<EventStreamResponse>(swrKey, () =>
+        apiStreamEvent({
+            email: email,
+            token: token,
+            event_id: Number(code || id),
+            isHost: !token && !email && !code, // If no token/email/code provided, assume it's a host
+        }),
     )
 
     // Compute eventStatus and nextDate
@@ -68,9 +61,26 @@ const EventStream = () => {
         }
         return { eventStatus: status, nextDate: next }
     }, [data])
+
     console.log(data)
-    const handleCountdownEnd = () => {
-        mutate(swrKey)
+
+    const handleStatusUpdate = (
+        status: 'active' | 'suspended' | 'cancelled' | 'ended',
+    ) => {
+        mutate(
+            swrKey,
+            async (currentData: EventStreamResponse | undefined) => {
+                if (!currentData) return currentData
+                return {
+                    ...currentData,
+                    event: {
+                        ...currentData.event,
+                        status: status, // Set to active when countdown ends
+                    },
+                }
+            },
+            { revalidate: true },
+        )
     }
 
     return (
@@ -90,13 +100,18 @@ const EventStream = () => {
                         >
                             <div className="flex flex-auto h-full gap-8">
                                 <ChatSidebar event={data} />
-                                <ChatBody data={data} />
+                                <ChatBody
+                                    data={data}
+                                    onStatusUpdate={handleStatusUpdate}
+                                />
                             </div>
                         </Card>
                     </>
                 )}
                 {data && eventStatus !== 'live' && (
-                    <EventWaitingCard onCountdownEnd={handleCountdownEnd} />
+                    <EventWaitingCard
+                        onCountdownEnd={() => handleStatusUpdate('active')}
+                    />
                 )}
             </Loading>
         </EventProvider>

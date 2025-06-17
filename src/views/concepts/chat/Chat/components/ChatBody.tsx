@@ -13,7 +13,15 @@ import EventVideoPlayer from '@/views/concepts/events/EventStream/components/Eve
 import { EventStreamResponse } from '@/@types/events'
 import NoUserFound from '@/assets/svg/NoUserFound'
 
-const ChatBody = ({ data }: { data: EventStreamResponse }) => {
+const ChatBody = ({
+    data,
+    onStatusUpdate,
+}: {
+    data: EventStreamResponse
+    onStatusUpdate: (
+        status: 'active' | 'suspended' | 'cancelled' | 'ended',
+    ) => void
+}) => {
     const scrollRef = useRef<ScrollBarRef>(null)
     const selectedChat = useChatStore((state) => state.selectedChat)
     const selectedTabType = useChatStore((state) => state.selectedTabType)
@@ -167,7 +175,11 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                 </Card>
             ) : (
                 <div className="flex-1 h-full max-h-full flex flex-col rounded-2xl border border-gray-200 dark:border-gray-800 p-0 m-0">
-                    <EventVideoPlayer src={data.event.asset.presignedUrl} />
+                    <EventVideoPlayer
+                        src={data.event.asset.presignedUrl}
+                        assetId={String(data.event.asset.id)}
+                        onEnded={() => onStatusUpdate('ended')}
+                    />
                 </div>
             )}
             {isVideoPiP && (
@@ -180,7 +192,11 @@ const ChatBody = ({ data }: { data: EventStreamResponse }) => {
                     )}
                 >
                     <div className="relative w-full h-full">
-                        <EventVideoPlayer src={data.event.asset.presignedUrl} />
+                        <EventVideoPlayer
+                            src={data.event.asset.presignedUrl}
+                            assetId={String(data.event.asset.id)}
+                            onEnded={() => onStatusUpdate('ended')}
+                        />
                         <button
                             className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-75"
                             onClick={togglePiP}

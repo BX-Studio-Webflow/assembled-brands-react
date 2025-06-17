@@ -161,7 +161,7 @@ export interface EventWithDetailsAndCount {
     asset_id: number
     created_at: string
     updated_at: string
-    status: 'active' | 'suspended' | 'cancelled'
+    status: 'active' | 'suspended' | 'cancelled' | 'ended'
     live_video_url: string
     success_url: string
     instructions: string

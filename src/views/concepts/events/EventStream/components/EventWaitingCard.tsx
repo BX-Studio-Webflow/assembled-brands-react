@@ -33,7 +33,9 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
 
     return (
         <div className="flex flex-col items-center justify-center h-full bg-green-100 rounded-lg p-8">
-            <span style={{ fontSize: 48, marginBottom: 16 }}>🍿</span>
+            <span style={{ fontSize: 48, marginBottom: 16 }}>
+                {eventStatus === 'ended' ? '📹' : '🍿'}
+            </span>
             <div className="text-center">
                 {eventStatus === 'early' && (
                     <>

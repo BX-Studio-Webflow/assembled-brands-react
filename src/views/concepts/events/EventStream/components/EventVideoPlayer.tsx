@@ -1,10 +1,14 @@
 import Card from '@/components/ui/Card'
-import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react'
-import React from 'react'
+import {
+    MediaPlayer,
+    MediaProvider,
+    Poster,
+    type MediaPlayerInstance,
+} from '@vidstack/react'
+import React, { useEffect, useRef } from 'react'
 import '@vidstack/react/player/styles/default/layouts/video.css'
 import '@vidstack/react/player/styles/default/theme.css'
 import Notification from '@/components/ui/Notification'
-
 
 import {
     defaultLayoutIcons,
@@ -15,6 +19,8 @@ import { toast } from '@/components/ui'
 interface EventVideoPlayerProps {
     src?: string
     poster?: string
+    assetId?: string
+    onEnded: () => void
 }
 
 const onAutoPlay = () => {
@@ -36,18 +42,51 @@ const onAutoPlayFail = () => {
 const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     src = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4',
     poster = 'https://ecme-react.themenate.net/img/landing/hero/hero.webp',
+    assetId,
+    onEnded,
 }) => {
+    const playerRef = useRef<MediaPlayerInstance>(null)
+    const progressIntervalRef = useRef<NodeJS.Timeout>(null)
+
+    useEffect(() => {
+        // Load saved progress when component mounts
+        const savedProgress = localStorage.getItem(`video-progress-${assetId}`)
+        if (savedProgress && playerRef.current) {
+            playerRef.current.currentTime = parseFloat(savedProgress)
+        }
+
+        // Set up interval to save progress every 3 seconds
+        progressIntervalRef.current = setInterval(() => {
+            if (playerRef.current) {
+                const currentTime = playerRef.current.currentTime
+                localStorage.setItem(
+                    `video-progress-${assetId}`,
+                    currentTime.toString(),
+                )
+            }
+        }, 3000)
+
+        // Cleanup interval on unmount
+        return () => {
+            if (progressIntervalRef.current) {
+                clearInterval(progressIntervalRef.current)
+            }
+        }
+    }, [src, assetId])
+
     return (
         <Card className="w-full h-full p-0 m-0">
             <MediaPlayer
+                ref={playerRef}
                 autoPlay
                 muted
                 title="..."
-                storage={src}
+                storage={`video-storage-${assetId}`}
                 src={src}
-                onAutoPlay={onAutoPlay}
-                onAutoPlayFail={onAutoPlayFail}
                 className="w-full h-full"
+                onAutoPlayFail={onAutoPlayFail}
+                onAutoPlay={onAutoPlay}
+                onEnded={onEnded}
             >
                 <MediaProvider className="w-full h-full">
                     <Poster src={poster} alt="..." className="w-full h-full" />
