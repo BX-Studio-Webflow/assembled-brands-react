@@ -19,6 +19,7 @@ const EventStream = () => {
     const token = searchParams.get('token')
     const email = searchParams.get('email')
     const code = searchParams.get('code')
+    const isHost = !token && !email && !code
     console.log({ token, email, code, id })
     const swrKey = [`/event/stream/${id}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
@@ -28,7 +29,7 @@ const EventStream = () => {
                 email: email,
                 token: token,
                 event_id: Number(code || id),
-                isHost: !token && !email && !code, // If no token/email/code provided, assume it's a host
+                isHost: isHost, // If no token/email/code provided, assume it's a host
             }),
         { revalidateOnFocus: false },
     )
@@ -113,6 +114,7 @@ const EventStream = () => {
                                 <ChatSidebar event={data} />
                                 <ChatBody
                                     data={data}
+                                    isHost={isHost}
                                     onStatusUpdate={handleStatusUpdate}
                                 />
                             </div>

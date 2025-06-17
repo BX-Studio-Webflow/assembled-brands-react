@@ -16,11 +16,13 @@ import NoUserFound from '@/assets/svg/NoUserFound'
 const ChatBody = ({
     data,
     onStatusUpdate,
+    isHost,
 }: {
     data: EventStreamResponse
     onStatusUpdate: (
         status: 'active' | 'suspended' | 'cancelled' | 'ended',
     ) => void
+    isHost: boolean
 }) => {
     const scrollRef = useRef<ScrollBarRef>(null)
     const selectedChat = useChatStore((state) => state.selectedChat)
@@ -176,6 +178,7 @@ const ChatBody = ({
             ) : (
                 <div className="flex-1 h-full max-h-full flex flex-col rounded-2xl border border-gray-200 dark:border-gray-800 p-0 m-0">
                     <EventVideoPlayer
+                        isHost={isHost}
                         src={data.event.asset.presignedUrl}
                         assetId={data.event.asset.id}
                         eventId={data.event.id}
@@ -194,6 +197,7 @@ const ChatBody = ({
                 >
                     <div className="relative w-full h-full">
                         <EventVideoPlayer
+                            isHost={isHost}
                             src={data.event.asset.presignedUrl}
                             assetId={data.event.asset.id}
                             eventId={data.event.id}
