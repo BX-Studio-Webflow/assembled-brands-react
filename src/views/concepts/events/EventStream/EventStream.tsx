@@ -21,13 +21,16 @@ const EventStream = () => {
     const code = searchParams.get('code')
     console.log({ token, email, code, id })
     const swrKey = [`/event/stream/${id}`]
-    const { data, isLoading } = useSWR<EventStreamResponse>(swrKey, () =>
-        apiStreamEvent({
-            email: email,
-            token: token,
-            event_id: Number(code || id),
-            isHost: !token && !email && !code, // If no token/email/code provided, assume it's a host
-        }),
+    const { data, isLoading } = useSWR<EventStreamResponse>(
+        swrKey,
+        () =>
+            apiStreamEvent({
+                email: email,
+                token: token,
+                event_id: Number(code || id),
+                isHost: !token && !email && !code, // If no token/email/code provided, assume it's a host
+            }),
+        { revalidateOnFocus: false },
     )
 
     // Compute eventStatus and nextDate
@@ -62,6 +65,9 @@ const EventStream = () => {
         return { eventStatus: status, nextDate: next }
     }, [data])
 
+
+    
+
     console.log(data)
 
     const handleStatusUpdate = (
@@ -89,7 +95,12 @@ const EventStream = () => {
         >
             <Loading loading={isLoading}>
                 <div className="flex flex-row justify-between gap-4 mb-4 ">
-                    <EventHeader />
+                    <EventHeader
+                        status={eventStatus as 'cancelled' | 'suspended' | 'ended' | 'live' | 'early'}
+                        eventName={data?.event.event_name || ''}
+                        eventDescription={data?.event.event_description || ''}
+                        nextDate={nextDate}
+                    />
                     <EventHeaderExtra />
                 </div>
                 {data && eventStatus === 'live' && (
