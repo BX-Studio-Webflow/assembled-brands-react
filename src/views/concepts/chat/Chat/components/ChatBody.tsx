@@ -177,7 +177,8 @@ const ChatBody = ({
                 <div className="flex-1 h-full max-h-full flex flex-col rounded-2xl border border-gray-200 dark:border-gray-800 p-0 m-0">
                     <EventVideoPlayer
                         src={data.event.asset.presignedUrl}
-                        assetId={String(data.event.asset.id)}
+                        assetId={data.event.asset.id}
+                        eventId={data.event.id}
                         onEnded={() => onStatusUpdate('ended')}
                     />
                 </div>
@@ -194,7 +195,8 @@ const ChatBody = ({
                     <div className="relative w-full h-full">
                         <EventVideoPlayer
                             src={data.event.asset.presignedUrl}
-                            assetId={String(data.event.asset.id)}
+                            assetId={data.event.asset.id}
+                            eventId={data.event.id}
                             onEnded={() => onStatusUpdate('ended')}
                         />
                         <button

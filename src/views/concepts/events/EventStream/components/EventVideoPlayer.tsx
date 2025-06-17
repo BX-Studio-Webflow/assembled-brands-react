@@ -19,7 +19,8 @@ import { toast } from '@/components/ui'
 interface EventVideoPlayerProps {
     src?: string
     poster?: string
-    assetId?: string
+    assetId?: number
+    eventId?: number
     onEnded: () => void
 }
 
@@ -43,6 +44,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     src = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4',
     poster = 'https://ecme-react.themenate.net/img/landing/hero/hero.webp',
     assetId,
+    eventId,
     onEnded,
 }) => {
     const playerRef = useRef<MediaPlayerInstance>(null)
@@ -50,7 +52,9 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
     useEffect(() => {
         // Load saved progress when component mounts
-        const savedProgress = localStorage.getItem(`video-progress-${assetId}`)
+        const savedProgress = localStorage.getItem(
+            `video-progress-${assetId}-${eventId}`,
+        )
         if (savedProgress && playerRef.current) {
             playerRef.current.currentTime = parseFloat(savedProgress)
         }
@@ -60,7 +64,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             if (playerRef.current) {
                 const currentTime = playerRef.current.currentTime
                 localStorage.setItem(
-                    `video-progress-${assetId}`,
+                    `video-progress-${assetId}-${eventId}`,
                     currentTime.toString(),
                 )
             }
@@ -72,7 +76,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                 clearInterval(progressIntervalRef.current)
             }
         }
-    }, [src, assetId])
+    }, [src, assetId, eventId])
 
     return (
         <Card className="w-full h-full p-0 m-0">
@@ -81,7 +85,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                 autoPlay
                 muted
                 title="..."
-                storage={`video-storage-${assetId}`}
+                storage={`video-storage-${assetId}-${eventId}`}
                 src={src}
                 className="w-full h-full"
                 onAutoPlayFail={onAutoPlayFail}

@@ -28,7 +28,7 @@ const EventHeader = ({ status, eventName, eventDescription, nextDate }: EventHea
                     {eventName}
                 </span>
                 <span className={statusPills[status] || statusPills['ended']}>
-                    event {status === 'ended' ? `ended at ${nextDate?.end.toLocaleString()}` : status === 'live' ? ' is live' : status === 'early' ? `starts at ${nextDate?.start.toLocaleString()}` : status === 'suspended' ? 'suspended' : status === 'cancelled' ? 'cancelled' : ''}
+                    event {status === 'ended' ? `has ended` : status === 'live' ? ' is live' : status === 'early' ? `starts at ${nextDate?.start.toLocaleString()}` : status === 'suspended' ? 'suspended' : status === 'cancelled' ? 'cancelled' : ''}
                 </span>
             </div>
             <span className="text-sm mt-8">{eventDescription}</span>
