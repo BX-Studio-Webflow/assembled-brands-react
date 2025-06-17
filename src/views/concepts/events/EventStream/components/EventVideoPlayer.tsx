@@ -21,7 +21,7 @@ interface EventVideoPlayerProps {
     poster?: string
     assetId?: number
     eventId?: number
-    onEnded: () => void
+    onEnded: (status: 'ended' | 'suspended' | 'cancelled' | 'live' | 'early') => void
 }
 
 const onAutoPlay = () => {
@@ -90,7 +90,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                 className="w-full h-full"
                 onAutoPlayFail={onAutoPlayFail}
                 onAutoPlay={onAutoPlay}
-                onEnded={onEnded}
+                onEnded={() => onEnded('ended')}
             >
                 <MediaProvider className="w-full h-full">
                     <Poster src={poster} alt="..." className="w-full h-full" />
