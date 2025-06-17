@@ -21,7 +21,9 @@ interface EventVideoPlayerProps {
     poster?: string
     assetId?: number
     eventId?: number
-    onEnded: (status: 'ended' | 'suspended' | 'cancelled' | 'live' | 'early') => void
+    onEnded: (
+        status: 'ended' | 'suspended' | 'cancelled' | 'live' | 'early',
+    ) => void
 }
 
 const onAutoPlay = () => {
