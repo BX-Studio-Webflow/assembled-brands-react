@@ -4,6 +4,7 @@ import 'plyr-react/plyr.css'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import { toast } from '@/components/ui'
+import type { APITypes } from 'plyr-react'
 
 interface EventVideoPlayerProps {
     src?: string
@@ -24,7 +25,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     onEnded,
     isHost,
 }) => {
-    const playerRef = useRef<any>(null)
+    const playerRef = useRef<APITypes>(null)
     const progressIntervalRef = useRef<NodeJS.Timeout>(null)
 
     useEffect(() => {
@@ -32,8 +33,8 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         const savedProgress = localStorage.getItem(
             `video-progress-${assetId}-${eventId}`,
         )
-        if (savedProgress && playerRef.current) {
-            playerRef.current.currentTime = parseFloat(savedProgress)
+        if (savedProgress && playerRef.current?.plyr) {
+            playerRef.current.plyr.currentTime = parseFloat(savedProgress)
         }
 
         // Set up interval to save progress every 3 seconds
@@ -72,7 +73,6 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             <Plyr
                 ref={playerRef}
                 muted={true}
-                autoPlay={true}
                 source={{
                     type: 'video',
                     sources: [
@@ -84,6 +84,10 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                     poster,
                 }}
                 options={{
+                    muted: true,
+                    autoplay: true,
+                    clickToPlay: true,
+                    storage: { enabled: false },
                     controls: isHost
                         ? [
                               'play-large',
@@ -110,7 +114,6 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                               'volume',
                               'fullscreen',
                           ],
-                    autoplay: true,
                 }}
                 onEnded={() => onEnded('ended')}
                 onError={handleAutoPlayFail}
