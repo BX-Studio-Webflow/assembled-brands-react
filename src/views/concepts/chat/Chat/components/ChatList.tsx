@@ -1,10 +1,8 @@
-import { useRef, useState, useEffect } from 'react'
-import ChatSegment from './ChatSegment'
+import { useEffect } from 'react'
+
 import { useChatStore } from '../store/chatStore'
 import useChat from '../hooks/useChat'
-import useDebounce from '@/utils/hooks/useDebounce'
-import { TbExternalLink, TbMail, TbSearch, TbX } from 'react-icons/tb'
-import type { ChangeEvent } from 'react'
+import { TbExternalLink, TbMail } from 'react-icons/tb'
 import ChatStats from './ChatStats'
 import { Link, useSearchParams } from 'react-router'
 import { Avatar, Card } from '@/components/ui'
@@ -21,12 +19,6 @@ const ChatList = ({ event }: ChatListProps) => {
     const email = searchParams.get('email')
     const code = searchParams.get('code')
     const chatsFetched = useChatStore((state) => state.chatsFetched)
-    const setSelectedChat = useChatStore((state) => state.setSelectedChat)
-
-    const inputRef = useRef<HTMLInputElement>(null)
-
-    const [showSearchBar, setShowSearchBar] = useState(false)
-    const [, setQueryText] = useState('')
 
     const { fetchChats } = useChat()
 
@@ -37,60 +29,8 @@ const ChatList = ({ event }: ChatListProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    useEffect(() => {
-        if (showSearchBar) {
-            inputRef.current?.focus()
-        } else {
-            inputRef.current?.blur()
-        }
-    }, [showSearchBar])
-
-    function handleDebounceFn(e: ChangeEvent<HTMLInputElement>) {
-        if (e.target.value.length > 0) {
-            setSelectedChat({})
-        }
-
-        if (e.target.value.length === 0) {
-            setSelectedChat({})
-        }
-
-        setQueryText(e.target.value)
-    }
-
-    const debounceFn = useDebounce(handleDebounceFn, 500)
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        debounceFn(e)
-    }
-
-    const handleSearchToggleClick = () => {
-        setShowSearchBar(!showSearchBar)
-    }
-
     return (
         <div className="flex flex-col h-full">
-            <div className="mb-4">
-                <div className="flex items-center justify-between mb-4">
-                    {showSearchBar ? (
-                        <input
-                            ref={inputRef}
-                            className="flex-1 h-full placeholder:text-gray-400 placeholder:text-base placeholder:font-normal bg-transparent focus:outline-hidden heading-text font-bold"
-                            placeholder="Search chat"
-                            onChange={handleInputChange}
-                        />
-                    ) : (
-                        <h4>Chat</h4>
-                    )}
-                    <button
-                        className="close-button text-lg"
-                        type="button"
-                        onClick={handleSearchToggleClick}
-                    >
-                        {showSearchBar ? <TbX /> : <TbSearch />}
-                    </button>
-                </div>
-                <ChatSegment />
-            </div>
             {token && email && code ? (
                 <Card>
                     <h4 className="mb-4">Host</h4>
