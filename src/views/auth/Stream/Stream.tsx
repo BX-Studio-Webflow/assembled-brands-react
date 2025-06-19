@@ -80,7 +80,12 @@ const Stream = () => {
             >
                 <div className="flex flex-col w-full h-full m-2">
                     <div className="flex flex-row justify-between gap-4 mb-4 w-full">
-                        <EventHeader />
+                        <EventHeader
+                            status={eventStatus as 'early' | 'live' | 'ended' | 'suspended' | 'cancelled'}
+                            eventName={data?.event.event_name || ''}
+                            eventDescription={data?.event.event_description || ''}
+                            nextDate={nextDate}
+                        />
                         <EventHeaderExtra />
                     </div>
                     {data && eventStatus === 'live' && (
@@ -91,7 +96,11 @@ const Stream = () => {
                             >
                                 <div className="flex flex-auto h-full gap-8">
                                     <ChatSidebar event={data} />
-                                    <ChatBody data={data} />
+                                    <ChatBody
+                                        data={data}
+                                        isHost={false}
+                                        onStatusUpdate={handleCountdownEnd}
+                                    />
                                 </div>
                             </Card>
                         </>
