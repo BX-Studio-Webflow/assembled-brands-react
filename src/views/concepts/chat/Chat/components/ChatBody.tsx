@@ -1,17 +1,19 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, memo } from 'react'
 import Card from '@/components/ui/Card'
 import ChatBox from '@/components/view/ChatBox'
 import ChatAction from './ChatAction'
 import { useChatStore } from '../store/chatStore'
-import classNames from '@/utils/classNames'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
-import { TbChevronLeft, TbMaximize, TbMinimize, TbX } from 'react-icons/tb'
+import { TbChevronLeft } from 'react-icons/tb'
 
 import type { ScrollBarRef } from '@/components/view/ChatBox'
 import EventVideoPlayer from '@/views/concepts/events/EventStream/components/EventVideoPlayer'
 import { EventStreamResponse } from '@/@types/events'
 import NoUserFound from '@/assets/svg/NoUserFound'
+
+// Memoized Video Player to prevent re-renders
+const MemoizedEventVideoPlayer = memo(EventVideoPlayer)
 
 const ChatBody = ({
     data,
@@ -26,16 +28,12 @@ const ChatBody = ({
 }) => {
     const scrollRef = useRef<ScrollBarRef>(null)
     const selectedChat = useChatStore((state) => state.selectedChat)
-    const selectedTabType = useChatStore((state) => state.selectedTabType)
     const messages = useChatStore((state) => state.messages)
     const sendMessage = useChatStore((state) => state.sendMessage)
     const subscribeToMessages = useChatStore(
         (state) => state.subscribeToMessages,
     )
     const setSelectedChat = useChatStore((state) => state.setSelectedChat)
-
-    const [isVideoPiP, setIsVideoPiP] = useState(false)
-    const [isFullSize, setIsFullSize] = useState(false)
 
     const { smaller } = useResponsive()
 
@@ -70,37 +68,43 @@ const ChatBody = ({
         }
     }
 
-    const cardHeaderProps = {
-        header: {
-            content: (
-                <div className="flex items-center gap-2">
-                    {smaller.md && (
+    const cardHeaderProps = useMemo(
+        () => ({
+            header: {
+                content: (
+                    <div className="flex items-center gap-2">
+                        {smaller.md && (
+                            <button
+                                className="text-xl hover:text-primary"
+                                onClick={() => setSelectedChat({})}
+                            >
+                                <TbChevronLeft />
+                            </button>
+                        )}
                         <button
-                            className="text-xl hover:text-primary"
-                            onClick={() => setSelectedChat({})}
+                            className="flex items-center gap-2"
+                            role="button"
                         >
-                            <TbChevronLeft />
-                        </button>
-                    )}
-                    <button className="flex items-center gap-2" role="button">
-                        <div>
-                            <NoUserFound height={40} width={40} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                            <div className="flex justify-between">
-                                <div className="font-bold heading-text truncate">
-                                    Event chat
-                                </div>
+                            <div>
+                                <NoUserFound height={40} width={40} />
                             </div>
-                            <div>Chat with your host</div>
-                        </div>
-                    </button>
-                </div>
-            ),
-            extra: <ChatAction muted={selectedChat.muted} />,
-            className: 'bg-gray-100 dark:bg-gray-600 h-[100px]',
-        },
-    }
+                            <div className="min-w-0 flex-1">
+                                <div className="flex justify-between">
+                                    <div className="font-bold heading-text truncate">
+                                        Event chat
+                                    </div>
+                                </div>
+                                <div>Chat with your host</div>
+                            </div>
+                        </button>
+                    </div>
+                ),
+                extra: <ChatAction muted={selectedChat.muted} />,
+                className: 'bg-gray-100 dark:bg-gray-600 h-[100px]',
+            },
+        }),
+        [smaller.md, setSelectedChat, selectedChat.muted],
+    )
 
     useEffect(() => {
         if (data.event.id) {
@@ -111,23 +115,6 @@ const ChatBody = ({
     useEffect(() => {
         scrollToBottom()
     }, [messages])
-
-    // Automatically enable PiP when a chat is selected
-    useEffect(() => {
-        if (selectedChat.id) {
-            setIsVideoPiP(true)
-        }
-    }, [selectedChat.id])
-
-    // Keep PiP enabled when switching to chat tab
-    useEffect(() => {
-        if (selectedTabType === 'chat') {
-            setIsVideoPiP(true)
-        } else if (selectedTabType === 'event') {
-            setIsFullSize(false)
-            setIsVideoPiP(false)
-        }
-    }, [selectedTabType])
 
     const messageList = useMemo(() => {
         return messages.map((item) => ({
@@ -145,22 +132,35 @@ const ChatBody = ({
         }))
     }, [messages])
 
-    const togglePiP = () => {
-        setIsVideoPiP(false)
-        setIsFullSize(false)
-        // Switch to event tab
-        useChatStore.getState().setselectedTabType('event')
-    }
-
-    const toggleFullSize = () => {
-        setIsFullSize(!isFullSize)
-    }
+    // Memoize video player props to prevent unnecessary re-renders
+    const videoPlayerProps = useMemo(
+        () => ({
+            isHost,
+            src: data.event.asset.presignedUrl,
+            assetId: data.event.asset.id,
+            eventId: data.event.id,
+            onEnded: () => onStatusUpdate('ended'),
+        }),
+        [
+            isHost,
+            data.event.asset.presignedUrl,
+            data.event.asset.id,
+            data.event.id,
+            onStatusUpdate,
+        ],
+    )
 
     return (
-        <div className="w-full md:block">
-            {selectedTabType === 'chat' ? (
+        <div className="w-full h-full flex flex-col">
+            {/* Video Player - Takes 2/3 of the height */}
+            <div className="h-2/3 w-full rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                <MemoizedEventVideoPlayer {...videoPlayerProps} />
+            </div>
+
+            {/* Chat Body - Takes 1/3 of the height */}
+            <div className="h-1/3 w-full mt-4">
                 <Card
-                    className="flex-1 h-full max-h-full dark:border-gray-700"
+                    className="h-full dark:border-gray-700"
                     bodyClass="h-[calc(100%-100px)] relative"
                     {...cardHeaderProps}
                 >
@@ -175,49 +175,7 @@ const ChatBody = ({
                         onInputChange={handleInputChange}
                     />
                 </Card>
-            ) : (
-                <div className="flex-1 h-full max-h-full flex flex-col rounded-2xl border border-gray-200 dark:border-gray-800 p-0 m-0">
-                    <EventVideoPlayer
-                        isHost={isHost}
-                        src={data.event.asset.presignedUrl}
-                        assetId={data.event.asset.id}
-                        eventId={data.event.id}
-                        onEnded={() => onStatusUpdate('ended')}
-                    />
-                </div>
-            )}
-            {isVideoPiP && (
-                <div
-                    className={classNames(
-                        'fixed z-50 rounded-lg overflow-hidden shadow-lg transition-all duration-300',
-                        isFullSize
-                            ? 'top-0 right-0 w-full h-full'
-                            : 'top-4 right-4 w-160 h-96',
-                    )}
-                >
-                    <div className="relative w-full h-full">
-                        <EventVideoPlayer
-                            isHost={isHost}
-                            src={data.event.asset.presignedUrl}
-                            assetId={data.event.asset.id}
-                            eventId={data.event.id}
-                            onEnded={() => onStatusUpdate('ended')}
-                        />
-                        <button
-                            className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-75"
-                            onClick={togglePiP}
-                        >
-                            <TbX />
-                        </button>
-                        <button
-                            className="absolute top-2 right-12 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-75"
-                            onClick={toggleFullSize}
-                        >
-                            {isFullSize ? <TbMinimize /> : <TbMaximize />}
-                        </button>
-                    </div>
-                </div>
-            )}
+            </div>
         </div>
     )
 }

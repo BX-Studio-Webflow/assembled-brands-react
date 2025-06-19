@@ -66,9 +66,6 @@ const EventStream = () => {
         return { eventStatus: status, nextDate: next }
     }, [data])
 
-
-    
-
     console.log(data)
 
     const handleStatusUpdate = (
@@ -97,7 +94,14 @@ const EventStream = () => {
             <Loading loading={isLoading}>
                 <div className="flex flex-row justify-between gap-4 mb-4 ">
                     <EventHeader
-                        status={eventStatus as 'cancelled' | 'suspended' | 'ended' | 'live' | 'early'}
+                        status={
+                            eventStatus as
+                                | 'cancelled'
+                                | 'suspended'
+                                | 'ended'
+                                | 'live'
+                                | 'early'
+                        }
                         eventName={data?.event.event_name || ''}
                         eventDescription={data?.event.event_description || ''}
                         nextDate={nextDate}
