@@ -152,13 +152,13 @@ const ChatBody = ({
 
     return (
         <div className="w-full h-full flex flex-col">
-            {/* Video Player - Takes 2/3 of the height */}
-            <div className="h-2/3 w-full rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+            {/* Video Player - Takes 1/2 of the height */}
+            <div className="h-1/2 w-full rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
                 <MemoizedEventVideoPlayer {...videoPlayerProps} />
             </div>
 
-            {/* Chat Body - Takes 1/3 of the height */}
-            <div className="h-1/3 w-full mt-4">
+            {/* Chat Body - Takes 1/2 of the height */}
+            <div className="h-1/2 w-full mt-4">
                 <Card
                     className="h-full dark:border-gray-700"
                     bodyClass="h-[calc(100%-100px)] relative"
