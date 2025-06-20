@@ -93,76 +93,75 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
                         negativeIcon=""
                     />
                 </div>
-                <Table className="mt-6" hoverable={false}>
-                    <THead>
-                        <Tr>
-                            <Th className="px-0!">Lead</Th>
-                            <Th>Phone</Th>
-                            <Th>Form ID</Th>
-                            <Th>Membership</Th>
-                            <Th>Joined At</Th>
-                            <Th>Watch Time</Th>
-                            <Th className="px-0!">Device</Th>
-                        </Tr>
-                    </THead>
-                    <TBody>
-                        {telemetryData.map((session) => (
-                            <Tr key={session.id}>
-                                <Td className="px-0!">
-                                    <div className="flex items-center gap-2">
-                                        <Avatar
-                                            size={28}
-                                            src=""
-                                            className="bg-transparent"
-                                        />
-                                        <div>
-                                            <div className="heading-text font-bold">
-                                                {session.lead?.name ||
-                                                    `Lead ${session.lead_id}`}
-                                            </div>
-                                            <div className="text-sm text-gray-500">
-                                                {session.lead?.email ||
-                                                    'No email'}
+                <div className="mt-6 max-h-64 overflow-y-auto">
+                    <Table className="w-full" hoverable={false}>
+                        <THead className="sticky top-0 bg-white dark:bg-gray-800 z-10">
+                            <Tr>
+                                <Th className="px-0!">Lead</Th>
+                                <Th>Phone</Th>
+                                <Th>Form ID</Th>
+                                <Th>Membership</Th>
+                                <Th>Joined At</Th>
+                                <Th>Watch Time</Th>
+                            </Tr>
+                        </THead>
+                        <TBody>
+                            {telemetryData.map((session) => (
+                                <Tr key={session.id}>
+                                    <Td className="px-0!">
+                                        <div className="flex items-center gap-2">
+                                            <Avatar
+                                                size={28}
+                                                src=""
+                                                className="bg-transparent"
+                                            />
+                                            <div>
+                                                <div className="heading-text font-bold">
+                                                    {session.lead?.name ||
+                                                        `Lead ${session.lead_id}`}
+                                                </div>
+                                                <div className="text-sm text-gray-500">
+                                                    {session.lead?.email ||
+                                                        'No email'}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Td>
-                                <Td>
-                                    {`${session.lead?.dial_code} ${session.lead?.phone}`}
-                                </Td>
-                                <Td>
-                                    {session.lead?.form_identifier || 'None'}
-                                </Td>
-                                <Td>
-                                    <span
-                                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                            session.lead?.membership_active
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-gray-100 text-gray-800'
-                                        }`}
-                                    >
-                                        {session.lead?.membership_active
-                                            ? 'Active'
-                                            : 'Inactive'}
-                                    </span>
-                                </Td>
-                                <Td>
-                                    {new Date(
-                                        session.joined_at,
-                                    ).toLocaleString()}
-                                </Td>
-                                <Td>
-                                    {formatDuration(
-                                        session.total_watch_time || 0,
-                                    )}
-                                </Td>
-                                <Td className="px-0!">
-                                    {session.device || 'Unknown'}
-                                </Td>
-                            </Tr>
-                        ))}
-                    </TBody>
-                </Table>
+                                    </Td>
+                                    <Td>
+                                        {`${session.lead?.dial_code} ${session.lead?.phone}`}
+                                    </Td>
+                                    <Td>
+                                        {session.lead?.form_identifier ||
+                                            'None'}
+                                    </Td>
+                                    <Td>
+                                        <span
+                                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                session.lead?.membership_active
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-gray-100 text-gray-800'
+                                            }`}
+                                        >
+                                            {session.lead?.membership_active
+                                                ? 'Active'
+                                                : 'Inactive'}
+                                        </span>
+                                    </Td>
+                                    <Td>
+                                        {new Date(
+                                            session.joined_at,
+                                        ).toLocaleString()}
+                                    </Td>
+                                    <Td>
+                                        {formatDuration(
+                                            session.total_watch_time || 0,
+                                        )}
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </TBody>
+                    </Table>
+                </div>
             </div>
         </Card>
     )

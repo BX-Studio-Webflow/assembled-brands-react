@@ -10,14 +10,16 @@ import NoUserFound from '@/assets/svg/NoUserFound'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
 import ChatAction from './ChatAction'
+import { useSessionUser } from '@/store/authStore'
 
 interface ChatListProps {
     event: EventStreamResponse
     isHost: boolean
 }
 
-const ChatList = ({ event }: ChatListProps) => {
+const ChatList = ({ event, isHost }: ChatListProps) => {
     const chatsFetched = useChatStore((state) => state.chatsFetched)
+    const currentUser = useSessionUser((state) => state.user)
 
     const { fetchChats } = useChat()
 
@@ -54,10 +56,10 @@ const ChatList = ({ event }: ChatListProps) => {
     }) => {
         try {
             await sendMessage(
-                '1', // TODO: Replace with actual user ID
-                'Angelina Gotelli', // TODO: Replace with actual user name
+                currentUser.id?.toString() || '',
+                currentUser.name || 'Unknown User',
                 value,
-                false, // TODO: Replace with actual host status
+                isHost,
                 event.event.id.toString(),
             )
 
@@ -119,20 +121,29 @@ const ChatList = ({ event }: ChatListProps) => {
     }, [messages])
 
     const messageList = useMemo(() => {
-        return messages.map((item) => ({
-            id: item.id,
-            sender: {
-                id: item.senderId,
-                name: item.name,
-                avatarImageUrl: '/img/avatars/thumb-1.jpg', // TODO: Replace with actual avatar
-            },
-            content: item.text,
-            timestamp: dayjs(item.timestamp).toDate(),
-            type: 'regular' as const,
-            isMyMessage: item.senderId === '1', // TODO: Replace with actual user ID
-            showAvatar: item.senderId !== '1', // TODO: Replace with actual user ID
-        }))
-    }, [messages])
+        console.log(messages)
+        return messages.map((item) => {
+            // Determine if the current user is the sender
+            const isCurrentUserSender =
+                item.senderId === currentUser.id?.toString() ||
+                item.senderId === event.lead?.id?.toString() ||
+                item.senderId === event.event.host.id?.toString()
+
+            return {
+                id: item.id,
+                sender: {
+                    id: item.senderId,
+                    name: item.name,
+                    avatarImageUrl: '/img/avatars/thumb-1.jpg', // TODO: Replace with actual avatar
+                },
+                content: item.text,
+                timestamp: dayjs(item.timestamp).toDate(),
+                type: 'regular' as const,
+                isMyMessage: isCurrentUserSender,
+                showAvatar: !isCurrentUserSender,
+            }
+        })
+    }, [messages, currentUser.id, event.lead?.id, event.event.host.id])
 
     return (
         <div className="flex flex-col h-full">
@@ -144,7 +155,7 @@ const ChatList = ({ event }: ChatListProps) => {
                 <ChatBox
                     ref={scrollRef}
                     messageList={messageList}
-                    placeholder="Enter a prompt here"
+                    placeholder="Enter a message here"
                     showAvatar={true}
                     avatarGap={true}
                     messageListClass="h-[calc(100%-100px)]"

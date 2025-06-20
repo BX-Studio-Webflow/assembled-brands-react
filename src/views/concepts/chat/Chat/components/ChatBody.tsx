@@ -38,8 +38,13 @@ const ChatBody = ({
 
     return (
         <div className="w-full h-full flex flex-col">
-            {/* Video Player - Takes 1/2 of the height */}
-            <div className="h-2/3 w-full rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+            {/* Video Player - Takes 2/3 of the height */}
+            {/**if not host, take fll height */}
+            <div
+                className={`${
+                    isHost ? 'h-2/3' : 'h-full'
+                } w-full rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden`}
+            >
                 <MemoizedEventVideoPlayer {...videoPlayerProps} />
             </div>
 

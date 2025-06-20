@@ -77,6 +77,11 @@ export interface Host {
     name: string
     email: string
     profile_image: string
+    phone: string
+    dial_code: string
+    role: 'host' | 'master' | 'owner'
+    bio: string
+    id: number
 }
 
 export interface Membership {
