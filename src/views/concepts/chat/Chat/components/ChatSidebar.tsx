@@ -14,7 +14,7 @@ const ChatSidebar = ({ event, isHost }: ChatSidebarProps) => {
     return (
         <div
             className={classNames(
-                'w-full md:w-[300px] md:block',
+                'w-full md:w-[400px] md:block',
                 selectedChat.id && 'hidden',
             )}
         >
