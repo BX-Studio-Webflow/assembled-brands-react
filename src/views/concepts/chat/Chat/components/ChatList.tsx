@@ -11,9 +11,10 @@ import { EventStreamResponse } from '@/@types/events'
 
 interface ChatListProps {
     event: EventStreamResponse
+    isHost: boolean
 }
 
-const ChatList = ({ event }: ChatListProps) => {
+const ChatList = ({ event, isHost }: ChatListProps) => {
     const [searchParams] = useSearchParams()
     const token = searchParams.get('token')
     const email = searchParams.get('email')
@@ -69,34 +70,7 @@ const ChatList = ({ event }: ChatListProps) => {
                     )}
                 </Card>
             ) : (
-                <ChatStats
-                    data={{
-                        visitors: 2000,
-                        channels: [
-                            {
-                                id: '1',
-                                name: 'Facebook',
-                                percentage: 50,
-                                total: 1000,
-                                img: 'https://www.facebook.com/favicon.ico',
-                            },
-                            {
-                                id: '2',
-                                name: 'Facebook',
-                                percentage: 50,
-                                total: 1000,
-                                img: 'https://www.facebook.com/favicon.ico',
-                            },
-                            {
-                                id: '3',
-                                name: 'Facebook',
-                                percentage: 50,
-                                total: 1000,
-                                img: 'https://www.facebook.com/favicon.ico',
-                            },
-                        ],
-                    }}
-                />
+                <ChatStats eventId={event.event.id} isHost={isHost} />
             )}
         </div>
     )

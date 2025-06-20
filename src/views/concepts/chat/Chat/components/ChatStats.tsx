@@ -5,42 +5,82 @@ import Table from '@/components/ui/Table'
 import GrowShrinkValue from '@/components/shared/GrowShrinkValue'
 import { CSVLink } from 'react-csv'
 import { NumericFormat } from 'react-number-format'
-import type { TopChannelData } from '@/views/dashboards/AnalyticDashboard/types'
+import { useEffect, useState } from 'react'
+import { apiGetTelemetryByEventId } from '@/services/TelemetryService'
+import { EventTelemetry } from '@/@types/telemetry'
 
 type TopChannelProps = {
-    data: TopChannelData
+    eventId: number
+    isHost: boolean
 }
 
 const { TBody, THead, Tr, Th, Td } = Table
 
-const ChatStats = ({ data }: TopChannelProps) => {
+const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
+    const [telemetryData, setTelemetryData] = useState<EventTelemetry[]>([])
+
+    // Calculate average watch time
+    const totalWatchTime = telemetryData.reduce(
+        (sum, item) => sum + (item.total_watch_time || 0),
+        0,
+    )
+    const averageWatchTime =
+        telemetryData.length > 0
+            ? Math.round(totalWatchTime / telemetryData.length)
+            : 0
+
+    //Fire this every 10 seconds
+    useEffect(() => {
+        // Only track telemetry for non-hosts
+        if (!isHost) return
+
+        const interval = setInterval(async () => {
+            try {
+                const response = await apiGetTelemetryByEventId(Number(eventId))
+                setTelemetryData(response)
+            } catch (error) {
+                console.error('Failed to get telemetry:', error)
+            }
+        }, 10000)
+
+        return () => clearInterval(interval)
+    }, [eventId, isHost])
+
+    const formatDuration = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600)
+        const minutes = Math.floor((seconds % 3600) / 60)
+        const secs = seconds % 60
+
+        if (hours > 0) {
+            return `${hours}h ${minutes}m ${secs}s`
+        } else if (minutes > 0) {
+            return `${minutes}m ${secs}s`
+        } else {
+            return `${secs}s`
+        }
+    }
+
+    const csvData = telemetryData.map((item) => ({
+        'Lead ID': item.lead_id,
+        'Joined At': new Date(item.joined_at).toLocaleString(),
+        'Watch Time': formatDuration(item.total_watch_time || 0),
+        Device: item.device || 'Unknown',
+        Browser: item.browser || 'Unknown',
+        OS: item.os || 'Unknown',
+    }))
+
     return (
         <Card>
             <div className="flex items-center justify-between">
                 <h4>Chat stats</h4>
-                <CSVLink
-                    filename="top-channel.csv"
-                    data={data.channels.map((channel) => {
-                        return {
-                            Channel: channel.name,
-                            Percentage: `${channel.percentage}%`,
-                            Total: channel.total,
-                        }
-                    })}
-                >
+                <CSVLink filename="top-channel.csv" data={csvData}>
                     <Button size="sm">Export data</Button>
                 </CSVLink>
             </div>
             <div className="mt-5">
-                <div className="mb-2">Visitors</div>
+                <div className="mb-2">Average Watch Time</div>
                 <div className="flex items-end gap-2 mb-1">
-                    <h3>
-                        <NumericFormat
-                            displayType="text"
-                            value={data.visitors}
-                            thousandSeparator={true}
-                        />
-                    </h3>
+                    <h3>{formatDuration(averageWatchTime)}</h3>
                     <GrowShrinkValue
                         className="font-bold"
                         value={2.6}
@@ -52,31 +92,41 @@ const ChatStats = ({ data }: TopChannelProps) => {
                 <Table className="mt-6" hoverable={false}>
                     <THead>
                         <Tr>
-                            <Th className="px-0!">Channel</Th>
-                            <Th>Percentage</Th>
-                            <Th className="px-0!">Total</Th>
+                            <Th className="px-0!">Lead ID</Th>
+                            <Th>Joined At</Th>
+                            <Th>Total Watch Time</Th>
+                            <Th className="px-0!">Device</Th>
                         </Tr>
                     </THead>
                     <TBody>
-                        {data.channels.map((channel) => (
-                            <Tr key={channel.id}>
+                        {telemetryData.map((session) => (
+                            <Tr key={session.id}>
                                 <Td className="px-0!">
                                     <div className="flex items-center gap-2">
                                         <Avatar
                                             size={28}
-                                            src={channel.img}
+                                            src=""
                                             className="bg-transparent"
                                         />
                                         <div className="heading-text font-bold">
-                                            {channel.name}
+                                            {session.lead_id}
                                         </div>
                                     </div>
                                 </Td>
-                                <Td>{channel.percentage}%</Td>
+                                <Td>
+                                    {new Date(
+                                        session.joined_at,
+                                    ).toLocaleString()}
+                                </Td>
+                                <Td>
+                                    {formatDuration(
+                                        session.total_watch_time || 0,
+                                    )}
+                                </Td>
                                 <Td className="px-0!">
                                     <NumericFormat
                                         displayType="text"
-                                        value={channel.total}
+                                        value={session.device || 'Unknown'}
                                         thousandSeparator={true}
                                     />
                                 </Td>
