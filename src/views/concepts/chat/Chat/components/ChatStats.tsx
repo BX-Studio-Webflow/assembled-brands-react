@@ -4,7 +4,6 @@ import Card from '@/components/ui/Card'
 import Table from '@/components/ui/Table'
 import GrowShrinkValue from '@/components/shared/GrowShrinkValue'
 import { CSVLink } from 'react-csv'
-import { NumericFormat } from 'react-number-format'
 import { useEffect, useState } from 'react'
 import { apiGetTelemetryByEventId } from '@/services/TelemetryService'
 import { EventTelemetry } from '@/@types/telemetry'
@@ -62,6 +61,11 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
 
     const csvData = telemetryData.map((item) => ({
         'Lead ID': item.lead_id,
+        'Lead Name': item.lead?.name || 'Unknown',
+        'Lead Email': item.lead?.email || 'Unknown',
+        Phone: item.lead?.phone || 'No phone',
+        'Form Identifier': item.lead?.form_identifier || 'None',
+        'Membership Active': item.lead?.membership_active ? 'Yes' : 'No',
         'Joined At': new Date(item.joined_at).toLocaleString(),
         'Watch Time': formatDuration(item.total_watch_time || 0),
         Device: item.device || 'Unknown',
@@ -92,9 +96,12 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
                 <Table className="mt-6" hoverable={false}>
                     <THead>
                         <Tr>
-                            <Th className="px-0!">Lead ID</Th>
+                            <Th className="px-0!">Lead</Th>
+                            <Th>Phone</Th>
+                            <Th>Form ID</Th>
+                            <Th>Membership</Th>
                             <Th>Joined At</Th>
-                            <Th>Total Watch Time</Th>
+                            <Th>Watch Time</Th>
                             <Th className="px-0!">Device</Th>
                         </Tr>
                     </THead>
@@ -108,10 +115,36 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
                                             src=""
                                             className="bg-transparent"
                                         />
-                                        <div className="heading-text font-bold">
-                                            {session.lead_id}
+                                        <div>
+                                            <div className="heading-text font-bold">
+                                                {session.lead?.name ||
+                                                    `Lead ${session.lead_id}`}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                {session.lead?.email ||
+                                                    'No email'}
+                                            </div>
                                         </div>
                                     </div>
+                                </Td>
+                                <Td>
+                                    {`${session.lead?.dial_code} ${session.lead?.phone}`}
+                                </Td>
+                                <Td>
+                                    {session.lead?.form_identifier || 'None'}
+                                </Td>
+                                <Td>
+                                    <span
+                                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                            session.lead?.membership_active
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-gray-100 text-gray-800'
+                                        }`}
+                                    >
+                                        {session.lead?.membership_active
+                                            ? 'Active'
+                                            : 'Inactive'}
+                                    </span>
                                 </Td>
                                 <Td>
                                     {new Date(
@@ -124,11 +157,7 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
                                     )}
                                 </Td>
                                 <Td className="px-0!">
-                                    <NumericFormat
-                                        displayType="text"
-                                        value={session.device || 'Unknown'}
-                                        thousandSeparator={true}
-                                    />
+                                    {session.device || 'Unknown'}
                                 </Td>
                             </Tr>
                         ))}

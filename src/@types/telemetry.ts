@@ -11,6 +11,25 @@ export interface EventTelemetry {
     os: string | null
     ip_address: string | null
     created_at: string
+    lead?: {
+        id: number
+        name: string | null
+        email: string | null
+        phone: string | null
+        dial_code: string | null
+        event_id: number
+        registered_date: string | null
+        membership_active: boolean
+        form_identifier: string | null
+        host_id: number
+        token: string | null
+        status_identifier: string
+        lead_status: number
+        source_url: string | null
+        membership_level: number
+        created_at: string
+        updated_at: string
+    } | null
 }
 
 export interface CreateTelemetryRequest {
