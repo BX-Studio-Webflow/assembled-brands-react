@@ -64,6 +64,7 @@ export interface LeaveEventRequest {
         | 'VIDEO_ENDED'
         | 'BROWSER_CLOSED'
         | 'COMPONENT_UNMOUNTED'
+        | 'PAGE_FOCUSED'
     [key: string]: unknown
 }
 

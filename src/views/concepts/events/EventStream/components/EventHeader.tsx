@@ -43,6 +43,7 @@ const EventHeader = ({
      * Navigating to a different page
      * Video ending naturally
      * Component unmounting
+     * Page regaining focus
      */
     const trackLeaveEvent = useCallback(
         async (
@@ -52,7 +53,8 @@ const EventHeader = ({
                 | 'PAGE_NAVIGATED'
                 | 'VIDEO_ENDED'
                 | 'BROWSER_CLOSED'
-                | 'COMPONENT_UNMOUNTED',
+                | 'COMPONENT_UNMOUNTED'
+                | 'PAGE_FOCUSED',
         ) => {
             if (token && email && code) {
                 try {
@@ -107,6 +109,8 @@ const EventHeader = ({
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'hidden') {
                 trackLeaveEvent('TAB_SWITCHED')
+            } else if (document.visibilityState === 'visible') {
+                trackLeaveEvent('PAGE_FOCUSED')
             }
         }
 
