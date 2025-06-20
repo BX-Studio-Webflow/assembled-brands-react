@@ -44,9 +44,11 @@ const ChatBody = ({
             </div>
 
             {/* Chat Body - Takes 1/2 of the height */}
-            <div className="h-1/3 w-full mt-4">
-                <ChatStats eventId={data.event.id} isHost={isHost} />
-            </div>
+            {isHost && (
+                <div className="h-1/3 w-full mt-4">
+                    <ChatStats eventId={data.event.id} isHost={isHost} />
+                </div>
+            )}
         </div>
     )
 }

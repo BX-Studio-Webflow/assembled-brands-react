@@ -169,10 +169,10 @@ const LeadListTable = () => {
 
                     if (hasEvent && hasCallback) {
                         status = 'bothEventAndCallback'
-                        statusText = 'Registered for event, has callback'
+                        statusText = 'Call Back'
                     } else if (hasCallback) {
                         status = 'hasCallback'
-                        statusText = 'Has callback' 
+                        statusText = 'Call Back' 
                     } else if (hasEvent) {
                         status = 'registeredForEvent'
                         statusText = 'Registered for event'

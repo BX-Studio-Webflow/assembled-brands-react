@@ -2,10 +2,9 @@ import { useEffect, useMemo, useRef } from 'react'
 
 import { useChatStore } from '../store/chatStore'
 import useChat from '../hooks/useChat'
-import { TbChevronLeft, TbExternalLink, TbMail } from 'react-icons/tb'
-import { Link, useSearchParams } from 'react-router'
-import { Avatar, Card, ScrollBarRef } from '@/components/ui'
-import { IconText } from '@/components/shared'
+import { TbChevronLeft } from 'react-icons/tb'
+import { useSearchParams } from 'react-router'
+import { Card, ScrollBarRef } from '@/components/ui'
 import { EventStreamResponse } from '@/@types/events'
 import ChatBox from '@/components/view/ChatBox'
 import NoUserFound from '@/assets/svg/NoUserFound'
@@ -142,61 +141,22 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            {token && email && code ? (
-                <Card>
-                    <h4 className="mb-4">Host</h4>
-                    {event?.event?.host && (
-                        <Link
-                            className="group flex items-center justify-between"
-                            to="/concepts/customers/customer-details/11"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Avatar
-                                    shape="circle"
-                                    src={event.event.host.profile_image || ''}
-                                />
-                                <div>
-                                    <div className="font-bold heading-text">
-                                        {event.event.host.name || ''}
-                                    </div>
-                                    <span>
-                                        <span className="font-semibold">
-                                            {event.event.host.email || ''}
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                            <TbExternalLink className="text-xl hidden group-hover:block" />
-                        </Link>
-                    )}
-                    <hr className="my-5" />
-                    {event?.event?.host && (
-                        <IconText
-                            className="mb-4"
-                            icon={<TbMail className="text-xl opacity-70" />}
-                        >
-                            <span>{event.event.host.email || ''}</span>
-                        </IconText>
-                    )}
-                </Card>
-            ) : (
-                <Card
-                    className="h-full dark:border-gray-700"
-                    bodyClass="h-[calc(100%-100px)] relative"
-                    {...cardHeaderProps}
-                >
-                    <ChatBox
-                        ref={scrollRef}
-                        messageList={messageList}
-                        placeholder="Enter a prompt here"
-                        showAvatar={true}
-                        avatarGap={true}
-                        messageListClass="h-[calc(100%-100px)]"
-                        bubbleClass="max-w-[300px]"
-                        onInputChange={handleInputChange}
-                    />
-                </Card>
-            )}
+            <Card
+                className="h-full dark:border-gray-700"
+                bodyClass="h-[calc(100%-100px)] relative"
+                {...cardHeaderProps}
+            >
+                <ChatBox
+                    ref={scrollRef}
+                    messageList={messageList}
+                    placeholder="Enter a prompt here"
+                    showAvatar={true}
+                    avatarGap={true}
+                    messageListClass="h-[calc(100%-100px)]"
+                    bubbleClass="max-w-[300px]"
+                    onInputChange={handleInputChange}
+                />
+            </Card>
         </div>
     )
 }
