@@ -1,0 +1,102 @@
+import ApiService from './ApiService'
+import type {
+    EventTelemetry,
+    CreateTelemetryRequest,
+    UpdateTelemetryRequest,
+    LeaveEventRequest,
+    UpdateWatchTimeRequest,
+    EventAnalytics,
+} from '@/@types/telemetry'
+
+export async function apiCreateTelemetry(data: CreateTelemetryRequest) {
+    return ApiService.fetchDataWithAxios<{
+        message: string
+        telemetryId: number
+        sessionId: string
+    }>({
+        url: '/telemetry',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiGetTelemetry(id: number) {
+    return ApiService.fetchDataWithAxios<EventTelemetry>({
+        url: `/telemetry/${id}`,
+        method: 'get',
+    })
+}
+
+export async function apiGetTelemetryByLeadId(leadId: number) {
+    return ApiService.fetchDataWithAxios<EventTelemetry[]>({
+        url: `/telemetry/lead/${leadId}`,
+        method: 'get',
+    })
+}
+
+export async function apiGetTelemetryByEventId(eventId: number) {
+    return ApiService.fetchDataWithAxios<EventTelemetry[]>({
+        url: `/telemetry/event/${eventId}`,
+        method: 'get',
+    })
+}
+
+export async function apiGetActiveSessions(eventId: number) {
+    return ApiService.fetchDataWithAxios<EventTelemetry[]>({
+        url: `/telemetry/event/${eventId}/active`,
+        method: 'get',
+    })
+}
+
+export async function apiGetEventAnalytics(eventId: number) {
+    return ApiService.fetchDataWithAxios<EventAnalytics>({
+        url: `/telemetry/event/${eventId}/analytics`,
+        method: 'get',
+    })
+}
+
+export async function apiUpdateTelemetry(
+    id: number,
+    data: UpdateTelemetryRequest,
+) {
+    return ApiService.fetchDataWithAxios<{ message: string }>({
+        url: `/telemetry/${id}`,
+        method: 'put',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiRecordLeaveEvent(data: LeaveEventRequest) {
+    return ApiService.fetchDataWithAxios<{ message: string }>({
+        url: '/telemetry/leave',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiUpdateWatchTime(data: UpdateWatchTimeRequest) {
+    return ApiService.fetchDataWithAxios<{ message: string }>({
+        url: '/telemetry/watch-time',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiDeleteTelemetry(id: number) {
+    return ApiService.fetchDataWithAxios<{ message: string }>({
+        url: `/telemetry/${id}`,
+        method: 'delete',
+    })
+}

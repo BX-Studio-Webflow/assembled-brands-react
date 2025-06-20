@@ -5,6 +5,9 @@ import 'plyr/dist/plyr.css'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import { toast } from '@/components/ui'
+import useSWR from 'swr'
+import { apiCreateTelemetry } from '@/services/TelemetryService'
+import useQuery from '@/utils/hooks/useQuery'
 
 interface NavigatorWithAutoplayPolicy extends Navigator {
     getAutoplayPolicy(type: string): string
@@ -33,6 +36,12 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     const playerRef = useRef<Plyr | null>(null)
     const hlsRef = useRef<Hls | null>(null)
     const progressIntervalRef = useRef<number | null>(null)
+    const query = useQuery()
+
+    // Get token, email, and code from URL parameters
+    const token = query.get('token') || ''
+    const email = query.get('email') || ''
+    const code = query.get('code') || ''
 
     useEffect(() => {
         if (!containerRef.current) return
@@ -280,6 +289,23 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         }
     }, [src, assetId, eventId, poster, isHost, onEnded])
 
+    useSWR(
+        '/telemetry',
+        () => apiCreateTelemetry({
+            event_id: Number(eventId),
+            session_id: 'XXXXXX',
+            device: navigator.userAgent,
+            browser: navigator.userAgent,
+            os: navigator.platform,
+            ip_address: '',
+            token: token,
+            email: email,
+            code: code,
+        }),
+        {
+            revalidateOnFocus: false,
+        },
+    )
     return (
         <Card className="w-full h-full p-0 m-0">
             <div ref={containerRef} className="w-full h-full" />
