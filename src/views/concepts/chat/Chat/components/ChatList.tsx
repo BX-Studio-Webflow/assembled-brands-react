@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useChatStore } from '../store/chatStore'
 import useChat from '../hooks/useChat'
 import { TbChevronLeft } from 'react-icons/tb'
-import { useSearchParams } from 'react-router'
 import { Card, ScrollBarRef } from '@/components/ui'
 import { EventStreamResponse } from '@/@types/events'
 import ChatBox from '@/components/view/ChatBox'
@@ -17,11 +16,7 @@ interface ChatListProps {
     isHost: boolean
 }
 
-const ChatList = ({ event, isHost }: ChatListProps) => {
-    const [searchParams] = useSearchParams()
-    const token = searchParams.get('token')
-    const email = searchParams.get('email')
-    const code = searchParams.get('code')
+const ChatList = ({ event }: ChatListProps) => {
     const chatsFetched = useChatStore((state) => state.chatsFetched)
 
     const { fetchChats } = useChat()

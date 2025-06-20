@@ -63,8 +63,6 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
         const controls = isHost
             ? [
-                  'play-large',
-                  'play',
                   'current-time',
                   'mute',
                   'volume',
@@ -76,14 +74,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                   'download',
                   'share',
               ]
-            : [
-                  'play-large',
-                  'play',
-                  'current-time',
-                  'mute',
-                  'volume',
-                  'fullscreen',
-              ]
+            : ['current-time', 'mute', 'volume', 'fullscreen']
 
         const startPlayback = (videoElement: HTMLVideoElement) => {
             playerRef.current = new Plyr(videoElement, {

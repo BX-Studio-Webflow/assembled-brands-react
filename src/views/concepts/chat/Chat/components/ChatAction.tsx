@@ -1,13 +1,10 @@
 import { useRef } from 'react'
 import Dropdown from '@/components/ui/Dropdown'
-import { useChatStore } from '../store/chatStore'
 import {
     TbDotsVertical,
     TbBell,
     TbBellOff,
     TbShare3,
-    TbTrash,
-    TbUserPlus,
 } from 'react-icons/tb'
 import type { DropdownRef } from '@/components/ui/Dropdown'
 
@@ -17,23 +14,6 @@ type ChatActionProps = {
 
 const ChatAction = ({ muted }: ChatActionProps) => {
     const dropdownRef = useRef<DropdownRef>(null)
-    const selectedChat = useChatStore((state) => state.selectedChat)
-    const setSelectedChat = useChatStore((state) => state.setSelectedChat)
-    const deleteConversationRecord = useChatStore(
-        (state) => state.deleteConversationRecord,
-    )
-    const setChatMute = useChatStore((state) => state.setChatMute)
-
-    const handleMute = () => {
-        const nextMuted = !selectedChat.muted
-        setSelectedChat({ ...selectedChat, muted: nextMuted })
-        setChatMute({ id: selectedChat.id as string, muted: nextMuted })
-    }
-
-    const handleDelete = () => {
-        deleteConversationRecord(selectedChat.id as string)
-        setSelectedChat({})
-    }
 
     return (
         <div className="flex items-center gap-2">
@@ -46,32 +26,17 @@ const ChatAction = ({ muted }: ChatActionProps) => {
                     </button>
                 }
             >
-                <Dropdown.Item eventKey="mute" onClick={handleMute}>
+                <Dropdown.Item eventKey="mute">
                     <span className="text-lg">
                         {muted ? <TbBellOff /> : <TbBell />}
                     </span>
                     <span>{muted ? 'Unmute' : 'Mute'}</span>
                 </Dropdown.Item>
-                {selectedChat.chatType === 'groups' ? (
-                    <Dropdown.Item eventKey="inviteMember">
-                        <span className="text-lg">
-                            <TbUserPlus />
-                        </span>
-                        <span>Invite member</span>
-                    </Dropdown.Item>
-                ) : (
-                    <Dropdown.Item eventKey="shareContact">
-                        <span className="text-lg">
-                            <TbShare3 />
-                        </span>
-                        <span>Share contact</span>
-                    </Dropdown.Item>
-                )}
-                <Dropdown.Item eventKey="delete" onClick={handleDelete}>
-                    <span className="text-lg text-error">
-                        <TbTrash />
+                <Dropdown.Item eventKey="shareContact">
+                    <span className="text-lg">
+                        <TbShare3 />
                     </span>
-                    <span className="text-error">Delete</span>
+                    <span>Share contact</span>
                 </Dropdown.Item>
             </Dropdown>
         </div>
