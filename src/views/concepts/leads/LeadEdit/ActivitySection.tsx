@@ -42,7 +42,7 @@ const TimeLineContent = (props: { booking: EventBooking }) => {
 
     return (
         <div>
-            <h6 className="font-bold">Bookings</h6>
+            <h6 className="font-bold">Events</h6>
             <p className="font-semibold">{booking.event.event_name}</p>
             <p className="text-sm text-gray-500">
                 {booking.event.event_description}
