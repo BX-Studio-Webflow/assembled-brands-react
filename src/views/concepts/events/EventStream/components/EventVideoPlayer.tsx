@@ -5,9 +5,8 @@ import 'plyr/dist/plyr.css'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import { toast } from '@/components/ui'
-import useSWR from 'swr'
-import { apiCreateTelemetry } from '@/services/TelemetryService'
 import useQuery from '@/utils/hooks/useQuery'
+import { apiCreateTelemetry } from '@/services/TelemetryService'
 
 interface NavigatorWithAutoplayPolicy extends Navigator {
     getAutoplayPolicy(type: string): string
@@ -289,23 +288,31 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         }
     }, [src, assetId, eventId, poster, isHost, onEnded])
 
-    useSWR(
-        '/telemetry',
-        () => apiCreateTelemetry({
-            event_id: Number(eventId),
-            session_id: 'XXXXXX',
-            device: navigator.userAgent,
-            browser: navigator.userAgent,
-            os: navigator.platform,
-            ip_address: '',
-            token: token,
-            email: email,
-            code: code,
-        }),
-        {
-            revalidateOnFocus: false,
-        },
-    )
+    //Fire this every 60 seconds
+    useEffect(() => {
+        // Only track telemetry for non-hosts
+        if (isHost) return
+
+        const interval = setInterval(async () => {
+            try {
+                await apiCreateTelemetry({
+                    event_id: Number(eventId),
+                    device: navigator.userAgent,
+                    browser: navigator.userAgent,
+                    os: navigator.platform,
+                    ip_address: '',
+                    token: token,
+                    email: email,
+                    code: code,
+                })
+            } catch (error) {
+                console.error('Failed to create/update telemetry:', error)
+            }
+        }, 60000)
+
+        return () => clearInterval(interval)
+    }, [eventId, token, email, code, isHost])
+
     return (
         <Card className="w-full h-full p-0 m-0">
             <div ref={containerRef} className="w-full h-full" />

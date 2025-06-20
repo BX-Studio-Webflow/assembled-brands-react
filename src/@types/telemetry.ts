@@ -15,7 +15,6 @@ export interface EventTelemetry {
 
 export interface CreateTelemetryRequest {
     event_id: number
-    session_id: string
     device?: string
     browser?: string
     os?: string
@@ -36,13 +35,13 @@ export interface UpdateTelemetryRequest {
 }
 
 export interface LeaveEventRequest {
-    session_id: string
+    telemetry_id: number
     total_watch_time: number
     [key: string]: unknown
 }
 
 export interface UpdateWatchTimeRequest {
-    session_id: string
+    telemetry_id: number
     watch_time: number
     [key: string]: unknown
 }

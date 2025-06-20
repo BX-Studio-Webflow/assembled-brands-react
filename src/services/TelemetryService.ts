@@ -12,7 +12,7 @@ export async function apiCreateTelemetry(data: CreateTelemetryRequest) {
     return ApiService.fetchDataWithAxios<{
         message: string
         telemetryId: number
-        sessionId: string
+        watchTime: number
     }>({
         url: '/telemetry',
         method: 'post',
