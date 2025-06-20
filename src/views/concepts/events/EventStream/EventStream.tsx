@@ -12,6 +12,7 @@ import { EventProvider } from './context/EventContext'
 import EventHeader from './components/EventHeader'
 import EventHeaderExtra from './components/EventHeaderExtra'
 import EventWaitingCard from './components/EventWaitingCard'
+import { apiRecordLeaveEvent } from '@/services/TelemetryService'
 
 const EventStream = () => {
     const { id } = useParams()
@@ -66,9 +67,7 @@ const EventStream = () => {
         return { eventStatus: status, nextDate: next }
     }, [data])
 
-    console.log(data)
-
-    const handleStatusUpdate = (
+    const handleStatusUpdate = async (
         status: 'active' | 'suspended' | 'cancelled' | 'ended',
     ) => {
         mutate(
@@ -85,6 +84,14 @@ const EventStream = () => {
             },
             { revalidate: true },
         )
+        if (status === 'ended' && token && email && code) {
+            await apiRecordLeaveEvent({
+                token: token,
+                email: email,
+                code: code,
+                scenario: 'VIDEO_ENDED',
+            })
+        }
     }
 
     return (
@@ -105,6 +112,7 @@ const EventStream = () => {
                         eventName={data?.event.event_name || ''}
                         eventDescription={data?.event.event_description || ''}
                         nextDate={nextDate}
+                        isHost={isHost}
                     />
                     <EventHeaderExtra />
                 </div>

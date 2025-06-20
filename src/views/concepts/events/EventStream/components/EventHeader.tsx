@@ -1,3 +1,7 @@
+import React, { useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router'
+import { apiRecordLeaveEvent } from '@/services/TelemetryService'
+
 const statusPills: { [key: string]: string } = {
     cancelled:
         'bg-red-100 text-red-800 border border-red-400 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-red-400',
@@ -17,6 +21,7 @@ interface EventHeaderProps {
         start: Date
         end: Date
     } | null
+    isHost?: boolean
 }
 
 const EventHeader = ({
@@ -24,7 +29,111 @@ const EventHeader = ({
     eventName,
     eventDescription,
     nextDate,
+    isHost = false,
 }: EventHeaderProps) => {
+    const [searchParams] = useSearchParams()
+    const token = searchParams.get('token')
+    const email = searchParams.get('email')
+    const code = searchParams.get('code')
+
+    /**
+     * Sync leaving the event
+     * Closing the browser tab/window
+     * Switching to another tab
+     * Navigating to a different page
+     * Video ending naturally
+     * Component unmounting
+     */
+    const trackLeaveEvent = useCallback(
+        async (
+            scenario:
+                | 'TAB_CLOSED'
+                | 'TAB_SWITCHED'
+                | 'PAGE_NAVIGATED'
+                | 'VIDEO_ENDED'
+                | 'BROWSER_CLOSED'
+                | 'COMPONENT_UNMOUNTED',
+        ) => {
+            if (token && email && code) {
+                try {
+                    await apiRecordLeaveEvent({
+                        token: token,
+                        email: email,
+                        code: code,
+                        scenario: scenario,
+                    })
+                    console.log(`Leave event tracked: ${scenario}`)
+                } catch (error) {
+                    console.error(
+                        `Failed to track leave event (${scenario}):`,
+                        error,
+                    )
+                }
+            }
+        },
+        [token, email, code],
+    )
+
+    // Track when user leaves the event stream
+    useEffect(() => {
+        // Only track for non-hosts
+        if (isHost) return
+
+        const handleBeforeUnload = () => {
+            if (token && email && code) {
+                const data = {
+                    token: token,
+                    email: email,
+                    code: code,
+                    scenario: 'BROWSER_CLOSED',
+                }
+
+                // Use sendBeacon for more reliable tracking during page unload
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(
+                        '/api/telemetry/leave',
+                        JSON.stringify(data),
+                    )
+                } else {
+                    // Fallback to synchronous XMLHttpRequest
+                    const xhr = new XMLHttpRequest()
+                    xhr.open('POST', '/api/telemetry/leave', false) // synchronous
+                    xhr.setRequestHeader('Content-Type', 'application/json')
+                    xhr.send(JSON.stringify(data))
+                }
+            }
+        }
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') {
+                trackLeaveEvent('TAB_SWITCHED')
+            }
+        }
+
+        const handlePageHide = () => {
+            trackLeaveEvent('PAGE_NAVIGATED')
+        }
+
+        // Add event listeners
+        window.addEventListener('beforeunload', handleBeforeUnload)
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        window.addEventListener('pagehide', handlePageHide)
+
+        // Cleanup function
+        return () => {
+            // Track component unmount
+            trackLeaveEvent('COMPONENT_UNMOUNTED')
+
+            // Remove event listeners
+            window.removeEventListener('beforeunload', handleBeforeUnload)
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            )
+            window.removeEventListener('pagehide', handlePageHide)
+        }
+    }, [trackLeaveEvent, isHost])
+
     return (
         <div className="pt-2">
             <div className="flex items-center gap-3">

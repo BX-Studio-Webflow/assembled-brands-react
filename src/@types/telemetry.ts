@@ -54,8 +54,16 @@ export interface UpdateTelemetryRequest {
 }
 
 export interface LeaveEventRequest {
-    telemetry_id: number
-    total_watch_time: number
+    token: string
+    email: string
+    code: string
+    scenario:
+        | 'TAB_CLOSED'
+        | 'TAB_SWITCHED'
+        | 'PAGE_NAVIGATED'
+        | 'VIDEO_ENDED'
+        | 'BROWSER_CLOSED'
+        | 'COMPONENT_UNMOUNTED'
     [key: string]: unknown
 }
 
