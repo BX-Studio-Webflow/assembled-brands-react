@@ -10,6 +10,8 @@ export interface EventTelemetry {
     browser: string | null
     os: string | null
     ip_address: string | null
+    has_left: boolean
+    left_scenario: string | null
     created_at: string
     lead?: {
         id: number

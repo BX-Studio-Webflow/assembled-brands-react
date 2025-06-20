@@ -80,6 +80,7 @@ const EventHeader = ({
     useEffect(() => {
         // Only track for non-hosts
         if (isHost) return
+        if (status === 'ended' || status === 'cancelled') return
 
         const handleBeforeUnload = () => {
             if (token && email && code) {
@@ -136,7 +137,7 @@ const EventHeader = ({
             )
             window.removeEventListener('pagehide', handlePageHide)
         }
-    }, [trackLeaveEvent, isHost])
+    }, [trackLeaveEvent, isHost, status, token, email, code])
 
     return (
         <div className="pt-2">
