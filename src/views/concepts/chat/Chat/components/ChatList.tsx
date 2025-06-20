@@ -128,28 +128,35 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
     const messageList = useMemo(() => {
         console.log(messages)
         return messages.map((item) => {
-            // Determine if the current user is the sender
-            // Check in order: event.lead -> event.host -> currentUser from auth
-            const isCurrentUserSender =
-                item.senderId === event.lead?.id?.toString() ||
-                item.senderId === event.event.host.id?.toString() ||
-                item.senderId === user?.id?.toString()
+            // First determine who the current user is in this event context
+            const currentUserId =
+                event.lead?.id?.toString() ||
+                event.event.host.id?.toString() ||
+                user?.id?.toString()
 
+            // Then check if the message sender is the current user
+            const isCurrentUserSender = item.senderId === currentUserId
+
+            const isHostMessage =
+                item.senderId === event.event.host.id?.toString()
             return {
                 id: item.id,
                 sender: {
                     id: item.senderId,
                     name: item.name,
-                    avatarImageUrl: '/img/avatars/thumb-1.jpg', // TODO: Replace with actual avatar
+                    avatarImageUrl: isHostMessage
+                        ? event.event.host.profile_image
+                        : '/img/avatars/user.png',
                 },
                 content: item.text,
+                verified: isHostMessage,
                 timestamp: dayjs(item.timestamp).toDate(),
                 type: 'regular' as const,
                 isMyMessage: isCurrentUserSender,
                 showAvatar: !isCurrentUserSender,
             }
         })
-    }, [messages, user?.id, event.lead?.id, event.event.host.id])
+    }, [messages, user, event.lead, event.event.host])
 
     return (
         <div className="flex flex-col h-full">
