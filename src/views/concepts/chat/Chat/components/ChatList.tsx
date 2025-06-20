@@ -10,7 +10,7 @@ import NoUserFound from '@/assets/svg/NoUserFound'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
 import ChatAction from './ChatAction'
-import { useSessionUser } from '@/store/authStore'
+import useAuth from '@/auth/useAuth'
 
 interface ChatListProps {
     event: EventStreamResponse
@@ -19,7 +19,7 @@ interface ChatListProps {
 
 const ChatList = ({ event, isHost }: ChatListProps) => {
     const chatsFetched = useChatStore((state) => state.chatsFetched)
-    const currentUser = useSessionUser((state) => state.user)
+    const { user } = useAuth()
 
     const { fetchChats } = useChat()
 
@@ -55,9 +55,14 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
         attachments?: File[]
     }) => {
         try {
+            const senderId =
+                event.lead?.id?.toString() ||
+                event.event.host.id?.toString() ||
+                user?.id?.toString()
+            const name = event.lead?.name || event.event.host.name || user?.name
             await sendMessage(
-                currentUser.id?.toString() || '',
-                currentUser.name || 'Unknown User',
+                senderId,
+                name,
                 value,
                 isHost,
                 event.event.id.toString(),
@@ -124,10 +129,11 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
         console.log(messages)
         return messages.map((item) => {
             // Determine if the current user is the sender
+            // Check in order: event.lead -> event.host -> currentUser from auth
             const isCurrentUserSender =
-                item.senderId === currentUser.id?.toString() ||
                 item.senderId === event.lead?.id?.toString() ||
-                item.senderId === event.event.host.id?.toString()
+                item.senderId === event.event.host.id?.toString() ||
+                item.senderId === user?.id?.toString()
 
             return {
                 id: item.id,
@@ -143,7 +149,7 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
                 showAvatar: !isCurrentUserSender,
             }
         })
-    }, [messages, currentUser.id, event.lead?.id, event.event.host.id])
+    }, [messages, user?.id, event.lead?.id, event.event.host.id])
 
     return (
         <div className="flex flex-col h-full">
