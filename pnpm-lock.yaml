@@ -128,9 +128,6 @@ importers:
       plyr:
         specifier: ^3.7.8
         version: 3.7.8
-      plyr-react:
-        specifier: ^5.3.0
-        version: 5.3.0(plyr@3.7.8)(react@19.0.0)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -3317,16 +3314,6 @@ packages:
     resolution: {integrity: sha512-ueGLflrrnvwB3xuo/uGob5pd5FN7l0MsLf0Z87o/UQmRtwjvfylfc9MurIxRAWywCYTgrvpXBcqjV4OfCYGCIQ==}
     engines: {node: '>=16.20.0'}
 
-  plyr-react@5.3.0:
-    resolution: {integrity: sha512-m36/HrpHwg1N2rq3E31E8/kpAH55vk6qHUg17MG4uu9jbWYxnkN39lLmZQwxW7/qpDPfW5aGUJ6R3u23V0R3zA==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      plyr: ^3.7.7
-      react: '>=16.8'
-    peerDependenciesMeta:
-      react:
-        optional: true
-
   plyr@3.7.8:
     resolution: {integrity: sha512-yG/EHDobwbB/uP+4Bm6eUpJ93f8xxHjjk2dYcD1Oqpe1EcuQl5tzzw9Oq+uVAzd2lkM11qZfydSiyIpiB8pgdA==}
 
@@ -3484,15 +3471,6 @@ packages:
     peerDependencies:
       apexcharts: '>=4.0.0'
       react: '>=0.13'
-
-  react-aptor@2.0.0:
-    resolution: {integrity: sha512-YnCayokuhAwmBBP4Oc0bbT2l6ApfsjbY3DEEVUddIKZEBlGl1npzjHHzWnSqWuboSbMZvRqUM01Io9yiIp1wcg==}
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      react: '>=16.8'
-    peerDependenciesMeta:
-      react:
-        optional: true
 
   react-csv@2.2.2:
     resolution: {integrity: sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==}
@@ -7582,13 +7560,6 @@ snapshots:
 
   pkce-challenge@5.0.0: {}
 
-  plyr-react@5.3.0(plyr@3.7.8)(react@19.0.0):
-    dependencies:
-      plyr: 3.7.8
-      react-aptor: 2.0.0(react@19.0.0)
-    optionalDependencies:
-      react: 19.0.0
-
   plyr@3.7.8:
     dependencies:
       core-js: 3.43.0
@@ -7796,10 +7767,6 @@ snapshots:
     dependencies:
       apexcharts: 4.7.0
       prop-types: 15.8.1
-      react: 19.0.0
-
-  react-aptor@2.0.0(react@19.0.0):
-    optionalDependencies:
       react: 19.0.0
 
   react-csv@2.2.2: {}

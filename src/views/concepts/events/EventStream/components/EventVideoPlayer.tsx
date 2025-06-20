@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from 'react'
-import Plyr from 'plyr-react'
-import 'plyr-react/plyr.css'
+import Plyr from 'plyr'
+import Hls from 'hls.js'
+import 'plyr/dist/plyr.css'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import { toast } from '@/components/ui'
-import type { APITypes } from 'plyr-react'
+
+interface NavigatorWithAutoplayPolicy extends Navigator {
+    getAutoplayPolicy(type: string): string
+}
 
 interface EventVideoPlayerProps {
     src?: string
@@ -25,99 +29,260 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     onEnded,
     isHost,
 }) => {
-    const playerRef = useRef<APITypes>(null)
-    const progressIntervalRef = useRef<NodeJS.Timeout>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const playerRef = useRef<Plyr | null>(null)
+    const hlsRef = useRef<Hls | null>(null)
+    const progressIntervalRef = useRef<number | null>(null)
 
     useEffect(() => {
-        // Load saved progress when component mounts
-        const savedProgress = localStorage.getItem(
-            `video-progress-${assetId}-${eventId}`,
-        )
-        if (savedProgress && playerRef.current?.plyr) {
-            playerRef.current.plyr.currentTime = parseFloat(savedProgress)
+        if (!containerRef.current) return
+
+        const container = containerRef.current
+        const STORAGE_KEY = `video-progress-${assetId}-${eventId}`
+
+        // Create video element
+        const video = document.createElement('video')
+        video.setAttribute('playsinline', '')
+        video.setAttribute('autoplay', '')
+        video.setAttribute('muted', '')
+        video.style.borderRadius = 'none'
+        video.style.boxShadow = 'none'
+        video.style.margin = 'none'
+        Object.assign(video.style, {
+            '--shadow-color': 'none',
+        })
+        container.appendChild(video)
+
+        const controls = isHost
+            ? [
+                  'play-large',
+                  'play',
+                  'current-time',
+                  'mute',
+                  'volume',
+                  'fullscreen',
+                  'captions',
+                  'settings',
+                  'pip',
+                  'airplay',
+                  'download',
+                  'share',
+              ]
+            : [
+                  'play-large',
+                  'play',
+                  'current-time',
+                  'mute',
+                  'volume',
+                  'fullscreen',
+              ]
+
+        const startPlayback = (videoElement: HTMLVideoElement) => {
+            playerRef.current = new Plyr(videoElement, {
+                autoplay: true,
+                muted: true,
+                controls,
+            })
+
+            // Check autoplay policy
+            if ('getAutoplayPolicy' in navigator) {
+                const autoplayPolicy = (
+                    navigator as NavigatorWithAutoplayPolicy
+                ).getAutoplayPolicy('mediaelement')
+                console.log('Autoplay policy:', autoplayPolicy)
+
+                if (autoplayPolicy === 'disallowed') {
+                    toast.push(
+                        <Notification type="danger">
+                            Autoplay is not allowed. Please press the play
+                            button to start the stream
+                        </Notification>,
+                        {
+                            placement: 'top-center',
+                        },
+                    )
+                    return
+                }
+            }
+
+            // Restore last playback position
+            const savedProgress = localStorage.getItem(STORAGE_KEY)
+            if (savedProgress) {
+                const progress = parseFloat(savedProgress)
+                console.log('Restoring progress to:', progress)
+                videoElement.currentTime = progress
+                // Ensure video is muted for autoplay
+                videoElement.muted = true
+                // Let Plyr handle the autoplay instead of calling play() directly
+            } else {
+                // If no saved progress, start playing from beginning
+                // Ensure video is muted for autoplay
+                videoElement.muted = true
+                // Let Plyr handle the autoplay
+            }
+
+            // Save progress periodically
+            progressIntervalRef.current = window.setInterval(() => {
+                if (videoElement.currentTime > 30) {
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        videoElement.currentTime.toString(),
+                    )
+                }
+            }, 3000) as unknown as number
+
+            // Save progress on pause
+            playerRef.current.on('pause', () => {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    videoElement.currentTime.toString(),
+                )
+            })
+
+            // Handle autoplay errors
+            playerRef.current.on('error', () => {
+                const { error } = videoElement
+                toast.push(
+                    <Notification type="danger">
+                        An error occurred while playing this video
+                    </Notification>,
+                    {
+                        placement: 'top-center',
+                    },
+                )
+                console.error(error)
+                if (error?.code === 4) {
+                    // MEDIA_ERR_ABORTED
+                    toast.push(
+                        <Notification type="danger">
+                            Autoplay was blocked due to browser policy. Please
+                            press the play button to start the stream
+                        </Notification>,
+                        {
+                            placement: 'top-center',
+                        },
+                    )
+                }
+            })
+
+            playerRef.current.on('ended', () => {
+                onEnded('ended')
+            })
+
+            // Save progress before unload
+            window.addEventListener('beforeunload', () => {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    videoElement.currentTime.toString(),
+                )
+            })
         }
 
-        // Set up interval to save progress every 3 seconds
-        progressIntervalRef.current = setInterval(() => {
-            const player = playerRef.current?.plyr
-            if (player && player.currentTime > 30) {
-                localStorage.setItem(
-                    `video-progress-${assetId}-${eventId}`,
-                    player.currentTime.toString(),
-                )
-            }
-        }, 3000)
+        // Check if the video URL is an HLS stream (.m3u8)
+        if (Hls.isSupported() && src.endsWith('.m3u8')) {
+            // Create Hls instance
+            hlsRef.current = new Hls()
+            hlsRef.current.loadSource(src)
+            hlsRef.current.attachMedia(video)
 
-        // Cleanup interval on unmount
-        return () => {
+            // Handle HLS manifest parsed event
+            hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
+                startPlayback(video)
+            })
+
+            // Handle HLS errors
+            hlsRef.current.on(Hls.Events.ERROR, (_, data) => {
+                console.error('HLS error:', data)
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            toast.push(
+                                <Notification type="warning">
+                                    Network error, attempting to recover...
+                                </Notification>,
+                                {
+                                    placement: 'top-center',
+                                },
+                            )
+                            hlsRef.current?.startLoad()
+                            break
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            toast.push(
+                                <Notification type="warning">
+                                    Media error, attempting to recover...
+                                </Notification>,
+                                {
+                                    placement: 'top-center',
+                                },
+                            )
+                            hlsRef.current?.recoverMediaError()
+                            break
+                        default:
+                            toast.push(
+                                <Notification type="danger">
+                                    Fatal HLS error, destroying...
+                                </Notification>,
+                                {
+                                    placement: 'top-center',
+                                },
+                            )
+                            cleanup()
+                            break
+                    }
+                }
+            })
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // Fallback for Safari which has native HLS support
+            video.src = src
+
+            video.addEventListener('loadedmetadata', () => {
+                startPlayback(video)
+            })
+        } else {
+            // Regular video playback
+            video.setAttribute('src', src)
+            startPlayback(video)
+        }
+
+        const cleanup = () => {
             if (progressIntervalRef.current) {
                 clearInterval(progressIntervalRef.current)
+                progressIntervalRef.current = null
             }
+            if (hlsRef.current) {
+                hlsRef.current.destroy()
+                hlsRef.current = null
+            }
+            if (playerRef.current) {
+                // Save final position before cleanup
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    playerRef.current.currentTime.toString(),
+                )
+                playerRef.current.destroy()
+                playerRef.current = null
+            }
+            if (container.firstChild) {
+                container.removeChild(container.firstChild)
+            }
+            document.removeEventListener('keydown', handleEscape)
         }
-    }, [src, assetId, eventId])
 
-    const handleAutoPlayFail = () => {
-        toast.push(
-            <Notification type="danger">
-                Ops, video did not play automatically due to restriction from
-                your browser. Please press play button to start the video.
-            </Notification>,
-            {
-                placement: 'top-center',
-            },
-        )
-    }
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') cleanup()
+        }
+
+        document.addEventListener('keydown', handleEscape)
+
+        // Cleanup on unmount
+        return () => {
+            cleanup()
+        }
+    }, [src, assetId, eventId, poster, isHost, onEnded])
 
     return (
         <Card className="w-full h-full p-0 m-0">
-            <Plyr
-                ref={playerRef}
-                muted={true}
-                poster={poster}
-                source={{
-                    type: 'video',
-                    sources: [
-                        {
-                            src,
-                        },
-                    ],
-                    poster,
-                }}
-                options={{
-                    muted: true,
-                    autoplay: true,
-                    clickToPlay: true,
-                    storage: { enabled: false },
-                    controls: isHost
-                        ? [
-                              'play-large',
-                              'play',
-                              'current-time',
-                              'mute',
-                              'volume',
-                              'fullscreen',
-                              'captions',
-                              'settings',
-                              'pip',
-                              'airplay',
-                              'download',
-                              'share',
-                              'fullscreen',
-                              'airplay',
-                              'download',
-                          ]
-                        : [
-                              'play-large',
-                              'play',
-                              'current-time',
-                              'mute',
-                              'volume',
-                              'fullscreen',
-                          ],
-                }}
-                onEnded={() => onEnded('ended')}
-                onError={handleAutoPlayFail}
-            />
+            <div ref={containerRef} className="w-full h-full" />
         </Card>
     )
 }
