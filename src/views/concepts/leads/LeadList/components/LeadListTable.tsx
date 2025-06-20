@@ -15,8 +15,13 @@ import Notification from '@/components/ui/Notification'
 import { apiDeleteLead } from '@/services/LeadsService'
 
 const statusColor: Record<string, string> = {
-    active: 'bg-emerald-200 dark:bg-emerald-200 text-gray-900 dark:text-gray-900',
-    blocked: 'bg-red-200 dark:bg-red-200 text-gray-900 dark:text-gray-900',
+    hasCallback:
+        'bg-orange-200 dark:bg-orange-200 text-gray-900 dark:text-gray-900',
+    registeredForEvent:
+        'bg-blue-200 dark:bg-blue-200 text-gray-900 dark:text-gray-900',
+    newLead: 'bg-green-200 dark:bg-green-200 text-gray-900 dark:text-gray-900',
+    bothEventAndCallback:
+        'bg-orange-200 dark:bg-orange-200 text-gray-900 dark:text-gray-900',
 }
 
 const NameColumn = ({ row }: { row: Lead }) => {
@@ -147,16 +152,39 @@ const LeadListTable = () => {
                 accessorKey: 'lead_status',
                 cell: (props) => {
                     const row = props.row.original
+
+                    // Determine status based on the logic:
+                    // - If lead has empty event array: newLead
+                    // - If lead has truthy callback: hasCallback
+                    // - If both conditions are true: bothEventAndCallback
+                    let status = 'newLead'
+                    let statusText = 'New lead'
+
+                    const hasEvent =
+                        row.events &&
+                        Array.isArray(row.events) &&
+                        row.events.length > 0
+                    const hasCallback =
+                        row.callback && Object.keys(row.callback).length > 0
+
+                    if (hasEvent && hasCallback) {
+                        status = 'bothEventAndCallback'
+                        statusText = 'Registered for event, has callback'
+                    } else if (hasCallback) {
+                        status = 'hasCallback'
+                        statusText = 'Has callback' 
+                    } else if (hasEvent) {
+                        status = 'registeredForEvent'
+                        statusText = 'Registered for event'
+                    } else {
+                        status = 'newLead'
+                        statusText = 'New lead'
+                    }
+
                     return (
                         <div className="flex items-center">
-                            <Tag
-                                className={
-                                    statusColor[row.lead_status || 'active']
-                                }
-                            >
-                                <span className="capitalize">
-                                    {row.lead_status || 'Active'}
-                                </span>
+                            <Tag className={statusColor[status]}>
+                                <span className="capitalize">{statusText}</span>
                             </Tag>
                         </div>
                     )

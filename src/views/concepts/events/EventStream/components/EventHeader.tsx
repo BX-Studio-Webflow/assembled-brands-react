@@ -1,4 +1,3 @@
-
 const statusPills: { [key: string]: string } = {
     cancelled:
         'bg-red-100 text-red-800 border border-red-400 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-red-400',
@@ -20,15 +19,29 @@ interface EventHeaderProps {
     } | null
 }
 
-const EventHeader = ({ status, eventName, eventDescription, nextDate }: EventHeaderProps) => {
+const EventHeader = ({
+    status,
+    eventName,
+    eventDescription,
+    nextDate,
+}: EventHeaderProps) => {
     return (
         <div className="pt-2">
             <div className="flex items-center gap-3">
-                <span className="font-bold text-lg">
-                    {eventName}
-                </span>
+                <span className="font-bold text-lg">{eventName}</span>
                 <span className={statusPills[status] || statusPills['ended']}>
-                    event {status === 'ended' ? `has ended` : status === 'live' ? ' is live' : status === 'early' ? `starts at ${nextDate?.start.toLocaleString()}` : status === 'suspended' ? 'suspended' : status === 'cancelled' ? 'cancelled' : ''}
+                    event{' '}
+                    {status === 'ended'
+                        ? `has ended`
+                        : status === 'live'
+                          ? ' is live'
+                          : status === 'early'
+                            ? `starts at ${nextDate?.start.toLocaleString()}`
+                            : status === 'suspended'
+                              ? 'suspended'
+                              : status === 'cancelled'
+                                ? 'cancelled'
+                                : ''}
                 </span>
             </div>
             <span className="text-sm mt-8">{eventDescription}</span>

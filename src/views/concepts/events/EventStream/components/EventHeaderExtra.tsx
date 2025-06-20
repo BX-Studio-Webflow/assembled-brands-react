@@ -1,14 +1,11 @@
 import Button from '@/components/ui/Button'
 import { useEvent } from '../context/EventContext'
 import { apiSaveInstantCallback } from '@/services/EventService'
-import { useAuth } from '@/auth'
 import { toast } from '@/components/ui'
 import { Notification } from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
 
 const EventHeaderExtra = () => {
-    const { user } = useAuth()
-
     const { data } = useEvent()
 
     if (!data) {
@@ -25,10 +22,10 @@ const EventHeaderExtra = () => {
     const handleInstantCallback = async () => {
         try {
             await apiSaveInstantCallback({
-                lead_id: user?.id || 0,
+                lead_id: data.lead?.id || 0,
                 event_id: data.event.id,
                 callback_type: 'instant',
-                notes: '',
+                notes: `Hi, this is ${data.lead?.name} from ${data.lead?.email}. Please call me back.`,
                 host_id: data.event.host_id || 0,
             })
             toast.push(

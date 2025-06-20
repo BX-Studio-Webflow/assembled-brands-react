@@ -24,9 +24,8 @@ const Setting = lazy(() => import('./components/Setting'))
 const CourseDetails = () => {
     const { id } = useParams()
 
-    const { data, mutate } = useSWR(
-        `/course/${id}`,
-        () => apiGetCourse(Number(id)),
+    const { data, mutate } = useSWR(`/course/${id}`, () =>
+        apiGetCourse(Number(id)),
     )
 
     useEffect(() => {

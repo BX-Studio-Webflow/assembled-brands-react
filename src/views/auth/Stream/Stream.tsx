@@ -81,9 +81,18 @@ const Stream = () => {
                 <div className="flex flex-col w-full h-full m-2">
                     <div className="flex flex-row justify-between gap-4 mb-4 w-full">
                         <EventHeader
-                            status={eventStatus as 'early' | 'live' | 'ended' | 'suspended' | 'cancelled'}
+                            status={
+                                eventStatus as
+                                    | 'early'
+                                    | 'live'
+                                    | 'ended'
+                                    | 'suspended'
+                                    | 'cancelled'
+                            }
                             eventName={data?.event.event_name || ''}
-                            eventDescription={data?.event.event_description || ''}
+                            eventDescription={
+                                data?.event.event_description || ''
+                            }
                             nextDate={nextDate}
                         />
                         <EventHeaderExtra />
