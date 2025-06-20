@@ -40,7 +40,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         // Set up interval to save progress every 3 seconds
         progressIntervalRef.current = setInterval(() => {
             const player = playerRef.current?.plyr
-            if (player) {
+            if (player && player.currentTime > 30) {
                 localStorage.setItem(
                     `video-progress-${assetId}-${eventId}`,
                     player.currentTime.toString(),
