@@ -84,12 +84,6 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
             <div className="mt-5">
                 <div className="flex flex-row gap-8">
                     <div>
-                        <div className="mb-2">Total Attendance</div>
-                        <div className="flex items-end gap-2 mb-1">
-                            <h3>{telemetryData.length}</h3>
-                        </div>
-                    </div>
-                    <div>
                         <div className="mb-2">Average Watch Time</div>
                         <div className="flex items-end gap-2 mb-1">
                             <h3>{formatDuration(averageWatchTime)}</h3>
@@ -100,6 +94,13 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
                                 positiveIcon="+"
                                 negativeIcon=""
                             />
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="mb-2">Total Attendance</div>
+                        <div className="flex items-end gap-2 mb-1">
+                            <h3>{telemetryData.length}</h3>
                         </div>
                     </div>
                 </div>

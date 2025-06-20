@@ -1,11 +1,6 @@
 import { useRef } from 'react'
 import Dropdown from '@/components/ui/Dropdown'
-import {
-    TbDotsVertical,
-    TbBell,
-    TbBellOff,
-    TbShare3,
-} from 'react-icons/tb'
+import { TbDotsVertical, TbBell, TbBellOff, TbShare3 } from 'react-icons/tb'
 import type { DropdownRef } from '@/components/ui/Dropdown'
 
 type ChatActionProps = {

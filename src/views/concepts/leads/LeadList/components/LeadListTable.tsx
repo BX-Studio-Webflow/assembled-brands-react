@@ -172,7 +172,7 @@ const LeadListTable = () => {
                         statusText = 'Call Back'
                     } else if (hasCallback) {
                         status = 'hasCallback'
-                        statusText = 'Call Back' 
+                        statusText = 'Call Back'
                     } else if (hasEvent) {
                         status = 'registeredForEvent'
                         statusText = 'Registered for event'
