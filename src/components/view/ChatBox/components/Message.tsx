@@ -75,6 +75,11 @@ const Message = (props: MessageProps) => {
                                     customRenderer()
                                 ) : (
                                     <>
+                                        {!isMyMessage && (
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
+                                                {sender.name}
+                                            </div>
+                                        )}
                                         {attachments &&
                                             attachments?.length > 0 && (
                                                 <Attachment
