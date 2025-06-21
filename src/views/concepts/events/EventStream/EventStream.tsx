@@ -127,6 +127,7 @@ const EventStream = () => {
                                 <ChatBody
                                     data={data}
                                     isHost={isHost}
+                                    nextDate={nextDate}
                                     onStatusUpdate={handleStatusUpdate}
                                 />
                             </div>

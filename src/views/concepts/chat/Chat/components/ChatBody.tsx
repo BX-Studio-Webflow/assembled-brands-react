@@ -11,12 +11,14 @@ const ChatBody = ({
     data,
     onStatusUpdate,
     isHost,
+    nextDate,
 }: {
     data: EventStreamResponse
     onStatusUpdate: (
         status: 'active' | 'suspended' | 'cancelled' | 'ended',
     ) => void
     isHost: boolean
+    nextDate: { start: Date; end: Date } | null
 }) => {
     // Memoize video player props to prevent unnecessary re-renders
     const videoPlayerProps = useMemo(
@@ -26,6 +28,7 @@ const ChatBody = ({
             assetId: data.event.asset.id,
             eventId: data.event.id,
             onEnded: () => onStatusUpdate('ended'),
+            nextDate,
         }),
         [
             isHost,
@@ -33,6 +36,7 @@ const ChatBody = ({
             data.event.asset.id,
             data.event.id,
             onStatusUpdate,
+            nextDate,
         ],
     )
 

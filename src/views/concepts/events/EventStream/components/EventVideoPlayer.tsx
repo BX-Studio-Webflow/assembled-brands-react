@@ -21,6 +21,7 @@ interface EventVideoPlayerProps {
         status: 'ended' | 'suspended' | 'cancelled' | 'live' | 'early',
     ) => void
     isHost: boolean
+    nextDate: { start: Date; end: Date } | null
 }
 
 const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
@@ -30,6 +31,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     eventId,
     onEnded,
     isHost,
+    nextDate,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null)
     const playerRef = useRef<Plyr | null>(null)
@@ -104,21 +106,41 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                 }
             }
 
-            // Restore last playback position
-            const savedProgress = localStorage.getItem(STORAGE_KEY)
-            if (savedProgress) {
-                const progress = parseFloat(savedProgress)
-                console.log('Restoring progress to:', progress)
-                videoElement.currentTime = progress
-                // Ensure video is muted for autoplay
-                videoElement.muted = true
-                // Let Plyr handle the autoplay instead of calling play() directly
-            } else {
-                // If no saved progress, start playing from beginning
-                // Ensure video is muted for autoplay
-                videoElement.muted = true
-                // Let Plyr handle the autoplay
+            // Calculate current time position based on nextDate.start
+            if (nextDate?.start) {
+                const streamStartTime = new Date(nextDate.start).getTime()
+                const currentTime = Date.now()
+                const timeElapsed = Math.max(
+                    0,
+                    (currentTime - streamStartTime) / 1000,
+                ) // Convert to seconds
+
+                console.log('Stream start time:', new Date(streamStartTime))
+                console.log('Current time:', new Date(currentTime))
+                console.log('Time elapsed (seconds):', timeElapsed)
+
+                // Only seek if we have a valid time and video is ready
+                if (!isNaN(timeElapsed) && videoElement.readyState >= 1) {
+                    // For HLS streams, wait for metadata to be loaded
+                    if (src.endsWith('.m3u8')) {
+                        videoElement.addEventListener(
+                            'loadedmetadata',
+                            () => {
+                                if (timeElapsed <= videoElement.duration) {
+                                    videoElement.currentTime = timeElapsed
+                                }
+                            },
+                            { once: true },
+                        )
+                    } else {
+                        // For regular videos, seek immediately if ready
+                        if (timeElapsed <= videoElement.duration) {
+                            videoElement.currentTime = timeElapsed
+                        }
+                    }
+                }
             }
+            videoElement.muted = true
 
             // Save progress periodically
             progressIntervalRef.current = window.setInterval(() => {
@@ -277,7 +299,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         return () => {
             cleanup()
         }
-    }, [src, assetId, eventId, poster, isHost, onEnded])
+    }, [src, assetId, eventId, poster, isHost, onEnded, nextDate])
 
     //Fire this every 60 seconds
     useEffect(() => {
