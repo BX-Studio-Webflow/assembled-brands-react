@@ -106,6 +106,7 @@ const Stream = () => {
                                 <div className="flex flex-auto h-full gap-8">
                                     <ChatSidebar event={data} isHost={false} />
                                     <ChatBody
+                                        nextDate={nextDate}
                                         data={data}
                                         isHost={false}
                                         onStatusUpdate={handleCountdownEnd}

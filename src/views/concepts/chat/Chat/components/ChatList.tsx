@@ -54,6 +54,7 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
         attachments?: File[]
     }) => {
         try {
+            if (!value) return
             const senderId =
                 event.lead?.id?.toString() ||
                 event.event.host.id?.toString() ||
