@@ -117,28 +117,13 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
                 console.log('Stream start time:', new Date(streamStartTime))
                 console.log('Current time:', new Date(currentTime))
-                console.log('Time elapsed (seconds):', timeElapsed)
-
-                // Only seek if we have a valid time and video is ready
-                if (!isNaN(timeElapsed) && videoElement.readyState >= 1) {
-                    // For HLS streams, wait for metadata to be loaded
-                    if (src.endsWith('.m3u8')) {
-                        videoElement.addEventListener(
-                            'loadedmetadata',
-                            () => {
-                                if (timeElapsed <= videoElement.duration) {
-                                    videoElement.currentTime = timeElapsed
-                                }
-                            },
-                            { once: true },
-                        )
-                    } else {
-                        // For regular videos, seek immediately if ready
-                        if (timeElapsed <= videoElement.duration) {
-                            videoElement.currentTime = timeElapsed
-                        }
+               
+                videoElement.addEventListener('loadedmetadata', () => {
+                    console.log('VIDEO READY: SEEKING TO:', timeElapsed)
+                    if (timeElapsed <= videoElement.duration) {
+                        videoElement.currentTime = timeElapsed
                     }
-                }
+                })
             }
             videoElement.muted = true
 
