@@ -117,11 +117,35 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
                 console.log('Stream start time:', new Date(streamStartTime))
                 console.log('Current time:', new Date(currentTime))
-               
+
                 videoElement.addEventListener('loadedmetadata', () => {
                     console.log('VIDEO READY: SEEKING TO:', timeElapsed)
                     if (timeElapsed <= videoElement.duration) {
                         videoElement.currentTime = timeElapsed
+                    }
+                })
+
+                videoElement.addEventListener('error', (e) => {
+                    console.log('VIDEO ERROR:', e)
+                    const error = videoElement.error
+                    if (!error) return
+
+                    switch (error.code) {
+                        case error.MEDIA_ERR_ABORTED:
+                            console.log('Playback aborted.')
+                            break
+                        case error.MEDIA_ERR_NETWORK:
+                            console.log('Network error during video download.')
+                            break
+                        case error.MEDIA_ERR_DECODE:
+                            console.log('Decoding error.')
+                            break
+                        case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                            console.log('Video source not supported.')
+                            break
+                        default:
+                            console.log('An unknown error occurred.')
+                            break
                     }
                 })
             }
