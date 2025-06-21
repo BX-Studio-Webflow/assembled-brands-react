@@ -301,7 +301,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         }
     }, [src, assetId, eventId, poster, isHost, onEnded, nextDate])
 
-    //Fire this every 60 seconds
+    //Fire this every 20 seconds
     useEffect(() => {
         // Only track telemetry for non-hosts
         if (isHost) return
@@ -321,7 +321,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             } catch (error) {
                 console.error('Failed to create/update telemetry:', error)
             }
-        }, 60000)
+        }, 10000)
 
         return () => clearInterval(interval)
     }, [eventId, token, email, code, isHost])
