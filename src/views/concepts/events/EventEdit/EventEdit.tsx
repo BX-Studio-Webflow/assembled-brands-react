@@ -171,9 +171,9 @@ const EventEdit = () => {
     <input class="lead_form_name answerbox" type="text" id="captcha_answer" name="captcha_answer" placeholder="Answer" required />
   </div>
   <!------------>
-  <input type="hidden" name="event_id" value="56">
-  <input type="hidden" name="host_id" value="1">
-  <input type="hidden" name="redirect_url" value="https://bmw.com">
+  <input type="hidden" name="event_id" value="YOUR_EVENT_ID">
+  <input type="hidden" name="host_id" value="YOUR_HOST_ID">
+  <input type="hidden" name="redirect_url" value="YOUR_REDIRECT_URL">
   <!------------>
   <div id="lead_form_error" class="lead_form_error" style="display:none;"></div>
   <!------------>
