@@ -3,10 +3,9 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useChatStore } from '../store/chatStore'
 import useChat from '../hooks/useChat'
 import { TbChevronLeft } from 'react-icons/tb'
-import { Card, ScrollBarRef } from '@/components/ui'
+import { Avatar, Card, ScrollBarRef } from '@/components/ui'
 import { EventStreamResponse } from '@/@types/events'
 import ChatBox from '@/components/view/ChatBox'
-import NoUserFound from '@/assets/svg/NoUserFound'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
 import ChatAction from './ChatAction'
@@ -95,7 +94,14 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
                             role="button"
                         >
                             <div>
-                                <NoUserFound height={40} width={40} />
+                                <Avatar
+                                    size={40}
+                                    src={
+                                        event.event.host.profile_image ||
+                                        '/img/avatars/user.png'
+                                    }
+                                    shape="circle"
+                                />
                             </div>
                             <div className="min-w-0 flex-1">
                                 <div className="flex justify-between">
@@ -112,7 +118,7 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
                 className: 'bg-gray-100 dark:bg-gray-600 h-[100px]',
             },
         }),
-        [smaller.md, setSelectedChat, selectedChat.muted],
+        [smaller.md, setSelectedChat, selectedChat.muted, event.event.host],
     )
 
     useEffect(() => {
