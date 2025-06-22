@@ -83,6 +83,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                 autoplay: true,
                 muted: true,
                 controls,
+                clickToPlay: false,
             })
 
             // Check autoplay policy

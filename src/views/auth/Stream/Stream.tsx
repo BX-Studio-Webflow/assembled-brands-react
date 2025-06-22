@@ -95,7 +95,7 @@ const Stream = () => {
                             }
                             nextDate={nextDate}
                         />
-                        <EventHeaderExtra />
+                        <EventHeaderExtra isHost />
                     </div>
                     {data && eventStatus === 'live' && (
                         <>

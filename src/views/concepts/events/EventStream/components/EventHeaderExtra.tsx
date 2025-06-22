@@ -5,7 +5,11 @@ import { toast } from '@/components/ui'
 import { Notification } from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
 
-const EventHeaderExtra = () => {
+interface EventHeaderExtraProps {
+    isHost: boolean
+}
+
+const EventHeaderExtra = ({ isHost }: EventHeaderExtraProps) => {
     const { data } = useEvent()
 
     if (!data) {
@@ -43,7 +47,7 @@ const EventHeaderExtra = () => {
     }
 
     return (
-        <div className="flex items-center gap-2 print:hidden">
+        isHost ? <></> : (<div className="flex items-center gap-2 print:hidden">
             <Button
                 variant="solid"
                 customColorClass={() =>
@@ -74,8 +78,9 @@ const EventHeaderExtra = () => {
                 >
                     Upgrade Now
                 </Button>
-            )}
-        </div>
+                )}
+            </div>
+        )
     )
 }
 
