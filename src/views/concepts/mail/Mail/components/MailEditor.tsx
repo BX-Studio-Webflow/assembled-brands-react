@@ -17,6 +17,8 @@ import { AxiosError } from 'axios'
 import Radio from '@/components/ui/Radio'
 import Select from '@/components/ui/Select'
 import type { MultiValue } from 'react-select'
+import useMail from '../hooks/useMail'
+import useQuery from '@/utils/hooks/useQuery'
 
 type FormSchema = {
     content: string
@@ -93,6 +95,9 @@ const MailEditor = () => {
         { value: number; label: string }[]
     >([])
 
+    const { fetchMails } = useMail()
+    const query = useQuery()
+
     const {
         handleSubmit,
         reset,
@@ -132,7 +137,7 @@ const MailEditor = () => {
     useEffect(() => {
         if (messageDialog.mode === 'reply') {
             reset({
-                title: `Re:${mail.title}`,
+                title: `Re:${mail?.title}`,
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,6 +182,11 @@ const MailEditor = () => {
                     placement: 'top-center',
                 },
             )
+
+            // Refresh the mail list with current category and label
+            const category = query.get('category') || ''
+            const label = query.get('label') || ''
+            await fetchMails({ category, label })
         } catch (error) {
             toast.push(
                 <Notification type="danger">
