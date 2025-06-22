@@ -144,7 +144,7 @@ const MailList = () => {
                                         <Th colSpan={2}>From</Th>
                                         <Th></Th>
                                         <Th>Subject</Th>
-                                        <Th>Received</Th>
+                                        <Th>Sent</Th>
                                         <Th></Th>
                                     </Tr>
                                 </THead>
