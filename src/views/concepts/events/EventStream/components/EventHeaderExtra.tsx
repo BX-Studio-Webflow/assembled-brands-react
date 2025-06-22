@@ -46,8 +46,10 @@ const EventHeaderExtra = ({ isHost }: EventHeaderExtraProps) => {
         }
     }
 
-    return (
-        isHost ? <></> : (<div className="flex items-center gap-2 print:hidden">
+    return isHost ? (
+        <></>
+    ) : (
+        <div className="flex items-center gap-2 print:hidden">
             <Button
                 variant="solid"
                 customColorClass={() =>
@@ -78,9 +80,8 @@ const EventHeaderExtra = ({ isHost }: EventHeaderExtraProps) => {
                 >
                     Upgrade Now
                 </Button>
-                )}
-            </div>
-        )
+            )}
+        </div>
     )
 }
 

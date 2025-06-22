@@ -17,6 +17,7 @@ const Stream = () => {
     const token = searchParams.get('token')
     const email = searchParams.get('email')
     const code = searchParams.get('code')
+    const isHost = !token && !email && !code
     const swrKey = [`/event/stream/${code}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
         swrKey,
@@ -95,7 +96,7 @@ const Stream = () => {
                             }
                             nextDate={nextDate}
                         />
-                        <EventHeaderExtra isHost />
+                        <EventHeaderExtra isHost={isHost} />
                     </div>
                     {data && eventStatus === 'live' && (
                         <>
