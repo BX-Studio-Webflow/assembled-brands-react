@@ -6,6 +6,12 @@ import useLeadList from '../hooks/useLeadList'
 import { Link, useNavigate } from 'react-router'
 import cloneDeep from 'lodash/cloneDeep'
 import { TbPencil, TbTrash } from 'react-icons/tb'
+import {
+    HiPhone,
+    HiCalendar,
+    HiCheckCircle,
+    HiPlusCircle,
+} from 'react-icons/hi'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { Lead } from '@/@types/lead'
 import type { TableQueries } from '@/@types/common'
@@ -13,16 +19,6 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { apiDeleteLead } from '@/services/LeadsService'
-
-const statusColor: Record<string, string> = {
-    hasCallback:
-        'bg-orange-200 dark:bg-orange-200 text-gray-900 dark:text-gray-900',
-    registeredForEvent:
-        'bg-blue-200 dark:bg-blue-200 text-gray-900 dark:text-gray-900',
-    newLead: 'bg-green-200 dark:bg-green-200 text-gray-900 dark:text-gray-900',
-    bothEventAndCallback:
-        'bg-orange-200 dark:bg-orange-200 text-gray-900 dark:text-gray-900',
-}
 
 const NameColumn = ({ row }: { row: Lead }) => {
     return (
@@ -157,8 +153,12 @@ const LeadListTable = () => {
                     // - If lead has empty event array: newLead
                     // - If lead has truthy callback: hasCallback
                     // - If both conditions are true: bothEventAndCallback
-                    let status = 'newLead'
                     let statusText = 'New lead'
+                    let statusIcon = (
+                        <HiPlusCircle className="text-base text-green-600 mr-1 rtl:ml-1" />
+                    )
+                    let statusClass =
+                        'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
 
                     const hasEvent =
                         row.events &&
@@ -166,24 +166,48 @@ const LeadListTable = () => {
                         row.events.length > 0
                     const hasCallback =
                         row.callback && Object.keys(row.callback).length > 0
+                    const attendedEvent = row.attended_event
 
                     if (hasEvent && hasCallback) {
-                        status = 'bothEventAndCallback'
                         statusText = 'Call Back'
+                        statusIcon = (
+                            <HiPhone className="text-base text-orange-600 mr-1 rtl:ml-1" />
+                        )
+                        statusClass =
+                            'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
                     } else if (hasCallback) {
-                        status = 'hasCallback'
                         statusText = 'Call Back'
+                        statusIcon = (
+                            <HiPhone className="text-base text-orange-600 mr-1 rtl:ml-1" />
+                        )
+                        statusClass =
+                            'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
+                    } else if (attendedEvent) {
+                        statusText = 'Attended event'
+                        statusIcon = (
+                            <HiCheckCircle className="text-base text-emerald-600 mr-1 rtl:ml-1" />
+                        )
+                        statusClass =
+                            'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0'
                     } else if (hasEvent) {
-                        status = 'registeredForEvent'
                         statusText = 'Registered for event'
+                        statusIcon = (
+                            <HiCalendar className="text-base text-blue-600 mr-1 rtl:ml-1" />
+                        )
+                        statusClass =
+                            'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100 border-0'
                     } else {
-                        status = 'newLead'
                         statusText = 'New lead'
+                        statusIcon = (
+                            <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
+                        )
+                        statusClass =
+                            'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100 border-0'
                     }
 
                     return (
                         <div className="flex items-center">
-                            <Tag className={statusColor[status]}>
+                            <Tag className={statusClass} prefix={statusIcon}>
                                 <span className="capitalize">{statusText}</span>
                             </Tag>
                         </div>

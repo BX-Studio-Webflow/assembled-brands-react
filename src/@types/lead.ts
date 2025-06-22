@@ -14,6 +14,7 @@ export interface Lead {
     lead_status: string | null
     source_url: string | null
     membership_level: string | null
+    attended_event: boolean
     created_at: string
     updated_at: string
     events: Event[]
