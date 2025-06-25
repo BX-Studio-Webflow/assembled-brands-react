@@ -461,7 +461,7 @@ const x = setInterval(function () {
             }
             toast.push(
                 <Notification type="success">
-                    Chat logs cleared successfully!
+                    Chat and attendance logs cleared successfully!
                 </Notification>,
                 { placement: 'top-center' },
             )
@@ -586,7 +586,8 @@ const x = setInterval(function () {
             >
                 <p>
                     Are you sure you want to clear all chat and attendance logs
-                    for this event? This action cannot be undone.
+                    for this event? This will remove all chat and attendance
+                    statistics for this event. This action cannot be undone.
                 </p>
             </ConfirmDialog>
         </Loading>
