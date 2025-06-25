@@ -17,6 +17,7 @@ import { FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
 import { useChatStore } from '../../chat/Chat/store/chatStore'
 import { CSVLink } from 'react-csv'
 import { RiChatDeleteLine } from 'react-icons/ri'
+import { apiClearTelemetryLogs } from '@/services/TelemetryService'
 
 const EventEdit = () => {
     const { id } = useParams()
@@ -452,7 +453,11 @@ const x = setInterval(function () {
     const handleConfirmClearLogs = async () => {
         try {
             if (data?.id) {
-                await clearAllMessagesForEvent(data.id.toString())
+                await Promise.allSettled([
+                    apiClearTelemetryLogs(Number(data.id)),
+                    clearAllMessagesForEvent(data.id.toString()),
+                ])
+                mutate(`/event/${id}`)
             }
             toast.push(
                 <Notification type="success">

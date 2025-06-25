@@ -100,3 +100,10 @@ export async function apiDeleteTelemetry(id: number) {
         method: 'delete',
     })
 }
+
+export async function apiClearTelemetryLogs(eventId: number) {
+    return ApiService.fetchDataWithAxios<{ message: string }>({
+        url: `/telemetry/clear-logs/${eventId}`,
+        method: 'delete',
+    })
+}
