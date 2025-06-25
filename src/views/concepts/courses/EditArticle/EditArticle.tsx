@@ -27,6 +27,11 @@ const EditArticle = () => {
             : null,
         () =>
             apiGetLesson(Number(courseId), Number(moduleId), Number(lessonId)),
+        {
+            revalidateOnFocus: false,
+            revalidateIfStale: false,
+            revalidateOnReconnect: false,
+        },
     )
 
     useEffect(() => {
@@ -39,6 +44,8 @@ const EditArticle = () => {
 
     const { data: assetsData } = useSWR('/asset', () => apiGetAssets(), {
         revalidateOnFocus: false,
+        revalidateIfStale: false,
+        revalidateOnReconnect: false,
     })
 
     return (

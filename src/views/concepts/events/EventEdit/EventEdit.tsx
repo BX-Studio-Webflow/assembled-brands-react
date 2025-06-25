@@ -23,7 +23,11 @@ const EventEdit = () => {
     const { data, isLoading } = useSWR<EventWithDetailsAndCount>(
         id ? `/event/${id}` : null,
         () => apiGetEvent(Number(id)),
-        { revalidateOnFocus: false },
+        {
+            revalidateOnFocus: false,
+            revalidateIfStale: false,
+            revalidateOnReconnect: false,
+        },
     )
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =

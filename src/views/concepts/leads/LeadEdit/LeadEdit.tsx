@@ -34,6 +34,11 @@ const LeadEdit = () => {
         [`/lead/${id}`, { id: id as string }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, params]) => apiGetLead<Lead>(params.id),
+        {
+            revalidateOnFocus: false,
+            revalidateIfStale: false,
+            revalidateOnReconnect: false,
+        },
     )
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)

@@ -25,6 +25,11 @@ const PodcastEdit = () => {
         podcastId ? [`/api/podcast/${podcastId}`, podcastId] : null,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, id]) => apiGetPodcast(id as number),
+        {
+            revalidateOnFocus: false,
+            revalidateIfStale: false,
+            revalidateOnReconnect: false,
+        },
     )
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
