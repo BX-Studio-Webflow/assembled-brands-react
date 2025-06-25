@@ -13,7 +13,8 @@ import { TbTrash, TbEye, TbPencil } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { EventItem } from '../types'
 import type { TableQueries } from '@/@types/common'
-import { FaVideo, FaMapMarkerAlt, FaFilm } from 'react-icons/fa'
+import { FaVideo, FaMapMarkerAlt, FaFilm, FaLink } from 'react-icons/fa'
+import { useAuth } from '@/auth'
 
 const EventStatusColor: Record<
     string,
@@ -123,6 +124,7 @@ const EventListTable = () => {
     const { EventList, EventListTotal, tableData, isLoading, setTableData } =
         useEventlist()
     const navigate = useNavigate()
+    const { user } = useAuth()
 
     const columns: ColumnDef<EventItem>[] = useMemo(
         () => [
@@ -154,6 +156,22 @@ const EventListTable = () => {
                     ) : null
                 },
             },
+            ...(user?.role === 'master' || user?.role === 'owner'
+                ? [
+                      {
+                          header: 'Host ID',
+                          accessorKey: 'host_id',
+                          cell: (props: { row: { original: EventItem } }) => {
+                              const { host_id } = props.row.original
+                              return (
+                                  <span className="font-semibold">
+                                      {host_id}
+                                  </span>
+                              )
+                          },
+                      },
+                  ]
+                : []),
             {
                 header: 'Status',
                 accessorKey: 'status',
@@ -196,6 +214,7 @@ const EventListTable = () => {
                     )
                 },
             },
+
             {
                 header: 'Price Plans',
                 accessorKey: 'memberships',
@@ -223,11 +242,15 @@ const EventListTable = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <span role="img" aria-label="link">
-                                🔗
+                            <span className="font-semibold">
+                                <FaLink className="inline-block mr-1" />
                             </span>
                         </a>
-                    ) : null
+                    ) : (
+                        <span role="img" aria-label="link">
+                            🔗
+                        </span>
+                    )
                 },
             },
             {
@@ -256,7 +279,7 @@ const EventListTable = () => {
                 cell: (props) => <ActionColumn row={props.row.original} />,
             },
         ],
-        [],
+        [user?.role],
     )
 
     const handleSetTableData = (data: TableQueries) => {

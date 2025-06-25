@@ -123,7 +123,9 @@ const EventEdit = () => {
         const defaultValues: EventFormType = {
             event_name: data?.event_name || '',
             event_description: data?.event_description || '',
-            status: data?.status || 'active',
+            status:
+                (data?.status as 'active' | 'suspended' | 'cancelled') ||
+                'active',
             event_type: data?.event_type || 'live_venue',
             live_venue_address: data?.live_venue_address || '',
             live_video_url: data?.live_video_url || '',
@@ -311,7 +313,11 @@ const EventEdit = () => {
   }
 </style>
 <script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/j.js"></script>`
-        if (!data?.id || !data?.host_id || !data?.success_url) {
+        const host_id = data?.host_id?.toString() || ''
+        const success_url = data?.success_url || data?.live_video_url
+
+        if (!id || !host_id || !success_url) {
+            console.log({ id, host_id, success_url })
             toast.push(
                 <Notification type="danger">
                     Ops! we could not generate the form. Event ID, Host ID, and
@@ -321,17 +327,14 @@ const EventEdit = () => {
             )
             return
         }
-        form = form.replace('YOUR_EVENT_ID', data?.id?.toString() || '0')
-        form = form.replace('YOUR_HOST_ID', data?.host_id?.toString() || '0')
-        form = form.replace(
-            'YOUR_REDIRECT_URL',
-            data?.success_url || 'https://elevnt.io',
-        )
+        form = form.replace('YOUR_EVENT_ID', id || '')
+        form = form.replace('YOUR_HOST_ID', host_id)
+        form = form.replace('YOUR_REDIRECT_URL', success_url)
 
         navigator.clipboard.writeText(form)
         toast.push(
             <Notification type="success">
-                Form copied to clipboard!
+                Your form has been copied to the clipboard!
             </Notification>,
             { placement: 'top-center' },
         )
