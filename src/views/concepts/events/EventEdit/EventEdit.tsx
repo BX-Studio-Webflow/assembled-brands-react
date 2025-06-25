@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
@@ -13,8 +13,9 @@ import { TbTrash } from 'react-icons/tb'
 import type { EventFormType } from '../EventForm/validation/eventFormSchema'
 import type { EventWithDetailsAndCount } from '@/@types/events'
 import { AxiosError } from 'axios'
-import { PiClockCountdown } from 'react-icons/pi'
-import { FaLink, FaRegCopy } from 'react-icons/fa'
+import { FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
+import { useChatStore } from '../../chat/Chat/store/chatStore'
+import { CSVLink } from 'react-csv'
 
 const EventEdit = () => {
     const { id } = useParams()
@@ -33,6 +34,17 @@ const EventEdit = () => {
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
+
+    const messages = useChatStore((state) => state.messages)
+    const subscribeToMessages = useChatStore(
+        (state) => state.subscribeToMessages,
+    )
+
+    useEffect(() => {
+        if (data?.id) {
+            subscribeToMessages(data.id.toString())
+        }
+    }, [data?.id, subscribeToMessages])
 
     const handleFormSubmit = async (values: EventFormType) => {
         try {
@@ -407,6 +419,39 @@ const x = setInterval(function () {
         )
     }
 
+    const handleDownload = () => {
+        if (messages.length === 0) {
+            toast.push(
+                <Notification type="danger">
+                    {data?.event_type === 'prerecorded'
+                        ? 'Ops! No messages were sent in your event yet!'
+                        : `Ops! Messages are not available for ${data?.event_type} events!`}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            return
+        }
+        toast.push(
+            <Notification type="success">
+                {messages.length} messages are ready to be downloaded!
+            </Notification>,
+            { placement: 'top-center' },
+        )
+    }
+
+    // Prepare CSV data for download
+    const csvData = useMemo(() => {
+        return messages.map((message) => ({
+            'Message ID': message.id,
+            'Sender ID': message.senderId,
+            'Sender Name': message.name,
+            Message: message.text,
+            Timestamp: new Date(message.timestamp).toLocaleString(),
+            'Is Host': message.isHost ? 'Yes' : 'No',
+            'Event ID': message.eventId,
+        }))
+    }, [messages])
+
     return (
         <Loading loading={isLoading}>
             <EventForm onFormSubmit={handleFormSubmit} {...EventFormProps}>
@@ -426,9 +471,21 @@ const x = setInterval(function () {
                                 />
                                 <Button
                                     type="button"
-                                    icon={<PiClockCountdown />}
+                                    icon={<FaClock />}
                                     onClick={handleCountdown}
                                 />
+                                {data?.event_type === 'prerecorded' && (
+                                    <CSVLink
+                                        filename={`event-${data?.id}-messages.csv`}
+                                        data={csvData}
+                                        onClick={handleDownload}
+                                    >
+                                        <Button
+                                            type="button"
+                                            icon={<FaDownload />}
+                                        />
+                                    </CSVLink>
+                                )}
                             </div>
                         </span>
                         <div className="flex items-center mr-2">

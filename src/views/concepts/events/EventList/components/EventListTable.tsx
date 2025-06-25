@@ -129,8 +129,8 @@ const EventListTable = () => {
     const columns: ColumnDef<EventItem>[] = useMemo(
         () => [
             {
-                header: 'Asset',
-                accessorKey: 'asset',
+                header: 'Event',
+                accessorKey: 'event',
                 cell: (props) => {
                     const { event_type, id } = props.row.original
                     let icon = null
