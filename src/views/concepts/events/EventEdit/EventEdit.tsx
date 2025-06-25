@@ -16,6 +16,7 @@ import { AxiosError } from 'axios'
 import { FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
 import { useChatStore } from '../../chat/Chat/store/chatStore'
 import { CSVLink } from 'react-csv'
+import { RiChatDeleteLine } from 'react-icons/ri'
 
 const EventEdit = () => {
     const { id } = useParams()
@@ -33,11 +34,16 @@ const EventEdit = () => {
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
+    const [clearLogsConfirmationOpen, setClearLogsConfirmationOpen] =
+        useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const messages = useChatStore((state) => state.messages)
     const subscribeToMessages = useChatStore(
         (state) => state.subscribeToMessages,
+    )
+    const clearAllMessagesForEvent = useChatStore(
+        (state) => state.clearAllMessagesForEvent,
     )
 
     useEffect(() => {
@@ -439,6 +445,38 @@ const x = setInterval(function () {
         )
     }
 
+    const handleClearLogs = () => {
+        setClearLogsConfirmationOpen(true)
+    }
+
+    const handleConfirmClearLogs = async () => {
+        try {
+            if (data?.id) {
+                await clearAllMessagesForEvent(data.id.toString())
+            }
+            toast.push(
+                <Notification type="success">
+                    Chat logs cleared successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } catch (error) {
+            console.error('Error clearing chat logs:', error)
+            toast.push(
+                <Notification type="danger">
+                    Failed to clear chat logs. Please try again.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setClearLogsConfirmationOpen(false)
+        }
+    }
+
+    const handleCancelClearLogs = () => {
+        setClearLogsConfirmationOpen(false)
+    }
+
     // Prepare CSV data for download
     const csvData = useMemo(() => {
         return messages.map((message) => ({
@@ -486,6 +524,13 @@ const x = setInterval(function () {
                                         />
                                     </CSVLink>
                                 )}
+                                {data?.event_type === 'prerecorded' && (
+                                    <Button
+                                        type="button"
+                                        icon={<RiChatDeleteLine />}
+                                        onClick={handleClearLogs}
+                                    />
+                                )}
                             </div>
                         </span>
                         <div className="flex items-center mr-2">
@@ -523,6 +568,20 @@ const x = setInterval(function () {
                 <p>
                     Are you sure you want delete this? This action can&apos;t be
                     undo.{' '}
+                </p>
+            </ConfirmDialog>
+            <ConfirmDialog
+                isOpen={clearLogsConfirmationOpen}
+                type="danger"
+                title="Clear Chat Logs"
+                onClose={handleCancelClearLogs}
+                onRequestClose={handleCancelClearLogs}
+                onCancel={handleCancelClearLogs}
+                onConfirm={handleConfirmClearLogs}
+            >
+                <p>
+                    Are you sure you want to clear all chat and attendance logs
+                    for this event? This action cannot be undone.
                 </p>
             </ConfirmDialog>
         </Loading>

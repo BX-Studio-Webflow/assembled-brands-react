@@ -8,6 +8,8 @@ import {
     serverTimestamp,
     deleteDoc,
     doc,
+    getDocs,
+    writeBatch,
 } from 'firebase/firestore'
 import FirebaseDB from '@/services/firebase/FirebaseDB'
 import type {
@@ -46,6 +48,7 @@ export type ChatState = {
         eventId: string,
     ) => Promise<string>
     deleteMessage: (messageId: string) => Promise<void>
+    clearAllMessagesForEvent: (eventId: string) => Promise<void>
 }
 
 type ChatAction = {
@@ -82,6 +85,7 @@ const initialState: ChatState = {
     subscribeToMessages: () => {},
     sendMessage: async () => '',
     deleteMessage: async () => {},
+    clearAllMessagesForEvent: async () => {},
 }
 
 export const useChatStore = create<ChatState & ChatAction>((set, get) => ({
@@ -215,5 +219,29 @@ export const useChatStore = create<ChatState & ChatAction>((set, get) => ({
             messageId,
         )
         await deleteDoc(messageRef)
+    },
+    clearAllMessagesForEvent: async (eventId) => {
+        const messagesRef = collection(
+            FirebaseDB,
+            'events',
+            eventId,
+            'messages',
+        )
+        const q = query(messagesRef)
+        const querySnapshot = await getDocs(q)
+
+        if (querySnapshot.empty) {
+            return // No messages to delete
+        }
+
+        const batch = writeBatch(FirebaseDB)
+        querySnapshot.forEach((doc) => {
+            batch.delete(doc.ref)
+        })
+
+        await batch.commit()
+
+        // Clear messages from local state
+        set({ messages: [] })
     },
 }))
