@@ -306,7 +306,16 @@ const EventEdit = () => {
   }
 </style>
 <script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/j.js"></script>`
-
+        if (!data?.id || !data?.host_id || !data?.success_url) {
+            toast.push(
+                <Notification type="danger">
+                    Ops! we could not generate the form. Event ID, Host ID, and
+                    Success URL are required! Please refresh the page and try
+                    again.
+                </Notification>,
+            )
+            return
+        }
         form = form.replace('YOUR_EVENT_ID', data?.id?.toString() || '0')
         form = form.replace('YOUR_HOST_ID', data?.host_id?.toString() || '0')
         form = form.replace(

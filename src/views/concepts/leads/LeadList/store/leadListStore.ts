@@ -5,7 +5,7 @@ import type { Lead } from '@/@types/lead'
 
 export const initialTableData: TableQueries = {
     pageIndex: 1,
-    pageSize: 10,
+    pageSize: 50,
     search: '',
     sort: {
         order: '',
