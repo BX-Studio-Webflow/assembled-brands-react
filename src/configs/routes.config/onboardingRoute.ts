@@ -26,6 +26,17 @@ const onboardingRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'onboarding.acceptInvitation',
+        path: `${ONBOARDING_PREFIX_PATH}/accept-team-invitation`,
+        component: lazy(() => import('@/views/onboarding/Invitation')),
+        authority: [ADMIN, USER],
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default onboardingRoute
