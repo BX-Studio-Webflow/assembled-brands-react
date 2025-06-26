@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import Timeline from '@/components/ui/Timeline'
 import Avatar from '@/components/ui/Avatar'
-import Badge from '@/components/ui/Badge'
 import Card from '@/components/ui/Card'
 import Tag from '@/components/ui/Tag'
 import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
-import Tooltip from '@/components/ui/Tooltip'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { HiPencil, HiOutlineTrash, HiTag } from 'react-icons/hi'
+import { HiOutlineTrash, HiTag } from 'react-icons/hi'
 import { useNavigate } from 'react-router'
 import type { AvatarProps } from '@/components/ui/Avatar'
+import {
+    apiAcceptTeamInvitation,
+    apiRejectTeamInvitation,
+} from '@/services/TeamService'
+import { AxiosError } from 'axios'
 
 type TimelineAvatarProps = AvatarProps
 
@@ -24,23 +27,16 @@ const TimelineAvatar = ({ children, ...rest }: TimelineAvatarProps) => {
 }
 
 type CardSectionProps = {
-    data: Partial<{
-        code: string
-        token: string
-        action: string
-        id?: string
-        img?: string
-        email?: string
-        personalInfo?: {
-            facebook?: string
-            twitter?: string
-            linkedIn?: string
-            pinterest?: string
-        }
-    }>
+    data: {
+        invitation_id: string
+        team_id: string
+        team_name: string
+        inviter_name: string
+        timestamp: string
+    }
 }
 
-const CardSection = ({ data = {} }: CardSectionProps) => {
+const CardSection = ({ data }: CardSectionProps) => {
     const navigate = useNavigate()
     const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -52,18 +48,43 @@ const CardSection = ({ data = {} }: CardSectionProps) => {
         setDialogOpen(true)
     }
 
-    const handleDelete = () => {
+    const handleDeclineInvitation = async () => {
         setDialogOpen(false)
-        navigate('/concepts/customers/customer-list')
-        toast.push(
-            <Notification title={'Successfully Deleted'} type="success">
-                Customer successfuly deleted
-            </Notification>,
-        )
+        try {
+            await apiRejectTeamInvitation(Number(data.invitation_id))
+            toast.push(
+                <Notification type="success">
+                    Invitation was rejected
+                </Notification>,
+            )
+            navigate('/sign-in')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
     }
 
-    const handleSendMessage = () => {
-        navigate('/concepts/chat')
+    const handleAcceptInvitation = async () => {
+        try {
+            await apiAcceptTeamInvitation(Number(data.invitation_id))
+            toast.push(
+                <Notification type="success">
+                    Invitation successfuly accepted
+                </Notification>,
+            )
+            navigate('/sign-in')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
     }
 
     return (
@@ -73,25 +94,25 @@ const CardSection = ({ data = {} }: CardSectionProps) => {
                     <Timeline.Item
                         media={
                             <TimelineAvatar
-                                src="/img/avatars/thumb-3.jpg"
+                                src="/img/avatars/user.png"
                                 className="bg-blue-500"
                             />
                         }
                     >
                         <p className="my-1 flex items-center">
                             <span className="font-semibold text-gray-900 dark:text-gray-100">
-                                Jane Smith
+                                {data.inviter_name}
                             </span>
                             <span className="mx-2">
                                 has invited you to join{' '}
                             </span>
                             <span className="font-semibold text-gray-900 dark:text-gray-100">
-                                Awesome Inc
+                                {data.team_name}
                             </span>
                         </p>
                         <Card className="mt-4">
                             <p>
-                                Hey Brian, we&apos;d love to have you onboard
+                                Hey there, we&apos;d love to have you onboard
                                 our team! Gain access to team projects, shared
                                 resources, and collaboration tools.
                             </p>
@@ -121,7 +142,11 @@ const CardSection = ({ data = {} }: CardSectionProps) => {
                 </Timeline>
 
                 <div className="flex flex-col gap-4 mt-6">
-                    <Button block variant="solid" onClick={handleSendMessage}>
+                    <Button
+                        block
+                        variant="solid"
+                        onClick={handleAcceptInvitation}
+                    >
                         Accept Invitation
                     </Button>
                     <Button
@@ -139,16 +164,15 @@ const CardSection = ({ data = {} }: CardSectionProps) => {
                 <ConfirmDialog
                     isOpen={dialogOpen}
                     type="danger"
-                    title="Delete customer"
+                    title="Decline Invitation"
                     onClose={handleDialogClose}
                     onRequestClose={handleDialogClose}
                     onCancel={handleDialogClose}
-                    onConfirm={handleDelete}
+                    onConfirm={handleDeclineInvitation}
                 >
                     <p>
-                        Are you sure you want to declindelete this customer? All
-                        record related to this customer will be deleted as well.
-                        This action cannot be undone.
+                        Are you sure you want to decline this invitation? This
+                        action cannot be undone.
                     </p>
                 </ConfirmDialog>
             </div>

@@ -4,7 +4,7 @@ import Tag from '@/components/ui/Tag'
 import Avatar from '@/components/ui/Avatar'
 import classNames from '@/utils/classNames'
 import isLastChild from '@/utils/isLastChild'
-import { TbPlus, TbTrash } from 'react-icons/tb'
+import { TbTrash } from 'react-icons/tb'
 import useSWR from 'swr'
 import EmailDialog from '@/components/view/EmailDialog/EmailDialog'
 import Notification from '@/components/ui/Notification'
@@ -26,6 +26,7 @@ import {
     apiInviteTeamMember,
 } from '@/services/TeamService'
 import { AxiosError } from 'axios'
+import { HiMail } from 'react-icons/hi'
 
 type InviteUser = {
     email: string
@@ -266,8 +267,8 @@ const SettingsTeam = () => {
                 <div className="flex items-center justify-between mb-4">
                     <h5>Team Members</h5>
                     <Button
-                        variant="plain"
-                        icon={<TbPlus />}
+                        className="mr-2"
+                        icon={<HiMail />}
                         onClick={() => {
                             setInviteDialog({
                                 open: true,
@@ -275,7 +276,9 @@ const SettingsTeam = () => {
                             })
                         }}
                     >
-                        Invite Member
+                        <span>
+                            <span>Send Invitation</span>
+                        </span>
                     </Button>
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
