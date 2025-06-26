@@ -4,7 +4,7 @@ import Tag from '@/components/ui/Tag'
 import Avatar from '@/components/ui/Avatar'
 import classNames from '@/utils/classNames'
 import isLastChild from '@/utils/isLastChild'
-import { TbPlus } from 'react-icons/tb'
+import { TbPlus, TbTrash } from 'react-icons/tb'
 import useSWR from 'swr'
 import EmailDialog from '@/components/view/EmailDialog/EmailDialog'
 import Notification from '@/components/ui/Notification'
@@ -301,12 +301,19 @@ const SettingsTeam = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Tag className="capitalize">
+                                    <Tag
+                                        className={classNames(
+                                            'capitalize',
+                                            member.role === 'host'
+                                                ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded'
+                                                : 'text-white bg-indigo-600 border-0',
+                                        )}
+                                    >
                                         {member.role}
                                     </Tag>
                                     <Button
                                         size="sm"
-                                        variant="plain"
+                                        icon={<TbTrash />}
                                         onClick={() =>
                                             handleRevokeMember(
                                                 data.team_members.team_id,
@@ -314,9 +321,7 @@ const SettingsTeam = () => {
                                                 member.name,
                                             )
                                         }
-                                    >
-                                        Remove
-                                    </Button>
+                                    />
                                 </div>
                             </div>
                         ),
@@ -357,8 +362,8 @@ const SettingsTeam = () => {
                                         <Tag
                                             className={
                                                 invitation.status === 'pending'
-                                                    ? 'bg-warning-subtle text-warning'
-                                                    : ''
+                                                    ? 'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0'
+                                                    : 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded'
                                             }
                                         >
                                             {invitation.status}
@@ -366,16 +371,14 @@ const SettingsTeam = () => {
                                         {invitation.status === 'pending' && (
                                             <Button
                                                 size="sm"
-                                                variant="plain"
+                                                icon={<TbTrash />}
                                                 onClick={() =>
                                                     handleRevokeInvitation(
                                                         invitation.id,
                                                         invitation.invitee_email,
                                                     )
                                                 }
-                                            >
-                                                Cancel
-                                            </Button>
+                                            />
                                         )}
                                     </div>
                                 </div>
@@ -426,7 +429,7 @@ const SettingsTeam = () => {
                                         </Button>
                                         <Button
                                             size="sm"
-                                            variant="plain"
+                                            icon={<TbTrash />}
                                             onClick={() =>
                                                 handleRejectInvitation(
                                                     invitation.id,
