@@ -182,6 +182,7 @@ export interface CourseWithDetails {
         asset_name: string
         asset_type: string
         content_type: string
+        presignedUrl: string
         asset_url: string
         asset_size: string
         duration: number

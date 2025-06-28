@@ -65,10 +65,9 @@ const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
                                             <div>
                                                 <span className="font-medium text-gray-900 text-sm">{`${tIdx + 1}. ${lesson.title}`}</span>
                                                 <span className="block text-xs text-gray-500">
-                                                    {typeof lesson.lesson_duration ===
-                                                    'number'
-                                                        ? `${lesson.lesson_duration} min`
-                                                        : 'N/A'}
+                                                    {lesson.lesson_duration ||
+                                                        0}{' '}
+                                                    min
                                                 </span>
                                             </div>
                                         </li>

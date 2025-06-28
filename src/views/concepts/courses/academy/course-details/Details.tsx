@@ -6,10 +6,15 @@ import Button from '@/components/ui/Button/Button'
 import Card from '@/components/ui/Card/Card'
 import ReactHtmlParser from 'html-react-parser'
 import dayjs from 'dayjs'
+import type { CourseWithDetails } from '@/@types/course'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Details = ({ data }: { data: any }) => {
-    const { course, cover, host } = data || {}
+const Details = ({ data }: { data: CourseWithDetails | undefined }) => {
+    const course = data?.course
+    const cover = data?.cover
+    const host = data?.host
+
+    if (!data || !course) return null
+
     return (
         <Card
             className="w-full max-w-3xl mx-auto p-0"
@@ -48,7 +53,11 @@ const Details = ({ data }: { data: any }) => {
                         <span>
                             <h6 className="text-sm">{host?.name}</h6>
                             <span className="text-xs">
-                                {dayjs(host?.created_at).format('DD MMM YYYY')}
+                                {course?.created_at
+                                    ? dayjs(course.created_at).format(
+                                          'DD MMM YYYY',
+                                      )
+                                    : ''}
                             </span>
                         </span>
                     </div>
@@ -87,7 +96,7 @@ const Details = ({ data }: { data: any }) => {
                             About this course
                         </h2>
                         <div className="text-gray-700">
-                            {ReactHtmlParser(course?.course_description)}
+                            {ReactHtmlParser(course?.course_description || '')}
                         </div>
                     </div>
                 </div>

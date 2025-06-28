@@ -6,15 +6,16 @@ import { useParams } from 'react-router'
 
 export default function UserCourseDetails() {
     const { id } = useParams()
-
-    const { data } = useSWR(`/course/${id}`, () =>
-        apiGetCourse(Number(id)),
+    const { data } = useSWR(
+        id ? `/course/${id}` : null,
+        () => apiGetCourse(Number(id)),
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
             revalidateIfStale: false,
         },
     )
+
     return (
         <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1">
