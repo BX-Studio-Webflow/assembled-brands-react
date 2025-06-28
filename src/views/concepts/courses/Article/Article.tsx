@@ -31,10 +31,11 @@ const Article = () => {
         }
     }, [])
     const { data, isLoading } = useSWR(
-        [
-            `/course/${params.courseId}/modules/${params.moduleId}/lessons/${params.lessonId}`,
-        ],
-
+        params.courseId && params.moduleId && params.lessonId
+            ? [
+                  `/course/${params.courseId}/modules/${params.moduleId}/lessons/${params.lessonId}`,
+              ]
+            : null,
         () =>
             apiGetLesson(
                 Number(params.courseId),

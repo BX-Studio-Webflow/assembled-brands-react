@@ -8,13 +8,21 @@ import Card from '@/components/ui/Card/Card'
 import Checkbox from '@/components/ui/Checkbox/Checkbox'
 import type { CourseWithDetails } from '@/@types/course'
 import { FaChevronRight } from 'react-icons/fa'
+import { useNavigate } from 'react-router'
 
 const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
     const modules = Array.isArray(data?.modules) ? data.modules : []
+    const navigate = useNavigate()
     const [expanded, setExpanded] = useState(0)
 
     const handleAccordion = (idx: number) => {
         setExpanded(expanded === idx ? -1 : idx)
+    }
+
+    const handleLessonClick = (moduleId: number, lessonId: number) => {
+        navigate(
+            `/concepts/courses/article?courseId=${data?.course?.id}&moduleId=${moduleId}&lessonId=${lessonId}`,
+        )
     }
 
     return (
@@ -55,7 +63,9 @@ const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
                                 <div className="flex justify-between items-center">
                                     <span
                                         className={
-                                            expanded === idx ? 'font-bold' : ''
+                                            expanded === idx
+                                                ? 'font-bold cursor-pointer'
+                                                : 'cursor-pointer'
                                         }
                                     >
                                         {mod.title}
@@ -84,7 +94,15 @@ const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
                                                 // onChange handler can be added here if you want to update completion
                                             />
                                             <div>
-                                                <span className="font-medium text-gray-900 text-sm">{`${tIdx + 1}. ${lesson.title}`}</span>
+                                                <span
+                                                    className="font-medium text-gray-900 text-sm cursor-pointer"
+                                                    onClick={() =>
+                                                        handleLessonClick(
+                                                            mod.id,
+                                                            lesson.id,
+                                                        )
+                                                    }
+                                                >{`${tIdx + 1}. ${lesson.title}`}</span>
                                                 <span className="block text-xs text-gray-500">
                                                     {lesson.lesson_duration ||
                                                         0}{' '}
