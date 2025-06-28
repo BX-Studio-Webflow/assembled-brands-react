@@ -7,13 +7,25 @@ import Card from '@/components/ui/Card/Card'
 import ReactHtmlParser from 'html-react-parser'
 import dayjs from 'dayjs'
 import type { CourseWithDetails } from '@/@types/course'
+import { HiCreditCard } from 'react-icons/hi'
+import CheckoutDialog from './CheckoutDialog'
+import { useState } from 'react'
 
 const Details = ({ data }: { data: CourseWithDetails | undefined }) => {
     const course = data?.course
     const cover = data?.cover
     const host = data?.host
+    const [isCheckoutDialogOpen, setIsCheckoutDialogOpen] = useState(false)
 
     if (!data || !course) return null
+
+    const handleBuyCourseClick = () => {
+        setIsCheckoutDialogOpen(true)
+    }
+
+    const handleDialogClose = () => {
+        setIsCheckoutDialogOpen(false)
+    }
 
     return (
         <Card
@@ -23,9 +35,9 @@ const Details = ({ data }: { data: CourseWithDetails | undefined }) => {
                     <div className="rounded-t-xl overflow-hidden h-56 bg-gray-100 flex items-center justify-center">
                         {cover && cover.asset_type === 'video' ? (
                             <video
+                                controls
                                 src={cover.presignedUrl || cover.asset_url}
                                 className="w-full h-56 object-cover"
-                                controls
                                 poster={host?.profile_image}
                                 preload="metadata"
                             />
@@ -43,23 +55,34 @@ const Details = ({ data }: { data: CourseWithDetails | undefined }) => {
             }}
             footer={{
                 content: (
-                    <div className="flex items-center">
-                        <Avatar
-                            size={30}
-                            className="mr-2"
-                            shape="circle"
-                            src={host?.profile_image}
-                        />
-                        <span>
-                            <h6 className="text-sm">{host?.name}</h6>
-                            <span className="text-xs">
-                                {course?.created_at
-                                    ? dayjs(course.created_at).format(
-                                          'DD MMM YYYY',
-                                      )
-                                    : ''}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <Avatar
+                                size={30}
+                                className="mr-2"
+                                shape="circle"
+                                src={host?.profile_image}
+                            />
+                            <span>
+                                <h6 className="text-sm">{host?.name}</h6>
+                                <span className="text-xs">
+                                    {course?.created_at
+                                        ? dayjs(course.created_at).format(
+                                              'DD MMM YYYY',
+                                          )
+                                        : ''}
+                                </span>
                             </span>
-                        </span>
+                        </div>
+                        <Button
+                            className="mr-2"
+                            icon={<HiCreditCard />}
+                            onClick={handleBuyCourseClick}
+                        >
+                            <span>
+                                <span>Buy this course</span>
+                            </span>
+                        </Button>
                     </div>
                 ),
                 bordered: false,
@@ -101,6 +124,12 @@ const Details = ({ data }: { data: CourseWithDetails | undefined }) => {
                     </div>
                 </div>
             </div>
+            <CheckoutDialog
+                isOpen={isCheckoutDialogOpen}
+                courseId={course.id}
+                courseTitle={course.course_name}
+                onClose={handleDialogClose}
+            />
         </Card>
     )
 }

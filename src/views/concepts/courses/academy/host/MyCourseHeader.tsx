@@ -49,8 +49,8 @@ const MyCourseHeader = (props: Props) => {
           <CustomTextField
             placeholder='Find your course'
             value={searchValue}
-            onChange={e => setSearchValue(e.target.value)}
             className='sm:is-[350px] max-sm:flex-1'
+            onChange={e => setSearchValue(e.target.value)}
           />
           <CustomIconButton variant='contained' color='primary'>
             <i className='tabler-search' />

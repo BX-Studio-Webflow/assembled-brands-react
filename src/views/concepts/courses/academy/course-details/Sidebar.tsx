@@ -58,8 +58,8 @@ const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
                         <div key={mod.id}>
                             <button
                                 className="w-full text-left border-b border-gray-100 bg-gray-50 hover:bg-gray-100 focus:outline-none px-4 py-3"
-                                onClick={() => handleAccordion(idx)}
                                 type="button"
+                                onClick={() => handleAccordion(idx)}
                             >
                                 <div className="flex justify-between items-center">
                                     <Tooltip title={mod.description}>

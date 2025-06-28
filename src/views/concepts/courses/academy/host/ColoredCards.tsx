@@ -49,7 +49,7 @@ const ColoredCards = () => {
   return (
     <Grid container spacing={6}>
       {data.map((item, index) => (
-        <Grid size={{ xs: 12, md: 6 }} key={index}>
+        <Grid key={index} size={{ xs: 12, md: 6 }}>
           <div
             className={classnames(
               'flex max-sm:flex-col items-center sm:items-start justify-between gap-6 rounded p-6',

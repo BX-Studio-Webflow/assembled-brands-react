@@ -109,9 +109,7 @@ export default function UserCourseDetails() {
 
     return (
         <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-1">
-                <Details data={data} />
-            </div>
+            <Details data={data} />
             <div className="w-full md:w-[350px]">
                 <Sidebar data={data} />
             </div>

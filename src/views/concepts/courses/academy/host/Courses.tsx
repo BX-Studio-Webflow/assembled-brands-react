@@ -208,12 +208,12 @@ const Courses = (props: Props) => {
                     <div className="min-w-[250px] flex-auto">
                         <Select
                             value={course}
+                            options={courseOptions}
+                            className="w-full"
                             onChange={(option) => {
                                 setCourse(option || courseOptions[0])
                                 setActivePage(0)
                             }}
-                            options={courseOptions}
-                            className="w-full"
                         />
                     </div>
                     <div className="flex items-center gap-2">
@@ -240,11 +240,11 @@ const Courses = (props: Props) => {
                                             item.cover.asset_type ===
                                                 'video' ? (
                                                 <video
+                                                    controls
                                                     src={
                                                         item.cover.presignedUrl
                                                     }
                                                     className="w-full h-48 object-cover"
-                                                    controls
                                                     poster="/img/others/img-1.jpg"
                                                     preload="metadata"
                                                 />
