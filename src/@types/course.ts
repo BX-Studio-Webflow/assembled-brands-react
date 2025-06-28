@@ -147,6 +147,7 @@ export interface Course {
         id: number
         asset_name: string
         asset_type: string
+        presignedUrl: string
         content_type: string
         asset_url: string
         asset_size: string

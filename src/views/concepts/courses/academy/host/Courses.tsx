@@ -9,15 +9,14 @@ import Progress from '@/components/ui/Progress'
 import Pagination from '@/components/ui/Pagination'
 import Switcher from '@/components/ui/Switcher'
 import Select from '@/components/ui/Select'
-import ReactHtmlParser from 'html-react-parser'
-// Type Imports
-// import type { Course } from '@/types/apps/academyTypes'
 
+// Type Imports
 import { FaChevronRight, FaStar, FaClock } from 'react-icons/fa'
 import { FaArrowRotateRight } from 'react-icons/fa6'
 import { apiGetCourses } from '@/services/CoursesService'
 import useSWR from 'swr'
 import { GetCoursesResponse, Course as ServerCourse } from '@/@types/course'
+import ReactHtmlParser from 'html-react-parser'
 
 type Course = {
     id: number
@@ -37,6 +36,23 @@ type Course = {
     tags: string
     rating: number
     ratingCount: number
+    cover?: {
+        id: number
+        asset_name: string
+        asset_type: string
+        presignedUrl: string
+        content_type: string
+        asset_url: string
+        asset_size: string
+        duration: number
+        hls_url: string | null
+        processing_status: string
+        upload_id: string | null
+        upload_status: string
+        user_id: number
+        created_at: string
+        updated_at: string
+    }
 }
 
 // Tag color mapping (customize as needed)
@@ -53,6 +69,7 @@ const convertServerCourseToDisplay = (serverCourse: ServerCourse): Course => {
     // Extract the actual course data from the nested structure
     const courseData = serverCourse.course || serverCourse
     const hostData = serverCourse.host
+    const coverData = serverCourse.cover
 
     // Generate a random tag from available options
     const availableTags = ['Web', 'Art', 'UI/UX', 'Psychology', 'Design']
@@ -97,6 +114,7 @@ const convertServerCourseToDisplay = (serverCourse: ServerCourse): Course => {
         tags: randomTag,
         rating: Math.round(rating * 10) / 10, // Round to 1 decimal place
         ratingCount,
+        cover: coverData,
     }
 }
 
@@ -216,12 +234,26 @@ const Courses = (props: Props) => {
                                 className="rounded-xl shadow-md border bg-white flex flex-col h-full p-0"
                                 header={{
                                     content: (
-                                        <div className="rounded-tl-xl rounded-tr-xl overflow-hidden">
-                                            <img
-                                                src={item.tutorImg}
-                                                alt={item.courseTitle}
-                                                className="w-full h-48 object-cover"
-                                            />
+                                        <div className="rounded-tl-xl rounded-tr-xl overflow-hidden h-48">
+                                            {item.cover &&
+                                            item.cover.asset_type ===
+                                                'video' ? (
+                                                <video
+                                                    src={
+                                                        item.cover.presignedUrl
+                                                    }
+                                                    className="w-full h-48 object-cover"
+                                                    controls
+                                                    poster="/img/others/img-1.jpg"
+                                                    preload="metadata"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={item.tutorImg}
+                                                    alt={item.courseTitle}
+                                                    className="w-full h-48 object-cover"
+                                                />
+                                            )}
                                         </div>
                                     ),
                                     bordered: false,
