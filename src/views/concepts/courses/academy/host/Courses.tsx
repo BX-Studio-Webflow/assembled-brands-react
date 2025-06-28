@@ -256,20 +256,41 @@ const Courses = (props: Props) => {
                             <Card
                                 key={index}
                                 className="rounded-xl shadow-md border bg-white flex flex-col h-full p-0"
+                                header={{
+                                    content: (
+                                        <div className="rounded-tl-xl rounded-tr-xl overflow-hidden">
+                                            <img
+                                                src={item.tutorImg}
+                                                alt={item.courseTitle}
+                                                className="w-full h-48 object-cover"
+                                            />
+                                        </div>
+                                    ),
+                                    bordered: false,
+                                    className: 'p-0',
+                                }}
+                                footer={{
+                                    content: (
+                                        <div className="flex flex-row gap-3">
+                                            <a
+                                                href="/apps/academy/course-details"
+                                                className="w-full rounded-md py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-sm font-medium transition"
+                                            >
+                                                Start Over
+                                            </a>
+                                            <a
+                                                href="/apps/academy/course-details"
+                                                className="w-full rounded-md py-2 bg-primary text-white flex items-center justify-center text-sm font-medium transition"
+                                            >
+                                                Continue
+                                                <FaChevronRight className="ml-2" />
+                                            </a>
+                                        </div>
+                                    ),
+                                    bordered: false,
+                                }}
                             >
-                                <div className="p-0">
-                                    <a
-                                        href={`/apps/academy/course-details`}
-                                        className="block"
-                                    >
-                                        <img
-                                            src={item.tutorImg}
-                                            alt={item.courseTitle}
-                                            className="w-full h-48 object-cover rounded-t-xl"
-                                        />
-                                    </a>
-                                </div>
-                                <div className="flex flex-col gap-4 p-5 flex-1">
+                                <div className="flex flex-col gap-4 flex-1">
                                     <div className="flex items-center justify-between">
                                         <Tag
                                             className={`px-3 py-1 rounded-full text-xs font-semibold ${chipColor[item.tags] || ''}`}
@@ -312,21 +333,6 @@ const Courses = (props: Props) => {
                                             showInfo={false}
                                             className="w-full h-2 mt-1"
                                         />
-                                    </div>
-                                    <div className="flex flex-row gap-3 mt-2">
-                                        <a
-                                            href="/apps/academy/course-details"
-                                            className="w-full rounded-md py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-sm font-medium transition"
-                                        >
-                                            Start Over
-                                        </a>
-                                        <a
-                                            href="/apps/academy/course-details"
-                                            className="w-full rounded-md py-2 bg-primary text-white flex items-center justify-center text-sm font-medium transition"
-                                        >
-                                            Continue
-                                            <FaChevronRight className="ml-2" />
-                                        </a>
                                     </div>
                                 </div>
                             </Card>
