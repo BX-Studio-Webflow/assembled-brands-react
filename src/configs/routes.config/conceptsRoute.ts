@@ -285,6 +285,17 @@ const conceptsRoute: Routes = [
             footer: false,
         },
     },
+    ///
+    {
+        key: 'concepts.academy.mycourses',
+        path: `${CONCEPTS_PREFIX_PATH}/courses/academy`,
+        component: lazy(() => import('@/views/concepts/courses/academy/host/Courses')),
+        authority: [ADMIN, USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            footer: false,
+        },
+    },
     {
         key: 'concepts.helpCenter.createCourse',
         path: `${CONCEPTS_PREFIX_PATH}/courses/create-course`,
