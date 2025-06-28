@@ -288,7 +288,7 @@ const conceptsRoute: Routes = [
     ///
     {
         key: 'concepts.academy.mycourses',
-        path: `${CONCEPTS_PREFIX_PATH}/courses/academy`,
+        path: `${CONCEPTS_PREFIX_PATH}/courses/host/:id`,
         component: lazy(() => import('@/views/concepts/courses/academy/host/Courses')),
         authority: [ADMIN, USER],
         meta: {

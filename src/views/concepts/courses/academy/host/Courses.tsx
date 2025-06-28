@@ -13,10 +13,11 @@ import Select from '@/components/ui/Select'
 // Type Imports
 import { FaChevronRight, FaStar, FaClock } from 'react-icons/fa'
 import { FaArrowRotateRight } from 'react-icons/fa6'
-import { apiGetCourses } from '@/services/CoursesService'
+import { apiGetHostCourses } from '@/services/CoursesService'
 import useSWR from 'swr'
 import { GetCoursesResponse, Course as ServerCourse } from '@/@types/course'
 import ReactHtmlParser from 'html-react-parser'
+import { useParams } from 'react-router'
 
 type Course = {
     id: number
@@ -135,16 +136,16 @@ const courseOptions = [
 
 const Courses = (props: Props) => {
     const { searchValue } = props
+    const { id } = useParams()
     // Track selected option as an object
     const [course, setCourse] = useState(courseOptions[0])
     const [hideCompleted, setHideCompleted] = useState(true)
     const [data, setData] = useState<Course[]>([])
     const [activePage, setActivePage] = useState(0)
 
-    const swrKey = [`/course`]
     const { data: coursesResponse, isLoading } = useSWR<GetCoursesResponse>(
-        swrKey,
-        () => apiGetCourses(),
+        id ? `/course/host/${id}` : null,
+        () => apiGetHostCourses(Number(id)),
         { revalidateOnFocus: false },
     )
 
