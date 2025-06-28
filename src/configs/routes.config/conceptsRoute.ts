@@ -290,7 +290,7 @@ const conceptsRoute: Routes = [
         key: 'concepts.academy.mycourses',
         path: `${CONCEPTS_PREFIX_PATH}/courses/host/:id`,
         component: lazy(
-            () => import('@/views/concepts/courses/academy/host/Courses'),
+            () => import('@/views/concepts/courses/academy/host/HostCourses'),
         ),
         authority: [ADMIN, USER],
         meta: {
@@ -302,7 +302,10 @@ const conceptsRoute: Routes = [
         key: 'concepts.academy.coursedetails',
         path: `${CONCEPTS_PREFIX_PATH}/courses/academy/course-details/:id`,
         component: lazy(
-            () => import('@/views/concepts/courses/academy/course-details/UserCourseDetails'),
+            () =>
+                import(
+                    '@/views/concepts/courses/academy/course-details/UserCourseDetails'
+                ),
         ),
         authority: [ADMIN, USER],
         meta: {

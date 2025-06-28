@@ -108,10 +108,7 @@ const Article = ({
                 <IconText
                     className="font-semibold"
                     icon={
-                        <TbEye
-                            className="text-xl"
-                            onClick={handleViewClick}
-                        />
+                        <TbEye className="text-xl" onClick={handleViewClick} />
                     }
                 ></IconText>
                 <IconText

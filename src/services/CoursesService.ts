@@ -28,7 +28,10 @@ export async function apiGetCourses(params?: CourseQueryParams) {
         params,
     })
 }
-export async function apiGetHostCourses(hostId: number, params?: CourseQueryParams) {
+export async function apiGetHostCourses(
+    hostId: number,
+    params?: CourseQueryParams,
+) {
     return ApiService.fetchDataWithAxios<GetCoursesResponse>({
         url: `/course/host/${hostId}`,
         method: 'get',

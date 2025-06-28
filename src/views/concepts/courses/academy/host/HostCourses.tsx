@@ -134,7 +134,7 @@ const courseOptions = [
     { value: 'Design', label: 'Design' },
 ]
 
-const Courses = (props: Props) => {
+const HostCourses = (props: Props) => {
     const { searchValue } = props
     const { id } = useParams()
     // Track selected option as an object
@@ -347,4 +347,4 @@ const Courses = (props: Props) => {
     )
 }
 
-export default Courses
+export default HostCourses
