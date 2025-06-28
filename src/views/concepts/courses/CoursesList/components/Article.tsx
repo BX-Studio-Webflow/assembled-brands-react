@@ -3,7 +3,7 @@ import IconText from '@/components/shared/IconText'
 import { categoryIcon } from '../utils'
 import classNames from '@/utils/classNames'
 import { useNavigate } from 'react-router'
-import { TbEdit, TbTrash } from 'react-icons/tb'
+import { TbEdit, TbEye, TbTrash } from 'react-icons/tb'
 import { ConfirmDialog } from '@/components/shared'
 import { useState } from 'react'
 import toast from '@/components/ui/toast'
@@ -32,6 +32,10 @@ const Article = ({
 
     const handleArticleClick = () => {
         navigate(`/concepts/courses/course-details/${id}`)
+    }
+
+    const handleViewClick = () => {
+        navigate(`/concepts/courses/academy/course-details/${id}`)
     }
 
     const handleDelete = () => {
@@ -101,6 +105,15 @@ const Article = ({
                 </div>
             </div>
             <div className="flex items-center gap-3">
+                <IconText
+                    className="font-semibold"
+                    icon={
+                        <TbEye
+                            className="text-xl"
+                            onClick={handleViewClick}
+                        />
+                    }
+                ></IconText>
                 <IconText
                     className="font-semibold"
                     icon={
