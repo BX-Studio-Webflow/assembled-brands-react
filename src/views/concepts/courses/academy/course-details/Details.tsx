@@ -17,7 +17,7 @@ const Details = ({ data }: { data: CourseWithDetails | undefined }) => {
 
     return (
         <Card
-            className="w-full max-w-3xl mx-auto p-0"
+            className="w-full max-w-8xl mx-auto p-0"
             header={{
                 content: (
                     <div className="rounded-t-xl overflow-hidden h-56 bg-gray-100 flex items-center justify-center">
