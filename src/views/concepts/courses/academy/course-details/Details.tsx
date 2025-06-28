@@ -1,131 +1,99 @@
 'use client'
 
-// MUI Imports
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Chip from '@mui/material/Chip'
-import Divider from '@mui/material/Divider'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import Typography from '@mui/material/Typography'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
+import Tag from '@/components/ui/Tag/Tag'
+import Avatar from '@/components/ui/Avatar/Avatar'
+import Button from '@/components/ui/Button/Button'
+import Card from '@/components/ui/Card/Card'
+import ReactHtmlParser from 'html-react-parser'
+import dayjs from 'dayjs'
 
-// Third-party Imports
-import ReactPlayer from '@/libs/ReactPlayer'
-
-// Type Imports
-import type { CourseDetails } from '@/types/apps/academyTypes'
-
-// Components Imports
-import CustomAvatar from '@core/components/mui/Avatar'
-import CustomIconButton from '@core/components/mui/IconButton'
-
-const Details = ({ data }: { data?: CourseDetails }) => {
-  // Hooks
-  const theme = useTheme()
-  const smallScreen = useMediaQuery(theme.breakpoints.down('sm'))
-
-  return (
-    <Card>
-      <CardContent className='flex flex-wrap items-center justify-between gap-4'>
-        <div>
-          <Typography variant='h5'>UI/UX Basic Fundamentals</Typography>
-          <Typography>
-            Prof. <span className='font-medium text-textPrimary'>Devonne Wallbridge</span>
-          </Typography>
-        </div>
-        <div className='flex items-center gap-4'>
-          <Chip label='UI/UX' variant='tonal' size='small' color='error' />
-          <i className='tabler-share cursor-pointer' />
-          <i className='tabler-bookmarks cursor-pointer' />
-        </div>
-      </CardContent>
-      <CardContent>
-        <div className='border rounded'>
-          <div className='mli-2 mbs-2 overflow-hidden rounded'>
-            <ReactPlayer
-              playing
-              controls
-              url='https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4'
-              height={smallScreen ? 280 : 440}
-              className='bg-black !is-full'
-              light={
-                <img
-                  src='/images/apps/academy/4.png'
-                  alt='Thumbnail'
-                  className='is-full bs-full object-cover bg-backgroundPaper'
-                />
-              }
-              playIcon={
-                <CustomIconButton variant='contained' color='error' className='absolute rounded-full'>
-                  <i className='tabler-player-play text-2xl' />
-                </CustomIconButton>
-              }
-            />
-          </div>
-          <div className='flex flex-col gap-6 p-5'>
-            <div className='flex flex-col gap-4'>
-              <Typography variant='h5'>About this course</Typography>
-              <Typography>{data?.about}</Typography>
-            </div>
-            <Divider />
-            <div className='flex flex-col gap-4'>
-              <Typography variant='h5'>By the numbers</Typography>
-              <div className='flex flex-wrap gap-x-12 gap-y-2'>
-                <List role='list' component='div' className='flex flex-col gap-2 plb-0'>
-                  <ListItem role='listitem' className='flex items-center gap-2 p-0'>
-                    <i className='tabler-check text-xl text-textSecondary' />
-                    <Typography>Skill level: {data?.skillLevel}</Typography>
-                  </ListItem>
-                  <ListItem role='listitem' className='flex items-center gap-2 p-0'>
-                    <i className='tabler-users text-xl text-textSecondary' />
-                    <Typography>Students: {data?.totalStudents.toLocaleString()}</Typography>
-                  </ListItem>
-                  <ListItem role='listitem' className='flex items-center gap-2 p-0'>
-                    <i className='tabler-world text-xl text-textSecondary' />
-                    <Typography>Languages: {data?.language}</Typography>
-                  </ListItem>
-                  <ListItem role='listitem' className='flex items-center gap-2 p-0'>
-                    <i className='tabler-file text-xl text-textSecondary' />
-                    <Typography>Captions: {data?.isCaptions ? 'Yes' : 'No'}</Typography>
-                  </ListItem>
-                </List>
-                <List role='list' component='div' className='flex flex-col gap-2 plb-0'>
-                  <ListItem role='listitem' className='flex items-center gap-2 p-0'>
-                    <i className='tabler-video text-xl text-textSecondary' />
-                    <Typography>Lectures: {data?.totalLectures}</Typography>
-                  </ListItem>
-                  <ListItem role='listitem' className='flex items-center gap-2 p-0'>
-                    <i className='tabler-clock text-xl text-textSecondary' />
-                    <Typography>Video: {data?.length}</Typography>
-                  </ListItem>
-                </List>
-              </div>
-            </div>
-            <Divider />
-            <div className='flex flex-col gap-4'>
-              <Typography variant='h5'>Description</Typography>
-              {data?.description.map((value, index) => <Typography key={index}>{value}</Typography>)}
-            </div>
-            <Divider />
-            <div className='flex flex-col gap-4'>
-              <Typography variant='h5'>Instructor</Typography>
-              <div className='flex items-center gap-4'>
-                <CustomAvatar skin='light-static' color='error' src={data?.instructorAvatar} size={38} />
-                <div className='flex flex-col gap-1'>
-                  <Typography className='font-medium' color='text.primary'>
-                    {data?.instructor}
-                  </Typography>
-                  <Typography variant='body2'>{data?.instructorPosition}</Typography>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Details = ({ data }: { data: any }) => {
+    const { course, cover, host } = data || {}
+    return (
+        <Card
+            className="w-full max-w-3xl mx-auto p-0"
+            header={{
+                content: (
+                    <div className="rounded-t-xl overflow-hidden h-56 bg-gray-100 flex items-center justify-center">
+                        {cover && cover.asset_type === 'video' ? (
+                            <video
+                                src={cover.presignedUrl || cover.asset_url}
+                                className="w-full h-56 object-cover"
+                                controls
+                                poster={host?.profile_image}
+                                preload="metadata"
+                            />
+                        ) : (
+                            <img
+                                src={cover?.presignedUrl || cover?.asset_url}
+                                alt={course?.course_name}
+                                className="w-full h-56 object-cover"
+                            />
+                        )}
+                    </div>
+                ),
+                bordered: false,
+                className: 'p-0',
+            }}
+            footer={{
+                content: (
+                    <div className="flex items-center">
+                        <Avatar
+                            size={30}
+                            className="mr-2"
+                            shape="circle"
+                            src={host?.profile_image}
+                        />
+                        <span>
+                            <h6 className="text-sm">{host?.name}</h6>
+                            <span className="text-xs">
+                                {dayjs(host?.created_at).format('DD MMM YYYY')}
+                            </span>
+                        </span>
+                    </div>
+                ),
+                bordered: false,
+            }}
+        >
+            <div className="flex flex-wrap items-center justify-between gap-4 p-6 pb-0">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        {course?.course_name}
+                    </h1>
+                    <p className="text-gray-700 mt-1">
+                        By{' '}
+                        <span className="font-medium text-primary">
+                            {host?.name}
+                        </span>
+                    </p>
                 </div>
-              </div>
+                <div className="flex items-center gap-4">
+                    <Tag className="bg-red-100 text-red-700 font-semibold px-3 py-1 rounded">
+                        Animation
+                    </Tag>
+                    <Button variant="plain" size="sm" className="p-2">
+                        <i className="tabler-share" />
+                    </Button>
+                    <Button variant="plain" size="sm" className="p-2">
+                        <i className="tabler-bookmarks" />
+                    </Button>
+                </div>
             </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
+            <div className="p-6 pt-4">
+                <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-2">
+                        <h2 className="text-lg font-semibold">
+                            About this course
+                        </h2>
+                        <div className="text-gray-700">
+                            {ReactHtmlParser(course?.course_description)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Card>
+    )
 }
 
 export default Details

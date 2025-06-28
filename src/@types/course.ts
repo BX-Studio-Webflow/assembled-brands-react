@@ -222,6 +222,7 @@ export interface CourseWithDetails {
             description: string
             content: string
             created_at: string
+            is_completed: boolean
             updated_at: string
             video: {
                 id: number

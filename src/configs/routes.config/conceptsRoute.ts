@@ -285,11 +285,25 @@ const conceptsRoute: Routes = [
             footer: false,
         },
     },
-    ///
+    ////academy/course-details
     {
         key: 'concepts.academy.mycourses',
         path: `${CONCEPTS_PREFIX_PATH}/courses/host/:id`,
-        component: lazy(() => import('@/views/concepts/courses/academy/host/Courses')),
+        component: lazy(
+            () => import('@/views/concepts/courses/academy/host/Courses'),
+        ),
+        authority: [ADMIN, USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            footer: false,
+        },
+    },
+    {
+        key: 'concepts.academy.coursedetails',
+        path: `${CONCEPTS_PREFIX_PATH}/courses/academy/course-details/:id`,
+        component: lazy(
+            () => import('@/views/concepts/courses/academy/course-details/UserCourseDetails'),
+        ),
         authority: [ADMIN, USER],
         meta: {
             pageBackgroundType: 'plain',

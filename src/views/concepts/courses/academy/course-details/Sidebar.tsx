@@ -2,150 +2,85 @@
 
 // React Imports
 import { useState } from 'react'
-import type { ChangeEvent, SyntheticEvent } from 'react'
-
-// MUI Imports
-import { styled } from '@mui/material/styles'
-import MuiAccordion from '@mui/material/Accordion'
-import MuiAccordionSummary from '@mui/material/AccordionSummary'
-import MuiAccordionDetails from '@mui/material/AccordionDetails'
-import Typography from '@mui/material/Typography'
-import Checkbox from '@mui/material/Checkbox'
-import ListItem from '@mui/material/ListItem'
-import List from '@mui/material/List'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import type { AccordionProps } from '@mui/material/Accordion'
-import type { AccordionSummaryProps } from '@mui/material/AccordionSummary'
-import type { AccordionDetailsProps } from '@mui/material/AccordionDetails'
 
 // Type Imports
-import type { CourseContent } from '@/types/apps/academyTypes'
+import Card from '@/components/ui/Card/Card'
+import Checkbox from '@/components/ui/Checkbox/Checkbox'
+import type { CourseWithDetails } from '@/@types/course'
 
-type ItemsType = {
-  title: string
-  time: string
-  isCompleted: boolean
-}[]
+const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
+    const modules = Array.isArray(data?.modules) ? data.modules : []
+    const [expanded, setExpanded] = useState(0)
 
-// Styled component for Accordion component
-export const Accordion = styled(MuiAccordion)<AccordionProps>({
-  margin: '0 !important',
-  boxShadow: 'none !important',
-  border: '1px solid var(--mui-palette-divider) !important',
-  borderRadius: '0 !important',
-  overflow: 'hidden',
-  background: 'none',
-  '&:not(:last-of-type)': {
-    borderBottom: '0 !important'
-  },
-  '&:before': {
-    display: 'none'
-  },
-  '&:first-of-type': {
-    borderTopLeftRadius: 'var(--mui-shape-borderRadius) !important',
-    borderTopRightRadius: 'var(--mui-shape-borderRadius) !important'
-  },
-  '&:last-of-type': {
-    borderBottomLeftRadius: 'var(--mui-shape-borderRadius) !important',
-    borderBottomRightRadius: 'var(--mui-shape-borderRadius) !important'
-  }
-})
+    const handleAccordion = (idx: number) => {
+        setExpanded(expanded === idx ? -1 : idx)
+    }
 
-// Styled component for AccordionSummary component
-export const AccordionSummary = styled(MuiAccordionSummary)<AccordionSummaryProps>(({ theme }) => ({
-  padding: theme.spacing(3, 6),
-  transition: 'none',
-  backgroundColor: 'var(--mui-palette-action-hover)',
-  borderBlockEnd: '0 !important',
-  '&.Mui-expanded': {
-    borderBlockEnd: '1px solid var(--mui-palette-divider) !important'
-  }
-}))
-
-// Styled component for AccordionDetails component
-export const AccordionDetails = styled(MuiAccordionDetails)<AccordionDetailsProps>(({ theme }) => ({
-  padding: `${theme.spacing(4, 3)} !important`,
-  backgroundColor: 'var(--mui-palette-background-paper)'
-}))
-
-const Sidebar = ({ content }: { content?: CourseContent[] }) => {
-  // States
-  const [expanded, setExpanded] = useState<number | false>(0)
-  const [items, setItems] = useState<ItemsType[]>(content?.map(item => item.topics) ?? [])
-
-  const handleChange = (panel: number) => (event: SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false)
-  }
-
-  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>, index1: number, index2: number) => {
-    setItems(
-      items.map((item, i) => {
-        if (i === index1) {
-          return item.map((topic, j) => {
-            if (j === index2) {
-              return { ...topic, isCompleted: e.target.checked }
-            }
-
-            return topic
-          })
-        }
-
-        return item
-      })
-    )
-  }
-
-  return (
-    <>
-      {content?.map((item, index) => {
-        const totalTime = items[index]
-          .reduce((sum, topic) => {
-            const time = parseFloat(topic.time || '0')
-
-            return sum + time
-          }, 0)
-          .toFixed(2)
-
-        const selectedTopics = items[index].filter(topic => topic.isCompleted).length
-
-        return (
-          <Accordion key={index} expanded={expanded === index} onChange={handleChange(index)}>
-            <AccordionSummary
-              id='customized-panel-header-1'
-              expandIcon={<i className='tabler-chevron-right text-textSecondary' />}
-              aria-controls={'sd'}
-            >
-              <div>
-                <Typography variant='h5'>{item.title}</Typography>
-                <Typography className='!font-normal !text-textSecondary'>{`${selectedTopics} / ${item.topics.length} | ${parseFloat(totalTime)} min`}</Typography>
-              </div>
-            </AccordionSummary>
-            <AccordionDetails>
-              <List role='list' component='div' className='flex flex-col gap-4 plb-0'>
-                {item.topics.map((topic, i) => {
-                  return (
-                    <ListItem key={i} role='listitem' className='gap-3 p-0'>
-                      <ListItemIcon>
-                        <Checkbox
-                          tabIndex={-1}
-                          checked={items[index][i].isCompleted}
-                          onChange={e => handleCheckboxChange(e, index, i)}
-                        />
-                      </ListItemIcon>
-                      <div>
-                        <Typography className='font-medium !text-textPrimary'>{`${i + 1}. ${topic.title}`}</Typography>
-                        <Typography variant='body2'>{topic.time}</Typography>
-                      </div>
-                    </ListItem>
-                  )
+    return (
+        <Card className="w-full max-w-md bg-gray-50 border border-gray-200 p-0">
+            <div className="p-4 border-b border-gray-200">
+                <div className="font-semibold text-gray-700 text-lg mb-1">
+                    Course Content
+                </div>
+                <div className="text-xs text-gray-500 mb-2">
+                    2 / 5 | 273 min
+                </div>
+            </div>
+            <div>
+                {modules.map((mod, idx) => {
+                    const totalTime = (mod.lessons || []).reduce(
+                        (sum, lesson) =>
+                            sum +
+                            (typeof lesson.lesson_duration === 'number'
+                                ? lesson.lesson_duration
+                                : 0),
+                        0,
+                    )
+                    const completed = (mod.lessons || []).filter(
+                        (lesson) => lesson.is_completed,
+                    ).length
+                    return (
+                        <div key={mod.id}>
+                            <button
+                                className={`w-full flex justify-between items-center px-4 py-3 text-left border-b border-gray-100 bg-gray-50 hover:bg-gray-100 focus:outline-none ${expanded === idx ? 'font-bold' : ''}`}
+                                onClick={() => handleAccordion(idx)}
+                                type="button"
+                            >
+                                <span>{mod.title}</span>
+                                <span className="text-xs text-gray-500">{`${completed} / ${(mod.lessons || []).length} | ${totalTime ? totalTime.toFixed(2) : 'N/A'} min`}</span>
+                            </button>
+                            <div
+                                className={`transition-all duration-200 ${expanded === idx ? 'max-h-96' : 'max-h-0 overflow-hidden'}`}
+                            >
+                                <ul className="flex flex-col gap-2 px-6 py-3 bg-white">
+                                    {(mod.lessons || []).map((lesson, tIdx) => (
+                                        <li
+                                            key={lesson.id}
+                                            className="flex items-center gap-3"
+                                        >
+                                            <Checkbox
+                                                checked={!!lesson.is_completed}
+                                                // onChange handler can be added here if you want to update completion
+                                            />
+                                            <div>
+                                                <span className="font-medium text-gray-900 text-sm">{`${tIdx + 1}. ${lesson.title}`}</span>
+                                                <span className="block text-xs text-gray-500">
+                                                    {typeof lesson.lesson_duration ===
+                                                    'number'
+                                                        ? `${lesson.lesson_duration} min`
+                                                        : 'N/A'}
+                                                </span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    )
                 })}
-              </List>
-            </AccordionDetails>
-          </Accordion>
-        )
-      })}
-    </>
-  )
+            </div>
+        </Card>
+    )
 }
 
 export default Sidebar
