@@ -9,6 +9,7 @@ import Checkbox from '@/components/ui/Checkbox/Checkbox'
 import type { CourseWithDetails } from '@/@types/course'
 import { FaChevronRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router'
+import Tooltip from '@/components/ui/Tooltip'
 
 const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
     const modules = Array.isArray(data?.modules) ? data.modules : []
@@ -61,15 +62,18 @@ const Sidebar = ({ data }: { data: CourseWithDetails | undefined }) => {
                                 type="button"
                             >
                                 <div className="flex justify-between items-center">
-                                    <span
-                                        className={
-                                            expanded === idx
-                                                ? 'font-bold cursor-pointer'
-                                                : 'cursor-pointer'
-                                        }
-                                    >
-                                        {mod.title}
-                                    </span>
+                                    <Tooltip title={mod.description}>
+                                        {' '}
+                                        <span
+                                            className={
+                                                expanded === idx
+                                                    ? 'font-bold cursor-pointer'
+                                                    : 'cursor-pointer'
+                                            }
+                                        >
+                                            {mod.title}
+                                        </span>
+                                    </Tooltip>
                                     <span
                                         className={`text-gray-400 text-lg transition-transform duration-200 ${expanded === idx ? 'rotate-90' : ''}`}
                                     >
