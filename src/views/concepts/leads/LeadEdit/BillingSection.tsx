@@ -27,60 +27,6 @@ const statusColor: Record<string, string> = {
 const columnHelper = createColumnHelper<Lead['payments'][0]>()
 
 const columns = [
-    columnHelper.accessor(
-        (row) =>
-            row.metadata?.eventName ||
-            row.metadata?.membershipName ||
-            'Payment',
-        {
-            id: 'event_name',
-            header: 'Type',
-            cell: (props) => {
-                return (
-                    <div className="flex items-center gap-2">
-                        <span className="font-semibold capitalize">
-                            {props.getValue()}
-                        </span>
-                    </div>
-                )
-            },
-        },
-    ),
-    columnHelper.accessor(
-        (row) => row.metadata?.membershipName || 'Membership',
-        {
-            id: 'membership_name',
-            header: 'Membership',
-            cell: (props) => {
-                const row = props.row.original
-                const dates = row.metadata?.dates || []
-                console.log(dates)
-                return (
-                    <div className="flex items-center gap-2">
-                        <span className="font-semibold capitalize">
-                            {props.getValue()}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                            {dayjs(dates[0] * 1000).format('MMM D, YYYY')}
-                        </span>
-                    </div>
-                )
-            },
-        },
-    ),
-    columnHelper.accessor('payment_type', {
-        header: 'Type',
-        cell: (props) => {
-            const row = props.row.original
-            return (
-                <div className="flex items-center gap-2">
-                    <span className="font-semibold capitalize">
-                        {row.payment_type.replace('_', ' ').toLowerCase()}
-                    </span>
-                </div>
-            )
-        },
-    }),
     columnHelper.accessor('status', {
         header: 'Status',
         cell: (props) => {
