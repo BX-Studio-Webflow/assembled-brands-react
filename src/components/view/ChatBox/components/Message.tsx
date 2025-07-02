@@ -35,10 +35,38 @@ const Message = (props: MessageProps) => {
         isMyMessage,
         sender,
         type,
+        timestamp,
         customRenderer,
         customAction,
         bubbleClass,
     } = props
+
+    const formatTimestamp = (timestamp?: Date | number) => {
+        if (!timestamp) return null
+
+        const date = timestamp instanceof Date ? timestamp : new Date(timestamp)
+        const now = new Date()
+        const isToday = date.toDateString() === now.toDateString()
+        const isYesterday =
+            new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString() ===
+            date.toDateString()
+
+        if (isToday) {
+            return date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+            })
+        } else if (isYesterday) {
+            return `Yesterday at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+        } else {
+            return date.toLocaleDateString([], {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            })
+        }
+    }
 
     return (
         <>
@@ -94,6 +122,23 @@ const Message = (props: MessageProps) => {
                                 )}
                             </div>
                         </div>
+                        {timestamp && (
+                            <div
+                                className={classNames(
+                                    'flex items-center gap-2 mt-1',
+                                    isMyMessage && 'justify-end',
+                                )}
+                            >
+                                {showAvatar && avatarGap && (
+                                    <div
+                                        className={classNames('w-[35px]')}
+                                    ></div>
+                                )}
+                                <div className="text-xs text-gray-400 dark:text-gray-500">
+                                    {formatTimestamp(timestamp)}
+                                </div>
+                            </div>
+                        )}
                         {customAction && (
                             <div>
                                 <div
