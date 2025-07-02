@@ -24,6 +24,7 @@ import { Tabs } from '@/components/ui'
 import Loading from '@/components/shared/Loading'
 import isEmpty from 'lodash/isEmpty'
 import { AxiosError } from 'axios'
+import TagsSection from './TagsSection'
 
 const LeadEdit = () => {
     const { id } = useParams()
@@ -189,6 +190,9 @@ const LeadEdit = () => {
                                                     <TabNav value="activity">
                                                         Events
                                                     </TabNav>
+                                                    <TabNav value="tags">
+                                                        Tags
+                                                    </TabNav>
                                                     <TabNav value="profile">
                                                         Profile
                                                     </TabNav>
@@ -205,6 +209,11 @@ const LeadEdit = () => {
                                                                 data.bookings ||
                                                                 []
                                                             }
+                                                        />
+                                                    </TabContent>
+                                                    <TabContent value="tags">
+                                                        <TagsSection
+                                                            data={data}
                                                         />
                                                     </TabContent>
                                                     <TabContent value="profile">
