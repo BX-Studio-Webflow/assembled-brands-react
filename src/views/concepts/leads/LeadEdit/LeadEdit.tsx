@@ -37,9 +37,9 @@ const LeadEdit = () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, params]) => apiGetLead<Lead>(params.id),
         {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
+            revalidateOnFocus: true,
+            revalidateIfStale: true,
+            revalidateOnReconnect: true,
         },
     )
 
