@@ -13,7 +13,13 @@ import { TbTrash } from 'react-icons/tb'
 import type { EventFormType } from '../EventForm/validation/eventFormSchema'
 import type { EventWithDetailsAndCount } from '@/@types/events'
 import { AxiosError } from 'axios'
-import { FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
+import {
+    FaClock,
+    FaDownload,
+    FaInfoCircle,
+    FaLink,
+    FaRegCopy,
+} from 'react-icons/fa'
 import { useChatStore } from '../../chat/Chat/store/chatStore'
 import { CSVLink } from 'react-csv'
 import { RiChatDeleteLine } from 'react-icons/ri'
@@ -482,6 +488,14 @@ const x = setInterval(function () {
         setClearLogsConfirmationOpen(false)
     }
 
+    const handleInfo = () => {
+        toast.push(
+            <Notification type="info">
+                {`This event has ${data?.leadCount} leads.`}
+            </Notification>,
+        )
+    }
+
     // Prepare CSV data for download
     const csvData = useMemo(() => {
         return messages.map((message) => ({
@@ -536,6 +550,11 @@ const x = setInterval(function () {
                                         onClick={handleClearLogs}
                                     />
                                 )}
+                                <Button
+                                    type="button"
+                                    icon={<FaInfoCircle />}
+                                    onClick={handleInfo}
+                                />
                             </div>
                         </span>
                         <div className="flex items-center mr-2">

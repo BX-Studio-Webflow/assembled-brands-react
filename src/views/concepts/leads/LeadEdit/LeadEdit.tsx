@@ -23,6 +23,7 @@ import ActivitySection from './ActivitySection'
 import { Tabs } from '@/components/ui'
 import Loading from '@/components/shared/Loading'
 import isEmpty from 'lodash/isEmpty'
+import { AxiosError } from 'axios'
 
 const LeadEdit = () => {
     const { id } = useParams()
@@ -57,7 +58,9 @@ const LeadEdit = () => {
             await apiUpdateLead(id as string, leadData)
             setIsSubmiting(false)
             toast.push(
-                <Notification type="success">Changes Saved!</Notification>,
+                <Notification type="success">
+                    Your changes have been saved!
+                </Notification>,
                 {
                     placement: 'top-center',
                 },
@@ -66,8 +69,7 @@ const LeadEdit = () => {
         } catch (error) {
             toast.push(
                 <Notification type="danger">
-                    Failed to update customer:{' '}
-                    {error instanceof Error ? error.message : 'Unknown error'}
+                    {(error as AxiosError).message}
                 </Notification>,
                 { placement: 'top-center' },
             )

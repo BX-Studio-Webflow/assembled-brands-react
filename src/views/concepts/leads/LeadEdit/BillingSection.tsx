@@ -18,9 +18,10 @@ type BillingSectionProps = {
 const { Tr, Td, TBody } = Table
 
 const statusColor: Record<string, string> = {
-    paid: 'bg-emerald-500',
+    succeeded: 'bg-emerald-500',
     pending: 'bg-amber-400',
     failed: 'bg-red-500',
+    cancelled: 'bg-red-500',
 }
 
 const columnHelper = createColumnHelper<Lead['payments'][0]>()
@@ -51,10 +52,16 @@ const columns = [
             id: 'membership_name',
             header: 'Membership',
             cell: (props) => {
+                const row = props.row.original
+                const dates = row.metadata?.dates || []
+                console.log(dates)
                 return (
                     <div className="flex items-center gap-2">
                         <span className="font-semibold capitalize">
                             {props.getValue()}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                            {dayjs(dates[0] * 1000).format('MMM D, YYYY')}
                         </span>
                     </div>
                 )
@@ -68,7 +75,7 @@ const columns = [
             return (
                 <div className="flex items-center gap-2">
                     <span className="font-semibold capitalize">
-                        {row.payment_type}
+                        {row.payment_type.replace('_', ' ').toLowerCase()}
                     </span>
                 </div>
             )
