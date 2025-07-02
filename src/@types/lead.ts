@@ -60,6 +60,12 @@ export interface Lead {
         lead_id: number
         host_id: number
         event_id: number
+        membership_id: number
+        metadata: {
+            dates: number[]
+            eventName: string
+            membershipName: string
+        }
         created_at: string
         updated_at: string
         event: {

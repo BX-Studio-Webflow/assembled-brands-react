@@ -14,6 +14,12 @@ type EventBooking = {
     event_id: number
     created_at: string
     updated_at: string
+    membership_id: number
+    metadata: {
+        eventName: string | null | undefined
+        membershipName: string | null | undefined
+        dates: number[] | null | undefined
+    }
     event: {
         id: number
         event_name: string
@@ -44,12 +50,17 @@ const TimeLineContent = (props: { booking: EventBooking }) => {
         <div>
             <h6 className="font-bold">Events</h6>
             <p className="font-semibold">{booking.event.event_name}</p>
-            <p className="text-sm text-gray-500">
-                {booking.event.event_description}
-            </p>
-            <span className="text-sm capitalize">
-                {dayjs(booking.created_at).format('DD MMMM')}
-            </span>
+
+            <div className="flex items-center gap-2">
+                <span className="text-sm capitalize">
+                    {dayjs(
+                        Number(booking.metadata.dates?.[0] || 0) * 1000,
+                    ).format('D MMMM YYYY')}
+                </span>
+                <span className="text-sm capitalize">
+                    {booking.metadata.membershipName}
+                </span>
+            </div>
             <div className="mt-2 flex items-center gap-2">
                 <Badge
                     className={
