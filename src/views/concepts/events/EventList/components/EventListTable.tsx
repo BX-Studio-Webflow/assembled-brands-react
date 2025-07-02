@@ -15,6 +15,8 @@ import type { EventItem } from '../types'
 import type { TableQueries } from '@/@types/common'
 import { FaVideo, FaMapMarkerAlt, FaFilm, FaLink } from 'react-icons/fa'
 import { useAuth } from '@/auth'
+import dayjs from 'dayjs'
+import { AxiosError } from 'axios'
 
 const EventStatusColor: Record<
     string,
@@ -56,10 +58,10 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
                 { placement: 'top-center' },
             )
             mutate()
-        } catch {
+        } catch (error) {
             toast.push(
                 <Notification type="danger">
-                    Failed to delete event. Please try again.
+                    {(error as AxiosError).message}
                 </Notification>,
                 { placement: 'top-center' },
             )
@@ -175,7 +177,7 @@ const EventListTable = () => {
             {
                 header: 'Status',
                 accessorKey: 'status',
-                cell: (props) => {
+                cell: (props: { row: { original: EventItem } }) => {
                     const { status } = props.row.original
                     return (
                         <Tag
@@ -193,7 +195,7 @@ const EventListTable = () => {
             {
                 header: 'Name',
                 accessorKey: 'event_name',
-                cell: (props) => {
+                cell: (props: { row: { original: EventItem } }) => {
                     const { event_name } = props.row.original
                     return <span className="font-semibold">{event_name}</span>
                 },
@@ -201,7 +203,7 @@ const EventListTable = () => {
             {
                 header: 'Type',
                 accessorKey: 'event_type',
-                cell: (props) => {
+                cell: (props: { row: { original: EventItem } }) => {
                     const { event_type } = props.row.original
                     return (
                         <span className="font-semibold">
@@ -218,13 +220,21 @@ const EventListTable = () => {
             {
                 header: 'Price Plans',
                 accessorKey: 'memberships',
-                cell: (props) => {
+                cell: (props: { row: { original: EventItem } }) => {
                     const { memberships } = props.row.original
                     return (
                         <span className="font-semibold">
                             {memberships && memberships.length > 0
                                 ? memberships
-                                      .map((m) => `${m.name} - £${m.price}`)
+                                      .map(
+                                          (m) =>
+                                              `${dayjs(
+                                                  Number(m.dates[0].date) *
+                                                      1000,
+                                              ).format('DD/MM/YYYY')} - ${
+                                                  m.name
+                                              } - £${m.price}`,
+                                      )
                                       .join(' ')
                                 : ''}
                         </span>
@@ -234,7 +244,7 @@ const EventListTable = () => {
             {
                 header: 'Landing Page',
                 accessorKey: 'landing_page_url',
-                cell: (props) => {
+                cell: (props: { row: { original: EventItem } }) => {
                     const { landing_page_url } = props.row.original
                     return landing_page_url ? (
                         <a
@@ -256,7 +266,7 @@ const EventListTable = () => {
             {
                 header: 'Created',
                 accessorKey: 'created_at',
-                cell: (props) => {
+                cell: (props: { row: { original: EventItem } }) => {
                     const { created_at } = props.row.original
                     return (
                         <span className="font-semibold">
@@ -276,7 +286,9 @@ const EventListTable = () => {
             {
                 header: '',
                 id: 'action',
-                cell: (props) => <ActionColumn row={props.row.original} />,
+                cell: (props: { row: { original: EventItem } }) => (
+                    <ActionColumn row={props.row.original} />
+                ),
             },
         ],
         [user?.role],

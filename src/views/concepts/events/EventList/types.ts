@@ -46,6 +46,14 @@ export type EventItem = {
         price_point: string
         updated_at: string
         user_id: number
+        dates: {
+            id: number
+            membership_id: number
+            date: string
+            created_at: string
+            updated_at: string
+            user_id: number
+        }[]
     }[]
 }
 

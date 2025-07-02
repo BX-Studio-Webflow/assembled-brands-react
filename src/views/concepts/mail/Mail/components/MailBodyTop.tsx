@@ -94,7 +94,7 @@ const MailBodyTop = () => {
                                 })
                             }
                         >
-                            New email
+                            New message
                         </Button>
                     )}
                 </div>
