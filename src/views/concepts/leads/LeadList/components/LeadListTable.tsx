@@ -215,7 +215,7 @@ const LeadListTable = () => {
                 },
             },
             {
-                header: 'Created',
+                header: 'Registered',
                 accessorKey: 'created_at',
                 cell: (props) => {
                     const { created_at } = props.row.original
