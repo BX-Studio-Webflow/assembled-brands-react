@@ -85,7 +85,7 @@ const EventBookingSection = ({ bookings }: { bookings: EventBooking[] }) => {
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center">
                             <Card
-                                className="max-w-[600px] w-full"
+                                className="w-full"
                                 bodyClass="py-3"
                             >
                                 <div className="flex items-center gap-4">
