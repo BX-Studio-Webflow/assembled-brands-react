@@ -76,9 +76,9 @@ const conceptsRoute: Routes = [
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Edit order',
+                title: 'Edit event',
                 contained: true,
-                description: 'Manage and track orders efficiently',
+                description: 'Manage and track events efficiently',
             },
             footer: false,
         },
