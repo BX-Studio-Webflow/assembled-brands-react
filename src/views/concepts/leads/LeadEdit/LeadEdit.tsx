@@ -19,7 +19,7 @@ import TabNav from '@/components/ui/Tabs/TabNav'
 import TabList from '@/components/ui/Tabs/TabList'
 import TabContent from '@/components/ui/Tabs/TabContent'
 import BillingSection from './BillingSection'
-import ActivitySection from './ActivitySection'
+import EventBookingSection from './EventBookingSection'
 import { Tabs } from '@/components/ui'
 import Loading from '@/components/shared/Loading'
 import isEmpty from 'lodash/isEmpty'
@@ -187,7 +187,7 @@ const LeadEdit = () => {
                                                     <TabNav value="billing">
                                                         Billing
                                                     </TabNav>
-                                                    <TabNav value="activity">
+                                                    <TabNav value="bookings">
                                                         Events
                                                     </TabNav>
                                                     <TabNav value="tags">
@@ -203,8 +203,8 @@ const LeadEdit = () => {
                                                             data={data}
                                                         />
                                                     </TabContent>
-                                                    <TabContent value="activity">
-                                                        <ActivitySection
+                                                    <TabContent value="bookings">
+                                                        <EventBookingSection
                                                             bookings={
                                                                 data.bookings ||
                                                                 []

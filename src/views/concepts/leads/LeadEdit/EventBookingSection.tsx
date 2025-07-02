@@ -47,6 +47,9 @@ const TimeLineContent = (props: { booking: EventBooking }) => {
             <p className="text-sm text-gray-500">
                 {booking.event.event_description}
             </p>
+            <span className="text-sm capitalize">
+                {dayjs(booking.created_at).format('DD MMMM')}
+            </span>
             <div className="mt-2 flex items-center gap-2">
                 <Badge
                     className={
@@ -63,22 +66,13 @@ const TimeLineContent = (props: { booking: EventBooking }) => {
     )
 }
 
-const ActivitySection = ({ bookings }: { bookings: EventBooking[] }) => {
+const EventBookingSection = ({ bookings }: { bookings: EventBooking[] }) => {
     return (
         <>
             {bookings.map((booking) => (
                 <div key={booking.id} className="mb-4">
-                    <div className="mb-4 font-bold uppercase flex items-center gap-4">
-                        <span className="w-[70px] heading-text">
-                            {dayjs(booking.created_at).format('DD MMMM')}
-                        </span>
-                        <div className="border-b border-2 border-gray-200 dark:border-gray-600 border-dashed w-full"></div>
-                    </div>
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center">
-                            <span className="font-semibold w-[100px]">
-                                {dayjs(booking.created_at).format('h:mm A')}
-                            </span>
                             <Card
                                 className="max-w-[600px] w-full"
                                 bodyClass="py-3"
@@ -89,6 +83,7 @@ const ActivitySection = ({ bookings }: { bookings: EventBooking[] }) => {
                                             status={booking.event.status}
                                         />
                                     </div>
+
                                     <TimeLineContent booking={booking} />
                                 </div>
                             </Card>
@@ -100,4 +95,4 @@ const ActivitySection = ({ bookings }: { bookings: EventBooking[] }) => {
     )
 }
 
-export default ActivitySection
+export default EventBookingSection
