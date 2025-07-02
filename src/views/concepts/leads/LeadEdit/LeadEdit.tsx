@@ -4,7 +4,11 @@ import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { apiGetLead, apiUpdateLead } from '@/services/LeadsService'
+import {
+    apiDeleteLead,
+    apiGetLead,
+    apiUpdateLead,
+} from '@/services/LeadsService'
 import LeadForm from '../LeadForm'
 import NoUserFound from '@/assets/svg/NoUserFound'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
@@ -103,12 +107,26 @@ const LeadEdit = () => {
         return {}
     }
 
-    const handleConfirmDelete = () => {
-        setDeleteConfirmationOpen(true)
-        toast.push(<Notification type="success">Lead deleted!</Notification>, {
-            placement: 'top-center',
-        })
-        navigate('/concepts/customers/customer-list')
+    const handleConfirmDelete = async () => {
+        try {
+            await apiDeleteLead(id as string)
+            toast.push(
+                <Notification type="success">
+                    Lead deleted successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            navigate('/concepts/lead/lead-list')
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setDeleteConfirmationOpen(false)
+        }
     }
 
     const handleDelete = () => {
@@ -232,13 +250,13 @@ const LeadEdit = () => {
                     <ConfirmDialog
                         isOpen={deleteConfirmationOpen}
                         type="danger"
-                        title="Delete customer"
+                        title="Delete lead"
                         onClose={handleCancel}
                         onRequestClose={handleCancel}
                         onConfirm={handleConfirmDelete}
                     >
                         <p>
-                            Are you sure you want to delete this customer? This
+                            Are you sure you want to delete this lead? This
                             action can&apos;t be undo.{' '}
                         </p>
                     </ConfirmDialog>
