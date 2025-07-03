@@ -104,39 +104,42 @@ const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
         </>
     ) : (
         <div className="flex items-center gap-2 print:hidden mr-8">
-            {eventStatus === 'live' || eventStatus === 'ended' && (
-                <Button
-                    variant="solid"
-                    customColorClass={() =>
-                        'bg-green-400 hover:bg-green-500 text-white'
-                    }
-                    onClick={() => handleInstantCallback()}
-                >
-                    Instant Call Back
-                </Button>
-            )}
-            {(eventStatus === 'live' || eventStatus === 'ended') && data.event.calendar_url && (
-                <Button
-                    variant="solid"
-                    customColorClass={() =>
-                        'bg-teal-400 hover:bg-teal-500 text-white'
-                    }
-                    onClick={() => handleScheduleCallback()}
-                >
-                    Schedule a Call Back
-                </Button>
-            )}
-            {(eventStatus === 'live' || eventStatus === 'ended') && data.event.calendar_url && (
-                <Button
-                    variant="solid"
-                    customColorClass={() =>
-                        'bg-amber-400 hover:bg-amber-500 text-white'
-                    }
-                    onClick={() => handleUpgradeClick()}
-                >
-                    Upgrade Now
-                </Button>
-            )}
+            {eventStatus === 'live' ||
+                (eventStatus === 'ended' && (
+                    <Button
+                        variant="solid"
+                        customColorClass={() =>
+                            'bg-green-400 hover:bg-green-500 text-white'
+                        }
+                        onClick={() => handleInstantCallback()}
+                    >
+                        Instant Call Back
+                    </Button>
+                ))}
+            {(eventStatus === 'live' || eventStatus === 'ended') &&
+                data.event.calendar_url && (
+                    <Button
+                        variant="solid"
+                        customColorClass={() =>
+                            'bg-teal-400 hover:bg-teal-500 text-white'
+                        }
+                        onClick={() => handleScheduleCallback()}
+                    >
+                        Schedule a Call Back
+                    </Button>
+                )}
+            {(eventStatus === 'live' || eventStatus === 'ended') &&
+                data.event.calendar_url && (
+                    <Button
+                        variant="solid"
+                        customColorClass={() =>
+                            'bg-amber-400 hover:bg-amber-500 text-white'
+                        }
+                        onClick={() => handleUpgradeClick()}
+                    >
+                        Upgrade Now
+                    </Button>
+                )}
         </div>
     )
 }
