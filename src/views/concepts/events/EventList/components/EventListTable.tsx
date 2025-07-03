@@ -224,16 +224,16 @@ const EventListTable = () => {
                     const { memberships } = props.row.original
                     return (
                         <span className="font-semibold">
-                            {memberships && memberships.length > 0
+                            {memberships && memberships?.length > 0
                                 ? memberships
                                       .map(
                                           (m) =>
                                               `${dayjs(
-                                                  Number(m.dates[0].date) *
+                                                  Number(m.dates?.[0]?.date) *
                                                       1000,
                                               ).format('DD/MM/YYYY')} - ${
-                                                  m.name
-                                              } - £${m.price}`,
+                                                  m?.name
+                                              } - £${m?.price}`,
                                       )
                                       .join(' ')
                                 : ''}
