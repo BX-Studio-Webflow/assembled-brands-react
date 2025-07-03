@@ -16,9 +16,9 @@ const documentationRoutes: DocumentationRoute[] = [
                 component: lazy(() => import('./components/UserGuide')),
             },
             {
-                path: 'installation',
-                label: 'Installation',
-                component: lazy(() => import('./components/Installation')),
+                path: 'faq',
+                label: 'FAQ',
+                component: lazy(() => import('./components/FAQ')),
             },
         ],
     },
