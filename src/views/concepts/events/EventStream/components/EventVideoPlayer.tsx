@@ -337,8 +337,8 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     }, [eventId, token, email, code, isHost])
 
     return (
-        <Card className="w-full h-full p-0 m-0">
-            <div ref={containerRef} className="w-full h-full" />
+        <Card className="w-full h-auto">
+            <div ref={containerRef} className="w-full h-auto" />
         </Card>
     )
 }

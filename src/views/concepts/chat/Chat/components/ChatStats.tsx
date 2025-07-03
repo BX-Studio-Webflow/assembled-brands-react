@@ -76,7 +76,7 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
         <Card>
             <div className="flex items-center justify-between">
                 <h4>Who&apos;s watching?</h4>
-                <CSVLink filename="top-channel.csv" data={csvData}>
+                <CSVLink filename="watch-time.csv" data={csvData}>
                     <Button size="sm">Export data</Button>
                 </CSVLink>
             </div>
