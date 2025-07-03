@@ -231,9 +231,9 @@ const EventListTable = () => {
                                               `${dayjs(
                                                   Number(m.dates?.[0]?.date) *
                                                       1000,
-                                              ).format('DD/MM/YYYY')} - ${
-                                                  m?.name
-                                              } - £${m?.price}`,
+                                              ).format(
+                                                  'DD/MM/YYYY',
+                                              )} - £${m?.price}`,
                                       )
                                       .join(' ')
                                 : ''}
