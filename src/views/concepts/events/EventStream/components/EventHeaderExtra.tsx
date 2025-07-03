@@ -11,9 +11,10 @@ import { IoStatsChart } from 'react-icons/io5'
 
 interface EventHeaderExtraProps {
     isHost: boolean
+    eventStatus: 'live' | 'ended' | 'early' | 'cancelled' | 'suspended'
 }
 
-const EventHeaderExtra = ({ isHost }: EventHeaderExtraProps) => {
+const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
     const { data } = useEvent()
     const [dialogIsOpen, setIsOpen] = useState(false)
 
@@ -61,7 +62,7 @@ const EventHeaderExtra = ({ isHost }: EventHeaderExtraProps) => {
         }
     }
 
-    return isHost ? (
+    return isHost && eventStatus === 'live' ? (
         <>
             <div className="flex items-center gap-2 print:hidden mr-8">
                 <Button
