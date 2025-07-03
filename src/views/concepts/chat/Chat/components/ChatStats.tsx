@@ -27,19 +27,25 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
             ? Math.round(totalWatchTime / telemetryData.length)
             : 0
 
-    //Fire this every 10 seconds
+    //Fire on mount, then every 10 seconds
     useEffect(() => {
         // Only track telemetry for non-hosts
         if (!isHost) return
 
-        const interval = setInterval(async () => {
+        const fetchTelemetry = async () => {
             try {
                 const response = await apiGetTelemetryByEventId(Number(eventId))
                 setTelemetryData(response)
             } catch (error) {
                 console.error('Failed to get telemetry:', error)
             }
-        }, 10000)
+        }
+
+        // Fire immediately on mount
+        fetchTelemetry()
+
+        // Then set up interval for every 10 seconds
+        const interval = setInterval(fetchTelemetry, 10000)
 
         return () => clearInterval(interval)
     }, [eventId, isHost])
