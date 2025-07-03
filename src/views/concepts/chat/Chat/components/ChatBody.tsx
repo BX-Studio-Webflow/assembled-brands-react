@@ -2,7 +2,6 @@ import { useMemo, memo } from 'react'
 
 import EventVideoPlayer from '@/views/concepts/events/EventStream/components/EventVideoPlayer'
 import { EventStreamResponse } from '@/@types/events'
-import ChatStats from './ChatStats'
 
 // Memoized Video Player to prevent re-renders
 const MemoizedEventVideoPlayer = memo(EventVideoPlayer)
@@ -46,18 +45,11 @@ const ChatBody = ({
             {/**if not host, take fll height */}
             <div
                 className={`${
-                    isHost ? 'h-2/3' : 'h-full'
+                    isHost ? '' : 'h-full'
                 } w-full rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden`}
             >
                 <MemoizedEventVideoPlayer {...videoPlayerProps} />
             </div>
-
-            {/* Chat Body - Takes 1/2 of the height */}
-            {isHost && (
-                <div className="h-1/3 w-full mt-4">
-                    <ChatStats eventId={data.event.id} isHost={isHost} />
-                </div>
-            )}
         </div>
     )
 }

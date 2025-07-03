@@ -1,9 +1,13 @@
 import Button from '@/components/ui/Button'
+import Dialog from '@/components/ui/Dialog'
 import { useEvent } from '../context/EventContext'
 import { apiSaveInstantCallback } from '@/services/EventService'
 import { toast } from '@/components/ui'
 import { Notification } from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
+import ChatStats from '@/views/concepts/chat/Chat/components/ChatStats'
+import { useState, type MouseEvent } from 'react'
+import { IoStatsChart } from 'react-icons/io5'
 
 interface EventHeaderExtraProps {
     isHost: boolean
@@ -11,10 +15,21 @@ interface EventHeaderExtraProps {
 
 const EventHeaderExtra = ({ isHost }: EventHeaderExtraProps) => {
     const { data } = useEvent()
+    const [dialogIsOpen, setIsOpen] = useState(false)
 
     if (!data) {
         return <></>
     }
+
+    const openDialog = () => {
+        setIsOpen(true)
+    }
+
+    const onDialogClose = (e: MouseEvent) => {
+        console.log('onDialogClose', e)
+        setIsOpen(false)
+    }
+
     const handleUpgradeClick = () => {
         window.open(`${data.event.calendar_url}`, '_blank')
     }
@@ -47,7 +62,45 @@ const EventHeaderExtra = ({ isHost }: EventHeaderExtraProps) => {
     }
 
     return isHost ? (
-        <></>
+        <>
+            <div className="flex items-center gap-2 print:hidden mr-8">
+                <Button
+                    className="mr-2"
+                    icon={<IoStatsChart />}
+                    onClick={openDialog}
+                >
+                    <span>
+                        <span>Who&apos;s watching?</span>
+                    </span>
+                </Button>
+            </div>
+            <Dialog
+                isOpen={dialogIsOpen}
+                style={{
+                    content: {
+                        marginTop: 50,
+                        width: '70%',
+                    },
+                }}
+                contentClassName="pb-0 px-0"
+                onClose={onDialogClose}
+                onRequestClose={onDialogClose}
+            >
+                <div className="px-6 pb-6">
+                    <div className="w-full mt-8">
+                        <ChatStats eventId={data.event.id} isHost={isHost} />
+                    </div>
+                </div>
+                <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        onClick={onDialogClose}
+                    >
+                        Close
+                    </Button>
+                </div>
+            </Dialog>
+        </>
     ) : (
         <div className="flex items-center gap-2 print:hidden mr-8">
             <Button
