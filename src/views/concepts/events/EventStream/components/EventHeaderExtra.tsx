@@ -104,16 +104,18 @@ const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
         </>
     ) : (
         <div className="flex items-center gap-2 print:hidden mr-8">
-            <Button
-                variant="solid"
-                customColorClass={() =>
-                    'bg-green-400 hover:bg-green-500 text-white'
-                }
-                onClick={() => handleInstantCallback()}
-            >
-                Instant Call Back
-            </Button>
-            {data.event.calendar_url && (
+            {eventStatus === 'live' || eventStatus === 'ended' && (
+                <Button
+                    variant="solid"
+                    customColorClass={() =>
+                        'bg-green-400 hover:bg-green-500 text-white'
+                    }
+                    onClick={() => handleInstantCallback()}
+                >
+                    Instant Call Back
+                </Button>
+            )}
+            {(eventStatus === 'live' || eventStatus === 'ended') && data.event.calendar_url && (
                 <Button
                     variant="solid"
                     customColorClass={() =>
@@ -124,7 +126,7 @@ const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
                     Schedule a Call Back
                 </Button>
             )}
-            {data.event.calendar_url && (
+            {(eventStatus === 'live' || eventStatus === 'ended') && data.event.calendar_url && (
                 <Button
                     variant="solid"
                     customColorClass={() =>
