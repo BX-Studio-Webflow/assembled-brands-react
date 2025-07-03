@@ -119,7 +119,7 @@ const EventStream = () => {
                 {data && eventStatus === 'live' && (
                     <>
                         <Card
-                            className="h-full border-0"
+                            className="h-full border-0 mb-4"
                             bodyClass="h-full flex flex-col"
                         >
                             <div className="flex flex-auto w-full h-full gap-4">

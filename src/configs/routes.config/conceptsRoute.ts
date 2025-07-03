@@ -102,6 +102,9 @@ const conceptsRoute: Routes = [
         path: `${CONCEPTS_PREFIX_PATH}/event/stream/:id`,
         component: lazy(() => import('@/views/concepts/events/EventStream')),
         authority: [ADMIN, USER],
+        meta: {
+            footer: false,
+        },
     },
 
     {
