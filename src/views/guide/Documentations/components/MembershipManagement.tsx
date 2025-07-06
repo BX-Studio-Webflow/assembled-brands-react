@@ -77,8 +77,8 @@ const MembershipManagement = () => {
                             <strong>
                                 Concepts → Memberships → Membership Create
                             </strong>{' '}
-                            or click the "Create Membership" button from the
-                            membership list.
+                            or click the &quot;Create Membership&quot; button
+                            from the membership list.
                         </p>
 
                         <div className="flex items-center gap-3">

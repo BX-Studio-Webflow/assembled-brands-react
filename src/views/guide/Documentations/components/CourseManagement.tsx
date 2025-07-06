@@ -78,8 +78,8 @@ const CourseManagement = () => {
                         <p className="text-sm text-gray-600">
                             Navigate to{' '}
                             <strong>Concepts → Courses → Create Course</strong>{' '}
-                            or click the &quot;Create Course&quot; button from the course
-                            list.
+                            or click the &quot;Create Course&quot; button from
+                            the course list.
                         </p>
 
                         <div className="flex items-center gap-3">

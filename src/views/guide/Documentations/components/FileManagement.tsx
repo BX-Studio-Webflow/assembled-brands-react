@@ -6,11 +6,9 @@ import {
     HiOutlineShare,
     HiOutlineFolder,
     HiOutlineDocument,
-    
     HiOutlineVideoCamera,
     HiOutlinePhone,
     HiMusicNote,
-   
 } from 'react-icons/hi'
 
 const FileManagement = () => {

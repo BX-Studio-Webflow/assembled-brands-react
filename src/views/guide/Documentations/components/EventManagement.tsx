@@ -6,7 +6,6 @@ import {
     HiOutlineEye,
     HiOutlineUsers,
     HiOutlineVideoCamera,
-   
     HiOutlineFilm,
     HiOutlineLink,
     HiMap,
@@ -77,7 +76,8 @@ const EventManagement = () => {
                         <p className="text-sm text-gray-600">
                             Navigate to{' '}
                             <strong>Concepts → Events → Event Create</strong> or
-                            click the &quot;Create Event&quot; button from the event list.
+                            click the &quot;Create Event&quot; button from the
+                            event list.
                         </p>
 
                         <div className="flex items-center gap-3">

@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import { Card } from '@/components/ui'
 import {
     HiOutlineLightBulb,
@@ -11,42 +10,6 @@ import {
     HiOutlineFolder,
     HiOutlineCreditCard,
 } from 'react-icons/hi'
-
-const coreFeatures = [
-    {
-        id: 'react',
-        name: 'React',
-        img: '/img/thumbs/react.png',
-        src: 'https://reactjs.org/',
-        description:
-            'A popular JavaScript library for building user interfaces.',
-    },
-    {
-        id: 'vite',
-        name: 'Vite',
-        img: '/img/thumbs/vite.png',
-        src: 'https://vitejs.dev/',
-        description:
-            'Vite is a modern, blazing-fast tool for scaffolding and bundling',
-    },
-    {
-        id: 'typeScriptOrJavascript',
-        name: 'TypeScript or JavaScript',
-        img: '/img/thumbs/typeScript.png',
-        img2: '/img/thumbs/javaScript.png',
-        src: 'https://www.typescriptlang.org/',
-        description:
-            'TypeScript is a strongly typed programming language that builds on JavaScript',
-        dual: true,
-    },
-    {
-        id: 'tailwind',
-        name: 'Tailwind Css',
-        img: '/img/thumbs/tailwind.png',
-        src: 'https://tailwindcss.com/',
-        description: 'A utility-first CSS framework packed with classes.',
-    },
-]
 
 const Introduction = () => {
     return (

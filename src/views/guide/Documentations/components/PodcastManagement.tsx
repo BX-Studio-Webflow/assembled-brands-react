@@ -7,7 +7,6 @@ import {
     HiOutlineUsers,
     HiOutlineUpload,
     HiOutlinePlay,
-    HiOutlinePause,
     HiOutlineVolumeUp,
 } from 'react-icons/hi'
 
@@ -68,8 +67,8 @@ const PodcastManagement = () => {
                             <strong>
                                 Concepts → Podcasts → Podcast Create
                             </strong>{' '}
-                            or click the "Create Podcast" button from the
-                            podcast list.
+                            or click the &quot;Create Podcast&quot; button from
+                            the podcast list.
                         </p>
 
                         <div className="flex items-center gap-3">

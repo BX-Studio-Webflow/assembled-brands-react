@@ -38,7 +38,8 @@ const LeadManagement = () => {
                         <p className="text-sm text-gray-600">
                             Navigate to{' '}
                             <strong>Concepts → Leads → Lead Create</strong> or
-                            click the &quot;Create Lead&quot; button from the lead list.
+                            click the &quot;Create Lead&quot; button from the
+                            lead list.
                         </p>
 
                         <div className="flex items-center gap-3">
@@ -53,12 +54,12 @@ const LeadManagement = () => {
                             </p>
                             <ul className="text-sm text-gray-600 ml-4 space-y-1">
                                 <li>
-                                    • <strong>First Name:</strong> Lead&apos;s first
-                                    name
+                                    • <strong>First Name:</strong> Lead&apos;s
+                                    first name
                                 </li>
                                 <li>
-                                    • <strong>Last Name:</strong> Lead&apos;s last
-                                    name
+                                    • <strong>Last Name:</strong> Lead&apos;s
+                                    last name
                                 </li>
                                 <li>
                                     • <strong>Email:</strong> Valid email

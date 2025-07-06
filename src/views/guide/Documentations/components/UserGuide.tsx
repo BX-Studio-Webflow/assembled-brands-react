@@ -16,9 +16,9 @@ const UserGuide = () => {
                 <h3 className="mb-4">User Guide - How to Use Yeebli</h3>
                 <p className="mb-4">
                     This comprehensive guide will walk you through how to use
-                    all the features of the Yeebli platform. Whether you're a
-                    new user or an experienced member, this guide will help you
-                    make the most of the application.
+                    all the features of the Yeebli platform. Whether you&apos;re
+                    a new user or an experienced member, this guide will help
+                    you make the most of the application.
                 </p>
             </div>
 
@@ -32,7 +32,8 @@ const UserGuide = () => {
                         </div>
                         <div className="space-y-2">
                             <p className="text-sm text-gray-600">
-                                Welcome to Yeebli! Here's how to get started:
+                                Welcome to Yeebli! Here&apos;s how to get
+                                started:
                             </p>
                             <ul className="text-sm text-gray-600 ml-4 space-y-1">
                                 <li>
