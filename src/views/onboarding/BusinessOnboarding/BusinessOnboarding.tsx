@@ -45,9 +45,9 @@ const BeforeUpload = ({
             return 'Please upload a .jpeg or .png file!'
         }
 
-        const maxFileSize = 500000
+        const maxFileSize = 1000000
         if (file.size >= maxFileSize) {
-            return 'Upload image cannot more then 500kb!'
+            return 'Upload image cannot more then 1 mb!'
         }
 
         // Process the file if all validations pass
@@ -61,7 +61,7 @@ const BeforeUpload = ({
         return true
     }
 
-    const tip = <p className="mt-2">jpeg or png only (max 500kb)</p>
+    const tip = <p className="mt-2">jpeg or png only (max 1 mb)</p>
 
     return (
         <div>

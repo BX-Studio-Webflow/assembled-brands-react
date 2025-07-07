@@ -125,12 +125,12 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={data.totalProfit[selectedPeriod].value}
+                            value={data.totalProfit[selectedPeriod].value || 0}
                             prefix={'$'}
                             thousandSeparator={true}
                         />
                     }
-                    growShrink={data.totalProfit[selectedPeriod].growShrink}
+                    growShrink={data.totalProfit[selectedPeriod].growShrink || 0}
                     iconClass="bg-sky-200"
                     icon={<TbCoin />}
                     label="totalProfit"
@@ -143,11 +143,11 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={data.totalOrder[selectedPeriod].value}
+                            value={data.totalOrder[selectedPeriod].value || 0}
                             thousandSeparator={true}
                         />
                     }
-                    growShrink={data.totalOrder[selectedPeriod].growShrink}
+                    growShrink={data.totalOrder[selectedPeriod].growShrink || 0}
                     iconClass="bg-emerald-200"
                     icon={<TbShoppingBagCheck />}
                     label="totalOrder"
@@ -159,10 +159,14 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     title="Impression"
                     value={
                         <AbbreviateNumber
-                            value={data.totalImpression[selectedPeriod].value}
+                            value={
+                                data.totalImpression[selectedPeriod].value || 0
+                            }
                         />
                     }
-                    growShrink={data.totalImpression[selectedPeriod].growShrink}
+                    growShrink={
+                        data.totalImpression[selectedPeriod].growShrink || 0
+                    }
                     iconClass="bg-purple-200"
                     icon={<TbEye />}
                     label="totalImpression"
