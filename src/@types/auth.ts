@@ -302,6 +302,27 @@ export type DashboardResponse = {
             archived: number
         }
     }
+    prerecorded_events: {
+        events: Array<{
+            event_id: number
+            event_name: string
+            event_type: string
+            status: string
+            created_at: string
+            registrations: number
+            attendees: number
+            non_attendees: number
+            fallthrough_rate: number
+            earnings: number
+        }>
+        totals: {
+            total_registrations: number
+            total_attendees: number
+            total_non_attendees: number
+            total_earnings: number
+            overall_fallthrough_rate: number
+        }
+    }
 }
 export type SaveOauthStateBody = {
     code: string

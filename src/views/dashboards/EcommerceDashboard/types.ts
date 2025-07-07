@@ -1,6 +1,9 @@
 export type Period = 'thisMonth' | 'thisWeek' | 'thisYear'
 
-export type StatisticCategory = 'totalProfit' | 'totalOrder' | 'totalImpression'
+export type StatisticCategory =
+    | 'totalEarned'
+    | 'totalRegistration'
+    | 'totalNonAttendee'
 
 export type ChannelRevenue = Record<
     Period,
@@ -40,23 +43,9 @@ export type CustomerDemographicData = {
     coordinates: [number, number]
 }
 
-export type PeriodData = {
-    value: number
-    growShrink: number
-    comparePeriod: string
-    chartData: {
-        series: {
-            name: string
-            data: number[]
-        }[]
-        date: string[]
-    }
-}
+export type PeriodData = number
 
-export type StatisticData = Record<
-    StatisticCategory,
-    Record<Period, PeriodData>
->
+export type StatisticData = Record<StatisticCategory, PeriodData>
 
 export type Order = {
     id: string

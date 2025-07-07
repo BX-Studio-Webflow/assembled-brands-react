@@ -1,24 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 import Card from '@/components/ui/Card'
-import Select from '@/components/ui/Select'
-import GrowShrinkValue from '@/components/shared/GrowShrinkValue'
 import AbbreviateNumber from '@/components/shared/AbbreviateNumber'
 import { useThemeStore } from '@/store/themeStore'
 import classNames from '@/utils/classNames'
-import { options } from '../constants'
 import { NumericFormat } from 'react-number-format'
 import { TbCoin, TbShoppingBagCheck, TbEye } from 'react-icons/tb'
 import type { ReactNode } from 'react'
-import type { StatisticData, Period, StatisticCategory } from '../types'
+import type { StatisticData, StatisticCategory } from '../types'
 
 type StatisticCardProps = {
     title: string
     value: number | ReactNode
     icon: ReactNode
-    growShrink: number
     iconClass: string
     label: StatisticCategory
-    compareFrom: string
     active: boolean
     onClick: (label: StatisticCategory) => void
 }
@@ -28,17 +23,7 @@ type StatisticGroupsProps = {
 }
 
 const StatisticCard = (props: StatisticCardProps) => {
-    const {
-        title,
-        value,
-        label,
-        icon,
-        growShrink,
-        iconClass,
-        active,
-        compareFrom,
-        onClick,
-    } = props
+    const { title, value, label, icon, iconClass, active, onClick } = props
 
     return (
         <button
@@ -52,16 +37,6 @@ const StatisticCard = (props: StatisticCardProps) => {
                 <div>
                     <div className="mb-4 text-sm font-semibold">{title}</div>
                     <h3 className="mb-1">{value}</h3>
-                    <div className="inline-flex items-center flex-wrap gap-1">
-                        <GrowShrinkValue
-                            className="font-bold"
-                            value={growShrink}
-                            suffix="%"
-                            positiveIcon="+"
-                            negativeIcon=""
-                        />
-                        <span>{compareFrom}</span>
-                    </div>
                 </div>
                 <div
                     className={classNames(
@@ -78,9 +53,7 @@ const StatisticCard = (props: StatisticCardProps) => {
 
 const Overview = ({ data }: StatisticGroupsProps) => {
     const [selectedCategory, setSelectedCategory] =
-        useState<StatisticCategory>('totalProfit')
-
-    const [selectedPeriod, setSelectedPeriod] = useState<Period>('thisMonth')
+        useState<StatisticCategory>('totalEarned')
 
     const sideNavCollapse = useThemeStore(
         (state) => state.layout.sideNavCollapse,
@@ -103,77 +76,48 @@ const Overview = ({ data }: StatisticGroupsProps) => {
         <Card>
             <div className="flex items-center justify-between">
                 <h4>Overview</h4>
-                <Select
-                    className="w-[120px]"
-                    size="sm"
-                    placeholder="Select period"
-                    value={options.filter(
-                        (option) => option.value === selectedPeriod,
-                    )}
-                    options={options}
-                    isSearchable={false}
-                    onChange={(option) => {
-                        if (option?.value) {
-                            setSelectedPeriod(option?.value)
-                        }
-                    }}
-                />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-2xl p-3 bg-gray-100 dark:bg-gray-700 mt-4">
                 <StatisticCard
-                    title="Total profit"
+                    title="Total Earned"
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={data.totalProfit[selectedPeriod].value || 0}
+                            value={data.totalEarned || 0}
                             prefix={'$'}
                             thousandSeparator={true}
                         />
                     }
-                    growShrink={
-                        data.totalProfit[selectedPeriod].growShrink || 0
-                    }
                     iconClass="bg-sky-200"
                     icon={<TbCoin />}
-                    label="totalProfit"
-                    active={selectedCategory === 'totalProfit'}
-                    compareFrom={data.totalProfit[selectedPeriod].comparePeriod}
+                    label="totalEarned"
+                    active={selectedCategory === 'totalEarned'}
                     onClick={setSelectedCategory}
                 />
                 <StatisticCard
-                    title="Total order"
+                    title="Total Registration"
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={data.totalOrder[selectedPeriod].value || 0}
+                            value={data.totalRegistration || 0}
                             thousandSeparator={true}
                         />
                     }
-                    growShrink={data.totalOrder[selectedPeriod].growShrink || 0}
                     iconClass="bg-emerald-200"
                     icon={<TbShoppingBagCheck />}
-                    label="totalOrder"
-                    active={selectedCategory === 'totalOrder'}
-                    compareFrom={data.totalProfit[selectedPeriod].comparePeriod}
+                    label="totalRegistration"
+                    active={selectedCategory === 'totalRegistration'}
                     onClick={setSelectedCategory}
                 />
                 <StatisticCard
-                    title="Impression"
+                    title="Total Non Attendee"
                     value={
-                        <AbbreviateNumber
-                            value={
-                                data.totalImpression[selectedPeriod].value || 0
-                            }
-                        />
-                    }
-                    growShrink={
-                        data.totalImpression[selectedPeriod].growShrink || 0
+                        <AbbreviateNumber value={data.totalNonAttendee || 0} />
                     }
                     iconClass="bg-purple-200"
                     icon={<TbEye />}
-                    label="totalImpression"
-                    active={selectedCategory === 'totalImpression'}
-                    compareFrom={data.totalProfit[selectedPeriod].comparePeriod}
+                    label="totalNonAttendee"
+                    active={selectedCategory === 'totalNonAttendee'}
                     onClick={setSelectedCategory}
                 />
             </div>
