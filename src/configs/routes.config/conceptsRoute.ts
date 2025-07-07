@@ -35,12 +35,6 @@ const conceptsRoute: Routes = [
         component: lazy(() => import('@/views/concepts/leads/LeadEdit')),
         authority: [ADMIN, USER],
         meta: {
-            header: {
-                title: 'Edit customer',
-                description:
-                    'Manage customer details, purchase history, and preferences.',
-                contained: true,
-            },
             footer: false,
         },
     },

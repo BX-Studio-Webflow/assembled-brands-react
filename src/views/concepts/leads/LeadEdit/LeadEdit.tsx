@@ -11,7 +11,7 @@ import {
 } from '@/services/LeadsService'
 import LeadForm from '../LeadForm'
 import NoUserFound from '@/assets/svg/NoUserFound'
-import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
+import { TbTrash } from 'react-icons/tb'
 import { useParams, useNavigate } from 'react-router'
 import useSWR from 'swr'
 import type { LeadFormSchema } from '../LeadForm'
@@ -22,13 +22,12 @@ import { Card } from '@/components/ui/Card'
 import TabNav from '@/components/ui/Tabs/TabNav'
 import TabList from '@/components/ui/Tabs/TabList'
 import TabContent from '@/components/ui/Tabs/TabContent'
-import BillingSection from './BillingSection'
-import EventBookingSection from './EventBookingSection'
 import { Tabs } from '@/components/ui'
 import Loading from '@/components/shared/Loading'
 import isEmpty from 'lodash/isEmpty'
 import { AxiosError } from 'axios'
 import TagsSection from './TagsSection'
+import LeadHeader from './LeadHeader'
 
 const LeadEdit = () => {
     const { id } = useParams()
@@ -137,10 +136,6 @@ const LeadEdit = () => {
         setDeleteConfirmationOpen(false)
     }
 
-    const handleBack = () => {
-        history.back()
-    }
-
     return (
         <>
             {!isLoading && !data && (
@@ -151,6 +146,7 @@ const LeadEdit = () => {
             )}
             {!isLoading && data && (
                 <>
+                    <LeadHeader lead={data} />
                     <Loading loading={isLoading}>
                         {!isEmpty(data) && (
                             <div className="flex flex-col xl:flex-row gap-4">
@@ -163,16 +159,7 @@ const LeadEdit = () => {
                                         onFormSubmit={handleFormSubmit}
                                     >
                                         <Container>
-                                            <div className="flex items-center justify-between px-8">
-                                                <Button
-                                                    className="ltr:mr-3 rtl:ml-3"
-                                                    type="button"
-                                                    variant="plain"
-                                                    icon={<TbArrowNarrowLeft />}
-                                                    onClick={handleBack}
-                                                >
-                                                    Back
-                                                </Button>
+                                            <div className="flex items-center justify-end px-8">
                                                 <div className="flex items-center">
                                                     <Button
                                                         className="ltr:mr-3 rtl:ml-3"
@@ -202,12 +189,6 @@ const LeadEdit = () => {
                                         <Card className="w-full">
                                             <Tabs defaultValue="billing">
                                                 <TabList>
-                                                    <TabNav value="billing">
-                                                        Billing
-                                                    </TabNav>
-                                                    <TabNav value="bookings">
-                                                        Events
-                                                    </TabNav>
                                                     <TabNav value="tags">
                                                         Tags
                                                     </TabNav>
@@ -216,19 +197,6 @@ const LeadEdit = () => {
                                                     </TabNav>
                                                 </TabList>
                                                 <div className="p-4">
-                                                    <TabContent value="billing">
-                                                        <BillingSection
-                                                            data={data}
-                                                        />
-                                                    </TabContent>
-                                                    <TabContent value="bookings">
-                                                        <EventBookingSection
-                                                            bookings={
-                                                                data.bookings ||
-                                                                []
-                                                            }
-                                                        />
-                                                    </TabContent>
                                                     <TabContent value="tags">
                                                         <TagsSection
                                                             data={data}

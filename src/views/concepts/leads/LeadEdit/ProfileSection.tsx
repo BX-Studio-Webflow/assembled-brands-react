@@ -32,11 +32,15 @@ const ProfileSection = ({ data }: ProfileSectionProps) => {
         <>
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4">
-                    <CustomerInfoField title="Email" value={data.email} />
                     <CustomerInfoField
-                        title="Phone"
-                        value={`${data.dial_code}${data.phone}`}
+                        title="Source URL"
+                        value={data.source_url || 'No source URL'}
                     />
+                    <CustomerInfoField
+                        title="Status identifier"
+                        value={data.status_identifier}
+                    />
+
                     <CustomerInfoField
                         title="Created"
                         value={dayjs(data.created_at).format(
