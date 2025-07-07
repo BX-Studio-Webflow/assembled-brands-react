@@ -79,7 +79,15 @@ interface Event {
     host_id: number
 }
 
-type SearchResult = Lead | Event
+interface Tag {
+    id: number
+    host_id: number
+    tag: string
+    created_at: string
+    updated_at: string
+}
+
+type SearchResult = Lead | Event | Tag
 
 interface SearchResponse {
     search_by: string
@@ -335,6 +343,23 @@ const MailEditor = () => {
                                                     (item) =>
                                                         item.label ===
                                                         result.event_name,
+                                                )
+                                            ) {
+                                                acc.push(option)
+                                            }
+                                        } else if ('tag' in result) {
+                                            // It's a Tag
+                                            const option = {
+                                                value: result.id,
+                                                label: result.tag,
+                                                title: result.tag,
+                                            }
+                                            // Only add if tag name is not already in the accumulator
+                                            if (
+                                                !acc.some(
+                                                    (item) =>
+                                                        item.label ===
+                                                        result.tag,
                                                 )
                                             ) {
                                                 acc.push(option)
