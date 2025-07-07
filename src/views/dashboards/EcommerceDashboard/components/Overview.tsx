@@ -130,7 +130,9 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                             thousandSeparator={true}
                         />
                     }
-                    growShrink={data.totalProfit[selectedPeriod].growShrink || 0}
+                    growShrink={
+                        data.totalProfit[selectedPeriod].growShrink || 0
+                    }
                     iconClass="bg-sky-200"
                     icon={<TbCoin />}
                     label="totalProfit"

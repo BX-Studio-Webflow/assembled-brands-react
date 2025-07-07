@@ -7,7 +7,7 @@ import toast from '@/components/ui/toast'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { useMailStore } from '../store/mailStore'
 import { FormItem, Form } from '@/components/ui/Form'
-import sleep from '@/utils/sleep'
+
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -52,6 +52,13 @@ interface Lead {
     dates: string | null
     source_url: string | null
     membership_level: string | null
+    tags?: {
+        id: number
+        tag: string
+        created_at: string
+        updated_at: string
+        host_id: number
+    }
 }
 
 interface Event {
@@ -153,9 +160,7 @@ const MailEditor = () => {
     }
 
     const onSubmit = async (value: FormSchema) => {
-        console.log('values', value)
         setFormSubmiting(true)
-        await sleep(500)
         try {
             const payload = {
                 subject: value.title,
@@ -221,7 +226,17 @@ const MailEditor = () => {
                                         className="mr-8"
                                         name="type"
                                         checked={field.value === 'event'}
-                                        onChange={() => field.onChange('event')}
+                                        onChange={() => {
+                                            field.onChange('event')
+                                            // Clear recipients when type changes
+                                            setSelectedOptions([])
+                                            setSearchResults([])
+                                            // Reset the recipients field in the form
+                                            reset({
+                                                ...watch(),
+                                                recipients: [],
+                                            })
+                                        }}
                                     >
                                         Event
                                     </Radio>
@@ -229,7 +244,17 @@ const MailEditor = () => {
                                         className="mr-8"
                                         name="type"
                                         checked={field.value === 'tag'}
-                                        onChange={() => field.onChange('tag')}
+                                        onChange={() => {
+                                            field.onChange('tag')
+                                            // Clear recipients when type changes
+                                            setSelectedOptions([])
+                                            setSearchResults([])
+                                            // Reset the recipients field in the form
+                                            reset({
+                                                ...watch(),
+                                                recipients: [],
+                                            })
+                                        }}
                                     >
                                         Tag
                                     </Radio>
@@ -237,7 +262,17 @@ const MailEditor = () => {
                                         className="mr-8"
                                         name="type"
                                         checked={field.value === 'name'}
-                                        onChange={() => field.onChange('name')}
+                                        onChange={() => {
+                                            field.onChange('name')
+                                            // Clear recipients when type changes
+                                            setSelectedOptions([])
+                                            setSearchResults([])
+                                            // Reset the recipients field in the form
+                                            reset({
+                                                ...watch(),
+                                                recipients: [],
+                                            })
+                                        }}
                                     >
                                         Name
                                     </Radio>
@@ -269,10 +304,13 @@ const MailEditor = () => {
                                     >((acc, result) => {
                                         if ('name' in result) {
                                             // It's a Lead
+                                            const tagInfo = result.tags
+                                                ? ` (Tag: ${result.tags.tag})`
+                                                : ''
                                             const option = {
                                                 value: result.id,
-                                                label: `${result.name} - ${result.email}`,
-                                                title: `${result.name} - ${result.email}`,
+                                                label: `${result.name} - ${result.email}${tagInfo}`,
+                                                title: `${result.name} - ${result.email}${tagInfo}`,
                                             }
                                             // Only add if email is not already in the accumulator
                                             if (
@@ -284,7 +322,7 @@ const MailEditor = () => {
                                             ) {
                                                 acc.push(option)
                                             }
-                                        } else {
+                                        } else if ('event_name' in result) {
                                             // It's an Event
                                             const option = {
                                                 value: result.id,
