@@ -4,9 +4,11 @@ import Loading from '@/components/shared/Loading'
 import Overview from './components/Overview'
 import RecentOrder from './components/RecentOrder'
 import EngagementMetrics from './components/EngagementMetrics'
+import PrerecordedEventsTable from './components/PrerecordedEventsTable'
 import { apiGetDashboard } from '@/services/AuthService'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
+import { DashboardResponse } from '@/@types/auth'
 
 const EcommerceDashboard = () => {
     useEffect(() => {
@@ -26,7 +28,7 @@ const EcommerceDashboard = () => {
             )
         }
     }, [])
-    const { data, error, isLoading } = useSWR(
+    const { data, error, isLoading } = useSWR<DashboardResponse>(
         '/api/dashboard',
         apiGetDashboard,
         {
@@ -37,6 +39,7 @@ const EcommerceDashboard = () => {
     useEffect(() => {
         if (data) {
             console.log('Dashboard data:', data)
+            console.log()
         }
     }, [data])
 
@@ -49,11 +52,11 @@ const EcommerceDashboard = () => {
     }
 
     const overviewData = {
-        totalEarned: parseFloat(data?.revenue?.total_revenue || '0'),
+        totalEarned: parseFloat(data?.data?.revenue?.total_revenue || '0'),
         totalRegistration:
-            data?.prerecorded_events?.totals?.total_registrations || 0,
+            data?.data?.prerecorded_events?.totals?.total_registrations || 0,
         totalNonAttendee:
-            data?.prerecorded_events?.totals?.total_non_attendees || 0,
+            data?.data?.prerecorded_events?.totals?.total_non_attendees || 0,
     }
 
     return (
@@ -63,13 +66,18 @@ const EcommerceDashboard = () => {
             </div>
 
             <div className="col-span-1">
+                <PrerecordedEventsTable
+                    data={data?.data?.prerecorded_events?.events || []}
+                />
+            </div>
+            <div className="col-span-1">
                 <RecentOrder
-                    data={data?.revenue?.recent_successful_payments || []}
+                    data={data?.data?.revenue?.recent_successful_payments || []}
                 />
             </div>
 
             <div className="col-span-1">
-                <EngagementMetrics data={data?.engagement} />
+                <EngagementMetrics data={data?.data?.engagement} />
             </div>
         </div>
     )
