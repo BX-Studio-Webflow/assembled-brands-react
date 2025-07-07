@@ -5,7 +5,6 @@ import { Link } from 'react-router'
 import {
     PiUserDuotone,
     PiGearDuotone,
-    PiPulseDuotone,
     PiSignOutDuotone,
 } from 'react-icons/pi'
 import { useAuth } from '@/auth'
@@ -27,11 +26,6 @@ const dropdownItemList: DropdownList[] = [
         label: 'Account Setting',
         path: '/concepts/account/settings',
         icon: <PiGearDuotone />,
-    },
-    {
-        label: 'Activity Log',
-        path: '/concepts/account/activity-log',
-        icon: <PiPulseDuotone />,
     },
 ]
 
