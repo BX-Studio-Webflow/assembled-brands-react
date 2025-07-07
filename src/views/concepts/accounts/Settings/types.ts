@@ -1,9 +1,8 @@
 export type View =
     | 'profile'
     | 'security'
-    | 'notification'
+    //| 'notification'
     | 'billing'
-    | 'integration'
     | 'team'
     | 'business'
 

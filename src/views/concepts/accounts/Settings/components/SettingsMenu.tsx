@@ -5,9 +5,8 @@ import useQuery from '@/utils/hooks/useQuery'
 import {
     TbUserSquare,
     TbLock,
-    TbBell,
+    //TbBell,
     TbFileDollar,
-    TbRefreshDot,
     TbUsers,
     TbBuilding,
 } from 'react-icons/tb'
@@ -20,9 +19,8 @@ const menuList: { label: string; value: View; icon: ReactNode }[] = [
     { label: 'Profile', value: 'profile', icon: <TbUserSquare /> },
     { label: 'Business', value: 'business', icon: <TbBuilding /> },
     { label: 'Security', value: 'security', icon: <TbLock /> },
-    { label: 'Notification', value: 'notification', icon: <TbBell /> },
+    //{ label: 'Notification', value: 'notification', icon: <TbBell /> },
     { label: 'Billing', value: 'billing', icon: <TbFileDollar /> },
-    { label: 'Integration', value: 'integration', icon: <TbRefreshDot /> },
     { label: 'Team', value: 'team', icon: <TbUsers /> },
 ]
 

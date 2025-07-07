@@ -63,6 +63,7 @@ const SettingsSecurity = () => {
     const [selected2FaType, setSelected2FaType] = useState(
         'googleAuthenticator',
     )
+    const [twoFaEnabled] = useState(false)
     const [confirmationOpen, setConfirmationOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const { signOut } = useAuth()
@@ -202,65 +203,68 @@ const SettingsSecurity = () => {
             >
                 <p>Are you sure you want to change your password?</p>
             </ConfirmDialog>
-            <div className="mb-8">
-                <h4>2-Step verification</h4>
-                <p>
-                    Your account holds great value to hackers. Enable two-step
-                    verification to safeguard your account!
-                </p>
-                <div className="mt-8">
-                    {authenticatorList.map((authOption, index) => (
-                        <div
-                            key={authOption.value}
-                            className={classNames(
-                                'py-6 border-gray-200 dark:border-gray-600',
-                                !isLastChild(authenticatorList, index) &&
-                                    'border-b',
-                            )}
-                        >
-                            <div className="flex items-center justify-between gap-4">
-                                <div className="flex items-center gap-4">
-                                    <Avatar
-                                        size={35}
-                                        className="bg-transparent"
-                                        src={authOption.img}
-                                    />
+            {twoFaEnabled && (
+                <div className="mb-8">
+                    <h4>2-Step verification</h4>
+                    <p>
+                        Your account holds great value to hackers. Enable
+                        two-step verification to safeguard your account!
+                    </p>
+                    <div className="mt-8">
+                        {authenticatorList.map((authOption, index) => (
+                            <div
+                                key={authOption.value}
+                                className={classNames(
+                                    'py-6 border-gray-200 dark:border-gray-600',
+                                    !isLastChild(authenticatorList, index) &&
+                                        'border-b',
+                                )}
+                            >
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <Avatar
+                                            size={35}
+                                            className="bg-transparent"
+                                            src={authOption.img}
+                                        />
+                                        <div>
+                                            <h6>{authOption.label}</h6>
+                                            <span>{authOption.desc}</span>
+                                        </div>
+                                    </div>
                                     <div>
-                                        <h6>{authOption.label}</h6>
-                                        <span>{authOption.desc}</span>
+                                        {selected2FaType ===
+                                        authOption.value ? (
+                                            <Button
+                                                size="sm"
+                                                customColorClass={() =>
+                                                    'border-success ring-1 ring-success text-success hover:border-success hover:ring-success hover:text-success bg-transparent'
+                                                }
+                                                onClick={() =>
+                                                    setSelected2FaType('')
+                                                }
+                                            >
+                                                Activated
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                size="sm"
+                                                onClick={() =>
+                                                    setSelected2FaType(
+                                                        authOption.value,
+                                                    )
+                                                }
+                                            >
+                                                Enable
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
-                                <div>
-                                    {selected2FaType === authOption.value ? (
-                                        <Button
-                                            size="sm"
-                                            customColorClass={() =>
-                                                'border-success ring-1 ring-success text-success hover:border-success hover:ring-success hover:text-success bg-transparent'
-                                            }
-                                            onClick={() =>
-                                                setSelected2FaType('')
-                                            }
-                                        >
-                                            Activated
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            size="sm"
-                                            onClick={() =>
-                                                setSelected2FaType(
-                                                    authOption.value,
-                                                )
-                                            }
-                                        >
-                                            Enable
-                                        </Button>
-                                    )}
-                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 }

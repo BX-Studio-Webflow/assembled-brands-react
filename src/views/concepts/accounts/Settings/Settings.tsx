@@ -12,9 +12,8 @@ import { AxiosError } from 'axios'
 
 const Profile = lazy(() => import('./components/SettingsProfile'))
 const Security = lazy(() => import('./components/SettingsSecurity'))
-const Notification = lazy(() => import('./components/SettingsNotification'))
+//const Notification = lazy(() => import('./components/SettingsNotification'))
 const Billing = lazy(() => import('./components/SettingsBilling'))
-const Integration = lazy(() => import('./components/SettingIntegration'))
 const Team = lazy(() => import('./components/SettingsTeam'))
 const Business = lazy(() => import('./components/SettingsBusiness'))
 
@@ -110,9 +109,8 @@ const Settings = () => {
                         {currentView === 'business' && <Business />}
                         {currentView === 'security' && <Security />}
                         {currentView === 'team' && <Team />}
-                        {currentView === 'notification' && <Notification />}
+                        {/* {currentView === 'notification' && <Notification />} */}
                         {currentView === 'billing' && <Billing />}
-                        {currentView === 'integration' && <Integration />}
                     </Suspense>
                 </div>
             </div>
