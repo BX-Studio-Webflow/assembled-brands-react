@@ -6,6 +6,7 @@ import {
     PiCalendarXDuotone,
 } from 'react-icons/pi'
 import { Badge } from '@/components/ui/Badge'
+import SpaceSignBoard from '@/assets/svg/SpaceSignBoard'
 
 type EventBooking = {
     id: number
@@ -80,25 +81,34 @@ const TimeLineContent = (props: { booking: EventBooking }) => {
 const EventBookingSection = ({ bookings }: { bookings: EventBooking[] }) => {
     return (
         <>
-            {bookings.map((booking) => (
-                <div key={booking.id} className="mb-4">
-                    <div className="flex flex-col gap-4">
-                        <div className="flex items-center">
-                            <Card className="w-full" bodyClass="py-3">
-                                <div className="flex items-center gap-4">
-                                    <div className="text-primary text-3xl">
-                                        <TimeLineMedia
-                                            status={booking.event.status}
-                                        />
-                                    </div>
+            {bookings.length > 0 ? (
+                bookings.map((booking) => (
+                    <div key={booking.id} className="mb-4">
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center">
+                                <Card className="w-full" bodyClass="py-3">
+                                    <div className="flex items-center gap-4">
+                                        <div className="text-primary text-3xl">
+                                            <TimeLineMedia
+                                                status={booking.event.status}
+                                            />
+                                        </div>
 
-                                    <TimeLineContent booking={booking} />
-                                </div>
-                            </Card>
+                                        <TimeLineContent booking={booking} />
+                                    </div>
+                                </Card>
+                            </div>
                         </div>
                     </div>
+                ))
+            ) : (
+                <div className="flex flex-col items-center gap-4">
+                    <SpaceSignBoard />
+                    <span className="font-semibold">
+                        No event bookings yet!
+                    </span>
                 </div>
-            ))}
+            )}
         </>
     )
 }

@@ -10,6 +10,7 @@ import {
 import { NumericFormat } from 'react-number-format'
 import dayjs from 'dayjs'
 import type { Lead } from '@/@types/lead'
+import NoUserFound from '@/assets/svg/NoUserFound'
 
 type BillingSectionProps = {
     data: Lead
@@ -80,30 +81,45 @@ const BillingSection = ({ data }: BillingSectionProps) => {
 
     return (
         <>
-            <h6 className="mb-4">Payment History</h6>
-            <Table>
-                <TBody>
-                    {table
-                        .getRowModel()
-                        .rows.slice(0, 10)
-                        .map((row) => {
-                            return (
-                                <Tr key={row.id}>
-                                    {row.getVisibleCells().map((cell) => {
-                                        return (
-                                            <Td key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext(),
-                                                )}
-                                            </Td>
-                                        )
-                                    })}
-                                </Tr>
-                            )
-                        })}
-                </TBody>
-            </Table>
+            {table.getRowModel().rows.length > 0 ? (
+                <div>
+                    <h6 className="mb-4">Payment History</h6>
+                    <Table>
+                        <TBody>
+                            {table
+                                .getRowModel()
+                                .rows.slice(0, 10)
+                                .map((row) => {
+                                    return (
+                                        <Tr key={row.id}>
+                                            {row
+                                                .getVisibleCells()
+                                                .map((cell) => {
+                                                    return (
+                                                        <Td key={cell.id}>
+                                                            {flexRender(
+                                                                cell.column
+                                                                    .columnDef
+                                                                    .cell,
+                                                                cell.getContext(),
+                                                            )}
+                                                        </Td>
+                                                    )
+                                                })}
+                                        </Tr>
+                                    )
+                                })}
+                        </TBody>
+                    </Table>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center gap-4">
+                    <NoUserFound />
+                    <span className="font-semibold">
+                        No payment history yet!
+                    </span>
+                </div>
+            )}
         </>
     )
 }

@@ -245,8 +245,10 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
             </Button>
             <Dialog
                 isOpen={uploadDialogOpen}
-                onClose={handleUploadDialogClose}
+                shouldCloseOnOverlayClick={false}
+                shouldCloseOnEsc={false}
                 onRequestClose={handleUploadDialogClose}
+                onClose={handleUploadDialogClose}
             >
                 <h4>Upload File</h4>
                 <Upload
