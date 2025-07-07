@@ -11,6 +11,8 @@ import {
     HiCalendar,
     HiCheckCircle,
     HiPlusCircle,
+    HiTicket,
+    HiXCircle,
 } from 'react-icons/hi'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { Lead } from '@/@types/lead'
@@ -209,6 +211,41 @@ const LeadListTable = () => {
                         <div className="flex items-center">
                             <Tag className={statusClass} prefix={statusIcon}>
                                 <span className="capitalize">{statusText}</span>
+                            </Tag>
+                        </div>
+                    )
+                },
+            },
+            {
+                header: 'Event',
+                accessorKey: 'events',
+                cell: (props) => {
+                    const row = props.row.original
+                    const hasEvent =
+                        row.events &&
+                        Array.isArray(row.events) &&
+                        row.events.length > 0
+
+                    if (!hasEvent) {
+                       return <Tag
+                           className="bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0"
+                           prefix={
+                               <HiXCircle className="text-base text-gray-600 mr-1 rtl:ml-1" />
+                           }
+                       >
+                           <span className="capitalize">No Event Registered</span>
+                       </Tag>
+                    }
+
+                    const eventName = row.events[0]?.event_name || 'Unknown Event'
+                    
+                    return (
+                        <div className="flex items-center">
+                            <Tag 
+                                className="bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-100 border-0"
+                                prefix={<HiTicket className="text-base text-purple-600 mr-1 rtl:ml-1" />}
+                            >
+                                <span className="capitalize">{eventName}</span>
                             </Tag>
                         </div>
                     )

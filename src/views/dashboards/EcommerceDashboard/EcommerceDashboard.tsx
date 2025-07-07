@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import useSWR from 'swr'
 import Loading from '@/components/shared/Loading'
 import Overview from './components/Overview'
-import RecentOrder from './components/RecentOrder'
 import EngagementMetrics from './components/EngagementMetrics'
 import PrerecordedEventsTable from './components/PrerecordedEventsTable'
 import { apiGetDashboard } from '@/services/AuthService'
@@ -68,11 +67,6 @@ const EcommerceDashboard = () => {
             <div className="col-span-1">
                 <PrerecordedEventsTable
                     data={data?.data?.prerecorded_events?.events || []}
-                />
-            </div>
-            <div className="col-span-1">
-                <RecentOrder
-                    data={data?.data?.revenue?.recent_successful_payments || []}
                 />
             </div>
 
