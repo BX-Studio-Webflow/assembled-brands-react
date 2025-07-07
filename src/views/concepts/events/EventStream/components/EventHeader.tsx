@@ -80,7 +80,14 @@ const EventHeader = ({
     useEffect(() => {
         // Only track for non-hosts
         if (isHost) return
-        if (status === 'ended' || status === 'cancelled') return
+        if (
+            status === 'ended' ||
+            status === 'cancelled' ||
+            status === 'suspended' ||
+            status === 'early'
+        ) {
+            return
+        }
 
         const handleBeforeUnload = () => {
             if (token && email && code) {
