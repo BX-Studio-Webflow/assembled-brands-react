@@ -21,6 +21,7 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { apiDeleteLead } from '@/services/LeadsService'
+import dayjs from 'dayjs'
 
 const NameColumn = ({ row }: { row: Lead }) => {
     return (
@@ -245,7 +246,7 @@ const LeadListTable = () => {
                                 className="bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-100 border-0"
                                 prefix={<HiTicket className="text-base text-purple-600 mr-1 rtl:ml-1" />}
                             >
-                                <span className="capitalize">{eventName}</span>
+                                <span className="capitalize">{eventName} {row.dates?.date ? dayjs(Number(row.dates?.date) * 1000).format('DD/MM/YYYY') : ''}</span>
                             </Tag>
                         </div>
                     )

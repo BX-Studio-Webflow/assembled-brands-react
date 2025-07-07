@@ -77,6 +77,13 @@ export interface Lead {
             updated_at: string
         }
     }[]
+    dates?: {
+        id: number
+        date: string
+        membership_id: number
+        created_at: string
+        updated_at: string
+    }
 }
 
 export interface Event {
