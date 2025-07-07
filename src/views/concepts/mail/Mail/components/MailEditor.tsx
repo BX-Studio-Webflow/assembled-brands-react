@@ -134,10 +134,9 @@ const MailEditor = () => {
                 setSearchResults(response.results)
             }
         } catch (error) {
-            console.error('Search error:', error)
             toast.push(
                 <Notification type="danger">
-                    Failed to search recipients
+                    {(error as AxiosError).message}
                 </Notification>,
             )
         } finally {
@@ -162,9 +161,11 @@ const MailEditor = () => {
         reset({
             title: '',
             content: '',
-            type: 'name',
+            type: 'event',
             recipients: [],
         })
+        setSelectedOptions([])
+        setSearchResults([])
     }
 
     const onSubmit = async (value: FormSchema) => {
@@ -183,7 +184,7 @@ const MailEditor = () => {
             await apiCreateMail(payload)
             toast.push(
                 <Notification type="success">
-                    Your Mail was sent successfuly!
+                    Your Message was sent successfuly!
                 </Notification>,
                 {
                     placement: 'top-center',
@@ -312,13 +313,10 @@ const MailEditor = () => {
                                     >((acc, result) => {
                                         if ('name' in result) {
                                             // It's a Lead
-                                            const tagInfo = result.tags
-                                                ? ` (Tag: ${result.tags.tag})`
-                                                : ''
                                             const option = {
                                                 value: result.id,
-                                                label: `${result.name} - ${result.email}${tagInfo}`,
-                                                title: `${result.name} - ${result.email}${tagInfo}`,
+                                                label: `${result.name} - ${result.email}`,
+                                                title: `${result.name} - ${result.email}`,
                                             }
                                             // Only add if email is not already in the accumulator
                                             if (
