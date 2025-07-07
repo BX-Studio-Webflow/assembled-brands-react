@@ -161,7 +161,7 @@ const MailEditor = () => {
         reset({
             title: '',
             content: '',
-            type: 'event',
+            type: 'name',
             recipients: [],
         })
         setSelectedOptions([])
@@ -242,7 +242,9 @@ const MailEditor = () => {
                                             setSearchResults([])
                                             // Reset the recipients field in the form
                                             reset({
-                                                ...watch(),
+                                                title: watch('title') || '',
+                                                content: watch('content') || '',
+                                                type: 'event',
                                                 recipients: [],
                                             })
                                         }}
@@ -255,12 +257,15 @@ const MailEditor = () => {
                                         checked={field.value === 'tag'}
                                         onChange={() => {
                                             field.onChange('tag')
+
                                             // Clear recipients when type changes
                                             setSelectedOptions([])
                                             setSearchResults([])
                                             // Reset the recipients field in the form
                                             reset({
-                                                ...watch(),
+                                                title: watch('title') || '',
+                                                content: watch('content') || '',
+                                                type: 'tag',
                                                 recipients: [],
                                             })
                                         }}
@@ -278,7 +283,9 @@ const MailEditor = () => {
                                             setSearchResults([])
                                             // Reset the recipients field in the form
                                             reset({
-                                                ...watch(),
+                                                title: watch('title') || '',
+                                                content: watch('content') || '',
+                                                type: 'name',
                                                 recipients: [],
                                             })
                                         }}
@@ -297,13 +304,12 @@ const MailEditor = () => {
                         <Controller
                             name="recipients"
                             control={control}
-                            defaultValue={[102, 180]}
                             render={({ field }) => (
                                 <Select
                                     isMulti
                                     isLoading={searchLoading}
                                     placeholder="Type to search recipients"
-                                    defaultValue={selectedOptions}
+                                    value={selectedOptions}
                                     options={searchResults.reduce<
                                         {
                                             value: number
