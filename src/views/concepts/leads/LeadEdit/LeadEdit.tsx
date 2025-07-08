@@ -18,10 +18,6 @@ import type { LeadFormSchema } from '../LeadForm'
 import type { Lead } from '@/@types/lead'
 import { useAuth } from '@/auth'
 import { Card } from '@/components/ui/Card'
-import TabNav from '@/components/ui/Tabs/TabNav'
-import TabList from '@/components/ui/Tabs/TabList'
-import TabContent from '@/components/ui/Tabs/TabContent'
-import { Tabs } from '@/components/ui'
 import Loading from '@/components/shared/Loading'
 import isEmpty from 'lodash/isEmpty'
 import { AxiosError } from 'axios'
@@ -198,20 +194,7 @@ const LeadEdit = () => {
                                 <div className="w-full xl:w-1/2">
                                     <div className="flex flex-col gap-4">
                                         <Card className="w-full">
-                                            <Tabs defaultValue="billing">
-                                                <TabList>
-                                                    <TabNav value="tags">
-                                                        Tags
-                                                    </TabNav>
-                                                </TabList>
-                                                <div className="p-4">
-                                                    <TabContent value="tags">
-                                                        <TagsSection
-                                                            data={data}
-                                                        />
-                                                    </TabContent>
-                                                </div>
-                                            </Tabs>
+                                            <TagsSection data={data} />
                                         </Card>
                                     </div>
                                 </div>
