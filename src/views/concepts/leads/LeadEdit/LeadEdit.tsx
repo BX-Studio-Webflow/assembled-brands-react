@@ -17,7 +17,6 @@ import useSWR from 'swr'
 import type { LeadFormSchema } from '../LeadForm'
 import type { Lead } from '@/@types/lead'
 import { useAuth } from '@/auth'
-import ProfileSection from './ProfileSection'
 import { Card } from '@/components/ui/Card'
 import TabNav from '@/components/ui/Tabs/TabNav'
 import TabList from '@/components/ui/Tabs/TabList'
@@ -28,6 +27,7 @@ import isEmpty from 'lodash/isEmpty'
 import { AxiosError } from 'axios'
 import TagsSection from './TagsSection'
 import LeadHeader from './LeadHeader'
+import { HiChatAlt } from 'react-icons/hi'
 
 const LeadEdit = () => {
     const { id } = useParams()
@@ -136,6 +136,10 @@ const LeadEdit = () => {
         setDeleteConfirmationOpen(false)
     }
 
+    const handleChat = () => {
+        navigate(`/concepts/mail`)
+    }
+
     return (
         <>
             {!isLoading && !data && (
@@ -173,12 +177,19 @@ const LeadEdit = () => {
                                                         Delete
                                                     </Button>
                                                     <Button
+                                                        className="ltr:mr-3 rtl:ml-3"
                                                         variant="solid"
                                                         type="submit"
                                                         loading={isSubmiting}
                                                     >
                                                         Save
                                                     </Button>
+                                                    <Button
+                                                        type="button"
+                                                        className="ltr:mr-3 rtl:ml-3"
+                                                        icon={<HiChatAlt />}
+                                                        onClick={handleChat}
+                                                    />
                                                 </div>
                                             </div>
                                         </Container>
@@ -192,18 +203,10 @@ const LeadEdit = () => {
                                                     <TabNav value="tags">
                                                         Tags
                                                     </TabNav>
-                                                    <TabNav value="profile">
-                                                        Profile
-                                                    </TabNav>
                                                 </TabList>
                                                 <div className="p-4">
                                                     <TabContent value="tags">
                                                         <TagsSection
-                                                            data={data}
-                                                        />
-                                                    </TabContent>
-                                                    <TabContent value="profile">
-                                                        <ProfileSection
                                                             data={data}
                                                         />
                                                     </TabContent>
