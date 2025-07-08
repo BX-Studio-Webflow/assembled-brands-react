@@ -19,11 +19,13 @@ import Select from '@/components/ui/Select'
 import type { MultiValue } from 'react-select'
 import useMail from '../hooks/useMail'
 import useQuery from '@/utils/hooks/useQuery'
+import { MailCreateResponse } from '@/@types/mail'
 
 type FormSchema = {
     content: string
     title: string
     type: string
+    filterType: 'everyone' | 'attended' | 'notAttended'
     recipients: number[]
 }
 
@@ -31,6 +33,7 @@ const validationSchema: ZodType<FormSchema> = z.object({
     title: z.string().min(1, { message: 'Please enter title' }),
     content: z.string().min(1, { message: 'Please enter message' }),
     type: z.string(),
+    filterType: z.enum(['everyone', 'attended', 'notAttended']),
     recipients: z.array(z.number()),
 })
 
@@ -162,6 +165,7 @@ const MailEditor = () => {
             title: '',
             content: '',
             type: 'name',
+            filterType: 'everyone',
             recipients: [],
         })
         setSelectedOptions([])
@@ -178,13 +182,18 @@ const MailEditor = () => {
                 body: value.content,
                 button_text: 'DEFAULT_BUTTON_TEXT',
                 type: value.type,
+                filterType: value.filterType,
                 button_link: 'https://example.com',
                 recipients: value.recipients,
             }
-            await apiCreateMail(payload)
+            const response = (await apiCreateMail(
+                payload,
+            )) as MailCreateResponse
+            console.log(response)
             toast.push(
                 <Notification type="success">
-                    Your Message was sent successfuly!
+                    Your Message was sent successfuly! {response.count} emails
+                    were sent
                 </Notification>,
                 {
                     placement: 'top-center',
@@ -245,6 +254,7 @@ const MailEditor = () => {
                                                 title: watch('title') || '',
                                                 content: watch('content') || '',
                                                 type: 'event',
+                                                filterType: 'everyone',
                                                 recipients: [],
                                             })
                                         }}
@@ -266,6 +276,7 @@ const MailEditor = () => {
                                                 title: watch('title') || '',
                                                 content: watch('content') || '',
                                                 type: 'tag',
+                                                filterType: 'everyone',
                                                 recipients: [],
                                             })
                                         }}
@@ -286,6 +297,7 @@ const MailEditor = () => {
                                                 title: watch('title') || '',
                                                 content: watch('content') || '',
                                                 type: 'name',
+                                                filterType: 'everyone',
                                                 recipients: [],
                                             })
                                         }}
@@ -296,6 +308,55 @@ const MailEditor = () => {
                             )}
                         />
                     </FormItem>
+                    {watch('type') === 'event' && (
+                        <FormItem
+                            label="Filter by:"
+                            invalid={Boolean(errors.filterType)}
+                            errorMessage={errors.filterType?.message}
+                        >
+                            <Controller
+                                name="filterType"
+                                control={control}
+                                defaultValue="everyone"
+                                render={({ field }) => (
+                                    <div className="flex">
+                                        <Radio
+                                            className="mr-8"
+                                            name="filterType"
+                                            checked={field.value === 'everyone'}
+                                            onChange={() => {
+                                                field.onChange('everyone')
+                                            }}
+                                        >
+                                            Everyone
+                                        </Radio>
+                                        <Radio
+                                            className="mr-8"
+                                            name="filterType"
+                                            checked={field.value === 'attended'}
+                                            onChange={() => {
+                                                field.onChange('attended')
+                                            }}
+                                        >
+                                            Attended Event
+                                        </Radio>
+                                        <Radio
+                                            className="mr-8"
+                                            name="filterType"
+                                            checked={
+                                                field.value === 'notAttended'
+                                            }
+                                            onChange={() => {
+                                                field.onChange('notAttended')
+                                            }}
+                                        >
+                                            Not Attended Event
+                                        </Radio>
+                                    </div>
+                                )}
+                            />
+                        </FormItem>
+                    )}
                     <FormItem
                         label="Recipients:"
                         invalid={Boolean(errors.recipients)}

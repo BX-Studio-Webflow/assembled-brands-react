@@ -12,3 +12,8 @@ export interface MailSearchRequestBody {
     search_by: 'name' | 'tag' | 'event'
     search_value: string
 }
+
+export interface MailCreateResponse {
+    count: number
+    [key: string]: unknown
+}
