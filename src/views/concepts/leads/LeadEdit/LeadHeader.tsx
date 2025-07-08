@@ -57,11 +57,7 @@ const TimeLineContent = (props: { lead: Lead }) => {
                             {latestPayment.status}
                         </Tag>
                     </div>
-                    <div className="mr-2 rtl:ml-2">
-                        <Tag className="text-white bg-indigo-600 border-0">
-                            {latestPayment.payment_type.replace('_', ' ')}
-                        </Tag>
-                    </div>
+
                     <div className="mr-2 rtl:ml-2">
                         <Tag className="bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0 rounded">
                             {dayjs(latestPayment.created_at).format(
