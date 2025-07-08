@@ -8,43 +8,6 @@ interface LeadHeaderProps {
     lead: Lead
 }
 
-const TimeLineContent = (props: { lead: Lead }) => {
-    const { lead } = props
-
-    // Get the most recent payment
-    const latestPayment = lead.payments?.[0]
-
-    if (!latestPayment) {
-        return (
-            <div className="mb-4">
-                <h6 className="font-bold">Payments</h6>
-                <div className="flex items-center">
-                    <Tag
-                        prefix
-                        className="mr-2 rtl:ml-2 cursor-pointer"
-                        prefixClass="bg-blue-600"
-                    >
-                        None yet
-                    </Tag>
-                </div>
-            </div>
-        )
-    }
-
-    return (
-        <div>
-            <h6 className="font-bold">
-                <NumericFormat
-                    displayType="text"
-                    value={latestPayment?.amount}
-                    prefix={latestPayment?.currency === 'gbp' ? '£' : '$'}
-                    thousandSeparator={true}
-                />
-            </h6>
-        </div>
-    )
-}
-
 const LeadHeader = ({ lead }: LeadHeaderProps) => {
     const latestPayment = lead.payments?.[0]
 
@@ -55,7 +18,7 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
                     {lead.bookings[0]?.event.event_name ||
                         'No Event Registered'}
                 </h6>
-                {latestPayment && (
+                {latestPayment ? (
                     <div>
                         <div className="flex flex flex-row gap-1">
                             <h6 className="font-medium">
@@ -119,11 +82,20 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
                             </span>
                         </div>
                     </div>
+                ) : (
+                    <div className="mb-4">
+                        <h6 className="font-bold">Payments</h6>
+                        <div className="flex items-center">
+                            <Tag
+                                prefix
+                                className="mr-2 rtl:ml-2 cursor-pointer"
+                                prefixClass="bg-blue-600"
+                            >
+                                None yet
+                            </Tag>
+                        </div>
+                    </div>
                 )}
-            </div>
-
-            <div className="flex items-center gap-4">
-                <TimeLineContent lead={lead} />
             </div>
         </div>
     )
