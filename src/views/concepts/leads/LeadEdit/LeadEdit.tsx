@@ -177,6 +177,14 @@ const LeadEdit = () => {
                                                         Delete
                                                     </Button>
                                                     <Button
+                                                        type="button"
+                                                        className="ltr:mr-3 rtl:ml-3"
+                                                        icon={<HiChatAlt />}
+                                                        onClick={handleChat}
+                                                    >
+                                                        Message
+                                                    </Button>
+                                                    <Button
                                                         className="ltr:mr-3 rtl:ml-3"
                                                         variant="solid"
                                                         type="submit"
@@ -184,12 +192,6 @@ const LeadEdit = () => {
                                                     >
                                                         Save
                                                     </Button>
-                                                    <Button
-                                                        type="button"
-                                                        className="ltr:mr-3 rtl:ml-3"
-                                                        icon={<HiChatAlt />}
-                                                        onClick={handleChat}
-                                                    />
                                                 </div>
                                             </div>
                                         </Container>
