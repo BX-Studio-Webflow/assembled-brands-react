@@ -27,15 +27,23 @@ const TagsSection = ({ data }: TagsSectionProps) => {
         label: ev.tag.tag,
     }))
 
-    // Combine host tags and assigned tags, removing duplicates
-    const allTagOptions = [...hostTagOptions]
-    assignedTagOptions.forEach((assignedTag) => {
-        if (
-            !allTagOptions.some(
-                (hostTag) => hostTag.value === assignedTag.value,
-            )
-        ) {
-            allTagOptions.push(assignedTag)
+    // Combine host tags and assigned tags, removing duplicates by text
+    const allTagOptions: { value: number; label: string }[] = []
+    const seenLabels = new Set<string>()
+
+    // Add assigned tags first
+    assignedTagOptions.forEach((tag) => {
+        if (!seenLabels.has(tag.label)) {
+            allTagOptions.push(tag)
+            seenLabels.add(tag.label)
+        }
+    })
+
+    // Add host tags that don't have duplicate text
+    hostTagOptions.forEach((tag) => {
+        if (!seenLabels.has(tag.label)) {
+            allTagOptions.push(tag)
+            seenLabels.add(tag.label)
         }
     })
 
@@ -63,15 +71,23 @@ const TagsSection = ({ data }: TagsSectionProps) => {
             label: ev.tag.tag,
         }))
 
-        // Combine host tags and assigned tags, removing duplicates
-        const newAllTagOptions = [...newHostTagOptions]
-        newAssignedTagOptions.forEach((assignedTag) => {
-            if (
-                !newAllTagOptions.some(
-                    (hostTag) => hostTag.value === assignedTag.value,
-                )
-            ) {
-                newAllTagOptions.push(assignedTag)
+        // Combine host tags and assigned tags, removing duplicates by text
+        const newAllTagOptions: { value: number; label: string }[] = []
+        const newSeenLabels = new Set<string>()
+
+        // Add assigned tags first
+        newAssignedTagOptions.forEach((tag) => {
+            if (!newSeenLabels.has(tag.label)) {
+                newAllTagOptions.push(tag)
+                newSeenLabels.add(tag.label)
+            }
+        })
+
+        // Add host tags that don't have duplicate text
+        newHostTagOptions.forEach((tag) => {
+            if (!newSeenLabels.has(tag.label)) {
+                newAllTagOptions.push(tag)
+                newSeenLabels.add(tag.label)
             }
         })
 
