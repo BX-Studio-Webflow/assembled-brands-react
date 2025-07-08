@@ -34,6 +34,13 @@ export interface Lead {
             updated_at: string
         }
     }[]
+    hostTags: {
+        id: number
+        host_id: number
+        tag: string
+        created_at: string
+        updated_at: string
+    }[]
     payments: {
         id: number
         contact_id: number

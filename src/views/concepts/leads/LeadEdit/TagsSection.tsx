@@ -11,30 +11,74 @@ type TagsSectionProps = {
 }
 
 const TagsSection = ({ data }: TagsSectionProps) => {
-    const initialOptions: { value: number; label: string }[] = (
+    // Convert hostTags to options format
+    const hostTagOptions: { value: number; label: string }[] = (
+        data.hostTags ?? []
+    ).map((hostTag) => ({
+        value: hostTag.id,
+        label: hostTag.tag,
+    }))
+
+    // Convert currently assigned tags to options format
+    const assignedTagOptions: { value: number; label: string }[] = (
         data.tags ?? []
     ).map((ev) => ({
         value: ev.tag.id,
         label: ev.tag.tag,
     }))
+
+    // Combine host tags and assigned tags, removing duplicates
+    const allTagOptions = [...hostTagOptions]
+    assignedTagOptions.forEach((assignedTag) => {
+        if (
+            !allTagOptions.some(
+                (hostTag) => hostTag.value === assignedTag.value,
+            )
+        ) {
+            allTagOptions.push(assignedTag)
+        }
+    })
+
     const [tagOptions, setTagOptions] =
-        useState<{ value: number; label: string }[]>(initialOptions)
+        useState<{ value: number; label: string }[]>(allTagOptions)
     const [selectedTags, setSelectedTags] =
-        useState<{ value: number; label: string }[]>(initialOptions)
+        useState<{ value: number; label: string }[]>(assignedTagOptions)
     const prevTagsRef =
-        useRef<{ value: number; label: string }[]>(initialOptions)
+        useRef<{ value: number; label: string }[]>(assignedTagOptions)
 
     useEffect(() => {
-        const opts: { value: number; label: string }[] = (data.tags ?? []).map(
-            (ev) => ({
-                value: ev.tag.id,
-                label: ev.tag.tag,
-            }),
-        )
-        setTagOptions(opts)
-        setSelectedTags(opts)
-        prevTagsRef.current = opts
-    }, [data.tags])
+        // Update host tag options when data.hostTags changes
+        const newHostTagOptions: { value: number; label: string }[] = (
+            data.hostTags ?? []
+        ).map((hostTag) => ({
+            value: hostTag.id,
+            label: hostTag.tag,
+        }))
+
+        // Update assigned tag options when data.tags changes
+        const newAssignedTagOptions: { value: number; label: string }[] = (
+            data.tags ?? []
+        ).map((ev) => ({
+            value: ev.tag.id,
+            label: ev.tag.tag,
+        }))
+
+        // Combine host tags and assigned tags, removing duplicates
+        const newAllTagOptions = [...newHostTagOptions]
+        newAssignedTagOptions.forEach((assignedTag) => {
+            if (
+                !newAllTagOptions.some(
+                    (hostTag) => hostTag.value === assignedTag.value,
+                )
+            ) {
+                newAllTagOptions.push(assignedTag)
+            }
+        })
+
+        setTagOptions(newAllTagOptions)
+        setSelectedTags(newAssignedTagOptions)
+        prevTagsRef.current = newAssignedTagOptions
+    }, [data.hostTags, data.tags])
 
     const handleChange = (
         newValue: MultiValue<{ value: number; label: string }>,
@@ -70,12 +114,12 @@ const TagsSection = ({ data }: TagsSectionProps) => {
             }
         })
 
-        // Add tags via API
+        // Add tags via API - send the tag text (label) instead of ID
         addedTags.forEach(async (tag) => {
             try {
                 await apiCreateTagAssignment({
                     lead_id: data.id,
-                    tag: String(tag.value),
+                    tag: tag.label, // Send the tag text, not the ID
                 })
             } catch {
                 toast.push(
