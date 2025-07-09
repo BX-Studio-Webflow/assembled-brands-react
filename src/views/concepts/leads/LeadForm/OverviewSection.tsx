@@ -8,6 +8,7 @@ import NumericInput from '@/components/shared/NumericInput'
 import { countryList } from '@/constants/countries.constant'
 import { Controller } from 'react-hook-form'
 import { components } from 'react-select'
+import Tag from '@/components/ui/Tag'
 import type { FormSectionBaseProps } from './types'
 import type { ControlProps, OptionProps } from 'react-select'
 import { GetEventsResponse } from '@/@types/events'
@@ -16,6 +17,9 @@ type OverviewSectionProps = FormSectionBaseProps & {
     actions?: React.ReactNode
     events: GetEventsResponse | undefined
     newLead?: boolean
+    statusText?: string
+    statusIcon?: React.ReactNode
+    statusClass?: string
 }
 
 type CountryOption = {
@@ -67,6 +71,9 @@ const OverviewSection = ({
     actions,
     events,
     newLead,
+    statusText,
+    statusIcon,
+    statusClass,
 }: OverviewSectionProps) => {
     const dialCodeList = useMemo(() => {
         const newCountryList: Array<CountryOption> = JSON.parse(
@@ -81,7 +88,14 @@ const OverviewSection = ({
 
     return (
         <Card>
-            <h4 className="mb-6">Overview</h4>
+            <div className="flex items-center justify-between mb-6">
+                <h4>Overview</h4>
+                {statusText && statusIcon && statusClass && (
+                    <Tag className={statusClass} prefix={statusIcon}>
+                        <span className="capitalize">{statusText}</span>
+                    </Tag>
+                )}
+            </div>
             <div className="grid md:grid-cols-2 gap-4">
                 <FormItem
                     label="First Name"

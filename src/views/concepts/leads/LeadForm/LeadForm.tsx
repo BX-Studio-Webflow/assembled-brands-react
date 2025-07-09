@@ -17,6 +17,9 @@ type LeadFormProps = {
     onFormSubmit: (values: LeadFormSchema) => void
     defaultValues?: LeadFormSchema
     newLead?: boolean
+    statusText?: string
+    statusIcon?: React.ReactNode
+    statusClass?: string
 } & CommonProps
 
 const validationSchema: ZodType<LeadFormSchema> = z.object({
@@ -30,7 +33,15 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
 })
 
 const LeadForm = (props: LeadFormProps) => {
-    const { onFormSubmit, defaultValues = {}, children, newLead } = props
+    const {
+        onFormSubmit,
+        defaultValues = {},
+        children,
+        newLead,
+        statusText,
+        statusIcon,
+        statusClass,
+    } = props
     const [events, setEvents] = useState<GetEventsResponse | undefined>()
     const {
         handleSubmit,
@@ -87,6 +98,9 @@ const LeadForm = (props: LeadFormProps) => {
                             actions={children}
                             events={events}
                             newLead={newLead}
+                            statusText={statusText}
+                            statusIcon={statusIcon}
+                            statusClass={statusClass}
                         />
                     </div>
                 </div>
