@@ -175,6 +175,8 @@ const MailEditor = () => {
     }
 
     const onSubmit = async (value: FormSchema) => {
+        console.log('Form values:', value)
+
         setFormSubmiting(true)
         try {
             const payload = {
@@ -233,7 +235,7 @@ const MailEditor = () => {
             <div className="max-h-200 overflow-y-auto">
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <FormItem
-                        label="Type:"
+                        label="Type"
                         invalid={Boolean(errors.type)}
                         errorMessage={errors.type?.message}
                     >
@@ -313,7 +315,7 @@ const MailEditor = () => {
                     </FormItem>
                     {watch('type') === 'event' && (
                         <FormItem
-                            label="Filter by:"
+                            label="Filter by"
                             invalid={Boolean(errors.filterType)}
                             errorMessage={errors.filterType?.message}
                         >
@@ -361,7 +363,13 @@ const MailEditor = () => {
                         </FormItem>
                     )}
                     <FormItem
-                        label="Recipients:"
+                        label={
+                            watch('type') === 'tag'
+                                ? 'Tags'
+                                : watch('type') === 'event'
+                                  ? 'Events'
+                                  : 'Recipients'
+                        }
                         invalid={Boolean(errors.recipients)}
                         errorMessage={errors.recipients?.message}
                     >
@@ -372,7 +380,13 @@ const MailEditor = () => {
                                 <Select
                                     isMulti
                                     isLoading={searchLoading}
-                                    placeholder="Type to search recipients"
+                                    placeholder={
+                                        watch('type') === 'tag'
+                                            ? 'Type to search tags'
+                                            : watch('type') === 'event'
+                                              ? 'Type to search events'
+                                              : 'Type to search recipients'
+                                    }
                                     value={selectedOptions}
                                     options={searchResults.reduce<
                                         {
@@ -457,7 +471,7 @@ const MailEditor = () => {
                         />
                     </FormItem>
                     <FormItem
-                        label="Title:"
+                        label="Title"
                         invalid={Boolean(errors.title)}
                         errorMessage={errors.title?.message}
                     >
