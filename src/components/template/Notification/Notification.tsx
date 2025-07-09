@@ -12,31 +12,89 @@ import { HiOutlineMailOpen } from 'react-icons/hi'
 import {
     apiGetNotificationList,
     apiGetNotificationCount,
+    apiMarkNotificationAsRead,
+    apiMarkAllNotificationsAsRead,
 } from '@/services/CommonService'
+import type {
+    Notification,
+    NotificationDisplayItem,
+} from '@/@types/notification'
 import isLastChild from '@/utils/isLastChild'
 import useResponsive from '@/utils/hooks/useResponsive'
 import { useNavigate } from 'react-router'
 
 import type { DropdownRef } from '@/components/ui/Dropdown'
 
-type NotificationList = {
-    id: string
-    target: string
-    description: string
-    date: string
-    image: string
-    type: number
-    location: string
-    locationLabel: string
-    status: string
-    readed: boolean
-}
-
 const notificationHeight = 'h-[280px]'
+
+// Transform backend notification to frontend display format
+const transformNotificationToDisplay = (
+    notification: Notification,
+): NotificationDisplayItem => {
+    const getNotificationImage = (type: string) => {
+        switch (type) {
+            case 'comment':
+                return '/img/others/notification-comment.png'
+            case 'like':
+                return '/img/others/notification-like.png'
+            case 'system':
+                return '/img/others/notification-system.png'
+            case 'reminder':
+                return '/img/others/notification-reminder.png'
+            default:
+                return '/img/others/notification-default.png'
+        }
+    }
+
+    const getNotificationTarget = (notification: Notification): string => {
+        if (notification.metadata?.lead_name) {
+            return notification.metadata.lead_name
+        }
+        return 'System'
+    }
+
+    const getNotificationDescription = (notification: Notification): string => {
+        const baseMessage = notification.message
+        if (notification.metadata?.event_name) {
+            return `${baseMessage} for event "${notification.metadata.event_name}"`
+        }
+        return baseMessage
+    }
+
+    const formatDate = (dateString: string): string => {
+        const date = new Date(dateString)
+        const now = new Date()
+        const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+
+        if (diffInHours < 1) {
+            return 'Just now'
+        } else if (diffInHours < 24) {
+            return `${Math.floor(diffInHours)}h ago`
+        } else if (diffInHours < 168) {
+            // 7 days
+            return `${Math.floor(diffInHours / 24)}d ago`
+        } else {
+            return date.toLocaleDateString()
+        }
+    }
+
+    return {
+        id: notification.id.toString(),
+        target: getNotificationTarget(notification),
+        description: getNotificationDescription(notification),
+        date: formatDate(notification.created_at),
+        image: getNotificationImage(notification.notification_type),
+        type: notification.notification_type === 'system' ? 1 : 0,
+        location: notification.link || '',
+        locationLabel: notification.notification_type,
+        status: notification.is_read ? 'read' : 'unread',
+        readed: notification.is_read,
+    }
+}
 
 const _Notification = ({ className }: { className?: string }) => {
     const [notificationList, setNotificationList] = useState<
-        NotificationList[]
+        NotificationDisplayItem[]
     >([])
     const [unreadNotification, setUnreadNotification] = useState(false)
     const [noResult, setNoResult] = useState(false)
@@ -47,11 +105,17 @@ const _Notification = ({ className }: { className?: string }) => {
     const navigate = useNavigate()
 
     const getNotificationCount = async () => {
-        const resp = await apiGetNotificationCount()
-        if (resp.count > 0) {
-            setNoResult(false)
-            setUnreadNotification(true)
-        } else {
+        try {
+            const resp = await apiGetNotificationCount()
+            if (resp.success && resp.count > 0) {
+                setNoResult(false)
+                setUnreadNotification(true)
+            } else {
+                setNoResult(true)
+                setUnreadNotification(false)
+            }
+        } catch (error) {
+            console.error('Failed to get notification count:', error)
             setNoResult(true)
         }
     }
@@ -63,35 +127,60 @@ const _Notification = ({ className }: { className?: string }) => {
     const onNotificationOpen = async () => {
         if (notificationList.length === 0) {
             setLoading(true)
-            const resp = await apiGetNotificationList()
-            setLoading(false)
-            setNotificationList(resp)
+            try {
+                const resp = await apiGetNotificationList()
+                if (resp.success) {
+                    const transformedNotifications = resp.notifications.map(
+                        transformNotificationToDisplay,
+                    )
+                    setNotificationList(transformedNotifications)
+                    setUnreadNotification(resp.count > 0)
+                    setNoResult(transformedNotifications.length === 0)
+                }
+            } catch (error) {
+                console.error('Failed to get notifications:', error)
+                setNoResult(true)
+            } finally {
+                setLoading(false)
+            }
         }
     }
 
-    const onMarkAllAsRead = () => {
-        const list = notificationList.map((item: NotificationList) => {
-            if (!item.readed) {
-                item.readed = true
-            }
-            return item
-        })
-        setNotificationList(list)
-        setUnreadNotification(false)
+    const onMarkAllAsRead = async () => {
+        try {
+            await apiMarkAllNotificationsAsRead()
+            const list = notificationList.map(
+                (item: NotificationDisplayItem) => {
+                    if (!item.readed) {
+                        item.readed = true
+                    }
+                    return item
+                },
+            )
+            setNotificationList(list)
+            setUnreadNotification(false)
+        } catch (error) {
+            console.error('Failed to mark all notifications as read:', error)
+        }
     }
 
-    const onMarkAsRead = (id: string) => {
-        const list = notificationList.map((item) => {
-            if (item.id === id) {
-                item.readed = true
-            }
-            return item
-        })
-        setNotificationList(list)
-        const hasUnread = notificationList.some((item) => !item.readed)
+    const onMarkAsRead = async (id: string) => {
+        try {
+            await apiMarkNotificationAsRead(parseInt(id))
+            const list = notificationList.map((item) => {
+                if (item.id === id) {
+                    item.readed = true
+                }
+                return item
+            })
+            setNotificationList(list)
+            const hasUnread = list.some((item) => !item.readed)
 
-        if (!hasUnread) {
-            setUnreadNotification(false)
+            if (!hasUnread) {
+                setUnreadNotification(false)
+            }
+        } catch (error) {
+            console.error('Failed to mark notification as read:', error)
         }
     }
 
