@@ -4,6 +4,7 @@ import type {
     Lead,
     LeadSearchParams,
     PurchaseMembershipResponse,
+    Tag,
     TagAssignment,
     TagAssignmentBody,
     TagAssignmentResponse,
@@ -74,6 +75,13 @@ export async function apiDeleteTag(id: string, leadId: string) {
     return ApiService.fetchDataWithAxios<void>({
         url: `/lead/tag/${id}/lead/${leadId}`,
         method: 'delete',
+    })
+}
+
+export async function apiGetTags() {
+    return ApiService.fetchDataWithAxios<Tag[]>({
+        url: `/lead/tags/host`,
+        method: 'get',
     })
 }
 

@@ -100,7 +100,7 @@ interface SearchResponse {
 
 type SearchType = 'name' | 'tag' | 'event'
 
-const MailEditor = () => {
+const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
     const { mail, messageDialog, toggleMessageDialog } = useMailStore()
     const [formSubmiting, setFormSubmiting] = useState(false)
     const [searchResults, setSearchResults] = useState<SearchResult[]>([])
@@ -388,69 +388,61 @@ const MailEditor = () => {
                                               : 'Type to search recipients'
                                     }
                                     value={selectedOptions}
-                                    options={searchResults.reduce<
-                                        {
-                                            value: number
-                                            label: string
-                                            title: string
-                                        }[]
-                                    >((acc, result) => {
-                                        if ('name' in result) {
-                                            // It's a Lead
-                                            const option = {
-                                                value: result.id,
-                                                label: `${result.name} - ${result.email}`,
-                                                title: `${result.name} - ${result.email}`,
-                                            }
-                                            // Only add if email is not already in the accumulator
-                                            if (
-                                                !acc.some((item) =>
-                                                    item.title.includes(
-                                                        result.email,
-                                                    ),
-                                                )
-                                            ) {
-                                                acc.push(option)
-                                            }
-                                        } else if ('event_name' in result) {
-                                            // It's an Event
-                                            const option = {
-                                                value: result.id,
-                                                label: result.event_name,
-                                                title: result.event_description,
-                                            }
-                                            // Only add if event name is not already in the accumulator
-                                            if (
-                                                !acc.some(
-                                                    (item) =>
-                                                        item.label ===
-                                                        result.event_name,
-                                                )
-                                            ) {
-                                                acc.push(option)
-                                            }
-                                        } else if ('tag' in result) {
-                                            // It's a Tag
-                                            const option = {
-                                                value: result.id,
-                                                label: result.tag,
-                                                title: result.tag,
-                                            }
-                                            // Only add if tag name is not already in the accumulator
-                                            if (
-                                                !acc.some(
-                                                    (item) =>
-                                                        item.label ===
-                                                        result.tag,
-                                                )
-                                            ) {
-                                                acc.push(option)
-                                            }
+                                    options={(() => {
+                                        const currentType = watch('type')
+
+                                        // If type is 'event', use events prop
+                                        if (currentType === 'event') {
+                                            return events.map((event) => ({
+                                                value: event.id,
+                                                label: event.event_name,
+                                                title: event.event_description,
+                                            }))
                                         }
-                                        return acc
-                                    }, [])}
+
+                                        // If type is 'tag', use tags prop
+                                        if (currentType === 'tag') {
+                                            return tags.map((tag) => ({
+                                                value: tag.id,
+                                                label: tag.tag,
+                                                title: tag.tag,
+                                            }))
+                                        }
+
+                                        // For 'name' type, use search results
+                                        return searchResults.reduce<
+                                            {
+                                                value: number
+                                                label: string
+                                                title: string
+                                            }[]
+                                        >((acc, result) => {
+                                            if ('name' in result) {
+                                                // It's a Lead
+                                                const option = {
+                                                    value: result.id,
+                                                    label: `${result.name} - ${result.email}`,
+                                                    title: `${result.name} - ${result.email}`,
+                                                }
+                                                // Only add if email is not already in the accumulator
+                                                if (
+                                                    !acc.some((item) =>
+                                                        item.title.includes(
+                                                            result.email,
+                                                        ),
+                                                    )
+                                                ) {
+                                                    acc.push(option)
+                                                }
+                                            }
+                                            return acc
+                                        }, [])
+                                    })()}
                                     onInputChange={(inputValue) => {
-                                        if (typeof inputValue === 'string') {
+                                        if (
+                                            typeof inputValue === 'string' &&
+                                            watch('type') === 'name'
+                                        ) {
                                             handleSearch(inputValue)
                                         }
                                     }}

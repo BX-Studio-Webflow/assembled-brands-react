@@ -37,10 +37,6 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
                                     ),
                                 ).format('ddd, MMM D, YYYY h:mm A')}
                             </span>
-
-                            <span className="text-sm capitalize">
-                                {lead.bookings[0]?.metadata.membershipName}
-                            </span>
                         </div>
                         <div className="flex flex flex-row gap-1">
                             <h6 className="font-medium">
