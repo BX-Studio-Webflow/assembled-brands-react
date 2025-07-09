@@ -13,9 +13,17 @@ export interface GetNotificationListResponse {
 export interface Notification {
     id: number
     user_id: number
-    notification_type: 'comment' | 'like' | 'system' | 'reminder'
+    notification_type:
+        | 'comment'
+        | 'like'
+        | 'system'
+        | 'reminder'
+        | 'new_lead'
+        | 'new_booking'
+        | 'new_payment'
     is_read: boolean
     message: string
+    title: string
     link?: string
     metadata?: {
         lead_id?: number
@@ -34,6 +42,8 @@ export interface NotificationDisplayItem {
     id: string
     target: string
     description: string
+    title: string
+    message: string
     date: string
     image: string
     type: number

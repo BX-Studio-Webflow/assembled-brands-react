@@ -33,10 +33,16 @@ const transformNotificationToDisplay = (
 ): NotificationDisplayItem => {
     const getNotificationImage = (type: string) => {
         switch (type) {
-            case 'comment':
-                return '/img/others/notification-comment.png'
-            case 'like':
-                return '/img/others/notification-like.png'
+            case 'new_booking':
+                return '/img/others/notification-booking.png'
+            case 'new_lead':
+                return '/img/others/notification-lead.png'
+            case 'new_event':
+                return '/img/others/notification-event.png'
+            case 'new_payment':
+                return '/img/others/notification-payment.png'
+            case 'new_membership':
+                return '/img/others/notification-membership.png'
             case 'system':
                 return '/img/others/notification-system.png'
             case 'reminder':
@@ -82,6 +88,8 @@ const transformNotificationToDisplay = (
         id: notification.id.toString(),
         target: getNotificationTarget(notification),
         description: getNotificationDescription(notification),
+        title: notification.title || 'Notification',
+        message: notification.message,
         date: formatDate(notification.created_at),
         image: getNotificationImage(notification.notification_type),
         type: notification.notification_type === 'system' ? 1 : 0,
@@ -234,14 +242,16 @@ const _Notification = ({ className }: { className?: string }) => {
                                 </div>
                                 <div className="mx-3">
                                     <div>
-                                        {item.target && (
-                                            <span className="font-semibold heading-text">
-                                                {item.target}{' '}
-                                            </span>
-                                        )}
-                                        <span>{item.description}</span>
+                                        <div className="font-semibold heading-text mb-1">
+                                            {item.title}
+                                        </div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                                            {item.message}
+                                        </div>
                                     </div>
-                                    <span className="text-xs">{item.date}</span>
+                                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                                        {item.date}
+                                    </span>
                                 </div>
                                 <Badge
                                     className="absolute top-4 ltr:right-4 rtl:left-4 mt-1.5"
