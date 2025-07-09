@@ -4,24 +4,26 @@ import { Log } from './components/Log'
 import LogAction from './components/LogAction'
 import { apiGetNotificationLogs } from '@/services/LogService'
 import type { Notification } from '@/@types/notification'
-import {
-    UPDATE_TICKET,
-    COMMENT,
-    COMMENT_MENTION,
-    ASSIGN_TICKET,
-    ADD_TAGS_TO_TICKET,
-    ADD_FILES_TO_TICKET,
-    CREATE_TICKET,
-} from '@/components/view/Activity/constants'
 
-const defaultSelectedType = [
-    UPDATE_TICKET,
-    COMMENT,
-    COMMENT_MENTION,
-    ASSIGN_TICKET,
-    ADD_TAGS_TO_TICKET,
-    ADD_FILES_TO_TICKET,
-    CREATE_TICKET,
+// Notification types for filtering
+const NOTIFICATION_TYPES = {
+    NEW_BOOKING: 'new_booking',
+    NEW_LEAD: 'new_lead',
+    NEW_EVENT: 'new_event',
+    NEW_PAYMENT: 'new_payment',
+    NEW_MEMBERSHIP: 'new_membership',
+    SYSTEM: 'system',
+    REMINDER: 'reminder',
+} as const
+
+const defaultSelectedTypes = [
+    NOTIFICATION_TYPES.NEW_BOOKING,
+    NOTIFICATION_TYPES.NEW_LEAD,
+    NOTIFICATION_TYPES.NEW_EVENT,
+    NOTIFICATION_TYPES.NEW_PAYMENT,
+    NOTIFICATION_TYPES.NEW_MEMBERSHIP,
+    NOTIFICATION_TYPES.SYSTEM,
+    NOTIFICATION_TYPES.REMINDER,
 ]
 
 // Transform notifications to activity log format without date grouping
@@ -30,31 +32,16 @@ const transformNotificationsToActivities = (notifications: Notification[]) => {
         .map((notification) => {
             const date = new Date(notification.created_at)
 
-            // Map notification type to activity type
-            const getActivityType = (notificationType: string) => {
-                switch (notificationType) {
-                    case 'comment':
-                        return COMMENT
-                    case 'like':
-                        return UPDATE_TICKET
-                    case 'system':
-                        return CREATE_TICKET
-                    case 'reminder':
-                        return ASSIGN_TICKET
-                    default:
-                        return UPDATE_TICKET
-                }
-            }
-
             const event = {
-                type: getActivityType(notification.notification_type),
+                type: notification.notification_type,
                 dateTime: Math.floor(date.getTime() / 1000),
                 notification,
                 userName: notification.metadata?.lead_name || 'System',
                 userImg: notification.metadata?.lead_email
                     ? `/img/avatars/thumb-${(Math.abs(notification.metadata.lead_email.split('').reduce((a, b) => a + b.charCodeAt(0), 0)) % 10) + 1}.jpg`
                     : undefined,
-                comment: notification.message,
+                title: notification.title,
+                message: notification.message,
                 tags: notification.metadata?.event_name
                     ? [notification.metadata.event_name]
                     : undefined,
@@ -82,16 +69,16 @@ const ActivityLog = () => {
                 notification: Notification
                 userName: string
                 userImg?: string
-                comment?: string
+                title?: string
+                message?: string
                 tags?: string[]
                 files?: string[]
                 assignee?: string
             }>
         }>
     >([])
-    const [showMentionedOnly, setShowMentionedOnly] = useState(false)
-    const [selectedType, setSelectedType] =
-        useState<string[]>(defaultSelectedType)
+    const [selectedTypes, setSelectedTypes] =
+        useState<string[]>(defaultSelectedTypes)
 
     const getLogs = async (index: number) => {
         try {
@@ -115,26 +102,16 @@ const ActivityLog = () => {
 
     useEffect(() => {
         getLogs(1)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [])
 
     const handleFilterChange = (selected: string) => {
-        setShowMentionedOnly(false)
-        if (selectedType.includes(selected)) {
-            setSelectedType((prevData) =>
+        if (selectedTypes.includes(selected)) {
+            setSelectedTypes((prevData) =>
                 prevData.filter((prev) => prev !== selected),
             )
         } else {
-            setSelectedType((prevData) => [...prevData, ...[selected]])
-        }
-    }
-
-    const handleCheckboxChange = (bool: boolean) => {
-        setShowMentionedOnly(bool)
-        if (bool) {
-            setSelectedType([COMMENT_MENTION])
-        } else {
-            setSelectedType(defaultSelectedType)
+            setSelectedTypes((prevData) => [...prevData, ...[selected]])
         }
     }
 
@@ -144,13 +121,11 @@ const ActivityLog = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <h3>Activity Log</h3>
                     <LogAction
-                        selectedType={selectedType}
-                        showMentionedOnly={showMentionedOnly}
+                        selectedType={selectedTypes}
                         onFilterChange={handleFilterChange}
-                        onCheckboxChange={handleCheckboxChange}
                     />
                 </div>
-                <Log activities={activities} filter={selectedType} />
+                <Log activities={activities} filter={selectedTypes} />
             </div>
         </AdaptiveCard>
     )

@@ -1,10 +1,6 @@
 import Avatar from '@/components/ui/Avatar'
-import acronym from '@/utils/acronym'
-import useRandomBgColor from '@/utils/hooks/useRandomBgColor'
 import {
     HiOutlineCalendar,
-    HiOutlineClipboardCheck,
-    HiOutlineBan,
     HiOutlineUser,
     HiOutlineCreditCard,
     HiOutlineUserGroup,
@@ -13,16 +9,7 @@ import {
     HiOutlineCog,
 } from 'react-icons/hi'
 
-const imagePath = '/img/avatars/'
 
-const GeneratedAvatar = ({ target }: { target: string }) => {
-    const color = useRandomBgColor()
-    return (
-        <Avatar shape="circle" className={`text-gray-900 ${color(target)}`}>
-            {acronym(target)}
-        </Avatar>
-    )
-}
 
 const NotificationAvatar = (props: {
     type: number
@@ -31,7 +18,7 @@ const NotificationAvatar = (props: {
     status: string
     locationLabel: string
 }) => {
-    const { type, target, image, status, locationLabel } = props
+    const { locationLabel } = props
 
     // Get icon and color based on notification type
     const getNotificationIcon = (notificationType: string) => {

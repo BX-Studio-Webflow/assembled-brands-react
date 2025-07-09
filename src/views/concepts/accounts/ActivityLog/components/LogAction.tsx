@@ -1,36 +1,23 @@
 import { useMemo } from 'react'
 import Dropdown from '@/components/ui/Dropdown'
-import Switcher from '@/components/ui/Switcher'
-import {
-    UPDATE_TICKET,
-    ASSIGN_TICKET,
-    ADD_TAGS_TO_TICKET,
-    ADD_FILES_TO_TICKET,
-    CREATE_TICKET,
-} from '@/components/view/Activity/constants'
 import { TbFilter, TbCheck } from 'react-icons/tb'
 
 type LogActionProps = {
     selectedType: string[]
     onFilterChange: (item: string) => void
-    onCheckboxChange: (checked: boolean) => void
-    showMentionedOnly: boolean
 }
 
 const filterItems = [
-    { label: 'Ticket status', value: UPDATE_TICKET },
-    { label: 'Assign ticket', value: ASSIGN_TICKET },
-    { label: 'New ticket', value: CREATE_TICKET },
-    { label: 'Add tags', value: ADD_TAGS_TO_TICKET },
-    { label: 'Add files', value: ADD_FILES_TO_TICKET },
+    { label: 'New Booking', value: 'new_booking' },
+    { label: 'New Lead', value: 'new_lead' },
+    { label: 'New Event', value: 'new_event' },
+    { label: 'New Payment', value: 'new_payment' },
+    { label: 'New Membership', value: 'new_membership' },
+    { label: 'System', value: 'system' },
+    { label: 'Reminder', value: 'reminder' },
 ]
 
-const LogAction = ({
-    showMentionedOnly,
-    selectedType = [],
-    onFilterChange,
-    onCheckboxChange,
-}: LogActionProps) => {
+const LogAction = ({ selectedType = [], onFilterChange }: LogActionProps) => {
     const allUnchecked = useMemo(() => {
         return !selectedType.some((type) =>
             filterItems.map((item) => item.value).includes(type),
@@ -39,17 +26,6 @@ const LogAction = ({
 
     return (
         <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-                <span className="font-semibold">
-                    {showMentionedOnly
-                        ? 'Show all activity'
-                        : 'Show mentioned only'}
-                </span>
-                <Switcher
-                    checked={showMentionedOnly}
-                    onChange={onCheckboxChange}
-                />
-            </div>
             <Dropdown
                 placement="bottom-end"
                 renderTitle={

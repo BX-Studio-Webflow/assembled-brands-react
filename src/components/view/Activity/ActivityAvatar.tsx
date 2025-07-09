@@ -14,6 +14,11 @@ import {
     TbBell,
     TbAlertCircle,
     TbMail,
+    TbCalendar,
+    TbCreditCard,
+    TbUsers,
+    TbBook,
+    TbSettings,
 } from 'react-icons/tb'
 import {
     ADD_TAGS_TO_TICKET,
@@ -70,31 +75,43 @@ const NotificationIcon = ({
     notificationType: string
 }) => {
     switch (notificationType) {
-        case 'comment':
-            return <TbMessage />
-        case 'like':
-            return <TbHeart />
+        case 'new_booking':
+            return <TbCalendar />
+        case 'new_lead':
+            return <TbUser />
+        case 'new_event':
+            return <TbBook />
+        case 'new_payment':
+            return <TbCreditCard />
+        case 'new_membership':
+            return <TbUsers />
         case 'system':
-            return <TbAlertCircle />
+            return <TbSettings />
         case 'reminder':
             return <TbBell />
         default:
-            return <TbMail />
+            return <TbBell />
     }
 }
 
 const getNotificationAvatarColor = (notificationType: string) => {
     switch (notificationType) {
-        case 'comment':
-            return 'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900'
-        case 'like':
-            return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900'
+        case 'new_booking':
+            return 'bg-blue-200 text-blue-800'
+        case 'new_lead':
+            return 'bg-green-200 text-green-800'
+        case 'new_event':
+            return 'bg-purple-200 text-purple-800'
+        case 'new_payment':
+            return 'bg-emerald-200 text-emerald-800'
+        case 'new_membership':
+            return 'bg-orange-200 text-orange-800'
         case 'system':
-            return 'text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-900'
+            return 'bg-gray-200 text-gray-800'
         case 'reminder':
-            return 'text-purple-600 bg-purple-100 dark:text-purple-400 dark:bg-purple-900'
+            return 'bg-yellow-200 text-yellow-800'
         default:
-            return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-700'
+            return 'bg-gray-200 text-gray-800'
     }
 }
 
