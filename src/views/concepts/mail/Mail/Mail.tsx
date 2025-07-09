@@ -36,7 +36,7 @@ const Mail = () => {
         tags?.map((tag) => ({
             id: Number(tag.id),
             host_id: tag.host_id,
-            tag: tag.name, // Map 'name' to 'tag'
+            tag: tag.tag, // Map 'name' to 'tag'
             created_at: tag.created_at || new Date().toISOString(),
             updated_at: tag.updated_at || new Date().toISOString(),
         })) || []

@@ -131,7 +131,7 @@ export interface Callback {
 
 export interface Tag {
     id: string
-    name: string
+    tag: string
     color?: string
     host_id: number
     created_at?: string
