@@ -29,6 +29,15 @@ type ActivityEventProps = {
         tags?: string[]
         files?: string[]
         assignee?: string
+        notification?: {
+            notification_type: string
+            message: string
+            metadata?: {
+                lead_name?: string
+                event_name?: string
+                lead_email?: string
+            }
+        }
     }
     compact?: boolean
 }
@@ -92,6 +101,113 @@ const ActivityEvent = ({ data, compact }: ActivityEventProps) => {
         },
     }
 
+    // Handle notification-based events
+    if (data.notification) {
+        const notificationType = data.notification.notification_type
+        const message = data.notification.message
+        const eventName = data.notification.metadata?.event_name
+        const leadName = data.notification.metadata?.lead_name
+
+        switch (notificationType) {
+            case 'comment':
+                return (
+                    <>
+                        {compact ? (
+                            <>
+                                <div className="flex flex-col gap-y-0.5">
+                                    <HighlightedText>
+                                        {data.userName}
+                                    </HighlightedText>
+                                    <span className="text-xs font-semibold">
+                                        <UnixDateTime value={data.dateTime} />
+                                    </span>
+                                </div>
+                                <div className="mt-2">
+                                    <span className="mx-1">commented on</span>
+                                    {eventName && (
+                                        <HighlightedText>
+                                            {eventName}
+                                        </HighlightedText>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <p className="gap-1 inline-flex items-center flex-wrap">
+                                <HighlightedText>
+                                    {data.userName}
+                                </HighlightedText>
+                                <span className="mx-1">commented on</span>
+                                {eventName && (
+                                    <HighlightedText>
+                                        {eventName}
+                                    </HighlightedText>
+                                )}
+                                <span className="ml-1 rtl:mr-1 md;ml-3 md:rtl:mr-3 font-semibold">
+                                    <UnixDateTime value={data.dateTime} />
+                                </span>
+                            </p>
+                        )}
+                        <Card
+                            bordered={false}
+                            className="mt-4 bg-gray-100 dark:bg-gray-700 shadow-none"
+                        >
+                            {ReactHtmlParser(message, options)}
+                        </Card>
+                    </>
+                )
+            case 'like':
+                return (
+                    <div className="inline-flex items-center flex-wrap">
+                        <HighlightedText>{data.userName}</HighlightedText>
+                        <span className="mx-1">liked your</span>
+                        {eventName && (
+                            <HighlightedText>{eventName}</HighlightedText>
+                        )}
+                        <span className="ml-1 rtl:mr-1 md;ml-3 md:rtl:mr-3 font-semibold">
+                            <UnixDateTime value={data.dateTime} />
+                        </span>
+                    </div>
+                )
+            case 'system':
+                return (
+                    <div className="inline-flex items-center flex-wrap">
+                        <span className="mx-1">System notification:</span>
+                        <HighlightedText>{message}</HighlightedText>
+                        <span className="ml-1 rtl:mr-1 md;ml-3 md:rtl:mr-3 font-semibold">
+                            <UnixDateTime value={data.dateTime} />
+                        </span>
+                    </div>
+                )
+            case 'reminder':
+                return (
+                    <div className="inline-flex items-center flex-wrap">
+                        <span className="mx-1">Reminder:</span>
+                        <HighlightedText>{message}</HighlightedText>
+                        {eventName && (
+                            <>
+                                <span className="mx-1">for</span>
+                                <HighlightedText>{eventName}</HighlightedText>
+                            </>
+                        )}
+                        <span className="ml-1 rtl:mr-1 md;ml-3 md:rtl:mr-3 font-semibold">
+                            <UnixDateTime value={data.dateTime} />
+                        </span>
+                    </div>
+                )
+            default:
+                return (
+                    <div className="inline-flex items-center flex-wrap">
+                        <HighlightedText>{data.userName}</HighlightedText>
+                        <span className="mx-1">{message}</span>
+                        <span className="ml-1 rtl:mr-1 md;ml-3 md:rtl:mr-3 font-semibold">
+                            <UnixDateTime value={data.dateTime} />
+                        </span>
+                    </div>
+                )
+        }
+    }
+
+    // Handle regular activity events
     switch (data.type) {
         case UPDATE_TICKET:
             return compact ? (
