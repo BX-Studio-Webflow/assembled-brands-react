@@ -123,7 +123,7 @@ const columns = [
         },
     }),
     columnHelper.accessor('fallthrough_rate', {
-        header: 'Fallthrough Rate',
+        header: 'Success Rate',
         cell: (props) => {
             const rate = props.getValue()
             return <span className="font-semibold">{rate.toFixed(1)}%</span>
