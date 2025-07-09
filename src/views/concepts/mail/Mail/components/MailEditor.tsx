@@ -209,9 +209,7 @@ const MailEditor = () => {
             await fetchMails({ category, label })
         } catch (error) {
             console.error('Error creating mail:', error)
-            const errorMessage =
-                (error as AxiosError).response?.data?.error ||
-                (error as AxiosError).message
+            const errorMessage = (error as AxiosError).message
             toast.push(
                 <Notification type="danger">{errorMessage}</Notification>,
             )

@@ -19,7 +19,29 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
                         'No Event Registered'}
                 </h6>
                 {latestPayment ? (
-                    <div>
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                            <Badge
+                                className={
+                                    lead.bookings[0]?.event.status ===
+                                    'cancelled'
+                                        ? 'bg-red-500'
+                                        : 'bg-emerald-500'
+                                }
+                            />
+                            <span className="text-sm capitalize">
+                                {dayjs(
+                                    Number(
+                                        lead.bookings[0]?.metadata.dates?.[0] *
+                                            1000 || new Date().getTime(),
+                                    ),
+                                ).format('ddd, MMM D, YYYY h:mm A')}
+                            </span>
+
+                            <span className="text-sm capitalize">
+                                {lead.bookings[0]?.metadata.membershipName}
+                            </span>
+                        </div>
                         <div className="flex flex flex-row gap-1">
                             <h6 className="font-medium">
                                 <NumericFormat
@@ -50,36 +72,6 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
                                     {latestPayment?.status}
                                 </Tag>
                             </div>
-
-                            <div>
-                                <Tag className="bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0 rounded">
-                                    {dayjs(latestPayment?.created_at).format(
-                                        'D MMMM YYYY',
-                                    )}
-                                </Tag>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Badge
-                                className={
-                                    lead.bookings[0]?.event.status ===
-                                    'cancelled'
-                                        ? 'bg-red-500'
-                                        : 'bg-emerald-500'
-                                }
-                            />
-                            <span className="text-sm capitalize">
-                                {dayjs(
-                                    Number(
-                                        lead.bookings[0]?.metadata.dates?.[0] *
-                                            1000 || new Date().getTime(),
-                                    ),
-                                ).format('D MMMM YYYY')}
-                            </span>
-
-                            <span className="text-sm capitalize">
-                                {lead.bookings[0]?.metadata.membershipName}
-                            </span>
                         </div>
                     </div>
                 ) : (
