@@ -32,7 +32,7 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
                             <span className="text-sm capitalize">
                                 {dayjs(
                                     Number(
-                                        lead.bookings[0]?.metadata.dates?.[0] *
+                                        lead.bookings[0]?.metadata?.dates?.[0] *
                                             1000 || new Date().getTime(),
                                     ),
                                 ).format('ddd, MMM D, YYYY h:mm A')}
