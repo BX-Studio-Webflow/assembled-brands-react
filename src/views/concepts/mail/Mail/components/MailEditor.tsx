@@ -134,9 +134,11 @@ const MailEditor = () => {
             })) as SearchResponse
 
             if (response?.results) {
+                console.log('Search results:', response.results)
                 setSearchResults(response.results)
             }
         } catch (error) {
+            console.error('Error searching:', error)
             toast.push(
                 <Notification type="danger">
                     {(error as AxiosError).message}
@@ -186,6 +188,7 @@ const MailEditor = () => {
                 button_link: 'https://example.com',
                 recipients: value.recipients,
             }
+            console.log('Sending payload:', payload)
             const response = (await apiCreateMail(
                 payload,
             )) as MailCreateResponse
@@ -205,10 +208,12 @@ const MailEditor = () => {
             const label = query.get('label') || ''
             await fetchMails({ category, label })
         } catch (error) {
+            console.error('Error creating mail:', error)
+            const errorMessage =
+                (error as AxiosError).response?.data?.error ||
+                (error as AxiosError).message
             toast.push(
-                <Notification type="danger">
-                    {(error as AxiosError).message}
-                </Notification>,
+                <Notification type="danger">{errorMessage}</Notification>,
             )
         }
 
