@@ -514,7 +514,11 @@ const x = setInterval(function () {
 
     return (
         <Loading loading={isLoading}>
-            <EventForm onFormSubmit={handleFormSubmit} {...EventFormProps} newEvent={false}>
+            <EventForm
+                onFormSubmit={handleFormSubmit}
+                {...EventFormProps}
+                newEvent={false}
+            >
                 <Container>
                     <div className="flex items-center justify-between px-8">
                         <span>

@@ -102,7 +102,6 @@ const ActivityLog = () => {
 
     useEffect(() => {
         getLogs(1)
-         
     }, [])
 
     const handleFilterChange = (selected: string) => {

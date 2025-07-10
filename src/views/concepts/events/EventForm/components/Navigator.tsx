@@ -38,19 +38,19 @@ const navigationList = [
 const editModeNavigationList = (event?: EventWithDetailsAndCount) => [
     {
         label: 'Leads registered',
-        description: `${event?.click_analytics?.clickCount || 0} so far`,
+        description: `${event?.leadCount || 0} so far`,
         link: 'customerDetails',
         icon: <TbUserSquare />,
     },
     {
         label: 'Attended event',
-        description: `${event?.click_analytics?.scheduleCallbackCount || 0} so far`,
+        description: `${event?.attendance_stats?.event_attended || 0} so far`,
         link: 'addressInformation',
         icon: <TbMapPin />,
     },
     {
         label: 'Instant callback',
-        description: `${event?.click_analytics?.scheduleCallbackCount || 0} so far`,
+        description: `${event?.instant_callbacks.length || 0} so far`,
         link: 'payment',
         icon: <TbPhone />,
     },

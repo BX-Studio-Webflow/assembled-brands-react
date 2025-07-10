@@ -1,3 +1,5 @@
+import { Callback } from './lead'
+
 export interface Event {
     event_name: string
     event_description: string
@@ -179,12 +181,17 @@ export interface EventWithDetailsAndCount {
     host: Host
     leadCount: number
     memberships: MembershipWithDates[]
+    attendance_stats: {
+        event_attended: number
+        event_not_attended: number
+    }
     click_analytics: {
         clicks: Click[]
         clickCount: number
         scheduleCallbackCount: number
         upgradeCount: number
     }
+    instant_callbacks: Callback[]
 }
 
 export interface Click {

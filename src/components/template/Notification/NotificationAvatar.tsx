@@ -9,8 +9,6 @@ import {
     HiOutlineCog,
 } from 'react-icons/hi'
 
-
-
 const NotificationAvatar = (props: {
     type: number
     target: string

@@ -119,17 +119,18 @@ const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
         </>
     ) : !isHost ? (
         <div className="flex items-center gap-2 print:hidden mr-8">
-            {eventStatus === 'ended' && (
-                <Button
-                    variant="solid"
-                    customColorClass={() =>
-                        'bg-green-400 hover:bg-green-500 text-white'
-                    }
-                    onClick={() => handleInstantCallback()}
-                >
-                    Instant Call Back
-                </Button>
-            )}
+            {eventStatus === 'ended' ||
+                (eventStatus === 'live' && (
+                    <Button
+                        variant="solid"
+                        customColorClass={() =>
+                            'bg-green-400 hover:bg-green-500 text-white'
+                        }
+                        onClick={() => handleInstantCallback()}
+                    >
+                        Instant Call Back
+                    </Button>
+                ))}
             {(eventStatus === 'live' || eventStatus === 'ended') &&
                 data.event.calendar_url && (
                     <Button

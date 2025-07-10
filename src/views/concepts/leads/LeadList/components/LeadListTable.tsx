@@ -228,25 +228,39 @@ const LeadListTable = () => {
                         row.events.length > 0
 
                     if (!hasEvent) {
-                       return <Tag
-                           className="bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0"
-                           prefix={
-                               <HiXCircle className="text-base text-gray-600 mr-1 rtl:ml-1" />
-                           }
-                       >
-                           <span className="capitalize">No Event Registered</span>
-                       </Tag>
+                        return (
+                            <Tag
+                                className="bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0"
+                                prefix={
+                                    <HiXCircle className="text-base text-gray-600 mr-1 rtl:ml-1" />
+                                }
+                            >
+                                <span className="capitalize">
+                                    No Event Registered
+                                </span>
+                            </Tag>
+                        )
                     }
 
-                    const eventName = row.events[0]?.event_name || 'Unknown Event'
-                    
+                    const eventName =
+                        row.events[0]?.event_name || 'Unknown Event'
+
                     return (
                         <div className="flex items-center">
-                            <Tag 
+                            <Tag
                                 className="bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-100 border-0"
-                                prefix={<HiTicket className="text-base text-purple-600 mr-1 rtl:ml-1" />}
+                                prefix={
+                                    <HiTicket className="text-base text-purple-600 mr-1 rtl:ml-1" />
+                                }
                             >
-                                <span className="capitalize">{eventName} {row.dates?.date ? dayjs(Number(row.dates?.date) * 1000).format('DD/MM/YYYY') : ''}</span>
+                                <span className="capitalize">
+                                    {eventName}{' '}
+                                    {row.dates?.date
+                                        ? dayjs(
+                                              Number(row.dates?.date) * 1000,
+                                          ).format('DD/MM/YYYY')
+                                        : ''}
+                                </span>
                             </Tag>
                         </div>
                     )

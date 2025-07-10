@@ -2,11 +2,7 @@ import Avatar from '@/components/ui/Avatar'
 import Dropdown from '@/components/ui/Dropdown'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import { Link } from 'react-router'
-import {
-    PiUserDuotone,
-    PiGearDuotone,
-    PiSignOutDuotone,
-} from 'react-icons/pi'
+import { PiUserDuotone, PiGearDuotone, PiSignOutDuotone } from 'react-icons/pi'
 import { useAuth } from '@/auth'
 import type { JSX } from 'react'
 
