@@ -15,7 +15,7 @@ const CustomerDetailSection = ({
     errors,
 }: CustomerDetailSectionProps) => {
     return (
-        <Card id="customerDetails">
+        <Card id="eventDetails">
             <h4 className="mb-6">Event details</h4>
 
             <FormItem

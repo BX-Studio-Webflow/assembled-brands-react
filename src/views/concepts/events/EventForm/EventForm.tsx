@@ -20,6 +20,7 @@ import { apiGetAssets } from '@/services/AssetService'
 import type { Asset, AssetQueryParams } from '@/@types/asset'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
+import { AxiosError } from 'axios'
 
 type EventFormProps = {
     children: ReactNode
@@ -126,9 +127,7 @@ const EventForm = (props: EventFormProps) => {
         } catch (error) {
             toast.push(
                 <Notification type="danger">
-                    {error instanceof Error
-                        ? error.message
-                        : 'Event creation failed!'}
+                    {(error as AxiosError).message}
                 </Notification>,
                 { placement: 'top-center' },
             )
@@ -148,7 +147,11 @@ const EventForm = (props: EventFormProps) => {
                                 <div className="w-[360px]">
                                     <Affix offset={getTopGapValue()}>
                                         <Card>
-                                            <Navigator />
+                                            <Navigator
+                                                newEvent={
+                                                    props.newEvent || false
+                                                }
+                                            />
                                         </Card>
                                     </Affix>
                                 </div>

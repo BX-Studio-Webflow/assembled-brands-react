@@ -43,7 +43,7 @@ const PaymentMethodSection = ({ control, errors, assets = [] }: Props) => {
         }))
 
     return (
-        <Card id="eventDetails">
+        <Card id="eventAssets">
             <FormItem
                 label="Choose Event Type"
                 invalid={Boolean(errors.event_type)}

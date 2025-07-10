@@ -33,7 +33,7 @@ const BillingAddressSection = ({
 }: Props) => {
     const safeFields = Array.isArray(fields) ? fields : []
     return (
-        <div>
+        <div id="pricePlans">
             {safeFields.map((field, idx) => (
                 <Card
                     key={field.id}
