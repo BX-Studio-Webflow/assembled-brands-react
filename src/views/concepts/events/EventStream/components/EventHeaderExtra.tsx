@@ -8,6 +8,7 @@ import { AxiosError } from 'axios'
 import ChatStats from '@/views/concepts/chat/Chat/components/ChatStats'
 import { useState, type MouseEvent } from 'react'
 import { IoStatsChart } from 'react-icons/io5'
+import { apiCreateClick } from '@/services/ClickAnalyticsService'
 
 interface EventHeaderExtraProps {
     isHost: boolean
@@ -31,11 +32,25 @@ const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
         setIsOpen(false)
     }
 
-    const handleUpgradeClick = () => {
+    const handleUpgradeClick = async () => {
+        //track click
+        await apiCreateClick({
+            lead_id: data.lead?.id || 0,
+            event_id: data.event.id,
+            link_url: data.event.upgrade_url,
+            click_type: 'upgrade',
+        })
         window.open(`${data.event.calendar_url}`, '_blank')
     }
 
-    const handleScheduleCallback = () => {
+    const handleScheduleCallback = async () => {
+        //track click
+        await apiCreateClick({
+            lead_id: data.lead?.id || 0,
+            event_id: data.event.id,
+            link_url: data.event.calendar_url,
+            click_type: 'schedule_callback',
+        })
         window.open(`${data.event.calendar_url}`, '_blank')
     }
 
