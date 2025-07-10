@@ -5,15 +5,12 @@ import { Controller } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
 import type { Control, FieldErrors } from 'react-hook-form'
 
-type CustomerDetailSectionProps = {
+type EventDetailsSectionProps = {
     control: Control<EventFormType>
     errors: FieldErrors<EventFormType>
 }
 
-const CustomerDetailSection = ({
-    control,
-    errors,
-}: CustomerDetailSectionProps) => {
+const EventDetailsSection = ({ control, errors }: EventDetailsSectionProps) => {
     return (
         <Card id="eventDetails">
             <h4 className="mb-6">Event details</h4>
@@ -58,4 +55,4 @@ const CustomerDetailSection = ({
     )
 }
 
-export default CustomerDetailSection
+export default EventDetailsSection

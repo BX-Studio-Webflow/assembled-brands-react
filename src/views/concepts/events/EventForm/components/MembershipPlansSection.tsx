@@ -23,7 +23,7 @@ interface Props {
     plans: EventFormType['membership_plans']
 }
 
-const BillingAddressSection = ({
+const MembershipPlansSection = ({
     control,
     errors,
     fields,
@@ -196,4 +196,4 @@ const BillingAddressSection = ({
     )
 }
 
-export default BillingAddressSection
+export default MembershipPlansSection

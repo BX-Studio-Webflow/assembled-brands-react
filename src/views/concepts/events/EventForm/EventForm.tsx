@@ -4,9 +4,9 @@ import Affix from '@/components/shared/Affix'
 import Card from '@/components/ui/Card'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
-import CustomerDetailSection from './components/CustomerDetailSection'
-import BillingAddressSection from './components/BillingAddressSection'
-import PaymentMethodSection from './components/PaymentMethodSection'
+import EventDetailsSection from './components/EventDetailsSection'
+import EventConfigurationSection from './components/EventConfigurationSection'
+import MembershipPlansSection from './components/MembershipPlansSection'
 import Navigator from './components/Navigator'
 import useLayoutGap from '@/utils/hooks/useLayoutGap'
 import useResponsive from '@/utils/hooks/useResponsive'
@@ -159,18 +159,18 @@ const EventForm = (props: EventFormProps) => {
 
                             <div className="flex-1">
                                 <div className="flex flex-col gap-4">
-                                    <CustomerDetailSection
+                                    <EventDetailsSection
                                         control={methods.control}
                                         errors={methods.formState.errors}
                                     />
 
-                                    <PaymentMethodSection
+                                    <EventConfigurationSection
                                         control={methods.control}
                                         errors={methods.formState.errors}
                                         assets={assets}
                                     />
 
-                                    <BillingAddressSection
+                                    <MembershipPlansSection
                                         control={methods.control}
                                         errors={methods.formState.errors}
                                         fields={fields}

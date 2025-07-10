@@ -4,10 +4,12 @@ import { Link } from 'react-scroll'
 import {
     TbUserSquare,
     TbMapPin,
-    TbCreditCard,
     TbPhone,
     TbCalendar,
     TbArrowUpRight,
+    TbFile,
+    TbInfoCircle,
+    TbCreditCard,
 } from 'react-icons/tb'
 
 const navigationList = [
@@ -16,19 +18,19 @@ const navigationList = [
         description:
             'Enter event information like name, description, type, etc.',
         link: 'eventDetails',
-        icon: <TbUserSquare />,
+        icon: <TbInfoCircle />,
     },
     {
         label: 'Event assets',
         description: 'Add assets to the event.',
         link: 'eventAssets',
-        icon: <TbCreditCard />,
+        icon: <TbFile />,
     },
     {
         label: 'Price plans',
         description: 'Add price plans to the event.',
         link: 'pricePlans',
-        icon: <TbMapPin />,
+        icon: <TbCreditCard />,
     },
 ]
 

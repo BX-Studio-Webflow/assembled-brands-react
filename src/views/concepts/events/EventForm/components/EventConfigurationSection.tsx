@@ -22,7 +22,7 @@ type AssetOption = {
     color: string
 }
 
-const PaymentMethodSection = ({ control, errors, assets = [] }: Props) => {
+const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
     const [eventType, setEventType] = useState<string>('')
     const { watch } = useFormContext<EventFormType>()
     const formEventType = watch('event_type')
@@ -253,4 +253,4 @@ const PaymentMethodSection = ({ control, errors, assets = [] }: Props) => {
     )
 }
 
-export default PaymentMethodSection
+export default EventConfigurationSection
