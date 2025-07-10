@@ -11,6 +11,7 @@ import {
     TbInfoCircle,
     TbCreditCard,
 } from 'react-icons/tb'
+import { EventWithDetailsAndCount } from '@/@types/events'
 
 const navigationList = [
     {
@@ -34,40 +35,46 @@ const navigationList = [
     },
 ]
 
-const editModeNavigationList = [
+const editModeNavigationList = (event?: EventWithDetailsAndCount) => [
     {
         label: 'Leads registered',
-        description: '0 so far',
+        description: `${event?.click_analytics?.clickCount || 0} so far`,
         link: 'customerDetails',
         icon: <TbUserSquare />,
     },
     {
         label: 'Attended event',
-        description: '0 so far',
+        description: `${event?.click_analytics?.scheduleCallbackCount || 0} so far`,
         link: 'addressInformation',
         icon: <TbMapPin />,
     },
     {
         label: 'Instant callback',
-        description: '0 so far',
+        description: `${event?.click_analytics?.scheduleCallbackCount || 0} so far`,
         link: 'payment',
         icon: <TbPhone />,
     },
     {
         label: 'Scheduled Callback',
-        description: '0 so far',
+        description: `${event?.click_analytics?.scheduleCallbackCount || 0} so far`,
         link: 'payment',
         icon: <TbCalendar />,
     },
     {
         label: 'Upgrade Clicks',
-        description: '6 hits so far',
+        description: `${event?.click_analytics?.upgradeCount || 0} so far`,
         link: 'payment',
         icon: <TbArrowUpRight />,
     },
 ]
 
-const Navigator = ({ newEvent }: { newEvent: boolean }) => {
+const Navigator = ({
+    newEvent,
+    event,
+}: {
+    newEvent: boolean
+    event?: EventWithDetailsAndCount
+}) => {
     return (
         <div className="flex flex-col gap-2">
             {newEvent
@@ -96,7 +103,7 @@ const Navigator = ({ newEvent }: { newEvent: boolean }) => {
                           </span>
                       </Link>
                   ))
-                : editModeNavigationList.map((nav) => (
+                : editModeNavigationList(event).map((nav) => (
                       <Link
                           key={nav.label}
                           activeClass="bg-gray-100 dark:bg-gray-700 active"

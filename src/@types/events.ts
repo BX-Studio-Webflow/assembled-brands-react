@@ -179,6 +179,21 @@ export interface EventWithDetailsAndCount {
     host: Host
     leadCount: number
     memberships: MembershipWithDates[]
+    click_analytics: {
+        clicks: Click[]
+        clickCount: number
+        scheduleCallbackCount: number
+        upgradeCount: number
+    }
+}
+
+export interface Click {
+    id: number
+    lead_id: number
+    event_id: number
+    link_url: string
+    clicked_at: string
+    click_type: 'schedule_callback' | 'upgrade'
 }
 
 // Response type for streamPrerecordedEvent

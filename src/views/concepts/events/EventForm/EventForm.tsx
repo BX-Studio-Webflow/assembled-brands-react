@@ -21,11 +21,13 @@ import type { Asset, AssetQueryParams } from '@/@types/asset'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
+import { EventWithDetailsAndCount } from '@/@types/events'
 
 type EventFormProps = {
     children: ReactNode
     onFormSubmit: (values: EventFormType) => void
     defaultValues?: Partial<EventFormType>
+    event?: EventWithDetailsAndCount
     newEvent?: boolean
 } & CommonProps
 
@@ -149,6 +151,7 @@ const EventForm = (props: EventFormProps) => {
                                     <Affix offset={getTopGapValue()}>
                                         <Card>
                                             <Navigator
+                                                event={props.event}
                                                 newEvent={
                                                     props.newEvent || false
                                                 }

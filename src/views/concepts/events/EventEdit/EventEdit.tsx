@@ -181,6 +181,7 @@ const EventEdit = () => {
 
         return {
             defaultValues,
+            event: data,
         }
     }, [data])
 
