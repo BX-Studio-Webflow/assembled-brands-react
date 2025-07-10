@@ -215,10 +215,10 @@ const LeadEdit = () => {
                                             getDefaultValues() as LeadFormSchema
                                         }
                                         newLead={false}
-                                        onFormSubmit={handleFormSubmit}
                                         statusText={statusText}
                                         statusIcon={statusIcon}
                                         statusClass={statusClass}
+                                        onFormSubmit={handleFormSubmit}
                                     >
                                         <Container>
                                             <div className="flex items-center justify-end px-8">

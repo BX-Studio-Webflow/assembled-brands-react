@@ -59,7 +59,7 @@ const EventCreate = () => {
 
     return (
         <>
-            <EventForm onFormSubmit={handleFormSubmit} newEvent={true}>
+            <EventForm newEvent={true} onFormSubmit={handleFormSubmit}>
                 <Container>
                     <div className="flex items-center justify-between px-8">
                         <span></span>
