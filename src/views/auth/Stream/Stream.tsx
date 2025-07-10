@@ -8,7 +8,7 @@ import { Card } from '@/components/ui'
 import ChatBody from '@/views/concepts/chat/Chat/components/ChatBody'
 import ChatSidebar from '@/views/concepts/chat/Chat/components/ChatSidebar'
 import EventHeader from '@/views/concepts/events/EventStream/components/EventHeader'
-import EventHeaderExtra from '@/views/concepts/events/EventStream/components/EventHeaderExtra'
+import EventActions from '@/views/concepts/events/EventStream/components/EventActions'
 import EventWaitingCard from '@/views/concepts/events/EventStream/components/EventWaitingCard'
 import { EventProvider } from '@/views/concepts/events/EventStream/context/EventContext'
 
@@ -96,7 +96,7 @@ const Stream = () => {
                             }
                             nextDate={nextDate}
                         />
-                        <EventHeaderExtra
+                        <EventActions
                             isHost={isHost}
                             eventStatus={
                                 eventStatus as
