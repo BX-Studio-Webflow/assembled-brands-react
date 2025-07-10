@@ -10,12 +10,12 @@ import { useState, type MouseEvent } from 'react'
 import { IoStatsChart } from 'react-icons/io5'
 import { apiCreateClick } from '@/services/ClickAnalyticsService'
 
-interface EventHeaderExtraProps {
+interface EventActionsProps {
     isHost: boolean
     eventStatus: 'live' | 'ended' | 'early' | 'cancelled' | 'suspended'
 }
 
-const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
+const EventActions = ({ isHost, eventStatus }: EventActionsProps) => {
     const { data } = useEvent()
     const [dialogIsOpen, setIsOpen] = useState(false)
 
@@ -161,4 +161,4 @@ const EventHeaderExtra = ({ isHost, eventStatus }: EventHeaderExtraProps) => {
     )
 }
 
-export default EventHeaderExtra
+export default EventActions
