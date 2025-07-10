@@ -1,6 +1,5 @@
 import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
-import Select from '@/components/ui/Select'
 import { FormItem } from '@/components/ui/Form'
 import type { Control, FieldErrors, FieldArrayWithId } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
@@ -50,9 +49,10 @@ const MembershipPlansSection = ({
                             <FiX size={18} />
                         </button>
                     )}
-                    <h4 className="mb-4 font-bold">Plan</h4>
+                    <h4 className="mb-4 font-bold">Date & Price Plan</h4>
                     <FormItem
-                        label="Price plan ticket name"
+                        label="Ticket Title ie Thursday Event (Event title, Date or Time not required)
+"
                         invalid={Boolean(errors.membership_plans?.[idx]?.name)}
                         errorMessage={
                             errors.membership_plans?.[idx]?.name?.message
@@ -131,50 +131,6 @@ const MembershipPlansSection = ({
                             )}
                         />
                     </FormItem>
-                    <FormItem
-                        label="Payment frequency"
-                        invalid={Boolean(
-                            errors.membership_plans?.[idx]?.payment_type,
-                        )}
-                        errorMessage={
-                            errors.membership_plans?.[idx]?.payment_type
-                                ?.message
-                        }
-                    >
-                        <Controller
-                            name={
-                                `membership_plans.${idx}.payment_type` as const
-                            }
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    options={[
-                                        { value: 'one_off', label: 'One Off' },
-                                        {
-                                            value: 'recurring',
-                                            label: 'Recurring',
-                                        },
-                                    ]}
-                                    placeholder="Select one..."
-                                    value={
-                                        field.value
-                                            ? {
-                                                  value: field.value,
-                                                  label:
-                                                      field.value === 'one_off'
-                                                          ? 'One Off'
-                                                          : 'Recurring',
-                                              }
-                                            : undefined
-                                    }
-                                    onChange={(option) =>
-                                        field.onChange(option?.value)
-                                    }
-                                />
-                            )}
-                        />
-                    </FormItem>
                 </Card>
             ))}
             <div className="flex justify-center">
@@ -183,7 +139,7 @@ const MembershipPlansSection = ({
                     className="mt-2 bg-green-600 text-white"
                     onClick={append}
                 >
-                    Add another plan
+                    Add another date
                 </Button>
             </div>
             {errors.membership_plans &&
