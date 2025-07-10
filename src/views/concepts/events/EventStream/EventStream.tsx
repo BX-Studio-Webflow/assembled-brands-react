@@ -10,7 +10,7 @@ import ChatSidebar from '../../chat/Chat/components/ChatSidebar'
 import Card from '@/components/ui/Card'
 import { EventProvider } from './context/EventContext'
 import EventHeader from './components/EventHeader'
-import EventHeaderExtra from './components/EventHeaderExtra'
+import EventActions from './components/EventActions'
 import EventWaitingCard from './components/EventWaitingCard'
 import { apiRecordLeaveEvent } from '@/services/TelemetryService'
 
@@ -114,7 +114,7 @@ const EventStream = () => {
                         nextDate={nextDate}
                         isHost={isHost}
                     />
-                    <EventHeaderExtra
+                    <EventActions
                         isHost={isHost}
                         eventStatus={
                             eventStatus as
