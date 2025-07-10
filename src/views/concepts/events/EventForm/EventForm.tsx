@@ -54,6 +54,7 @@ const defaultValues = {
     landing_page_url: '',
     success_url: '',
     calendar_url: '',
+    upgrade_url: '',
 }
 
 const EventForm = (props: EventFormProps) => {

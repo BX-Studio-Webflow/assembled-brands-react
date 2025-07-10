@@ -178,7 +178,7 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
             </FormItem>
 
             <FormItem
-                label="Landing Page or Source URL where the leads come from"
+                label="From – URL of the landing page where leads originate."
                 invalid={Boolean(errors.landing_page_url)}
                 errorMessage={errors.landing_page_url?.message}
             >
@@ -196,7 +196,7 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
             </FormItem>
 
             <FormItem
-                label="Redirect URL after form is filled successfully"
+                label="Form Success – Destination page after the landing page form is submitted."
                 invalid={Boolean(errors.success_url)}
                 errorMessage={errors.success_url?.message}
             >
@@ -214,7 +214,7 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
             </FormItem>
 
             <FormItem
-                label="Calendar URL for scheduling callback"
+                label="Schedule Callback on Event – Your calendar link for scheduling callbacks or meetings."
                 invalid={Boolean(errors.calendar_url)}
                 errorMessage={errors.calendar_url?.message}
             >
@@ -230,7 +230,23 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
                     )}
                 />
             </FormItem>
-
+            <FormItem
+                label="Upgrade on Event – Your sales page link for purchases or upgrades."
+                invalid={Boolean(errors.upgrade_url)}
+                errorMessage={errors.upgrade_url?.message}
+            >
+                <Controller
+                    name="upgrade_url"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            type="text"
+                            placeholder="https://www.something.com"
+                            {...field}
+                        />
+                    )}
+                />
+            </FormItem>
             <FormItem
                 label="Terms and Conditions"
                 invalid={Boolean(errors.terms)}

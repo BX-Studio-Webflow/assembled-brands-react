@@ -74,6 +74,7 @@ const EventEdit = () => {
                 landing_page_url: values.landing_page_url,
                 success_url: values.success_url,
                 calendar_url: values.calendar_url,
+                upgrade_url: values.upgrade_url,
                 membership_plans: values.membership_plans.map((plan) => ({
                     name: plan.name,
                     date:
@@ -159,6 +160,7 @@ const EventEdit = () => {
             landing_page_url: data?.landing_page_url || '',
             success_url: data?.success_url || '',
             calendar_url: data?.calendar_url || '',
+            upgrade_url: data?.upgrade_url || '',
             membership_plans:
                 membershipPlans.length > 0
                     ? membershipPlans

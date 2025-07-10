@@ -10,6 +10,7 @@ export const OtherEventDetailsSchema = z.object({
     calendar_url: z.string().optional(),
     live_venue_address: z.string().optional(),
     success_url: z.string().optional(),
+    upgrade_url: z.string().optional(),
     course_url_external: z.string().optional(),
     course_internal: z.boolean().optional(),
     invite_existing_leads: z.boolean().optional(),

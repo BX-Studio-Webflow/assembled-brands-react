@@ -172,6 +172,7 @@ export interface EventWithDetailsAndCount {
     instructions: string
     landing_page_url: string
     calendar_url: string
+    upgrade_url: string
     live_venue_address: string
     host_id: number
     asset: Asset
