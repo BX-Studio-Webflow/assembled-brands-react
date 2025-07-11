@@ -309,12 +309,12 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         nextDate,
     ])
 
-    //Fire this every 20 seconds
+    //Fire telemetry once on load, then every 10 seconds
     useEffect(() => {
         // Only track telemetry for non-hosts
         if (isHost) return
 
-        const interval = setInterval(async () => {
+        const sendTelemetry = async (isInitial: boolean = false) => {
             try {
                 await apiCreateTelemetry({
                     event_id: Number(eventId),
@@ -323,13 +323,20 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                     os: navigator.platform,
                     ip_address: '',
                     token: token,
+                    is_initial: isInitial,
                     email: email,
                     code: code,
                 })
             } catch (error) {
                 console.error('Failed to create/update telemetry:', error)
             }
-        }, 10000)
+        }
+
+        // Fire initial telemetry
+        sendTelemetry(true)
+
+        // Set up interval for subsequent telemetry calls
+        const interval = setInterval(sendTelemetry, 10000)
 
         return () => clearInterval(interval)
     }, [eventId, token, email, code, isHost])
