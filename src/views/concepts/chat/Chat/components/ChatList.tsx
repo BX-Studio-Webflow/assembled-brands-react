@@ -8,7 +8,7 @@ import { EventStreamResponse } from '@/@types/events'
 import ChatBox from '@/components/view/ChatBox'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
-import ChatAction from './ChatAction'
+//import ChatAction from './ChatAction'
 import useAuth from '@/auth/useAuth'
 
 interface ChatListProps {
@@ -115,7 +115,11 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
                         </button>
                     </div>
                 ),
-                extra: <ChatAction muted={selectedChat.muted} />,
+                extra: (
+                    <div>
+                        <div></div>
+                    </div>
+                ),
                 className: 'bg-gray-100 dark:bg-gray-600 h-[100px]',
             },
         }),
