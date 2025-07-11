@@ -15,7 +15,7 @@ const { useMergeRef } = hooks
 
 const ChatInput = (props: ChatInputProps) => {
     const [attachments, setAttachments] = useState<File[]>([])
-
+    const uploadEnabled = false
     const { placeholder, onInputChange, ref = null } = props
 
     const inputRef = useRef<HTMLInputElement>(null)
@@ -60,18 +60,20 @@ const ChatInput = (props: ChatInputProps) => {
                 </Upload>
             )}
             <div className="flex items-center gap-2 w-full h-[50px]">
-                <Upload
-                    fileList={attachments}
-                    showList={false}
-                    onChange={setAttachments}
-                >
-                    <button
-                        className="text-xl heading-text hover:text-primary px-1 py-2"
-                        type="button"
+                {uploadEnabled && (
+                    <Upload
+                        fileList={attachments}
+                        showList={false}
+                        onChange={setAttachments}
                     >
-                        <TbPhotoPlus />
-                    </button>
-                </Upload>
+                        <button
+                            className="text-xl heading-text hover:text-primary px-1 py-2"
+                            type="button"
+                        >
+                            <TbPhotoPlus />
+                        </button>
+                    </Upload>
+                )}
                 <input
                     ref={useMergeRef(inputRef, ref)}
                     className="flex-1 h-full placeholder:text-gray-400 bg-transparent focus:outline-hidden heading-text"
