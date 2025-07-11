@@ -28,6 +28,13 @@ const getFileType = (type: string) => {
             return 'ICO'
         case 'directory':
             return 'Folder'
+        case 'video/mp4':
+            return 'MP4'
+        case 'video/webm':
+            return 'WEBM'
+        case 'video/ogg':
+            return 'OGG'
+        case 'video/quicktime':
         default:
             return <></>
     }

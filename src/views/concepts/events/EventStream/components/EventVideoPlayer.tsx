@@ -200,7 +200,11 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         }
 
         // Check if the video URL is an HLS stream (.m3u8)
-        if (Hls.isSupported() && hls_presigned_url && hls_presigned_url.endsWith('.m3u8')) {
+        if (
+            Hls.isSupported() &&
+            hls_presigned_url &&
+            hls_presigned_url.endsWith('.m3u8')
+        ) {
             // Create Hls instance
             hlsRef.current = new Hls()
             hlsRef.current.loadSource(hls_presigned_url)

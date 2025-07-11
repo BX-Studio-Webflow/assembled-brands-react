@@ -68,8 +68,11 @@ const FileList = (props: FileListProps) => {
                         fileType={file.asset_type}
                         size={Number(file.asset_size)}
                         name={file.asset_name}
+                        content_type={file.content_type}
                         mediaconvert_job_status={file.mediaconvert_job_status}
-                        mediaconvert_job_progress={file.mediaconvert_job_progress}
+                        mediaconvert_job_progress={
+                            file.mediaconvert_job_progress
+                        }
                         onClick={() => onClick(file.id.toString())}
                         onDownload={() =>
                             onDownload(file.presignedUrl, file.asset_name)
