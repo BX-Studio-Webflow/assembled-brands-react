@@ -5,15 +5,20 @@ import toast from '@/components/ui/toast'
 import Container from '@/components/shared/Container'
 import Loading from '@/components/shared/Loading'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import Tooltip from '@/components/ui/Tooltip'
 import EventForm from '../EventForm'
-import { apiGetEvent, apiUpdateEvent } from '@/services/EventService'
+import {
+    apiGetEvent,
+    apiUpdateEvent,
+    apiCancelEvent,
+} from '@/services/EventService'
 import useSWR, { mutate } from 'swr'
 import { useParams, useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
 import type { EventFormType } from '../EventForm/validation/eventFormSchema'
 import type { EventWithDetailsAndCount } from '@/@types/events'
 import { AxiosError } from 'axios'
-import { FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
+import { FaBan, FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
 import { useChatStore } from '../../chat/Chat/store/chatStore'
 import { CSVLink } from 'react-csv'
 import { RiChatDeleteLine } from 'react-icons/ri'
@@ -36,6 +41,8 @@ const EventEdit = () => {
     const [discardConfirmationOpen, setDiscardConfirmationOpen] =
         useState(false)
     const [clearLogsConfirmationOpen, setClearLogsConfirmationOpen] =
+        useState(false)
+    const [cancelEventConfirmationOpen, setCancelEventConfirmationOpen] =
         useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
@@ -500,6 +507,42 @@ const x = setInterval(function () {
         }))
     }, [messages])
 
+    const handleCancelEvent = () => {
+        setCancelEventConfirmationOpen(true)
+    }
+
+    const handleConfirmCancelEvent = async () => {
+        try {
+            if (data?.id) {
+                await apiCancelEvent({
+                    status: 'cancelled',
+                    id: data.id,
+                })
+                mutate(`/event/${id}`)
+            }
+            toast.push(
+                <Notification type="success">
+                    Event cancelled successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } catch (error) {
+            console.error('Error cancelling event:', error)
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setCancelEventConfirmationOpen(false)
+        }
+    }
+
+    const handleCancelCancelEvent = () => {
+        setCancelEventConfirmationOpen(false)
+    }
+
     return (
         <Loading loading={isLoading}>
             <EventForm
@@ -511,61 +554,84 @@ const x = setInterval(function () {
                     <div className="flex items-center justify-between px-8">
                         <span>
                             <div className="flex-wrap inline-flex xl:flex items-center gap-2 ml-2">
-                                <Button
-                                    type="button"
-                                    icon={<FaRegCopy />}
-                                    onClick={handleCopy}
-                                />
-                                <Button
-                                    type="button"
-                                    icon={<FaLink />}
-                                    onClick={handleLink}
-                                />
-                                <Button
-                                    type="button"
-                                    icon={<FaClock />}
-                                    onClick={handleCountdown}
-                                />
-                                {data?.event_type === 'prerecorded' && (
-                                    <CSVLink
-                                        filename={`event-${data?.id}-messages.csv`}
-                                        data={csvData}
-                                        onClick={handleDownload}
-                                    >
-                                        <Button
-                                            type="button"
-                                            icon={<FaDownload />}
-                                        />
-                                    </CSVLink>
-                                )}
-                                {data?.event_type === 'prerecorded' && (
+                                <Tooltip title="Copy lead form code">
                                     <Button
                                         type="button"
-                                        icon={<RiChatDeleteLine />}
-                                        onClick={handleClearLogs}
+                                        icon={<FaRegCopy />}
+                                        onClick={handleCopy}
                                     />
+                                </Tooltip>
+                                <Tooltip title="Copy event link">
+                                    <Button
+                                        type="button"
+                                        icon={<FaLink />}
+                                        onClick={handleLink}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Copy countdown script">
+                                    <Button
+                                        type="button"
+                                        icon={<FaClock />}
+                                        onClick={handleCountdown}
+                                    />
+                                </Tooltip>
+                                {data?.event_type === 'prerecorded' && (
+                                    <Tooltip title="Download chat messages as CSV">
+                                        <CSVLink
+                                            filename={`event-${data?.id}-messages.csv`}
+                                            data={csvData}
+                                            onClick={handleDownload}
+                                        >
+                                            <Button
+                                                type="button"
+                                                icon={<FaDownload />}
+                                            />
+                                        </CSVLink>
+                                    </Tooltip>
+                                )}
+                                {data?.event_type === 'prerecorded' && (
+                                    <>
+                                        <Tooltip title="Clear chat and attendance logs">
+                                            <Button
+                                                type="button"
+                                                icon={<RiChatDeleteLine />}
+                                                onClick={handleClearLogs}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip title="Cancel this event">
+                                            <Button
+                                                type="button"
+                                                icon={<FaBan />}
+                                                onClick={handleCancelEvent}
+                                            />
+                                        </Tooltip>
+                                    </>
                                 )}
                             </div>
                         </span>
                         <div className="flex items-center mr-2">
-                            <Button
-                                className="ltr:mr-3 rtl:ml-3"
-                                type="button"
-                                customColorClass={() =>
-                                    'bEvent-error ring-1 ring-error text-error hover:bEvent-error hover:ring-error hover:text-error bg-transparent'
-                                }
-                                icon={<TbTrash />}
-                                onClick={handleDelete}
-                            >
-                                Delete
-                            </Button>
-                            <Button
-                                variant="solid"
-                                type="submit"
-                                loading={isSubmiting}
-                            >
-                                Update
-                            </Button>
+                            <Tooltip title="Delete this event permanently">
+                                <Button
+                                    className="ltr:mr-3 rtl:ml-3"
+                                    type="button"
+                                    customColorClass={() =>
+                                        'bEvent-error ring-1 ring-error text-error hover:bEvent-error hover:ring-error hover:text-error bg-transparent'
+                                    }
+                                    icon={<TbTrash />}
+                                    onClick={handleDelete}
+                                >
+                                    Delete
+                                </Button>
+                            </Tooltip>
+                            <Tooltip title="Save changes to this event">
+                                <Button
+                                    variant="solid"
+                                    type="submit"
+                                    loading={isSubmiting}
+                                >
+                                    Update
+                                </Button>
+                            </Tooltip>
                         </div>
                     </div>
                 </Container>
@@ -597,6 +663,21 @@ const x = setInterval(function () {
                     Are you sure you want to clear all chat and attendance logs
                     for this event? This will remove all chat and attendance
                     statistics for this event. This action cannot be undone.
+                </p>
+            </ConfirmDialog>
+            <ConfirmDialog
+                isOpen={cancelEventConfirmationOpen}
+                type="danger"
+                title="Cancel Event"
+                onClose={handleCancelCancelEvent}
+                onRequestClose={handleCancelCancelEvent}
+                onCancel={handleCancelCancelEvent}
+                onConfirm={handleConfirmCancelEvent}
+            >
+                <p>
+                    Are you sure you want to cancel this event? This will mark
+                    the event as cancelled and prevent further registrations.
+                    This action cannot be undone.
                 </p>
             </ConfirmDialog>
         </Loading>
