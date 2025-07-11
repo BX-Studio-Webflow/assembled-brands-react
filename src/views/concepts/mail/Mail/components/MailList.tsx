@@ -141,7 +141,6 @@ const MailList = () => {
                             <Table compact overflow={false}>
                                 <THead>
                                     <Tr>
-                                        <Th colSpan={2}>From</Th>
                                         <Th></Th>
                                         <Th>Subject</Th>
                                         <Th>Sent</Th>
@@ -157,54 +156,6 @@ const MailList = () => {
                                                 handleMailClick(e, mail)
                                             }
                                         >
-                                            <Td width="40">
-                                                <div className="h-[32px] w-[32px] flex items-center justify-center">
-                                                    <div
-                                                        className={classNames(
-                                                            'group-hover:hidden',
-                                                            mail.checked &&
-                                                                'hidden',
-                                                        )}
-                                                    >
-                                                        <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                                            <span className="text-sm font-semibold">
-                                                                {mail.email
-                                                                    .charAt(0)
-                                                                    .toUpperCase()}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        className={classNames(
-                                                            'group-hover:block',
-                                                            mail.checked
-                                                                ? 'block'
-                                                                : 'hidden',
-                                                        )}
-                                                    >
-                                                        <div
-                                                            className="flex items-center"
-                                                            onClick={(e) =>
-                                                                handleCheckboxClick(
-                                                                    e,
-                                                                    mail,
-                                                                )
-                                                            }
-                                                        >
-                                                            <Checkbox
-                                                                checked={
-                                                                    mail.checked
-                                                                }
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Td>
-                                            <Td>
-                                                <span className="font-bold heading-text truncate">
-                                                    {mail.email}
-                                                </span>
-                                            </Td>
                                             <Td>
                                                 <div className="flex justify-end">
                                                     <Badge
