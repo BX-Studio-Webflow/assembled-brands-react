@@ -64,18 +64,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         container.appendChild(video)
 
         const controls = isHost
-            ? [
-                  'current-time',
-                  'mute',
-                  'volume',
-                  'fullscreen',
-                  'captions',
-                  'settings',
-                  'pip',
-                  'airplay',
-                  'download',
-                  'share',
-              ]
+            ? ['current-time', 'mute', 'volume', 'fullscreen']
             : ['current-time', 'mute', 'volume', 'fullscreen']
 
         const startPlayback = (videoElement: HTMLVideoElement) => {

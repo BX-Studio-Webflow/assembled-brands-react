@@ -107,10 +107,10 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
                             <div className="min-w-0 flex-1">
                                 <div className="flex justify-between">
                                     <div className="font-bold heading-text truncate">
-                                        Event chat
+                                        Live chat
                                     </div>
                                 </div>
-                                <div>Chat with your host</div>
+                                <div>Team member is online</div>
                             </div>
                         </button>
                     </div>
