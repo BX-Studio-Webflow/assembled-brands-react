@@ -101,6 +101,7 @@ const EventStream = () => {
             <Loading loading={isLoading}>
                 <div className="flex flex-row justify-between gap-4 mb-4 ">
                     <EventHeader
+                        eventId={String(data?.event.id)}
                         status={
                             eventStatus as
                                 | 'cancelled'

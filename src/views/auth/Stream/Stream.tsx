@@ -82,6 +82,7 @@ const Stream = () => {
                 <div className="flex flex-col w-full h-full m-2">
                     <div className="flex flex-row justify-between gap-4 mb-4 w-full">
                         <EventHeader
+                            eventId={String(data?.event.id)}
                             status={
                                 eventStatus as
                                     | 'early'

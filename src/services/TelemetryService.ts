@@ -107,3 +107,64 @@ export async function apiClearTelemetryLogs(eventId: number) {
         method: 'delete',
     })
 }
+
+// Lobby Telemetry APIs
+export async function apiCreateLobbyTelemetry(data: {
+    event_id: number
+    token: string
+    email: string
+    code: string
+}) {
+    return ApiService.fetchDataWithAxios<{
+        message: string
+        telemetryId: number
+        sessionId: string
+    }>({
+        url: '/telemetry/lobby-telemetry',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiUpdateLobbyTelemetry(
+    sessionId: string,
+    data: { duration: number },
+) {
+    return ApiService.fetchDataWithAxios<{ message: string }>({
+        url: `/telemetry/lobby-telemetry/${sessionId}`,
+        method: 'put',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiLeaveLobby(data: {
+    session_id: string
+    exit_reason: string
+}) {
+    return ApiService.fetchDataWithAxios<{ message: string }>({
+        url: '/telemetry/lobby-telemetry/exit',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}
+
+export async function apiGetLobbyAnalytics(eventId: number) {
+    return ApiService.fetchDataWithAxios<{
+        totalLobbySessions: number
+        totalLobbyTime: number
+        averageLobbyTime: number
+        exitReasonStats: Record<string, number>
+    }>({
+        url: `/telemetry/lobby-telemetry/event/${eventId}/analytics`,
+        method: 'get',
+    })
+}

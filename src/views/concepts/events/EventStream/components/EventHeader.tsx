@@ -1,6 +1,11 @@
 import React, { useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router'
-import { apiRecordLeaveEvent } from '@/services/TelemetryService'
+import {
+    apiRecordLeaveEvent,
+    apiCreateLobbyTelemetry,
+    apiUpdateLobbyTelemetry,
+    apiLeaveLobby,
+} from '@/services/TelemetryService'
 
 const statusPills: { [key: string]: string } = {
     cancelled:
@@ -16,6 +21,7 @@ const statusPills: { [key: string]: string } = {
 interface EventHeaderProps {
     status: 'cancelled' | 'suspended' | 'ended' | 'live' | 'early'
     eventName: string
+    eventId: string
     eventDescription: string
     nextDate: {
         start: Date
@@ -27,6 +33,7 @@ interface EventHeaderProps {
 const EventHeader = ({
     status,
     eventName,
+    eventId,
     eventDescription,
     nextDate,
     isHost = false,
@@ -145,6 +152,77 @@ const EventHeader = ({
             window.removeEventListener('pagehide', handlePageHide)
         }
     }, [trackLeaveEvent, isHost, status, token, email, code])
+
+    //Track lobby telemetry when the lead and event has not started, status early
+    useEffect(() => {
+        // Only track telemetry for non-hosts
+        if (isHost) return
+        if (status !== 'early') return
+        if (!token || !email || !code) return
+
+        let sessionId: string | null = null
+        let lobbyStartTime: number | null = null
+
+        const createLobbySession = async () => {
+            try {
+                const response = await apiCreateLobbyTelemetry({
+                    event_id: Number(eventId),
+                    token: token,
+                    email: email,
+                    code: code,
+                })
+                sessionId = response.sessionId
+                lobbyStartTime = Date.now()
+                console.log('Lobby session created:', sessionId)
+            } catch (error) {
+                console.error('Failed to create lobby telemetry:', error)
+            }
+        }
+
+        const updateLobbyDuration = async () => {
+            if (!sessionId || !lobbyStartTime) return
+
+            try {
+                const duration = Math.floor(
+                    (Date.now() - lobbyStartTime) / 1000,
+                )
+                await apiUpdateLobbyTelemetry(sessionId, { duration })
+            } catch (error) {
+                console.error('Failed to update lobby telemetry:', error)
+            }
+        }
+
+        const recordLobbyExit = async (
+            reason: 'event_started' | 'left' | 'timeout',
+        ) => {
+            if (!sessionId) return
+
+            try {
+                await apiLeaveLobby({
+                    session_id: sessionId,
+                    exit_reason: reason,
+                })
+                console.log('Lobby exit recorded:', reason)
+            } catch (error) {
+                console.error('Failed to record lobby exit:', error)
+            }
+        }
+
+        // Create lobby session on mount
+        createLobbySession()
+
+        // Update duration every 15 seconds
+        const interval = setInterval(updateLobbyDuration, 15000)
+
+        // Record exit when component unmounts or status changes
+        return () => {
+            clearInterval(interval)
+            if (sessionId) {
+                const reason = status !== 'early' ? 'event_started' : 'left'
+                recordLobbyExit(reason)
+            }
+        }
+    }, [eventId, token, email, code, isHost, status])
 
     return (
         <div className="pt-2">

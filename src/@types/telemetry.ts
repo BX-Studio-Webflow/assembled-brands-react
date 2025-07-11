@@ -90,3 +90,39 @@ export interface TelemetryQueryParams {
     event_id?: number
     lead_id?: number
 }
+
+// Lobby Telemetry Types
+export interface LobbyTelemetry {
+    id: number
+    event_id: number
+    lead_id: number
+    session_id: string
+    joined_at: string
+    left_at: string | null
+    duration: number | null
+    exit_reason: string | null
+    created_at: string
+}
+
+export interface CreateLobbyTelemetryRequest {
+    event_id: number
+    token: string
+    email: string
+    code: string
+}
+
+export interface UpdateLobbyTelemetryRequest {
+    duration: number
+}
+
+export interface LeaveLobbyRequest {
+    session_id: string
+    exit_reason: 'event_started' | 'left' | 'timeout'
+}
+
+export interface LobbyAnalytics {
+    totalLobbySessions: number
+    totalLobbyTime: number
+    averageLobbyTime: number
+    exitReasonStats: Record<string, number>
+}
