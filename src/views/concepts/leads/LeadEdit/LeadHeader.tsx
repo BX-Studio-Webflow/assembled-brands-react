@@ -65,7 +65,9 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
                                               : 'text-amber-600 bg-amber-100 dark:text-amber-100 dark:bg-amber-500/20 border-0'
                                     }
                                 >
-                                    {latestPayment?.status}
+                                    {latestPayment?.status === 'succeeded'
+                                        ? 'Paid'
+                                        : 'Unpaid'}
                                 </Tag>
                             </div>
                         </div>
