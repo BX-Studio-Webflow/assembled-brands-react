@@ -47,6 +47,7 @@ export interface EventDetails {
     event_description: string
     event_type: 'live_venue' | 'prerecorded' | 'live_video_call'
     asset_id: number
+    image_asset_id: number
     created_at: string
     updated_at: string
     status: 'active' | 'suspended' | 'cancelled'
@@ -167,6 +168,7 @@ export interface EventWithDetailsAndCount {
     event_description: string
     event_type: 'live_venue' | 'prerecorded' | 'live_video_call'
     asset_id: number
+    image_asset_id: number
     created_at: string
     updated_at: string
     status: 'active' | 'suspended' | 'cancelled' | 'ended'
