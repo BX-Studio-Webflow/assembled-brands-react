@@ -23,7 +23,8 @@ const ChatBody = ({
     const videoPlayerProps = useMemo(
         () => ({
             isHost,
-            src: data.event.asset.presignedUrl,
+            normal_presigned_url: data.event.asset.presignedUrl,
+            hls_presigned_url: data.event.asset.hls_presigned_url,
             assetId: data.event.asset.id,
             eventId: data.event.id,
             onEnded: () => onStatusUpdate('ended'),
@@ -32,6 +33,7 @@ const ChatBody = ({
         [
             isHost,
             data.event.asset.presignedUrl,
+            data.event.asset.hls_presigned_url,
             data.event.asset.id,
             data.event.id,
             onStatusUpdate,

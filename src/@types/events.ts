@@ -73,6 +73,7 @@ export interface Asset {
     updated_at: string
     user_id: number
     presignedUrl?: string
+    hls_presigned_url?: string
 }
 
 export interface Host {

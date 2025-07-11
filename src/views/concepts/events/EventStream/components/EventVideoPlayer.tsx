@@ -13,7 +13,8 @@ interface NavigatorWithAutoplayPolicy extends Navigator {
 }
 
 interface EventVideoPlayerProps {
-    src?: string
+    normal_presigned_url?: string
+    hls_presigned_url?: string
     poster?: string
     assetId?: number
     eventId?: number
@@ -25,8 +26,8 @@ interface EventVideoPlayerProps {
 }
 
 const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
-    src = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4',
-    poster = 'https://ecme-react.themenate.net/img/landing/hero/hero.webp',
+    normal_presigned_url = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4',
+    hls_presigned_url = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4',
     assetId,
     eventId,
     onEnded,
@@ -199,10 +200,10 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         }
 
         // Check if the video URL is an HLS stream (.m3u8)
-        if (Hls.isSupported() && src.endsWith('.m3u8')) {
+        if (Hls.isSupported() && hls_presigned_url.endsWith('.m3u8')) {
             // Create Hls instance
             hlsRef.current = new Hls()
-            hlsRef.current.loadSource(src)
+            hlsRef.current.loadSource(hls_presigned_url)
             hlsRef.current.attachMedia(video)
 
             // Handle HLS manifest parsed event
@@ -253,14 +254,14 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             })
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             // Fallback for Safari which has native HLS support
-            video.src = src
+            video.src = hls_presigned_url
 
             video.addEventListener('loadedmetadata', () => {
                 startPlayback(video)
             })
         } else {
             // Regular video playback
-            video.setAttribute('src', src)
+            video.setAttribute('src', normal_presigned_url)
             startPlayback(video)
         }
 
@@ -298,7 +299,15 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         return () => {
             cleanup()
         }
-    }, [src, assetId, eventId, poster, isHost, onEnded, nextDate])
+    }, [
+        normal_presigned_url,
+        hls_presigned_url,
+        assetId,
+        eventId,
+        isHost,
+        onEnded,
+        nextDate,
+    ])
 
     //Fire this every 20 seconds
     useEffect(() => {
