@@ -334,7 +334,7 @@ const EventEdit = () => {
     outline: none;
   }
 </style>
-<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/n.js"></script>`
+<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/o.js"></script>`
         const host_id = data?.host_id?.toString() || ''
         const success_url = data?.success_url || data?.live_video_url
 
