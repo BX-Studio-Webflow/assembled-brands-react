@@ -333,7 +333,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         }
 
         // Fire initial telemetry
-        sendTelemetry(true)
+        //sendTelemetry(true)
 
         // Set up interval for subsequent telemetry calls
         const interval = setInterval(sendTelemetry, 15000)
