@@ -49,4 +49,7 @@ export type BaseFileItemProps = {
     size?: number
     loading?: boolean
     onClick?: () => void
+    processingStatus?: string
+    mediaconvertJobStatus?: string
+    mediaconvertJobProgress?: number
 } & DropdownItemCallbackProps

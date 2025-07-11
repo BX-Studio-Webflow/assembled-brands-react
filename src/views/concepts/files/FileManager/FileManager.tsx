@@ -90,12 +90,14 @@ const FileManager = () => {
                                         <Th>File</Th>
                                         <Th>Size</Th>
                                         <Th>Type</Th>
+                                        <Th>Status</Th>
+                                        <Th>Progress</Th>
                                         <Th></Th>
                                     </Tr>
                                 </THead>
                                 <TableRowSkeleton
                                     avatarInColumns={[0]}
-                                    columns={4}
+                                    columns={6}
                                     rows={5}
                                     avatarProps={{
                                         width: 30,

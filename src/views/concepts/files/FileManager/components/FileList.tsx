@@ -33,8 +33,10 @@ const FileList = (props: FileListProps) => {
                 <FileSegment
                     key={file.id}
                     fileType={file.asset_type}
-                    size={file.asset_size}
+                    size={Number(file.asset_size)}
                     name={file.asset_name}
+                    mediaconvert_job_status={file.mediaconvert_job_status}
+                    mediaconvert_job_progress={file.mediaconvert_job_progress}
                     onClick={() => onClick(file.id.toString())}
                     onDownload={() =>
                         onDownload(file.presignedUrl, file.asset_name)
@@ -54,6 +56,8 @@ const FileList = (props: FileListProps) => {
                     <Th>File</Th>
                     <Th>Size</Th>
                     <Th>Type</Th>
+                    <Th>Status</Th>
+                    <Th>Progress</Th>
                     <Th></Th>
                 </Tr>
             </THead>
@@ -62,8 +66,10 @@ const FileList = (props: FileListProps) => {
                     <FileRow
                         key={file.id}
                         fileType={file.asset_type}
-                        size={file.asset_size}
+                        size={Number(file.asset_size)}
                         name={file.asset_name}
+                        mediaconvert_job_status={file.mediaconvert_job_status}
+                        mediaconvert_job_progress={file.mediaconvert_job_progress}
                         onClick={() => onClick(file.id.toString())}
                         onDownload={() =>
                             onDownload(file.presignedUrl, file.asset_name)

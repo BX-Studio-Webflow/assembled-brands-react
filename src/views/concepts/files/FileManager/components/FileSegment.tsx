@@ -4,7 +4,10 @@ import MediaSkeleton from '@/components/shared/loaders/MediaSkeleton'
 import FileIcon from '@/components/view/FileIcon'
 import type { BaseFileItemProps } from '../types'
 
-type FileSegmentProps = BaseFileItemProps
+type FileSegmentProps = BaseFileItemProps & {
+    mediaconvert_job_status?: 'pending' | 'processing' | 'completed' | 'failed'
+    mediaconvert_job_progress?: number
+}
 
 const FileSegment = (props: FileSegmentProps) => {
     const { fileType, size, name, onClick, loading, ...rest } = props

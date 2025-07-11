@@ -1,13 +1,19 @@
 export interface Asset {
     id: number
     asset_name: string
-    asset_type: string
-    content_type: 'image' | 'video' | 'audio' | 'document' | 'profile_picture'
+    asset_type: 'image' | 'video' | 'audio' | 'document' | 'profile_picture'
+    content_type: string // Allow any MIME type
     asset_url: string
-    asset_size: number
+    asset_size: string // Store as string to match backend
     duration: number
     hls_url: string | null
     processing_status: 'pending' | 'processing' | 'completed' | 'failed'
+    upload_id?: string
+    mediaconvert_job_id?: string
+    mediaconvert_job_status?: 'pending' | 'processing' | 'completed' | 'failed'
+    mediaconvert_job_progress?: number
+    mediaconvert_job_current_phase?: string
+    upload_status?: 'pending' | 'completed' | 'failed'
     created_at: string
     updated_at: string
     user_id: number
