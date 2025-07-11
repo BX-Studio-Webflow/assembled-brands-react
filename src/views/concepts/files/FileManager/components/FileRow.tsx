@@ -65,7 +65,11 @@ const FileRow = (props: FileRowProps) => {
     }
 
     const getProgressDisplay = () => {
-        console.log(mediaconvert_job_status, mediaconvert_job_progress, fileType)
+        console.log(
+            mediaconvert_job_status,
+            mediaconvert_job_progress,
+            fileType,
+        )
         // Non-video types are completed by default
         if (fileType !== 'video') {
             return <span className="text-emerald-600 font-medium">100%</span>

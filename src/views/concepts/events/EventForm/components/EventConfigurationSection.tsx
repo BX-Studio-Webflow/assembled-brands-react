@@ -42,8 +42,38 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
             color: '#00B8D9', // Default color for all assets
         }))
 
+    const imageAssetOptions: AssetOption[] = assets
+        .filter((asset) => asset.asset_type === 'image')
+        .map((asset) => ({
+            value: asset.id.toString(),
+            label: asset.asset_name,
+            color: '#00B8D9', // Default color for all assets
+        }))
+
     return (
         <Card id="eventAssets">
+            <FormItem
+                label="Select Event Image"
+                invalid={Boolean(errors.image_asset_id)}
+                errorMessage={errors.image_asset_id?.message}
+            >
+                <Controller
+                    name="image_asset_id"
+                    control={control}
+                    render={({ field: { onChange, value, ...field } }) => (
+                        <Select<AssetOption>
+                            placeholder="Please Select"
+                            options={imageAssetOptions}
+                            value={imageAssetOptions.find(
+                                (option) => option.value === value?.toString(),
+                            )}
+                            onChange={(option) => onChange(option?.value)}
+                            {...field}
+                        />
+                    )}
+                />
+            </FormItem>
+
             <FormItem
                 label="Choose Event Type"
                 invalid={Boolean(errors.event_type)}

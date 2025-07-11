@@ -115,6 +115,8 @@ const EventForm = (props: EventFormProps) => {
         try {
             const payload = {
                 ...values,
+                image_asset_id: Number(values.image_asset_id),
+                asset_id: Number(values.asset_id),
                 membership_plans: values.membership_plans.map((plan) => ({
                     ...plan,
                     date:
