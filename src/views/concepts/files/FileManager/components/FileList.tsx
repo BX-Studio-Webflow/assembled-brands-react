@@ -90,7 +90,6 @@ const FileList = (props: FileListProps) => {
         <div>
             {fileList.length > 0 && (
                 <div>
-                    <h4>Files</h4>
                     {layout === 'grid' && renderFileSegment(fileList)}
                     {layout === 'list' && renderFileRow(fileList)}
                 </div>
