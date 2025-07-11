@@ -1,14 +1,17 @@
+import React, { useState, type MouseEvent } from 'react'
 import Button from '@/components/ui/Button'
 import Dialog from '@/components/ui/Dialog'
-import { useEvent } from '../context/EventContext'
-import { apiSaveInstantCallback } from '@/services/EventService'
-import { toast } from '@/components/ui'
-import { Notification } from '@/components/ui/Notification'
-import { AxiosError } from 'axios'
 import ChatStats from '@/views/concepts/chat/Chat/components/ChatStats'
-import { useState, type MouseEvent } from 'react'
+import Avatar from '@/components/ui/Avatar'
+import Tooltip from '@/components/ui/Tooltip'
 import { IoStatsChart } from 'react-icons/io5'
 import { apiCreateClick } from '@/services/ClickAnalyticsService'
+import { useEvent } from '../context/EventContext'
+import { apiSaveInstantCallback } from '@/services/EventService'
+import { Badge, toast } from '@/components/ui'
+import { Notification } from '@/components/ui/Notification'
+import { AxiosError } from 'axios'
+import { HiOutlineUser } from 'react-icons/hi'
 
 interface EventActionsProps {
     isHost: boolean
@@ -117,6 +120,49 @@ const EventActions = ({ isHost, eventStatus }: EventActionsProps) => {
                 </div>
             </Dialog>
         </>
+    ) : isHost && eventStatus === 'early' ? (
+        <div className="flex items-center gap-2 print:hidden mr-8">
+            <div className="flex">
+                <Tooltip
+                    title={
+                        <div className="p-2">
+                            <div className="font-semibold text-white mb-2">
+                                People in Lobby
+                            </div>
+                            <hr className="my-2 p-0" />
+                            <div className="space-y-1">
+                                {data.lobby_telemetry?.map((lobby) => (
+                                    <div
+                                        key={lobby.id}
+                                        className="flex flex-col items-start gap-0.5 mb-2"
+                                    >
+                                        <span className="font-semibold text-white dark:text-white leading-tight">
+                                            {lobby.lead?.name || 'No name'}{' '}
+                                        </span>
+                                        <span className="text-gray-400 text-xs">
+                                            {lobby.lead?.email || 'Unknown'}
+                                        </span>
+                                    </div>
+                                ))}
+                                {(!data.lobby_telemetry ||
+                                    data.lobby_telemetry.length === 0) && (
+                                    <div className="text-gray-400 text-sm italic">
+                                        No one in lobby yet
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    }
+                >
+                    <Badge
+                        className="mr-4"
+                        content={data.lobby_telemetry?.length || 0}
+                    >
+                        <Avatar icon={<HiOutlineUser />} />
+                    </Badge>
+                </Tooltip>
+            </div>
+        </div>
     ) : !isHost ? (
         <div className="flex items-center gap-2 print:hidden mr-8">
             {eventStatus === 'ended' ||

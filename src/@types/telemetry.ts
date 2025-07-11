@@ -102,6 +102,13 @@ export interface LobbyTelemetry {
     duration: number | null
     exit_reason: string | null
     created_at: string
+    lead?: {
+        id: number
+        name: string | null
+        email: string | null
+        phone: string | null
+        dial_code: string | null
+    } | null
 }
 
 export interface CreateLobbyTelemetryRequest {

@@ -1,4 +1,5 @@
 import { Callback } from './lead'
+import { LobbyTelemetry } from './telemetry'
 
 export interface Event {
     event_name: string
@@ -219,6 +220,7 @@ export interface EventStreamResponse {
         updated_at: string
     }
     membership?: MembershipWithDates
+    lobby_telemetry?: LobbyTelemetry[]
 }
 
 export type SaveInstantCallbackRequest = {
