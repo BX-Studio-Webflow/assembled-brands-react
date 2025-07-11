@@ -309,7 +309,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         nextDate,
     ])
 
-    //Fire telemetry once on load, then every 10 seconds
+    //Fire telemetry once on load, then every 15 seconds
     useEffect(() => {
         // Only track telemetry for non-hosts
         if (isHost) return
@@ -336,7 +336,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         sendTelemetry(true)
 
         // Set up interval for subsequent telemetry calls
-        const interval = setInterval(sendTelemetry, 10000)
+        const interval = setInterval(sendTelemetry, 15000)
 
         return () => clearInterval(interval)
     }, [eventId, token, email, code, isHost])
