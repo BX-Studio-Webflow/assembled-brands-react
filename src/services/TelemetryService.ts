@@ -129,23 +129,10 @@ export async function apiCreateLobbyTelemetry(data: {
     })
 }
 
-export async function apiUpdateLobbyTelemetry(
-    sessionId: string,
-    data: { duration: number },
-) {
-    return ApiService.fetchDataWithAxios<{ message: string }>({
-        url: `/telemetry/lobby-telemetry/${sessionId}`,
-        method: 'put',
-        data,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-}
-
 export async function apiLeaveLobby(data: {
-    session_id: string
-    exit_reason: string
+    lead_id: number
+    event_id: number
+    exit_reason: 'event_started' | 'left' | 'timeout'
 }) {
     return ApiService.fetchDataWithAxios<{ message: string }>({
         url: '/telemetry/lobby-telemetry/exit',

@@ -111,12 +111,9 @@ export interface CreateLobbyTelemetryRequest {
     code: string
 }
 
-export interface UpdateLobbyTelemetryRequest {
-    duration: number
-}
-
 export interface LeaveLobbyRequest {
-    session_id: string
+    lead_id: number
+    event_id: number
     exit_reason: 'event_started' | 'left' | 'timeout'
 }
 

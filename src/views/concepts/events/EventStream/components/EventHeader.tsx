@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router'
 import {
     apiRecordLeaveEvent,
     apiCreateLobbyTelemetry,
-    apiUpdateLobbyTelemetry,
     apiLeaveLobby,
 } from '@/services/TelemetryService'
 
@@ -161,7 +160,7 @@ const EventHeader = ({
         if (!token || !email || !code) return
 
         let sessionId: string | null = null
-        let lobbyStartTime: number | null = null
+        let leadId: number | null = null
 
         const createLobbySession = async () => {
             try {
@@ -172,34 +171,26 @@ const EventHeader = ({
                     code: code,
                 })
                 sessionId = response.sessionId
-                lobbyStartTime = Date.now()
+                // Extract lead_id from sessionId (format: "lead_id_event_id")
+                const parts = sessionId.split('_')
+                if (parts.length >= 2) {
+                    leadId = parseInt(parts[0])
+                }
                 console.log('Lobby session created:', sessionId)
             } catch (error) {
                 console.error('Failed to create lobby telemetry:', error)
             }
         }
 
-        const updateLobbyDuration = async () => {
-            if (!sessionId || !lobbyStartTime) return
-
-            try {
-                const duration = Math.floor(
-                    (Date.now() - lobbyStartTime) / 1000,
-                )
-                await apiUpdateLobbyTelemetry(sessionId, { duration })
-            } catch (error) {
-                console.error('Failed to update lobby telemetry:', error)
-            }
-        }
-
         const recordLobbyExit = async (
             reason: 'event_started' | 'left' | 'timeout',
         ) => {
-            if (!sessionId) return
+            if (!leadId) return
 
             try {
                 await apiLeaveLobby({
-                    session_id: sessionId,
+                    lead_id: leadId,
+                    event_id: Number(eventId),
                     exit_reason: reason,
                 })
                 console.log('Lobby exit recorded:', reason)
@@ -211,13 +202,9 @@ const EventHeader = ({
         // Create lobby session on mount
         createLobbySession()
 
-        // Update duration every 15 seconds
-        const interval = setInterval(updateLobbyDuration, 15000)
-
         // Record exit when component unmounts or status changes
         return () => {
-            clearInterval(interval)
-            if (sessionId) {
+            if (leadId) {
                 const reason = status !== 'early' ? 'event_started' : 'left'
                 recordLobbyExit(reason)
             }
