@@ -35,7 +35,7 @@ const ChatStats = ({ eventId, isHost }: TopChannelProps) => {
         const fetchTelemetry = async () => {
             try {
                 const response = await apiGetTelemetryByEventId(Number(eventId))
-                setTelemetryData(response)
+                setTelemetryData(response.telemetry)
             } catch (error) {
                 console.error('Failed to get telemetry:', error)
             }
