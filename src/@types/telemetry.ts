@@ -13,14 +13,15 @@ export interface EventTelemetry {
     has_left: boolean
     left_scenario: string | null
     created_at: string
+    updated_at: string
     lead?: {
         id: number
         name: string | null
         email: string | null
         phone: string | null
         dial_code: string | null
-        event_id: number
-        registered_date: string | null
+        event_id: number | null
+        date_id: number
         membership_active: boolean
         form_identifier: string | null
         host_id: number
@@ -29,6 +30,12 @@ export interface EventTelemetry {
         lead_status: number
         source_url: string | null
         membership_level: number
+        attended_event: boolean
+        email_event_countdown: boolean
+        email_final_reminder: boolean
+        email_event_day_reminder: boolean
+        email_thank_you_follow_up: boolean
+        email_post_event_upsell: boolean
         created_at: string
         updated_at: string
     } | null
@@ -129,4 +136,10 @@ export interface LobbyAnalytics {
     totalLobbyTime: number
     averageLobbyTime: number
     exitReasonStats: Record<string, number>
+}
+
+export interface GetTelemetryByEventIdResponse {
+    telemetry: EventTelemetry[]
+    lobby_telemetry: LobbyTelemetry[]
+    lobby_analytics: LobbyAnalytics
 }

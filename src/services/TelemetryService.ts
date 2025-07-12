@@ -6,6 +6,7 @@ import type {
     LeaveEventRequest,
     UpdateWatchTimeRequest,
     EventAnalytics,
+    GetTelemetryByEventIdResponse,
 } from '@/@types/telemetry'
 
 export async function apiCreateTelemetry(data: CreateTelemetryRequest) {
@@ -38,7 +39,7 @@ export async function apiGetTelemetryByLeadId(leadId: number) {
 }
 
 export async function apiGetTelemetryByEventId(eventId: number) {
-    return ApiService.fetchDataWithAxios<EventTelemetry[]>({
+    return await ApiService.fetchDataWithAxios<GetTelemetryByEventIdResponse>({
         url: `/telemetry/event/${eventId}`,
         method: 'get',
     })

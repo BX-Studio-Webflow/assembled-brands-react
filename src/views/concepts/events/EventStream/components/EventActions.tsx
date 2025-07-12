@@ -1,4 +1,4 @@
-import React, { useState, type MouseEvent } from 'react'
+import React, { useEffect, useState, type MouseEvent } from 'react'
 import Button from '@/components/ui/Button'
 import Dialog from '@/components/ui/Dialog'
 import ChatStats from '@/views/concepts/chat/Chat/components/ChatStats'
@@ -12,16 +12,20 @@ import { Badge, toast } from '@/components/ui'
 import { Notification } from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
 import { HiOutlineUser } from 'react-icons/hi'
+import { apiGetTelemetryByEventId } from '@/services/TelemetryService'
+import { GetTelemetryByEventIdResponse } from '@/@types/telemetry'
 
 interface EventActionsProps {
     isHost: boolean
     eventStatus: 'live' | 'ended' | 'early' | 'cancelled' | 'suspended'
+    eventId: number
 }
 
-const EventActions = ({ isHost, eventStatus }: EventActionsProps) => {
+const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
     const { data } = useEvent()
     const [dialogIsOpen, setIsOpen] = useState(false)
-
+    const [telemetryData, setTelemetryData] =
+        useState<GetTelemetryByEventIdResponse>()
     if (!data) {
         return <></>
     }
@@ -80,6 +84,29 @@ const EventActions = ({ isHost, eventStatus }: EventActionsProps) => {
         }
     }
 
+    //Fire on mount, then every 10 seconds
+    useEffect(() => {
+        // Only track telemetry for non-hosts
+        if (!isHost) return
+
+        const fetchTelemetry = async () => {
+            try {
+                const response = await apiGetTelemetryByEventId(Number(eventId))
+                setTelemetryData(response)
+            } catch (error) {
+                console.error('Failed to get telemetry:', error)
+            }
+        }
+
+        // Fire immediately on mount
+        fetchTelemetry()
+
+        // Then set up interval for every 10 seconds
+        const interval = setInterval(fetchTelemetry, 10000)
+
+        return () => clearInterval(interval)
+    }, [eventId, isHost])
+
     return isHost && eventStatus === 'live' ? (
         <>
             <div className="flex items-center gap-2 print:hidden mr-8">
@@ -131,21 +158,27 @@ const EventActions = ({ isHost, eventStatus }: EventActionsProps) => {
                             </div>
                             <hr className="my-2 p-0" />
                             <div className="space-y-1">
-                                {data.lobby_telemetry?.map((lobby) => (
-                                    <div
-                                        key={lobby.id}
-                                        className="flex flex-col items-start gap-0.5 mb-2"
-                                    >
-                                        <span className="font-semibold text-white dark:text-white leading-tight">
-                                            {lobby.lead?.name || 'No name'}{' '}
-                                        </span>
-                                        <span className="text-gray-400 text-xs">
-                                            {lobby.lead?.email || 'Unknown'}
-                                        </span>
-                                    </div>
-                                ))}
-                                {(!data.lobby_telemetry ||
-                                    data.lobby_telemetry.length === 0) && (
+                                {telemetryData &&
+                                    telemetryData.lobby_telemetry?.map(
+                                        (lobby) => (
+                                            <div
+                                                key={lobby.id}
+                                                className="flex flex-col items-start gap-0.5 mb-2"
+                                            >
+                                                <span className="font-semibold text-white dark:text-white leading-tight">
+                                                    {lobby.lead?.name ||
+                                                        'No name'}{' '}
+                                                </span>
+                                                <span className="text-gray-400 text-xs">
+                                                    {lobby.lead?.email ||
+                                                        'Unknown'}
+                                                </span>
+                                            </div>
+                                        ),
+                                    )}
+                                {(!telemetryData?.lobby_telemetry ||
+                                    telemetryData?.lobby_telemetry.length ===
+                                        0) && (
                                     <div className="text-gray-400 text-sm italic">
                                         No one in lobby yet
                                     </div>
@@ -156,7 +189,7 @@ const EventActions = ({ isHost, eventStatus }: EventActionsProps) => {
                 >
                     <Badge
                         className="mr-4"
-                        content={data.lobby_telemetry?.length || 0}
+                        content={telemetryData?.lobby_telemetry?.length || 0}
                     >
                         <Avatar icon={<HiOutlineUser />} />
                     </Badge>

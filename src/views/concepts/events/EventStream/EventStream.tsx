@@ -116,6 +116,7 @@ const EventStream = () => {
                         isHost={isHost}
                     />
                     <EventActions
+                        eventId={data?.event.id || 0}
                         isHost={isHost}
                         eventStatus={
                             eventStatus as
