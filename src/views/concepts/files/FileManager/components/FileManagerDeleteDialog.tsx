@@ -3,6 +3,7 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { apiDeleteAsset } from '@/services/AssetService'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
+import { AxiosError } from 'axios'
 
 type FileManagerDeleteDialogProps = {
     onDeleteSuccess?: () => void
@@ -29,10 +30,10 @@ const FileManagerDeleteDialog = ({
                 { placement: 'top-center' },
             )
             if (onDeleteSuccess) onDeleteSuccess()
-        } catch (e: unknown) {
+        } catch (error) {
             toast.push(
                 <Notification
-                    title={e instanceof Error ? e.message : 'Delete failed'}
+                    title={(error as AxiosError).message}
                     type="danger"
                 />,
                 { placement: 'top-center' },
