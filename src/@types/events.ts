@@ -76,6 +76,7 @@ export interface Asset {
     user_id: number
     presignedUrl?: string
     hls_presigned_url?: string
+    image_presigned_url?: string
 }
 
 export interface Host {

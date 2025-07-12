@@ -148,6 +148,7 @@ const EventStream = () => {
                 )}
                 {data && eventStatus !== 'live' && (
                     <EventWaitingCard
+                        event={data}
                         onCountdownEnd={() => handleStatusUpdate('active')}
                     />
                 )}

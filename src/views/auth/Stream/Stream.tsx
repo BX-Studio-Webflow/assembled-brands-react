@@ -129,7 +129,10 @@ const Stream = () => {
                         </>
                     )}
                     {data && eventStatus !== 'live' && (
-                        <EventWaitingCard onCountdownEnd={handleCountdownEnd} />
+                        <EventWaitingCard
+                            event={data}
+                            onCountdownEnd={handleCountdownEnd}
+                        />
                     )}
                 </div>
             </Loading>
