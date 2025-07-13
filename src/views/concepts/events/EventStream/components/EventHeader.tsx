@@ -71,7 +71,7 @@ const EventHeader = ({
                         code: code,
                         scenario: scenario,
                     })
-                    console.log(`Leave event tracked: ${scenario}`)
+                  
                 } catch (error) {
                     console.error(
                         `Failed to track leave event (${scenario}):`,
@@ -177,7 +177,7 @@ const EventHeader = ({
                 if (parts.length >= 2) {
                     leadId = parseInt(parts[0])
                 }
-                console.log('Lobby session created:', sessionId)
+            
             } catch (error) {
                 console.error('Failed to create lobby telemetry:', error)
             }
@@ -194,7 +194,7 @@ const EventHeader = ({
                     event_id: Number(eventId),
                     exit_reason: reason,
                 })
-                console.log('Lobby exit recorded:', reason)
+             
             } catch (error) {
                 console.error('Failed to record lobby exit:', error)
             }

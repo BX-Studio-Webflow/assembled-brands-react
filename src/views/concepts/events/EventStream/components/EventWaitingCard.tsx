@@ -14,7 +14,7 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
 }) => {
     const { eventStatus, nextDate } = useEvent()
     const countdownRef = useRef<HTMLDivElement>(null)
-    console.log(event)
+  
     useEffect(() => {
         let countdown: Countdown | null = null
         if (eventStatus === 'early' && nextDate && countdownRef.current) {

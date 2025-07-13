@@ -34,7 +34,6 @@ const MembershipEdit = () => {
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values: MembershipFormSchema) => {
-        console.log('Submitted values', values)
         setIsSubmiting(true)
         try {
             await apiUpdateMembership(Number(id), values)

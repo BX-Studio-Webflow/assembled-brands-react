@@ -8,8 +8,6 @@ const Mail = () => {
     //useSWR to fetch the events and tags
     const { data: events } = useSWR('/event', () => apiGetEvents())
     const { data: tags } = useSWR('/tags', () => apiGetTags())
-    console.log('events', events)
-    console.log('tags', tags)
 
     // Transform events to match the expected Event interface
     const transformedEvents =

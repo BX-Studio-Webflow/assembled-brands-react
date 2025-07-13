@@ -1,23 +1,15 @@
-import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import Tag from '@/components/ui/Tag'
 import Avatar from '@/components/ui/Avatar'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
-import CreditCardDialog from '@/components/view/CreditCardDialog'
 import BillingHistory from './BillingHistory'
 import classNames from '@/utils/classNames'
 import isLastChild from '@/utils/isLastChild'
-import sleep from '@/utils/sleep'
-import { TbPlus } from 'react-icons/tb'
 import useSWR from 'swr'
 import { PiLightningFill } from 'react-icons/pi'
 
-import type {
-    GetSettingsBillingResponse,
-    CreditCard,
-    CreditCardInfo,
-} from '../types'
+import type { GetSettingsBillingResponse } from '../types'
 import {
     apiGetStripeSubscriptions,
     apiInitateStripeConnect,
@@ -25,19 +17,8 @@ import {
 import { useAuth } from '@/auth'
 import { AxiosError } from 'axios'
 
-type CardDetails = GetSettingsBillingResponse['data']['cardDetails'][0]
-
 const SettingsBilling = () => {
     const { user } = useAuth()
-    const [selectedCard, setSelectedCard] = useState<{
-        type: 'NEW' | 'EDIT' | ''
-        dialogOpen: boolean
-        cardInfo: Partial<CreditCardInfo>
-    }>({
-        type: '',
-        dialogOpen: false,
-        cardInfo: {},
-    })
 
     const {
         data = {
@@ -55,48 +36,6 @@ const SettingsBilling = () => {
             revalidateOnReconnect: false,
         },
     )
-
-    const handleEditCreditCard = (card: CardDetails) => {
-        setSelectedCard({
-            type: 'EDIT',
-            dialogOpen: true,
-            cardInfo: {
-                cardHolderName: card.billing_details.name,
-                cardType: card.card.brand.toUpperCase(),
-                expMonth: card.card.exp_month.toString(),
-                expYear: card.card.exp_year.toString(),
-                last4Number: card.card.last4,
-                primary: false,
-            },
-        })
-    }
-
-    const handleCreditCardDialogClose = () => {
-        setSelectedCard({
-            type: '',
-            dialogOpen: false,
-            cardInfo: {},
-        })
-    }
-
-    const handleEditCreditCardSubmit = async () => {
-        await sleep(500)
-        handleCreditCardDialogClose()
-        toast.push(
-            <Notification type="success">Credit card updated!</Notification>,
-            { placement: 'top-center' },
-        )
-    }
-
-    const handleAddCreditCardSubmit = async (values: CreditCard) => {
-        console.log('Submitted values', values)
-        await sleep(500)
-        handleCreditCardDialogClose()
-        toast.push(
-            <Notification type="success">Credit card added!</Notification>,
-            { placement: 'top-center' },
-        )
-    }
 
     const handleStripeConnect = async () => {
         try {
@@ -215,26 +154,13 @@ const SettingsBilling = () => {
                                 <Button
                                     size="sm"
                                     type="button"
-                                    onClick={() => handleEditCreditCard(card)}
+                                    onClick={() => {}}
                                 >
                                     Edit
                                 </Button>
                             </div>
                         </div>
                     ))}
-                    <Button
-                        variant="plain"
-                        icon={<TbPlus />}
-                        onClick={() => {
-                            setSelectedCard({
-                                type: 'NEW',
-                                dialogOpen: true,
-                                cardInfo: {},
-                            })
-                        }}
-                    >
-                        Add payment method
-                    </Button>
                 </div>
             </div>
 
@@ -251,22 +177,6 @@ const SettingsBilling = () => {
                     }))}
                 />
             </div>
-            <CreditCardDialog
-                title={
-                    selectedCard.type === 'NEW'
-                        ? 'Add credit card'
-                        : 'Edit credit card'
-                }
-                defaultValues={selectedCard.cardInfo as CreditCard}
-                dialogOpen={selectedCard.dialogOpen}
-                onDialogClose={handleCreditCardDialogClose}
-                onSubmit={
-                    selectedCard.type === 'NEW'
-                        ? (values) =>
-                              handleAddCreditCardSubmit(values as CreditCard)
-                        : handleEditCreditCardSubmit
-                }
-            />
         </div>
     )
 }

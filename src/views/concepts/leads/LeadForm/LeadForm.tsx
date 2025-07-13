@@ -78,7 +78,6 @@ const LeadForm = (props: LeadFormProps) => {
         {
             revalidateOnFocus: false,
             onSuccess: (response) => {
-                console.log(response)
                 setEvents(response)
             },
         },

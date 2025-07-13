@@ -348,7 +348,7 @@ const EventEdit = () => {
         const success_url = data?.success_url || data?.live_video_url
 
         if (!id || !host_id || !success_url) {
-            console.log({ id, host_id, success_url })
+       
             toast.push(
                 <Notification type="danger">
                     Ops! we could not generate the form. Event ID, Host ID, and

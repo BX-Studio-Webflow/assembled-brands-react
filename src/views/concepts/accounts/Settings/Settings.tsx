@@ -89,7 +89,7 @@ const Settings = () => {
         }
     }, [data, error, params.code, params.state, params.action])
 
-    console.log({ params })
+   
     return (
         <AdaptiveCard className="h-full">
             <div className="flex flex-auto h-full">

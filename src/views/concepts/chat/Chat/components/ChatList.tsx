@@ -69,7 +69,6 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
             )
 
             if (attachments?.length) {
-                // TODO: Handle file uploads
                 console.log('File attachments:', attachments)
             }
         } catch (error) {
@@ -137,7 +136,6 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
     }, [messages])
 
     const messageList = useMemo(() => {
-        console.log(messages)
         return messages.map((item) => {
             // First determine who the current user is in this event context
             const currentUserId =

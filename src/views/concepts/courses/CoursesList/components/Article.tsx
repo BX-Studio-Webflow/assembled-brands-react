@@ -47,8 +47,7 @@ const Article = ({
     }
 
     const handleDeleteConfirm = async () => {
-        // Here you would typically make an API call to delete the article
-        console.log('Deleting article:', id)
+   
         try {
             await apiDeleteCourse(Number(id))
             toast.push(
