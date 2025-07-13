@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Loading from '@/components/shared/Loading'
 import useSWR from 'swr'
 import { useSearchParams } from 'react-router'
-import { EventStreamResponse } from '@/@types/events'
+import { EventStreamResponse, LivestreamStatus } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 import { Card } from '@/components/ui'
 import ChatBody from '@/views/concepts/chat/Chat/components/ChatBody'
@@ -18,7 +18,7 @@ const Stream = () => {
     const email = searchParams.get('email')
     const code = searchParams.get('code')
     const isHost = !token && !email && !code
-    const [uiState, setUIState] = useState<'early' | 'live' | 'ended'>('early')
+    const [uiState, setUIState] = useState<LivestreamStatus>('early')
     const swrKey = [`/event/stream/${code}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
         swrKey,
@@ -90,14 +90,7 @@ const Stream = () => {
                     <div className="flex flex-row justify-between gap-4 mb-4 w-full">
                         <EventHeader
                             eventId={String(data?.event.id)}
-                            status={
-                                eventStatus as
-                                    | 'early'
-                                    | 'live'
-                                    | 'ended'
-                                    | 'suspended'
-                                    | 'cancelled'
-                            }
+                            status={eventStatus as LivestreamStatus}
                             eventName={data?.event.event_name || ''}
                             eventDescription={
                                 data?.event.event_description || ''
@@ -108,12 +101,7 @@ const Stream = () => {
                             eventId={data?.event.id || 0}
                             isHost={isHost}
                             eventStatus={
-                                eventStatus as
-                                    | 'live'
-                                    | 'ended'
-                                    | 'early'
-                                    | 'cancelled'
-                                    | 'suspended'
+                                eventStatus as LivestreamStatus
                             }
                         />
                     </div>

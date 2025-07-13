@@ -5,6 +5,7 @@ import {
     apiCreateLobbyTelemetry,
     apiLeaveLobby,
 } from '@/services/TelemetryService'
+import { LivestreamStatus } from '@/@types/events'
 
 const statusPills: { [key: string]: string } = {
     cancelled:
@@ -18,7 +19,7 @@ const statusPills: { [key: string]: string } = {
 }
 
 interface EventHeaderProps {
-    status: 'cancelled' | 'suspended' | 'ended' | 'live' | 'early'
+    status: LivestreamStatus
     eventName: string
     eventId: string
     eventDescription: string

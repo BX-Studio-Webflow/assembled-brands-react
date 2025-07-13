@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Loading from '@/components/shared/Loading'
 import useSWR from 'swr'
 import { useParams, useSearchParams } from 'react-router'
-import { EventStreamResponse } from '@/@types/events'
+import { EventStreamResponse, LivestreamStatus } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 
 import ChatBody from '../../chat/Chat/components/ChatBody'
@@ -21,7 +21,7 @@ const EventStream = () => {
     const email = searchParams.get('email')
     const code = searchParams.get('code')
     const isHost = !token && !email && !code
-    const [uiState, setUIState] = useState<'early' | 'live' | 'ended'>('early')
+    const [uiState, setUIState] = useState<LivestreamStatus>('early')
     console.log({ token, email, code, id })
     const swrKey = [`/event/stream/${id}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
@@ -75,7 +75,7 @@ const EventStream = () => {
     }, [data, uiState])
 
     const handleStatusUpdate = async (
-        status: 'active' | 'suspended' | 'cancelled' | 'ended',
+        status: LivestreamStatus,
     ) => {
         if (status === 'ended' && token && email && code) {
             await apiRecordLeaveEvent({
@@ -85,9 +85,10 @@ const EventStream = () => {
                 scenario: 'VIDEO_ENDED',
             })
         }
+        setUIState(status)
     }
 
-    const handleUIStateChange = (uiStatus: 'live' | 'ended' | 'early') => {
+    const handleUIStateChange = (uiStatus: LivestreamStatus) => {
         setUIState(uiStatus)
     }
 
@@ -100,12 +101,7 @@ const EventStream = () => {
                     <EventHeader
                         eventId={String(data?.event.id)}
                         status={
-                            eventStatus as
-                                | 'cancelled'
-                                | 'suspended'
-                                | 'ended'
-                                | 'live'
-                                | 'early'
+                            eventStatus as LivestreamStatus
                         }
                         eventName={data?.event.event_name || ''}
                         eventDescription={data?.event.event_description || ''}
@@ -116,12 +112,7 @@ const EventStream = () => {
                         eventId={data?.event.id || 0}
                         isHost={isHost}
                         eventStatus={
-                            eventStatus as
-                                | 'live'
-                                | 'ended'
-                                | 'early'
-                                | 'cancelled'
-                                | 'suspended'
+                            eventStatus as LivestreamStatus
                         }
                     />
                 </div>

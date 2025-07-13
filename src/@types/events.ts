@@ -231,3 +231,5 @@ export type SaveInstantCallbackRequest = {
     notes: string
     host_id: number
 }
+
+export type LivestreamStatus = 'early' | 'live' | 'ended' | 'cancelled' | 'suspended'

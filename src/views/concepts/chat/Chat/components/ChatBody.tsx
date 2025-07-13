@@ -1,7 +1,7 @@
 import { useMemo, memo } from 'react'
 
 import EventVideoPlayer from '@/views/concepts/events/EventStream/components/EventVideoPlayer'
-import { EventStreamResponse } from '@/@types/events'
+import { EventStreamResponse, LivestreamStatus } from '@/@types/events'
 
 // Memoized Video Player to prevent re-renders
 const MemoizedEventVideoPlayer = memo(EventVideoPlayer)
@@ -14,7 +14,7 @@ const ChatBody = ({
 }: {
     data: EventStreamResponse
     onStatusUpdate: (
-        status: 'active' | 'suspended' | 'cancelled' | 'ended',
+        status: LivestreamStatus,
     ) => void
     isHost: boolean
     nextDate: { start: Date; end: Date } | null
