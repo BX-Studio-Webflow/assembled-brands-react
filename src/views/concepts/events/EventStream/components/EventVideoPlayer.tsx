@@ -8,6 +8,7 @@ import { toast } from '@/components/ui'
 import useQuery from '@/utils/hooks/useQuery'
 import { apiCreateTelemetry } from '@/services/TelemetryService'
 import { LivestreamStatus } from '@/@types/events'
+import WebSocketSyncManager from '@/utils/websocketSync'
 
 interface NavigatorWithAutoplayPolicy extends Navigator {
     getAutoplayPolicy(type: string): string
@@ -19,9 +20,7 @@ interface EventVideoPlayerProps {
     poster?: string
     assetId?: number
     eventId?: number
-    onEnded: (
-        status: LivestreamStatus,
-    ) => void
+    onEnded: (status: LivestreamStatus) => void
     isHost: boolean
     nextDate: { start: Date; end: Date } | null
 }
@@ -39,6 +38,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     const playerRef = useRef<Plyr | null>(null)
     const hlsRef = useRef<Hls | null>(null)
     const progressIntervalRef = useRef<number | null>(null)
+    const wsSyncRef = useRef<WebSocketSyncManager | null>(null)
     const query = useQuery()
 
     // Get token, email, and code from URL parameters
@@ -51,6 +51,46 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
         const container = containerRef.current
         const STORAGE_KEY = `video-progress-${assetId}-${eventId}`
+
+        // Initialize WebSocket synchronization
+        if (eventId) {
+            wsSyncRef.current = new WebSocketSyncManager(eventId, {
+                onTimeSync: (serverTime) => {
+                    if (playerRef.current) {
+                        // Calculate time elapsed since stream start
+                        const streamStartTime = nextDate?.start
+                            ? new Date(nextDate.start).getTime()
+                            : 0
+                        const timeElapsed = Math.max(
+                            0,
+                            (serverTime * 1000 - streamStartTime) / 1000,
+                        )
+
+                        const timeDiff = Math.abs(
+                            playerRef.current.currentTime - timeElapsed,
+                        )
+                        if (timeDiff > 2) {
+                            // If drift is more than 2 seconds
+                            console.log(
+                                `🔄 Syncing to server time: ${timeElapsed}s (drift: ${timeDiff.toFixed(1)}s)`,
+                            )
+                            playerRef.current.currentTime = timeElapsed
+                        }
+                    }
+                },
+
+                onConnected: (clientId) => {
+                    console.log('🔗 WebSocket connected:', clientId)
+                },
+                onError: (error) => {
+                    console.error('❌ WebSocket error:', error)
+                },
+                onClose: () => {
+                    console.log('🔌 WebSocket disconnected')
+                },
+            })
+            wsSyncRef.current.connect()
+        }
 
         // Create video element
         const video = document.createElement('video')
@@ -143,7 +183,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             }
             videoElement.muted = true
 
-            // Save progress periodically
+            // Save progress periodically and broadcast time sync (host only)
             progressIntervalRef.current = window.setInterval(() => {
                 if (videoElement.currentTime > 30) {
                     localStorage.setItem(
@@ -191,6 +231,8 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                 onEnded('ended')
             })
 
+            // Host controls that broadcast to all clients
+
             // Save progress before unload
             window.addEventListener('beforeunload', () => {
                 localStorage.setItem(
@@ -203,7 +245,11 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         // Check if the video URL is an HLS stream (.m3u8)
         if (Hls.isSupported() && hls_presigned_url) {
             // Create Hls instance
-            hlsRef.current = new Hls()
+            hlsRef.current = new Hls({
+                liveSyncDurationCount: 2, // reduce latency
+                maxLiveSyncPlaybackRate: 1.0, // prevent skipping ahead too fast
+                enableWorker: true,
+            })
             hlsRef.current.loadSource(hls_presigned_url)
             hlsRef.current.attachMedia(video)
 
@@ -288,6 +334,12 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                 container.removeChild(container.firstChild)
             }
             document.removeEventListener('keydown', handleEscape)
+
+            // Cleanup WebSocket connection
+            if (wsSyncRef.current) {
+                wsSyncRef.current.disconnect()
+                wsSyncRef.current = null
+            }
         }
 
         const handleEscape = (e: KeyboardEvent) => {
