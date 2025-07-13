@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import Loading from '@/components/shared/Loading'
-import useSWR, { mutate } from 'swr'
+import useSWR from 'swr'
 import { useParams, useSearchParams } from 'react-router'
 import { EventStreamResponse } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
@@ -21,6 +21,7 @@ const EventStream = () => {
     const email = searchParams.get('email')
     const code = searchParams.get('code')
     const isHost = !token && !email && !code
+    const [uiState, setUIState] = useState<'early' | 'live' | 'ended'>('early')
     console.log({ token, email, code, id })
     const swrKey = [`/event/stream/${id}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
@@ -64,26 +65,18 @@ const EventStream = () => {
         } else if (now > next.start) {
             status = 'live'
         }
+
+        // Override with UI state if it's been set
+        if (uiState !== 'early') {
+            status = uiState
+        }
+
         return { eventStatus: status, nextDate: next }
-    }, [data])
+    }, [data, uiState])
 
     const handleStatusUpdate = async (
         status: 'active' | 'suspended' | 'cancelled' | 'ended',
     ) => {
-        mutate(
-            swrKey,
-            async (currentData: EventStreamResponse | undefined) => {
-                if (!currentData) return currentData
-                return {
-                    ...currentData,
-                    event: {
-                        ...currentData.event,
-                        status: status, // Set to active when countdown ends
-                    },
-                }
-            },
-            { revalidate: true },
-        )
         if (status === 'ended' && token && email && code) {
             await apiRecordLeaveEvent({
                 token: token,
@@ -92,6 +85,10 @@ const EventStream = () => {
                 scenario: 'VIDEO_ENDED',
             })
         }
+    }
+
+    const handleUIStateChange = (uiStatus: 'live' | 'ended' | 'early') => {
+        setUIState(uiStatus)
     }
 
     return (
@@ -149,7 +146,7 @@ const EventStream = () => {
                 {data && eventStatus !== 'live' && (
                     <EventWaitingCard
                         event={data}
-                        onCountdownEnd={() => handleStatusUpdate('active')}
+                        onCountdownEnd={() => handleUIStateChange('live')}
                     />
                 )}
             </Loading>

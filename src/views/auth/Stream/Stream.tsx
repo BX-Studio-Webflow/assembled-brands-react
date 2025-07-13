@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import Loading from '@/components/shared/Loading'
-import useSWR, { mutate } from 'swr'
+import useSWR from 'swr'
 import { useSearchParams } from 'react-router'
 import { EventStreamResponse } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
@@ -18,6 +18,7 @@ const Stream = () => {
     const email = searchParams.get('email')
     const code = searchParams.get('code')
     const isHost = !token && !email && !code
+    const [uiState, setUIState] = useState<'early' | 'live' | 'ended'>('early')
     const swrKey = [`/event/stream/${code}`]
     const { data, isLoading } = useSWR<EventStreamResponse>(
         swrKey,
@@ -64,11 +65,17 @@ const Stream = () => {
         } else if (now > next.start) {
             status = 'live'
         }
+
+        // Override with UI state if it's been set
+        if (uiState !== 'early') {
+            status = uiState
+        }
+
         return { eventStatus: status, nextDate: next }
-    }, [data])
+    }, [data, uiState])
 
     const handleCountdownEnd = () => {
-        mutate(swrKey)
+        setUIState('live')
     }
 
     return (
