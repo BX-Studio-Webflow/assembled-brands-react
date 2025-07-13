@@ -7,6 +7,7 @@ import Notification from '@/components/ui/Notification'
 import { toast } from '@/components/ui'
 import useQuery from '@/utils/hooks/useQuery'
 import { apiCreateTelemetry } from '@/services/TelemetryService'
+import { LivestreamStatus } from '@/@types/events'
 
 interface NavigatorWithAutoplayPolicy extends Navigator {
     getAutoplayPolicy(type: string): string
@@ -19,7 +20,7 @@ interface EventVideoPlayerProps {
     assetId?: number
     eventId?: number
     onEnded: (
-        status: 'ended' | 'suspended' | 'cancelled' | 'live' | 'early',
+        status: LivestreamStatus,
     ) => void
     isHost: boolean
     nextDate: { start: Date; end: Date } | null
