@@ -6,16 +6,50 @@ import {
     apiLeaveLobby,
 } from '@/services/TelemetryService'
 import { LivestreamStatus } from '@/@types/events'
+import Tag from '@/components/ui/Tag'
+import { HiX, HiPlay, HiClock, HiPause, HiStop } from 'react-icons/hi'
 
-const statusPills: { [key: string]: string } = {
-    cancelled:
-        'bg-red-100 text-red-800 border border-red-400 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-red-400',
-    active: 'bg-green-100 text-green-800 border border-green-400 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-green-400',
-    suspended:
-        'bg-yellow-100 text-yellow-800 border border-yellow-300 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-yellow-300',
-    live: 'bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300"',
-    early: 'bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-900 dark:text-yellow-300',
-    ended: 'bg-gray-100 text-gray-800 border border-gray-500 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-gray-400',
+const getStatusTagProps = (
+    status: LivestreamStatus,
+    nextDate: { start: Date; end: Date } | null,
+) => {
+    switch (status) {
+        case 'cancelled':
+            return {
+                className:
+                    'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0',
+                children: 'event cancelled',
+                suffix: <HiX className="ml-1 rtl:mr-1" />,
+            }
+        case 'suspended':
+            return {
+                className:
+                    'text-yellow-600 bg-yellow-100 dark:text-yellow-100 dark:bg-yellow-500/20 border-0',
+                children: 'event suspended',
+                suffix: <HiPause className="ml-1 rtl:mr-1" />,
+            }
+        case 'live':
+            return {
+                className: 'text-white bg-red-500 border-0',
+                children: 'event is live',
+                prefix: <HiPlay className="mr-1 rtl:ml-1" />,
+            }
+        case 'early':
+            return {
+                className:
+                    'text-yellow-600 bg-yellow-100 dark:text-yellow-100 dark:bg-yellow-500/20 border-0',
+                children: `event starts at ${nextDate?.start.toLocaleString()}`,
+                prefix: <HiClock className="mr-1 rtl:ml-1" />,
+            }
+        case 'ended':
+        default:
+            return {
+                className:
+                    'text-gray-600 bg-gray-100 dark:text-gray-100 dark:bg-gray-500/20 border-0',
+                children: 'event has ended',
+                suffix: <HiStop className="ml-1 rtl:mr-1" />,
+            }
+    }
 }
 
 interface EventHeaderProps {
@@ -71,7 +105,6 @@ const EventHeader = ({
                         code: code,
                         scenario: scenario,
                     })
-                  
                 } catch (error) {
                     console.error(
                         `Failed to track leave event (${scenario}):`,
@@ -177,7 +210,6 @@ const EventHeader = ({
                 if (parts.length >= 2) {
                     leadId = parseInt(parts[0])
                 }
-            
             } catch (error) {
                 console.error('Failed to create lobby telemetry:', error)
             }
@@ -194,7 +226,6 @@ const EventHeader = ({
                     event_id: Number(eventId),
                     exit_reason: reason,
                 })
-             
             } catch (error) {
                 console.error('Failed to record lobby exit:', error)
             }
@@ -216,20 +247,7 @@ const EventHeader = ({
         <div className="pt-2">
             <div className="flex items-center gap-3">
                 <span className="font-bold text-lg">{eventName}</span>
-                <span className={statusPills[status] || statusPills['ended']}>
-                    event{' '}
-                    {status === 'ended'
-                        ? `has ended`
-                        : status === 'live'
-                          ? ' is live'
-                          : status === 'early'
-                            ? `starts at ${nextDate?.start.toLocaleString()}`
-                            : status === 'suspended'
-                              ? 'suspended'
-                              : status === 'cancelled'
-                                ? 'cancelled'
-                                : ''}
-                </span>
+                <Tag {...getStatusTagProps(status, nextDate)} />
             </div>
             <span className="text-sm mt-8">{eventDescription}</span>
         </div>
