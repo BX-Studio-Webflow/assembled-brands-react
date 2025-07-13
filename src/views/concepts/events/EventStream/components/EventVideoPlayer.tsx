@@ -69,8 +69,8 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                         const timeDiff = Math.abs(
                             playerRef.current.currentTime - timeElapsed,
                         )
-                        if (timeDiff > 2) {
-                            // If drift is more than 2 seconds
+                        if (timeDiff > 1) {
+                            // If drift is more than 1 seconds
                             console.log(
                                 `🔄 Syncing to server time: ${timeElapsed}s (drift: ${timeDiff.toFixed(1)}s)`,
                             )
