@@ -112,7 +112,7 @@ const Stream = () => {
                                 bodyClass="h-full flex flex-col"
                             >
                                 <div className="flex flex-auto h-full gap-8">
-                                    <ChatSidebar event={data} isHost={false} />
+                                    <ChatSidebar event={data} isHost={false} nextDate={nextDate}/>
                                     <ChatBody
                                         nextDate={nextDate}
                                         data={data}

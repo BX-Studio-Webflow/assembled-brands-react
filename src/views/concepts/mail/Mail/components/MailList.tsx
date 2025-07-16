@@ -75,8 +75,8 @@ const MailList = () => {
                     {subject}
                 </span>
                 <span className="text-nowrap">
-                    {text.length > 45 - subjectOffsetNumber
-                        ? text.substring(0, 42 - subjectOffsetNumber) + '...'
+                    {text.length > 150 - subjectOffsetNumber
+                        ? text.substring(0, 150 - subjectOffsetNumber) + '...'
                         : text}
                 </span>
             </div>

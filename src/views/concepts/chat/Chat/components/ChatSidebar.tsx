@@ -6,9 +6,10 @@ import { EventStreamResponse } from '@/@types/events'
 interface ChatSidebarProps {
     event: EventStreamResponse
     isHost: boolean
+    nextDate: { start: Date; end: Date } | null
 }
 
-const ChatSidebar = ({ event, isHost }: ChatSidebarProps) => {
+const ChatSidebar = ({ event, isHost, nextDate }: ChatSidebarProps) => {
     const selectedChat = useChatStore((state) => state.selectedChat)
 
     return (
@@ -18,7 +19,7 @@ const ChatSidebar = ({ event, isHost }: ChatSidebarProps) => {
                 selectedChat.id && 'hidden',
             )}
         >
-            <ChatList event={event} isHost={isHost} />
+            <ChatList event={event} isHost={isHost} nextDate={nextDate} />
         </div>
     )
 }

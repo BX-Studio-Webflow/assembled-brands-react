@@ -14,9 +14,10 @@ import useAuth from '@/auth/useAuth'
 interface ChatListProps {
     event: EventStreamResponse
     isHost: boolean
+    nextDate: { start: Date; end: Date } | null
 }
 
-const ChatList = ({ event, isHost }: ChatListProps) => {
+const ChatList = ({ event, isHost, nextDate }: ChatListProps) => {
     const chatsFetched = useChatStore((state) => state.chatsFetched)
     const { user } = useAuth()
 
@@ -136,7 +137,12 @@ const ChatList = ({ event, isHost }: ChatListProps) => {
     }, [messages])
 
     const messageList = useMemo(() => {
-        return messages.map((item) => {
+        //past messages before nextDate will not be shown
+        const filteredMessages = messages.filter((item) => {
+            const messageTimestamp = dayjs(item.timestamp)
+            return messageTimestamp.isAfter(nextDate?.start)
+        })
+        return filteredMessages.map((item) => {
             // First determine who the current user is in this event context
             const currentUserId =
                 event.lead?.id?.toString() ||

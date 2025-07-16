@@ -123,7 +123,7 @@ const EventStream = () => {
                             bodyClass="h-full flex flex-col"
                         >
                             <div className="flex flex-auto w-full h-full gap-4">
-                                <ChatSidebar event={data} isHost={isHost} />
+                                <ChatSidebar event={data} isHost={isHost} nextDate={nextDate}/>
                                 <ChatBody
                                     data={data}
                                     isHost={isHost}
