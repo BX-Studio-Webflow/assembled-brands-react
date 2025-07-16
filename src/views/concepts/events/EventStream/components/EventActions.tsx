@@ -47,7 +47,7 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
             link_url: data.event.upgrade_url,
             click_type: 'upgrade',
         })
-        window.open(`${data.event.calendar_url}`, '_blank')
+        window.open(`${data.event.upgrade_url}`, '_blank')
     }
 
     const handleScheduleCallback = async () => {
