@@ -24,7 +24,7 @@ const TagsSection = ({ control }: TagsSectionProps) => {
                         <Select
                             isMulti
                             isClearable
-                            placeholder="Add tags for customer..."
+                            placeholder="Add tags for lead..."
                             componentAs={CreatableSelect}
                             options={defaultOptions}
                             onChange={(option) => field.onChange(option)}

@@ -116,7 +116,7 @@ const LeadListSelected = () => {
             <ConfirmDialog
                 isOpen={deleteConfirmationOpen}
                 type="danger"
-                title="Remove customers"
+                title="Remove leads"
                 onClose={handleCancel}
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
@@ -124,7 +124,7 @@ const LeadListSelected = () => {
             >
                 <p>
                     {' '}
-                    Are you sure you want to remove these customers? This action
+                    Are you sure you want to remove these leads? This action
                     can&apos;t be undo.{' '}
                 </p>
             </ConfirmDialog>
@@ -134,7 +134,7 @@ const LeadListSelected = () => {
                 onClose={() => setSendMessageDialogOpen(false)}
             >
                 <h5 className="mb-2">Send Message</h5>
-                <p>Send message to the following customers</p>
+                <p>Send message to the following leads</p>
                 <Avatar.Group
                     chained
                     omittedAvatarTooltip
