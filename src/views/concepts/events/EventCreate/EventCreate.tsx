@@ -19,7 +19,7 @@ const EventCreate = () => {
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values: EventFormType) => {
-        console.log('Submitted values', values)
+      
         setIsSubmiting(true)
         const payload = {
             ...values,
