@@ -836,7 +836,7 @@ const x = setInterval(function () {
                         <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded">
                             <p className="text-sm text-gray-600 dark:text-gray-300">
                                 {filteredCsvData.length} messages will be
-                                downloaded for the selected memberships.
+                                downloaded from the sessions selected.
                             </p>
                         </div>
                     )}
