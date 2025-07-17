@@ -91,6 +91,7 @@ const EventStream = () => {
     }
 
     const handleUIStateChange = (uiStatus: LivestreamStatus) => {
+        console.log('🫥 UI State Changed:', uiStatus)
         setUIState(uiStatus)
     }
 

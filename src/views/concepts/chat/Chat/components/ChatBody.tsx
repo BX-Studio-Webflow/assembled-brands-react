@@ -27,7 +27,7 @@ const ChatBody = ({
             hls_presigned_url: data.event.asset.hls_presigned_url || '',
             assetId: data.event.asset.id,
             eventId: data.event.id,
-            onEnded: () => onStatusUpdate('ended'),
+            onStatusUpdate,
             nextDate,
             membershipId,
             poster: data.event.asset.image_presigned_url || '',

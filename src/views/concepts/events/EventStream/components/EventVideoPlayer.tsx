@@ -21,7 +21,7 @@ interface EventVideoPlayerProps {
     assetId: number
     eventId: number
     membershipId: number
-    onEnded: (status: LivestreamStatus) => void
+    onStatusUpdate: (status: LivestreamStatus) => void
     isHost: boolean
     nextDate: { start: Date; end: Date } | null
 }
@@ -32,7 +32,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     assetId,
     eventId,
     membershipId,
-    onEnded,
+    onStatusUpdate,
     isHost,
     nextDate,
 }) => {
@@ -96,7 +96,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                     },
                     onEventEnded: (eventId) => {
                         console.log('🔴 Event ended:', eventId)
-                        onEnded('ended')
+                        onStatusUpdate('ended')
                     },
                 },
             )
@@ -239,7 +239,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             })
 
             playerRef.current.on('ended', () => {
-                onEnded('ended')
+                onStatusUpdate('ended')
                 console.log('VIDEO ENDED')
             })
 
@@ -370,7 +370,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         assetId,
         eventId,
         isHost,
-        onEnded,
+        onStatusUpdate,
         nextDate,
         membershipId,
     ])

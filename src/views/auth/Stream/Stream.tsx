@@ -74,8 +74,9 @@ const Stream = () => {
         return { eventStatus: status, nextDate: next }
     }, [data, uiState])
 
-    const handleCountdownEnd = () => {
-        setUIState('live')
+    const handleUIStateChange = (uiStatus: LivestreamStatus) => {
+        console.log('🫥 UI State Changed:', uiStatus)
+        setUIState(uiStatus)
     }
 
     return (
@@ -122,7 +123,7 @@ const Stream = () => {
                                         membershipId={
                                             data?.lead?.membership_id || 0
                                         }
-                                        onStatusUpdate={handleCountdownEnd}
+                                        onStatusUpdate={handleUIStateChange}
                                     />
                                 </div>
                             </Card>
@@ -131,7 +132,7 @@ const Stream = () => {
                     {data && eventStatus !== 'live' && (
                         <EventWaitingCard
                             event={data}
-                            onCountdownEnd={handleCountdownEnd}
+                            onCountdownEnd={() => handleUIStateChange('live')}
                         />
                     )}
                 </div>
