@@ -9,7 +9,6 @@ import useQuery from '@/utils/hooks/useQuery'
 import { apiCreateTelemetry } from '@/services/TelemetryService'
 import { LivestreamStatus } from '@/@types/events'
 import WebSocketSyncManager from '@/utils/websocketSync'
-import dayjs from 'dayjs'
 
 interface NavigatorWithAutoplayPolicy extends Navigator {
     getAutoplayPolicy(type: string): string
@@ -50,20 +49,9 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     const email = query.get('email') || ''
     const code = query.get('code') || ''
 
-    useEffect(() => {
-        if (!containerRef.current) return
-
-        const container = containerRef.current
-        const STORAGE_KEY = `video-progress-${assetId}-${eventId}`
-
-        // Initialize WebSocket synchronization
-        if (eventId) {
-            //If current time is after event end time, return
-            if (dayjs().isAfter(nextDate?.end)) {
-                console.log('😶 Event has ended, not connecting to WebSocket')
-                return
-            }
-
+    // Add this function inside the component
+    const initWebSocketSync = () => {
+        if (eventId && !wsSyncRef.current) {
             wsSyncRef.current = new WebSocketSyncManager(
                 eventId,
                 nextDate?.start ? new Date(nextDate.start).getTime() : 0,
@@ -92,7 +80,6 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                             }
                         }
                     },
-
                     onConnected: (clientId) => {
                         console.log('🔗 WebSocket connected:', clientId)
                     },
@@ -111,6 +98,13 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             )
             wsSyncRef.current.connect()
         }
+    }
+
+    useEffect(() => {
+        if (!containerRef.current) return
+
+        const container = containerRef.current
+        const STORAGE_KEY = `video-progress-${assetId}-${eventId}`
 
         // Create video element
         const video = document.createElement('video')
@@ -175,6 +169,9 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                     if (timeElapsed <= videoElement.duration) {
                         videoElement.currentTime = timeElapsed
                     }
+
+                    // Initialize WebSocket synchronization here
+                    initWebSocketSync()
                 })
 
                 videoElement.addEventListener('error', (e) => {
@@ -386,7 +383,6 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         assetId,
         eventId,
         isHost,
-        onStatusUpdate,
         nextDate,
         membershipId,
     ])
