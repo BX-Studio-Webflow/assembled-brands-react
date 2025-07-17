@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import Button from '@/components/ui/Button'
 import ThankYouForm from './components/ThankYouForm'
 import { useNavigate } from 'react-router'
-import Split from '@/components/layouts/AuthLayout/Split'
+
 import { apiValidateTicketPayment } from '@/services/LeadsService'
 import useSWR from 'swr'
 import { EventWithDetailsAndCount } from '@/@types/events'
 import { apiGetEvent } from '@/services/EventService'
+import Split from './components/Split'
 
 type ThankYouProps = {
     signInUrl?: string
@@ -70,7 +71,15 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
 
     return (
         <div className="min-h-screen h-screen">
-            <Split className="h-full">
+            <Split
+                className="h-full"
+                src={
+                    event?.asset?.image_presigned_url ||
+                    '/img/others/auth-split-img.png'
+                }
+                title={event?.event_name || ''}
+                description={event?.event_description || ''}
+            >
                 <div>
                     <div className="mb-6">
                         <>
