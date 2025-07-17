@@ -1,11 +1,12 @@
 interface TimeSyncMessage {
-    type: 'time_sync' | 'connected'
+    type: 'time_sync' | 'connected' | 'event_ended'
     eventId?: number
     currentTime?: number
     timestamp: number
     isHost?: boolean
     clientId?: string
-    membershipId?: number
+    eventStartTime?: number
+    eventEndTime?: number
 }
 
 interface WebSocketSyncCallbacks {
@@ -13,6 +14,7 @@ interface WebSocketSyncCallbacks {
     onConnected?: (clientId: string) => void
     onError?: (error: Event) => void
     onClose?: () => void
+    onEventEnded?: (eventId: number) => void
 }
 
 class WebSocketSyncManager {
@@ -21,18 +23,21 @@ class WebSocketSyncManager {
     private maxReconnectAttempts = 5
     private reconnectDelay = 1000
     private eventId: number
-    private membershipId: number
+    private eventStartTime: number
+    private eventEndTime: number
     private callbacks: WebSocketSyncCallbacks
     private clientId: string | null = null
     private isConnected = false
 
     constructor(
         eventId: number,
-        membershipId: number,
+        eventStartTime: number,
+        eventEndTime: number,
         callbacks: WebSocketSyncCallbacks,
     ) {
         this.eventId = eventId
-        this.membershipId = membershipId
+        this.eventStartTime = eventStartTime
+        this.eventEndTime = eventEndTime
         this.callbacks = callbacks
     }
 
@@ -59,10 +64,11 @@ class WebSocketSyncManager {
             this.sendMessage({
                 type: 'time_sync',
                 eventId: this.eventId,
-                membershipId: this.membershipId,
                 currentTime: 0,
                 timestamp: Date.now(),
                 isHost: false,
+                eventStartTime: this.eventStartTime,
+                eventEndTime: this.eventEndTime,
             })
         }
 
@@ -104,6 +110,10 @@ class WebSocketSyncManager {
                 if (message.currentTime !== undefined) {
                     this.callbacks.onTimeSync?.(message.currentTime)
                 }
+                break
+
+            case 'event_ended':
+                this.callbacks.onEventEnded?.(Number(message.eventId))
                 break
 
             default:

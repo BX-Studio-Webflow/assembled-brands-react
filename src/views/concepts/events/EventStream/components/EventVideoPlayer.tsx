@@ -58,7 +58,8 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         if (eventId) {
             wsSyncRef.current = new WebSocketSyncManager(
                 eventId,
-                membershipId,
+                nextDate?.start ? new Date(nextDate.start).getTime() : 0,
+                nextDate?.end ? new Date(nextDate.end).getTime() : 0,
                 {
                     onTimeSync: (serverTime) => {
                         if (playerRef.current) {
@@ -92,6 +93,10 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                     },
                     onClose: () => {
                         console.log('🔌 WebSocket disconnected')
+                    },
+                    onEventEnded: (eventId) => {
+                        console.log('🔴 Event ended:', eventId)
+                        onEnded('ended')
                     },
                 },
             )
