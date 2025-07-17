@@ -189,36 +189,8 @@ const EventEdit = () => {
     }, [data])
 
     const handleCopy = () => {
-        let form = `<form action="https://api.3themind.com/v1/lead/external-form" method="post" id="lead_form" name="lead_form" class="lead_form">
-  <!------------>
-  <label class="textbig">SIGNUP HERE</label>
-  <select name="membership_id" id="membership_id" class="lead_form_select" required>
-    <option value="" disabled selected>Select a date</option>
-    <option value="2025-07-03">July 3, 2025</option>
-    <!-- Add more dates as needed -->
-  </select>
-  <input class="lead_form_name" maxlength="256" name="name" placeholder="Name" type="text" id="lead_form_name" required>
-  <!------------>
-  <input class="lead_form_email" maxlength="256" name="email" placeholder="@" type="email" id="lead_form_email" required>
-  <!------------>
-  <input class="lead_form_phone" maxlength="256" name="phone" placeholder="Phone" type="text" id="lead_form_phone" required>
-  <!------------>
-  <div class="capcon" id="captcha_container">
-    <label class="textsmall" id="">Security Question</label>
-    <label class="textmed" id="captcha_question"></label>
-    <input class="lead_form_name answerbox" type="text" id="captcha_answer" name="captcha_answer" placeholder="Answer" required />
-  </div>
-  <!------------>
-  <input type="hidden" name="event_id" value="YOUR_EVENT_ID">
-  <input type="hidden" name="host_id" value="YOUR_HOST_ID">
-  <input type="hidden" name="redirect_url" value="YOUR_REDIRECT_URL">
-  <!------------>
-  <div id="lead_form_error" class="lead_form_error" style="display:none;"></div>
-  <!------------>
-  <input type="submit" id="lead_form_submit" class="lead_form_submit" value="Register">
-  <!------------>
-</form>
-<style>
+        let form = `
+        <style>
   .lead_form {
     width: 100%;
     max-width: 100%;
@@ -244,6 +216,10 @@ const EventEdit = () => {
     width: 100%;
     font-size: 16px;
     background-color: #ffffff;
+  }
+
+  .iti{
+  width: 100%;
   }
 
   .textbig {
@@ -343,12 +319,42 @@ const EventEdit = () => {
     outline: none;
   }
 </style>
-<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/o.js"></script>`
+        
+        <form action="https://api.3themind.com/v1/lead/external-form" method="post" id="lead_form" name="lead_form" class="lead_form">
+  <!------------>
+  <label class="textbig">SIGNUP HERE</label>
+  <select name="membership_id" id="membership_id" class="lead_form_select" required>
+    <option value="" disabled selected>Select a date</option>
+    <option value="2025-07-03">July 3, 2025</option>
+    <!-- Add more dates as needed -->
+  </select>
+  <input class="lead_form_name" maxlength="256" name="name" placeholder="Name" type="text" id="lead_form_name" required>
+  <!------------>
+  <input class="lead_form_email" maxlength="256" name="email" placeholder="@" type="email" id="lead_form_email" required>
+  <!------------>
+  <input class="lead_form_phone" maxlength="256" name="phone" placeholder="Phone" type="text" id="lead_form_phone" required>
+  <!------------>
+  <div class="capcon" id="captcha_container">
+    <label class="textsmall" id="">Security Question</label>
+    <label class="textmed" id="captcha_question"></label>
+    <input class="lead_form_name answerbox" type="text" id="captcha_answer" name="captcha_answer" placeholder="Answer" required />
+  </div>
+  <!------------>
+  <input type="hidden" name="event_id" value="YOUR_EVENT_ID">
+  <input type="hidden" name="host_id" value="YOUR_HOST_ID">
+  <input type="hidden" name="redirect_url" value="YOUR_REDIRECT_URL">
+  <!------------>
+  <div id="lead_form_error" class="lead_form_error" style="display:none;"></div>
+  <!------------>
+  <input type="submit" id="lead_form_submit" class="lead_form_submit" value="Register">
+  <!------------>
+</form>
+
+<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/r1.js"></script>`
         const host_id = data?.host_id?.toString() || ''
         const success_url = data?.success_url || data?.live_video_url
 
         if (!id || !host_id || !success_url) {
-       
             toast.push(
                 <Notification type="danger">
                     Ops! we could not generate the form. Event ID, Host ID, and
