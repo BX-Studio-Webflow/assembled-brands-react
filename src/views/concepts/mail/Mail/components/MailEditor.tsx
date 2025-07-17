@@ -174,7 +174,6 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
     }
 
     const onSubmit = async (value: FormSchema) => {
-       
         setFormSubmiting(true)
         try {
             const payload = {
@@ -188,11 +187,11 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                 button_link: 'https://example.com',
                 recipients: value.recipients,
             }
-           
+
             const response = (await apiCreateMail(
                 payload,
             )) as MailCreateResponse
-            
+
             toast.push(
                 <Notification type="success">
                     Your Message was sent successfuly! {response.count} emails

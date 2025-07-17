@@ -20,7 +20,6 @@ const PodcastCreate = () => {
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values: PodcastFormSchema) => {
-      
         setIsSubmiting(true)
         try {
             const payload = {

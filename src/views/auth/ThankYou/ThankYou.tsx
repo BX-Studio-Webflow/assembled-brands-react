@@ -72,7 +72,6 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
     return (
         <div className="min-h-screen h-screen">
             <Split
-                
                 src={
                     event?.asset?.image_presigned_url ||
                     '/img/others/auth-split-img.png'

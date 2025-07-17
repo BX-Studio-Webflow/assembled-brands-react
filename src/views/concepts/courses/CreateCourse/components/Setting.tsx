@@ -142,7 +142,6 @@ const Setting = ({ assets }: SettingProps) => {
     }
 
     const onSubmit = async (values: FormSchema) => {
-      
         const course = {
             ...values,
             trailer_asset_id: Number(values.asset_id),

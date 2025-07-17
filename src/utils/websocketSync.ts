@@ -5,6 +5,7 @@ interface TimeSyncMessage {
     timestamp: number
     isHost?: boolean
     clientId?: string
+    membershipId?: number
 }
 
 interface WebSocketSyncCallbacks {
@@ -20,12 +21,18 @@ class WebSocketSyncManager {
     private maxReconnectAttempts = 5
     private reconnectDelay = 1000
     private eventId: number
+    private membershipId: number
     private callbacks: WebSocketSyncCallbacks
     private clientId: string | null = null
     private isConnected = false
 
-    constructor(eventId: number, callbacks: WebSocketSyncCallbacks) {
+    constructor(
+        eventId: number,
+        membershipId: number,
+        callbacks: WebSocketSyncCallbacks,
+    ) {
         this.eventId = eventId
+        this.membershipId = membershipId
         this.callbacks = callbacks
     }
 
@@ -52,6 +59,7 @@ class WebSocketSyncManager {
             this.sendMessage({
                 type: 'time_sync',
                 eventId: this.eventId,
+                membershipId: this.membershipId,
                 currentTime: 0,
                 timestamp: Date.now(),
                 isHost: false,

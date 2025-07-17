@@ -15,11 +15,12 @@ interface NavigatorWithAutoplayPolicy extends Navigator {
 }
 
 interface EventVideoPlayerProps {
-    normal_presigned_url?: string
-    hls_presigned_url?: string
-    poster?: string
-    assetId?: number
-    eventId?: number
+    normal_presigned_url: string
+    hls_presigned_url: string
+    poster: string
+    assetId: number
+    eventId: number
+    membershipId: number
     onEnded: (status: LivestreamStatus) => void
     isHost: boolean
     nextDate: { start: Date; end: Date } | null
@@ -30,6 +31,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     hls_presigned_url = 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4',
     assetId,
     eventId,
+    membershipId,
     onEnded,
     isHost,
     nextDate,
@@ -54,41 +56,45 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
         // Initialize WebSocket synchronization
         if (eventId) {
-            wsSyncRef.current = new WebSocketSyncManager(eventId, {
-                onTimeSync: (serverTime) => {
-                    if (playerRef.current) {
-                        // Calculate time elapsed since stream start
-                        const streamStartTime = nextDate?.start
-                            ? new Date(nextDate.start).getTime()
-                            : 0
-                        const timeElapsed = Math.max(
-                            0,
-                            (serverTime * 1000 - streamStartTime) / 1000,
-                        )
-
-                        const timeDiff = Math.abs(
-                            playerRef.current.currentTime - timeElapsed,
-                        )
-                        if (timeDiff > 1) {
-                            // If drift is more than 1 seconds
-                            console.log(
-                                `🔄 Syncing to server time: ${timeElapsed}s (drift: ${timeDiff.toFixed(1)}s)`,
+            wsSyncRef.current = new WebSocketSyncManager(
+                eventId,
+                membershipId,
+                {
+                    onTimeSync: (serverTime) => {
+                        if (playerRef.current) {
+                            // Calculate time elapsed since stream start
+                            const streamStartTime = nextDate?.start
+                                ? new Date(nextDate.start).getTime()
+                                : 0
+                            const timeElapsed = Math.max(
+                                0,
+                                (serverTime * 1000 - streamStartTime) / 1000,
                             )
-                            playerRef.current.currentTime = timeElapsed
-                        }
-                    }
-                },
 
-                onConnected: (clientId) => {
-                    console.log('🔗 WebSocket connected:', clientId)
+                            const timeDiff = Math.abs(
+                                playerRef.current.currentTime - timeElapsed,
+                            )
+                            if (timeDiff > 1) {
+                                // If drift is more than 1 seconds
+                                console.log(
+                                    `🔄 Syncing to server time: ${timeElapsed}s (drift: ${timeDiff.toFixed(1)}s)`,
+                                )
+                                playerRef.current.currentTime = timeElapsed
+                            }
+                        }
+                    },
+
+                    onConnected: (clientId) => {
+                        console.log('🔗 WebSocket connected:', clientId)
+                    },
+                    onError: (error) => {
+                        console.error('❌ WebSocket error:', error)
+                    },
+                    onClose: () => {
+                        console.log('🔌 WebSocket disconnected')
+                    },
                 },
-                onError: (error) => {
-                    console.error('❌ WebSocket error:', error)
-                },
-                onClose: () => {
-                    console.log('🔌 WebSocket disconnected')
-                },
-            })
+            )
             wsSyncRef.current.connect()
         }
 
@@ -229,6 +235,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
             playerRef.current.on('ended', () => {
                 onEnded('ended')
+                console.log('VIDEO ENDED')
             })
 
             // Host controls that broadcast to all clients
@@ -360,6 +367,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         isHost,
         onEnded,
         nextDate,
+        membershipId,
     ])
 
     //Fire telemetry once on load, then every 15 seconds

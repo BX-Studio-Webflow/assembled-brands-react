@@ -11,24 +11,26 @@ const ChatBody = ({
     onStatusUpdate,
     isHost,
     nextDate,
+    membershipId,
 }: {
     data: EventStreamResponse
-    onStatusUpdate: (
-        status: LivestreamStatus,
-    ) => void
+    onStatusUpdate: (status: LivestreamStatus) => void
     isHost: boolean
     nextDate: { start: Date; end: Date } | null
+    membershipId: number
 }) => {
     // Memoize video player props to prevent unnecessary re-renders
     const videoPlayerProps = useMemo(
         () => ({
             isHost,
-            normal_presigned_url: data.event.asset.presignedUrl,
-            hls_presigned_url: data.event.asset.hls_presigned_url,
+            normal_presigned_url: data.event.asset.presignedUrl || '',
+            hls_presigned_url: data.event.asset.hls_presigned_url || '',
             assetId: data.event.asset.id,
             eventId: data.event.id,
             onEnded: () => onStatusUpdate('ended'),
             nextDate,
+            membershipId,
+            poster: data.event.asset.image_presigned_url || '',
         }),
         [
             isHost,
@@ -38,6 +40,8 @@ const ChatBody = ({
             data.event.id,
             onStatusUpdate,
             nextDate,
+            membershipId,
+            data.event.asset.image_presigned_url,
         ],
     )
 

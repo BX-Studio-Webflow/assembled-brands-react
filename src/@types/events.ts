@@ -164,7 +164,6 @@ export interface MembershipWithDates extends Membership {
     dates: MembershipDate[]
 }
 
-
 // Extended EventWithDetails interface with leadCount
 export interface EventWithDetailsAndCount {
     id: number
@@ -222,6 +221,7 @@ export interface EventStreamResponse {
         name: string
         created_at: string
         updated_at: string
+        membership_id: number
     }
     membership?: MembershipWithDates
     lobby_telemetry?: LobbyTelemetry[]
@@ -235,4 +235,9 @@ export type SaveInstantCallbackRequest = {
     host_id: number
 }
 
-export type LivestreamStatus = 'early' | 'live' | 'ended' | 'cancelled' | 'suspended'
+export type LivestreamStatus =
+    | 'early'
+    | 'live'
+    | 'ended'
+    | 'cancelled'
+    | 'suspended'

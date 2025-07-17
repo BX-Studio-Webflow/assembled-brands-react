@@ -150,7 +150,7 @@ const EventDialog = (props: EventDialogProps) => {
         if (values.endDate) {
             eventData.end = dayjs(values.endDate).format()
         }
-       
+
         submit?.(eventData, selected.type)
         handleDialogClose()
     }

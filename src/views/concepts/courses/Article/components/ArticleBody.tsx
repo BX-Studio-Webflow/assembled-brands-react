@@ -7,7 +7,6 @@ interface ArticleBodyProps {
 }
 
 const ArticleBody = ({ lesson }: ArticleBodyProps) => {
-  
     return (
         <>
             <h3>{lesson.lesson.title}</h3>

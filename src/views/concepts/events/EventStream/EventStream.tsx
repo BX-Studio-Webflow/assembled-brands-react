@@ -39,7 +39,11 @@ const EventStream = () => {
     // Compute eventStatus and nextDate
     const { eventStatus, nextDate } = useMemo(() => {
         if (!data?.event.memberships?.length)
-            return { eventStatus: undefined, nextDate: null }
+            return {
+                eventStatus: undefined,
+                nextDate: null,
+                membershipId: null,
+            }
         const now = new Date()
         const sortedDates = data.event.memberships
             .flatMap((membership) => membership.dates)
@@ -74,9 +78,7 @@ const EventStream = () => {
         return { eventStatus: status, nextDate: next }
     }, [data, uiState])
 
-    const handleStatusUpdate = async (
-        status: LivestreamStatus,
-    ) => {
+    const handleStatusUpdate = async (status: LivestreamStatus) => {
         if (status === 'ended' && token && email && code) {
             await apiRecordLeaveEvent({
                 token: token,
@@ -100,9 +102,7 @@ const EventStream = () => {
                 <div className="flex flex-row justify-between gap-4 mb-4 ">
                     <EventHeader
                         eventId={String(data?.event.id)}
-                        status={
-                            eventStatus as LivestreamStatus
-                        }
+                        status={eventStatus as LivestreamStatus}
                         eventName={data?.event.event_name || ''}
                         eventDescription={data?.event.event_description || ''}
                         nextDate={nextDate}
@@ -111,9 +111,7 @@ const EventStream = () => {
                     <EventActions
                         eventId={data?.event.id || 0}
                         isHost={isHost}
-                        eventStatus={
-                            eventStatus as LivestreamStatus
-                        }
+                        eventStatus={eventStatus as LivestreamStatus}
                     />
                 </div>
                 {data && eventStatus === 'live' && (
@@ -123,11 +121,18 @@ const EventStream = () => {
                             bodyClass="h-full flex flex-col"
                         >
                             <div className="flex flex-auto w-full h-full gap-4">
-                                <ChatSidebar event={data} isHost={isHost} nextDate={nextDate}/>
+                                <ChatSidebar
+                                    event={data}
+                                    isHost={isHost}
+                                    nextDate={nextDate}
+                                />
                                 <ChatBody
                                     data={data}
                                     isHost={isHost}
                                     nextDate={nextDate}
+                                    membershipId={
+                                        data?.lead?.membership_id || 0
+                                    }
                                     onStatusUpdate={handleStatusUpdate}
                                 />
                             </div>

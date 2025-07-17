@@ -47,7 +47,6 @@ const Article = ({
     }
 
     const handleDeleteConfirm = async () => {
-   
         try {
             await apiDeleteCourse(Number(id))
             toast.push(

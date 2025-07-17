@@ -100,9 +100,7 @@ const Stream = () => {
                         <EventActions
                             eventId={data?.event.id || 0}
                             isHost={isHost}
-                            eventStatus={
-                                eventStatus as LivestreamStatus
-                            }
+                            eventStatus={eventStatus as LivestreamStatus}
                         />
                     </div>
                     {data && eventStatus === 'live' && (
@@ -112,11 +110,18 @@ const Stream = () => {
                                 bodyClass="h-full flex flex-col"
                             >
                                 <div className="flex flex-auto h-full gap-8">
-                                    <ChatSidebar event={data} isHost={false} nextDate={nextDate}/>
+                                    <ChatSidebar
+                                        event={data}
+                                        isHost={false}
+                                        nextDate={nextDate}
+                                    />
                                     <ChatBody
                                         nextDate={nextDate}
                                         data={data}
                                         isHost={false}
+                                        membershipId={
+                                            data?.lead?.membership_id || 0
+                                        }
                                         onStatusUpdate={handleCountdownEnd}
                                     />
                                 </div>
