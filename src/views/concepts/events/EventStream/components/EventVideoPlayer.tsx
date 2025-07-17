@@ -9,6 +9,7 @@ import useQuery from '@/utils/hooks/useQuery'
 import { apiCreateTelemetry } from '@/services/TelemetryService'
 import { LivestreamStatus } from '@/@types/events'
 import WebSocketSyncManager from '@/utils/websocketSync'
+import dayjs from 'dayjs'
 
 interface NavigatorWithAutoplayPolicy extends Navigator {
     getAutoplayPolicy(type: string): string
@@ -56,6 +57,12 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
 
         // Initialize WebSocket synchronization
         if (eventId) {
+            //If current time is after event end time, return
+            if (dayjs().isAfter(nextDate?.end)) {
+                console.log('😶 Event has ended, not connecting to WebSocket')
+                return
+            }
+
             wsSyncRef.current = new WebSocketSyncManager(
                 eventId,
                 nextDate?.start ? new Date(nextDate.start).getTime() : 0,

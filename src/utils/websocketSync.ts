@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 interface TimeSyncMessage {
     type: 'time_sync' | 'connected' | 'event_ended'
     eventId?: number
@@ -28,7 +30,13 @@ class WebSocketSyncManager {
     private callbacks: WebSocketSyncCallbacks
     private clientId: string | null = null
     private isConnected = false
-
+    private eventHasEnded = false
+    /**
+     * @param eventId: number - The ID of the event
+     * @param eventStartTime: number - The start time of the event in milliseconds
+     * @param eventEndTime: number - The end time of the event in milliseconds
+     * @param callbacks: WebSocketSyncCallbacks - The callbacks to be called when the event starts, ends, or when an error occurs
+     */
     constructor(
         eventId: number,
         eventStartTime: number,
@@ -45,6 +53,12 @@ class WebSocketSyncManager {
      * Connect to WebSocket server
      */
     connect(): void {
+        // Don't connect if event has ended
+        if (this.eventHasEnded) {
+            console.log('Event has ended, not connecting to WebSocket')
+            return
+        }
+
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             return
         }
@@ -52,9 +66,8 @@ class WebSocketSyncManager {
         // Use environment variable for WebSocket URL, fallback to localhost for development
         const wsUrl = `wss://api.3themind.com/ws`
 
-        console.log('Connecting to WebSocket:', wsUrl)
         this.ws = new WebSocket(wsUrl)
-
+        console.log('Connecting to WebSocket:', wsUrl)
         this.ws.onopen = () => {
             console.log('WebSocket connected')
             this.isConnected = true
@@ -113,7 +126,10 @@ class WebSocketSyncManager {
                 break
 
             case 'event_ended':
+                this.eventHasEnded = true
                 this.callbacks.onEventEnded?.(Number(message.eventId))
+                // Disconnect immediately after receiving event_ended
+                this.disconnect()
                 break
 
             default:
@@ -136,6 +152,17 @@ class WebSocketSyncManager {
      * Attempt to reconnect to WebSocket server
      */
     private attemptReconnect(): void {
+        // Don't reconnect if event has ended
+        if (this.eventHasEnded) {
+            console.log('Event has ended, not attempting to reconnect')
+            return
+        }
+
+        //If current time is after event end time, return
+        if (dayjs().isAfter(this.eventEndTime)) {
+            console.log('😶 Event has ended, not reconnecting to WebSocket')
+            return
+        }
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
             console.error('Max reconnection attempts reached')
             return
@@ -161,6 +188,8 @@ class WebSocketSyncManager {
         }
         this.isConnected = false
         this.clientId = null
+        // Reset reconnect attempts when disconnecting
+        this.reconnectAttempts = 0
     }
 
     /**
