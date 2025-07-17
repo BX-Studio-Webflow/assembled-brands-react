@@ -1,5 +1,6 @@
 import { Callback } from './lead'
 import { LobbyTelemetry } from './telemetry'
+import { Business } from './business'
 
 export interface Event {
     event_name: string
@@ -163,6 +164,7 @@ export interface MembershipWithDates extends Membership {
     dates: MembershipDate[]
 }
 
+
 // Extended EventWithDetails interface with leadCount
 export interface EventWithDetailsAndCount {
     id: number
@@ -184,6 +186,7 @@ export interface EventWithDetailsAndCount {
     host_id: number
     asset: Asset
     host: Host
+    business: Business
     leadCount: number
     memberships: MembershipWithDates[]
     attendance_stats: {

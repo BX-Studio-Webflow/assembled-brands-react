@@ -47,7 +47,8 @@ const ThankYouForm = (props: ThankYouFormProps) => {
                             </div>
                             <span>
                                 <span className="font-semibold">
-                                    {event.host.email}{' '}
+                                    {event.business.email ||
+                                        event.host.email}{' '}
                                 </span>
                             </span>
                         </div>

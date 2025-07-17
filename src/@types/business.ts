@@ -8,6 +8,10 @@ export interface Business {
     dial_code: string
     address: string
     logo: string
+    logo_asset_id: number
+    created_at: string
+    description: string
+    user_id: number
 }
 
 export interface GetBusinessResponse {
