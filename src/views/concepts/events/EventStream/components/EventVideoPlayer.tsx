@@ -43,6 +43,7 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
     const progressIntervalRef = useRef<number | null>(null)
     const wsSyncRef = useRef<WebSocketSyncManager | null>(null)
     const query = useQuery()
+    const eventEndedRef = useRef<boolean>(false)
 
     // Get token, email, and code from URL parameters
     const token = query.get('token') || ''
@@ -99,10 +100,11 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
                         console.error('❌ WebSocket error:', error)
                     },
                     onClose: () => {
-                        console.log('🔌 WebSocket disconnected')
+                        //console.log(' WebSocket disconnected')
                     },
                     onEventEnded: (eventId) => {
                         console.log('🔴 Event ended:', eventId)
+                        eventEndedRef.current = true
                         onStatusUpdate('ended')
                     },
                 },
@@ -246,8 +248,15 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
             })
 
             playerRef.current.on('ended', () => {
-                onStatusUpdate('ended')
-                console.log('VIDEO ENDED')
+                // Only trigger if event hasn't already ended via WebSocket
+                if (!eventEndedRef.current) {
+                    onStatusUpdate('ended')
+                    console.log('VIDEO ENDED')
+                } else {
+                    console.log(
+                        'VIDEO ENDED - but event already ended via WebSocket, ignoring',
+                    )
+                }
             })
 
             // Host controls that broadcast to all clients

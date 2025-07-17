@@ -90,18 +90,18 @@ class WebSocketSyncManager {
                 const message: TimeSyncMessage = JSON.parse(event.data)
                 this.handleMessage(message)
             } catch (error) {
-                console.error('Failed to parse WebSocket message:', error)
+                console.error('❌ Failed to parse WebSocket message:', error)
             }
         }
 
         this.ws.onerror = (error) => {
-            console.error('WebSocket error:', error)
+            console.error('❌ WebSocket error:', error)
             this.isConnected = false
             this.callbacks.onError?.(error)
         }
 
         this.ws.onclose = () => {
-            console.log('WebSocket disconnected')
+            console.log('🔌WebSocket disconnected')
             this.isConnected = false
             this.callbacks.onClose?.()
             this.attemptReconnect()
