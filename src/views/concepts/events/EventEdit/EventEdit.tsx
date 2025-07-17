@@ -6,6 +6,8 @@ import Container from '@/components/shared/Container'
 import Loading from '@/components/shared/Loading'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import Tooltip from '@/components/ui/Tooltip'
+import Dialog from '@/components/ui/Dialog'
+import Checkbox from '@/components/ui/Checkbox'
 import EventForm from '../EventForm'
 import {
     apiGetEvent,
@@ -20,7 +22,6 @@ import type { EventWithDetailsAndCount } from '@/@types/events'
 import { AxiosError } from 'axios'
 import { FaBan, FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
 import { useChatStore } from '../../chat/Chat/store/chatStore'
-import { CSVLink } from 'react-csv'
 import { RiChatDeleteLine } from 'react-icons/ri'
 import { apiClearTelemetryLogs } from '@/services/TelemetryService'
 
@@ -44,6 +45,8 @@ const EventEdit = () => {
         useState(false)
     const [cancelEventConfirmationOpen, setCancelEventConfirmationOpen] =
         useState(false)
+    const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
+    const [selectedMemberships, setSelectedMemberships] = useState<string[]>([])
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const messages = useChatStore((state) => state.messages)
@@ -59,6 +62,16 @@ const EventEdit = () => {
             subscribeToMessages(data.id.toString())
         }
     }, [data?.id, subscribeToMessages])
+
+    // Check for action=download in URL and open dialog automatically
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search)
+        const action = urlParams.get('action')
+
+        if (action === 'download-chat-logs' && data?.event_type === 'prerecorded') {
+            setDownloadDialogOpen(true)
+        }
+    }, [data?.event_type])
 
     const handleFormSubmit = async (values: EventFormType) => {
         try {
@@ -456,12 +469,7 @@ const x = setInterval(function () {
             )
             return
         }
-        toast.push(
-            <Notification type="success">
-                {messages.length} messages are ready to be downloaded!
-            </Notification>,
-            { placement: 'top-center' },
-        )
+        setDownloadDialogOpen(true)
     }
 
     const handleClearLogs = () => {
@@ -500,9 +508,103 @@ const x = setInterval(function () {
         setClearLogsConfirmationOpen(false)
     }
 
-    // Prepare CSV data for download
-    const csvData = useMemo(() => {
-        return messages.map((message) => ({
+    const handleDownloadDialogClose = () => {
+        setDownloadDialogOpen(false)
+        setSelectedMemberships([])
+    }
+
+    const handleDownloadDialogOk = () => {
+        if (selectedMemberships.length === 0) {
+            toast.push(
+                <Notification type="danger">
+                    Please select at least one membership to download.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            return
+        }
+
+        if (filteredCsvData.length === 0) {
+            toast.push(
+                <Notification type="warning">
+                    No messages found for the selected memberships and time
+                    range.
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            setDownloadDialogOpen(false)
+            setSelectedMemberships([])
+            return
+        }
+
+        // Create and download CSV
+        const csvContent = [
+            Object.keys(filteredCsvData[0]).join(','),
+            ...filteredCsvData.map((row) =>
+                Object.values(row)
+                    .map((value) => `"${value}"`)
+                    .join(','),
+            ),
+        ].join('\n')
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+        const link = document.createElement('a')
+        const url = URL.createObjectURL(blob)
+        link.setAttribute('href', url)
+        link.setAttribute(
+            'download',
+            `event-${data?.id}-messages-${new Date().toISOString().split('T')[0]}.csv`,
+        )
+        link.style.visibility = 'hidden'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        toast.push(
+            <Notification type="success">
+                {filteredCsvData.length} messages downloaded successfully!
+            </Notification>,
+            { placement: 'top-center' },
+        )
+        setDownloadDialogOpen(false)
+        setSelectedMemberships([])
+    }
+
+    const handleMembershipSelection = (options: string[]) => {
+        setSelectedMemberships(options)
+    }
+
+    // Prepare filtered CSV data for download based on selected memberships
+    const filteredCsvData = useMemo(() => {
+        if (selectedMemberships.length === 0 || !data?.memberships) {
+            return []
+        }
+
+        // Get selected memberships with their dates
+        const selectedMembershipData = data.memberships.filter((membership) =>
+            selectedMemberships.includes(membership.id.toString()),
+        )
+
+        // Filter messages based on membership dates and asset duration
+        const filteredMessages = messages.filter((message) => {
+            const messageTimestamp = message.timestamp
+
+            return selectedMembershipData.some((membership) => {
+                const membershipDate =
+                    parseInt(membership.dates[0]?.date || '0') * 1000 // Convert to milliseconds
+                const assetDuration = data?.asset?.duration || 0
+                const durationInMs = assetDuration * 1000 // Convert seconds to milliseconds
+
+                const startTime = membershipDate
+                const endTime = membershipDate + durationInMs
+
+                return (
+                    messageTimestamp >= startTime && messageTimestamp <= endTime
+                )
+            })
+        })
+
+        return filteredMessages.map((message) => ({
             'Message ID': message.id,
             'Sender ID': message.senderId,
             'Sender Name': message.name,
@@ -511,7 +613,12 @@ const x = setInterval(function () {
             'Is Host': message.isHost ? 'Yes' : 'No',
             'Event ID': message.eventId,
         }))
-    }, [messages])
+    }, [
+        messages,
+        selectedMemberships,
+        data?.memberships,
+        data?.asset?.duration,
+    ])
 
     const handleCancelEvent = () => {
         setCancelEventConfirmationOpen(true)
@@ -583,16 +690,11 @@ const x = setInterval(function () {
                                 </Tooltip>
                                 {data?.event_type === 'prerecorded' && (
                                     <Tooltip title="Download chat messages as CSV">
-                                        <CSVLink
-                                            filename={`event-${data?.id}-messages.csv`}
-                                            data={csvData}
+                                        <Button
+                                            type="button"
+                                            icon={<FaDownload />}
                                             onClick={handleDownload}
-                                        >
-                                            <Button
-                                                type="button"
-                                                icon={<FaDownload />}
-                                            />
-                                        </CSVLink>
+                                        />
                                     </Tooltip>
                                 )}
                                 {data?.event_type === 'prerecorded' && (
@@ -686,6 +788,68 @@ const x = setInterval(function () {
                     This action cannot be undone.
                 </p>
             </ConfirmDialog>
+            <Dialog
+                isOpen={downloadDialogOpen}
+                style={{
+                    content: {
+                        marginTop: 250,
+                    },
+                }}
+                contentClassName="pb-0 px-0"
+                onClose={handleDownloadDialogClose}
+                onRequestClose={handleDownloadDialogClose}
+            >
+                <div className="px-6 pb-6">
+                    <h5 className="mb-4">Select Memberships to Download</h5>
+                    <p className="mb-4">
+                        Choose which memberships you want to include in the
+                        download:
+                    </p>
+                    <Checkbox.Group
+                        value={selectedMemberships}
+                        onChange={handleMembershipSelection}
+                    >
+                        {data?.memberships
+                            ?.sort(
+                                (a, b) =>
+                                    parseInt(a.dates[0]?.date || '0') -
+                                    parseInt(b.dates[0]?.date || '0'),
+                            )
+                            .map((membership) => (
+                                <Checkbox
+                                    key={membership.id}
+                                    value={membership.id.toString()}
+                                >
+                                    {membership.name} -{' '}
+                                    {new Date(
+                                        parseInt(
+                                            membership.dates[0]?.date || '0',
+                                        ) * 1000,
+                                    ).toLocaleDateString()}
+                                </Checkbox>
+                            ))}
+                    </Checkbox.Group>
+                    {selectedMemberships.length > 0 && (
+                        <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                                {filteredCsvData.length} messages will be
+                                downloaded for the selected memberships.
+                            </p>
+                        </div>
+                    )}
+                </div>
+                <div className="text-right px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        onClick={handleDownloadDialogClose}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="solid" onClick={handleDownloadDialogOk}>
+                        Download
+                    </Button>
+                </div>
+            </Dialog>
         </Loading>
     )
 }
