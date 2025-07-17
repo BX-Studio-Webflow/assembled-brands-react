@@ -9,12 +9,7 @@ interface SplitProps extends CommonProps {
     description: string
 }
 
-const Split = ({
-    children,
-    content,
-    src,
-    ...rest
-}: SplitProps) => {
+const Split = ({ children, content, src, ...rest }: SplitProps) => {
     return (
         <div className="grid lg:grid-cols-2 h-full p-6 bg-white dark:bg-gray-800">
             <div
@@ -23,8 +18,8 @@ const Split = ({
                     backgroundImage: `url(${src || '/img/others/auth-split-img.png'})`,
                 }}
             ></div>
-            <div className="flex flex-col justify-center items-center ">
-                <div className="w-full xl:max-w-[600px] px-8 max-w-[380px]">
+            <div className="flex flex-col justify-center items-center">
+                <div className="w-full px-8">
                     <div className="mb-8">{content}</div>
                     {children
                         ? cloneElement(children as React.ReactElement, {
