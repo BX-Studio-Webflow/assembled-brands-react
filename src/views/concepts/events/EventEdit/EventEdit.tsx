@@ -24,6 +24,7 @@ import { FaBan, FaClock, FaDownload, FaLink, FaRegCopy } from 'react-icons/fa'
 import { useChatStore } from '../../chat/Chat/store/chatStore'
 import { RiChatDeleteLine } from 'react-icons/ri'
 import { apiClearTelemetryLogs } from '@/services/TelemetryService'
+import dayjs from 'dayjs'
 
 const EventEdit = () => {
     const { id } = useParams()
@@ -68,7 +69,10 @@ const EventEdit = () => {
         const urlParams = new URLSearchParams(window.location.search)
         const action = urlParams.get('action')
 
-        if (action === 'download-chat-logs' && data?.event_type === 'prerecorded') {
+        if (
+            action === 'download-chat-logs' &&
+            data?.event_type === 'prerecorded'
+        ) {
             setDownloadDialogOpen(true)
         }
     }, [data?.event_type])
@@ -800,10 +804,10 @@ const x = setInterval(function () {
                 onRequestClose={handleDownloadDialogClose}
             >
                 <div className="px-6 pb-6">
-                    <h5 className="mb-4">Select Memberships to Download</h5>
+                    <h5 className="mb-4">Select event sessions to download</h5>
                     <p className="mb-4">
-                        Choose which memberships you want to include in the
-                        download:
+                        Choose which event sessions from which you want the chat
+                        logs to be downloaded:
                     </p>
                     <Checkbox.Group
                         value={selectedMemberships}
@@ -820,12 +824,11 @@ const x = setInterval(function () {
                                     key={membership.id}
                                     value={membership.id.toString()}
                                 >
-                                    {membership.name} -{' '}
-                                    {new Date(
+                                    {dayjs(
                                         parseInt(
                                             membership.dates[0]?.date || '0',
                                         ) * 1000,
-                                    ).toLocaleDateString()}
+                                    ).format('dddd, D MMM YYYY · h:mm A')}
                                 </Checkbox>
                             ))}
                     </Checkbox.Group>
