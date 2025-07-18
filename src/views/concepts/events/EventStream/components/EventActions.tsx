@@ -109,7 +109,7 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
 
     return isHost && eventStatus === 'live' ? (
         <>
-            <div className="flex items-center gap-2 print:hidden mr-8">
+            <div className="flex items-center gap-2 print:hidden mr-2">
                 <Button
                     className="mr-2"
                     icon={<IoStatsChart />}
@@ -148,7 +148,7 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
             </Dialog>
         </>
     ) : isHost && eventStatus === 'early' ? (
-        <div className="flex items-center gap-2 print:hidden mr-8">
+        <div className="flex items-center gap-2 print:hidden mr-2">
             <div className="flex">
                 <Tooltip
                     title={
@@ -197,7 +197,7 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
             </div>
         </div>
     ) : !isHost ? (
-        <div className="flex items-center gap-2 print:hidden mr-8">
+        <div className="flex items-center gap-2 print:hidden mr-2">
             {eventStatus === 'ended' ||
                 (eventStatus === 'live' && (
                     <Button
