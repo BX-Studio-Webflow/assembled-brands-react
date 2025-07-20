@@ -61,6 +61,17 @@ const othersRoute: Routes = [
             pageBackgroundType: 'plain',
         },
     },
+    {
+        key: 'acceptInvitation',
+        path: `/accept-team-invitation`,
+        component: lazy(() => import('@/views/onboarding/Invitation')),
+        authority: [],
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default othersRoute
