@@ -115,6 +115,7 @@ const CourseDetails = () => {
                         selected={selectedNav}
                         onEdit={handleEdit}
                         onChange={handleNavigationChange}
+                        courseId={id ?? ''}
                     />
                     <div className="mt-6 flex gap-12">
                         {larger.xl && (

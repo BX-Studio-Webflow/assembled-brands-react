@@ -14,10 +14,11 @@ type ProjectDetailsHeaderProps = {
     onEdit: (value: boolean) => void
     selected: string
     onChange: (value: string) => void
+    courseId: string
 }
 
 const ProjectDetailsHeader = (props: ProjectDetailsHeaderProps) => {
-    const { title, onChange, selected } = props
+    const { title, onChange, selected, courseId } = props
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -45,6 +46,13 @@ const ProjectDetailsHeader = (props: ProjectDetailsHeaderProps) => {
         drawerRef.current?.handleCloseDrawer()
     }
 
+    const handleCopy = () => {
+        setCopied(true)
+        navigator.clipboard.writeText(
+            `https://www.elevnt.io/concepts/courses/academy/course-details/${courseId}`,
+        )
+    }
+
     return (
         <>
             <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 mb-6 pb-4">
@@ -69,12 +77,12 @@ const ProjectDetailsHeader = (props: ProjectDetailsHeaderProps) => {
                 onClose={() => setIsDialogOpen(false)}
                 onRequestClose={() => setIsDialogOpen(false)}
             >
-                <h5>Share this project</h5>
+                <h5>Share this course</h5>
                 <Form className="my-6">
                     <FormItem label="Copy link">
                         <Input
                             readOnly
-                            value="https://edge.themenate.net/concepts/projects/project-details/27"
+                            value={`https://www.elevnt.io/concepts/courses/academy/course-details/${courseId}`}
                             suffix={
                                 <Button
                                     type="button"
@@ -83,7 +91,7 @@ const ProjectDetailsHeader = (props: ProjectDetailsHeaderProps) => {
                                     customColorClass={() =>
                                         'bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200'
                                     }
-                                    onClick={() => setCopied(true)}
+                                    onClick={handleCopy}
                                 >
                                     {copied ? 'Copied' : 'Copy'}
                                 </Button>
