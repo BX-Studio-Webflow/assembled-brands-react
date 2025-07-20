@@ -84,11 +84,11 @@ const TeamSelect = () => {
         }
     }
 
-    // Get the currently selected team from localStorage
+    // Get the currently selected team from localStorage, or undefined if no team is selected
     const currentTeamId = localStorage.getItem('team_id')
     const defaultOption =
         teamOptions.find((option) => option.value === currentTeamId) ||
-        teamOptions[0]
+        undefined
 
     return (
         <div>
