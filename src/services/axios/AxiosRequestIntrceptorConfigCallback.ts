@@ -28,6 +28,12 @@ const AxiosRequestIntrceptorConfigCallback = (
         }
     }
 
+    // Dynamically set X-Team-Id header from localStorage
+    const teamId = localStorage.getItem('team_id')
+    if (teamId) {
+        config.headers['X-Team-Id'] = teamId
+    }
+
     return config
 }
 

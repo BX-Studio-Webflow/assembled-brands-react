@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { PiUserDuotone, PiGearDuotone, PiSignOutDuotone } from 'react-icons/pi'
 import { useAuth } from '@/auth'
 import type { JSX } from 'react'
+import TeamSelect from './TeamSelect'
 
 type DropdownList = {
     label: string
@@ -82,6 +83,8 @@ const _UserDropdown = () => {
                     </Link>
                 </Dropdown.Item>
             ))}
+            <Dropdown.Item variant="divider" />
+            <TeamSelect />
             <Dropdown.Item variant="divider" />
             <Dropdown.Item
                 eventKey="Sign Out"
