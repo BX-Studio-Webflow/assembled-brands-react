@@ -202,11 +202,12 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                     viewport={{ once: true }}
                 >
                     <motion.h2 className="my-6 text-5xl">
-                        Discover the Power of Elevnt.io
+                        Manage, Stream, and Share—All in One Place
                     </motion.h2>
                     <motion.p className="mx-auto max-w-[600px]">
-                        Elevnt.io is a platform that allows you to create,
-                        manage, and promote your events, courses, and podcasts.
+                        This platform helps you host and stream paid or free
+                        events to leads, while also bringing in courses and
+                        podcasts for a richer user experience.
                     </motion.p>
                 </motion.div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -268,10 +269,13 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                     </div>
                                 </div>
                                 <div className="mt-6">
-                                    <h4 className="font-bold">Host Events</h4>
+                                    <h4 className="font-bold">
+                                        Host and Stream Events
+                                    </h4>
                                     <p className="mt-2">
-                                        Effortlessly create and manage your
-                                        events, add leads and track attendance.
+                                        Build, manage, and share live or
+                                        on-demand events, reaching your audience
+                                        with ease and flexibility.
                                     </p>
                                 </div>
                             </Card>
@@ -324,11 +328,12 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                 </div>
                                 <div className="mt-6">
                                     <h4 className="font-bold">
-                                        Comprehensive Podcasts
+                                        Deliver Podcasts
                                     </h4>
                                     <p className="mt-2">
-                                        Create and manage your podcasts, add
-                                        guests and track listenership.
+                                        Seamlessly offer audio shows to your
+                                        users, tracking engagement and growing
+                                        your community.
                                     </p>
                                 </div>
                             </Card>
@@ -357,13 +362,11 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                     </div>
                                 </div>
                                 <div className="mt-6">
-                                    <h4 className="font-bold">Sell Courses</h4>
+                                    <h4 className="font-bold">Offer Courses</h4>
                                     <p className="mt-2">
-                                        Create and manage your courses, add
-                                        students and track progress. Add modules
-                                        and lessons and sell and make money from
-                                        your courses directly to your stripe
-                                        account.
+                                        Easily deliver educational content and
+                                        tools, helping your users learn and grow
+                                        within your platform.
                                     </p>
                                 </div>
                             </Card>
@@ -412,12 +415,12 @@ const Features = ({ mode, onModeChange, schema, setSchema }: FeaturesProps) => {
                                 </div>
                                 <div className="mt-6">
                                     <h4 className="font-bold">
-                                        A complete CRM solution
+                                        Unified Content Hub
                                     </h4>
                                     <p className="mt-2">
-                                        A complete CRM solution for your
-                                        business, track leads, customers and
-                                        sales.
+                                        The system blends events, courses, and
+                                        podcasts in one clear, seamless layout
+                                        for a complete experience.
                                     </p>
                                 </div>
                             </div>

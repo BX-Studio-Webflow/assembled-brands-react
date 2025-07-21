@@ -33,11 +33,13 @@ const LandingFooter = ({ mode }: { mode: Mode }) => {
                             }}
                             className="relative flex flex-col gap-4 items-center justify-center py-20 px-8 text-center"
                         >
-                            <h2 className="text-5xl">Ready to Get Started?</h2>
+                            <h2 className="text-5xl">
+                                Ready to Host, Stream, and Share?
+                            </h2>
                             <p className="mt-4 max-w-[400px] mx-auto">
-                                Elevnt.io is a platform that allows you to
-                                create, manage, and promote your events,
-                                courses, and podcasts.
+                                Host events, deliver courses, and share
+                                podcasts—all from one platform. Start building
+                                your community today!
                             </p>
                             <div className="mt-6">
                                 <Button variant="solid" onClick={handlePreview}>

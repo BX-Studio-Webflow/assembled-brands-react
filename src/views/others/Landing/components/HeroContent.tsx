@@ -13,10 +13,7 @@ const HeroContent = ({ mode }: { mode: Mode }) => {
     }
 
     const handleGetTemplate = () => {
-        window.open(
-            'https://themeforest.net/item/ecme-the-ultimate-react-tailwind-admin-template/54470284',
-            '_blank',
-        )
+        navigate('/guide/documentation/introduction')
     }
 
     return (

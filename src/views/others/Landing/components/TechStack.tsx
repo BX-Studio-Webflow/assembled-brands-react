@@ -66,11 +66,12 @@ const TechStack = () => {
                 viewport={{ once: true }}
             >
                 <motion.h2 className="my-6 text-5xl">
-                    Trusted by the best
+                    Powered by Modern Streaming Technologies
                 </motion.h2>
                 <motion.p className="mx-auto max-w-[600px]">
-                    Elevnt.io is built using cutting-edge technologies to ensure
-                    streamlined, scalability, and a seamless experience.
+                    Our platform uses the latest tools to host, stream, and
+                    deliver events, courses, and podcasts in a seamless,
+                    scalable way.
                 </motion.p>
             </motion.div>
             <Container>

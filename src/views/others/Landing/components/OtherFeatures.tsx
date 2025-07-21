@@ -59,11 +59,12 @@ const OtherFeatures = () => {
                     viewport={{ once: true }}
                 >
                     <motion.h2 className="my-6 text-5xl">
-                        Tailored for Every Need
+                        Flexible for Every Audience and Content
                     </motion.h2>
                     <motion.p className="mx-auto max-w-[600px]">
-                        Built to adapt to any user or region, delivering
-                        seamless performance across all devices and languages.
+                        Built to adapt for any user, device, or
+                        region—delivering events, courses, and podcasts
+                        everywhere.
                     </motion.p>
                 </motion.div>
                 <div className="mt-20">
@@ -80,13 +81,14 @@ const OtherFeatures = () => {
                     >
                         <div className="grid lg:grid-cols-2 gap-8 lg:gap-4">
                             <div>
-                                <h3 className="text-4xl">Responsive Design</h3>
+                                <h3 className="text-4xl">
+                                    Responsive for All Content
+                                </h3>
                                 <p className="mt-6 max-w-[550px] text-lg">
-                                    Your app will look stunning on all devices,
-                                    from desktops to tablets to mobile phones.
-                                    No need to worry about scaling—it&apos;s
-                                    built to work flawlessly on every screen
-                                    size.
+                                    Your events, courses, and podcasts look and
+                                    work great on any device, from desktop to
+                                    mobile. Scaling is automatic—enjoy flawless
+                                    visuals everywhere.
                                 </p>
                                 <div className="mt-12 flex flex-col gap-4">
                                     <PointList>
@@ -178,13 +180,12 @@ const OtherFeatures = () => {
                             </div>
                             <div>
                                 <h3 className="text-4xl">
-                                    Multilanguage Support
+                                    Multilingual and Multi-format
                                 </h3>
                                 <p className="mt-6 max-w-[550px] text-lg">
-                                    Expand your reach with built-in multilingual
-                                    support. Easily switch between languages and
-                                    ensure a smooth experience for users around
-                                    the globe.
+                                    Reach a global audience with built-in
+                                    language support and seamless switching
+                                    between events, courses, and podcasts.
                                 </p>
                                 <div className="mt-12 flex flex-col gap-4">
                                     <PointList>
@@ -207,12 +208,13 @@ const OtherFeatures = () => {
                     <motion.div className="bg-gray-100 dark:bg-gray-800 rounded-3xl py-12 px-10 lg:py-24 lg:px-16 overflow-hidden mb-10">
                         <div className="grid lg:grid-cols-2 gap-8 lg:gap-4">
                             <div>
-                                <h3 className="text-4xl">RTL Layout Ready</h3>
+                                <h3 className="text-4xl">
+                                    RTL and Layout Ready
+                                </h3>
                                 <p className="mt-6 max-w-[550px] text-lg">
                                     Whether your users are in right-to-left
                                     regions or left-to-right, our layout options
-                                    have you covered. Effortlessly switch to RTL
-                                    for languages like Arabic or Hebrew.
+                                    have you covered for all content types.
                                 </p>
                                 <div className="mt-12 flex flex-col gap-4">
                                     <PointList>
