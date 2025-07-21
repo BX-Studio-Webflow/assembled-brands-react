@@ -74,7 +74,7 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
     )
 
     return (
-        <div className="min-h-screen h-screen">
+        <div className="min-h-screen h-screen w-full">
             <Split className="h-full">
                 <div>
                     <div className="mb-6">
