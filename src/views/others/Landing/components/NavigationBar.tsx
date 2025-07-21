@@ -29,7 +29,7 @@ const navMenu = [
     {
         title: 'Documentations',
         value: 'documentations',
-        href: 'https://ecme-react.themenate.net/guide/documentation/introduction',
+        href: '/guide/documentation/introduction',
     },
 ]
 
