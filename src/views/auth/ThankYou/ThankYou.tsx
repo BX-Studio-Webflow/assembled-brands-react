@@ -7,7 +7,7 @@ import { apiValidateTicketPayment } from '@/services/LeadsService'
 import useSWR from 'swr'
 import { EventWithDetailsAndCount } from '@/@types/events'
 import { apiGetEvent } from '@/services/EventService'
-import Split from './components/Split'
+import SplitWithImage from '@/components/layouts/AuthLayout/SplitWithImage'
 
 type ThankYouProps = {
     signInUrl?: string
@@ -71,7 +71,7 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
 
     return (
         <div className="min-h-screen h-screen w-full">
-            <Split
+            <SplitWithImage
                 src={
                     event?.asset?.image_presigned_url ||
                     '/img/others/auth-split-img.png'
@@ -111,7 +111,7 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
                         </Button>
                     </ThankYouForm>
                 </div>
-            </Split>
+            </SplitWithImage>
         </div>
     )
 }

@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button'
 import GatewayForm from './components/GatewayForm'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import { useNavigate } from 'react-router'
-import Split from '@/components/layouts/AuthLayout/Split'
+import SplitWithImage from '@/components/layouts/AuthLayout/SplitWithImage'
 import { apiValidateTicketPayment } from '@/services/LeadsService'
 import useSWR from 'swr'
 import { EventWithDetailsAndCount } from '@/@types/events'
@@ -75,7 +75,15 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
 
     return (
         <div className="min-h-screen h-screen w-full">
-            <Split className="h-full">
+            <SplitWithImage
+                title={event?.event_name || ''}
+                description={event?.event_description || ''}
+                src={
+                    event?.asset?.image_presigned_url ||
+                    '/img/others/auth-split-img.png'
+                }
+                className="h-full"
+            >
                 <div>
                     <div className="mb-6">
                         <>
@@ -113,7 +121,7 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
                         </Button>
                     </GatewayForm>
                 </div>
-            </Split>
+            </SplitWithImage>
         </div>
     )
 }

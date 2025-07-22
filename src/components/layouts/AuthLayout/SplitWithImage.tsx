@@ -9,7 +9,7 @@ interface SplitProps extends CommonProps {
     description: string
 }
 
-const Split = ({ children, content, src, ...rest }: SplitProps) => {
+const SplitWithImage = ({ children, content, src, ...rest }: SplitProps) => {
     return (
         <div className="grid lg:grid-cols-2 h-full p-6 bg-white dark:bg-gray-800">
             <div
@@ -32,4 +32,4 @@ const Split = ({ children, content, src, ...rest }: SplitProps) => {
     )
 }
 
-export default Split
+export default SplitWithImage
