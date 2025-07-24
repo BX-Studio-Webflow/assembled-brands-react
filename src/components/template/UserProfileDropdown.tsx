@@ -47,7 +47,7 @@ const _UserDropdown = () => {
             toggleClassName="flex items-center"
             renderTitle={
                 <div className="cursor-pointer flex items-center">
-                    <Avatar size={32} {...avatarProps} />
+                    <Avatar size={32} shape="round" {...avatarProps} />
                 </div>
             }
             placement="bottom-end"
