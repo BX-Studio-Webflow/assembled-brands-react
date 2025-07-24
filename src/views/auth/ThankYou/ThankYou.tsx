@@ -72,23 +72,23 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
     return (
         <div className="min-h-screen h-screen w-full">
             <SplitWithImage
-                src={
-                    event?.asset?.image_presigned_url ||
-                    '/img/others/auth-split-img.png'
-                }
+                src={event?.host?.profile_image}
                 title={event?.event_name || ''}
                 description={event?.event_description || ''}
             >
                 <div>
                     <div className="mb-6">
                         <>
-                            <h3 className="mb-1">All done!</h3>
+                            <h3 className="mb-1">You&apos;re all set!</h3>
                             <p className="font-semibold">
-                                You have successfully registered for the{' '}
+                                Your spot for the{' '}
                                 <span className="font-bold text-primary">
                                     {event?.event_name}
                                 </span>{' '}
-                                event and your space has been reserved.
+                                event has been successfully secured and
+                                reserved, a confirmation email has been sent
+                                with next steps and important links. We look
+                                forward to seeing you there!
                             </p>
                         </>
                     </div>
