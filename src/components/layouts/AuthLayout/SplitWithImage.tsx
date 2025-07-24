@@ -13,7 +13,7 @@ interface SplitProps extends CommonProps {
 const SplitWithImage = ({ children, content, src, ...rest }: SplitProps) => {
     return (
         <div className="grid lg:grid-cols-2 h-full p-6 bg-white dark:bg-gray-800">
-            <div className="flex flex-col justify-center items-center bg-[#e0e0e0] rounded-3xl">
+            <div className="flex flex-col justify-center items-center bg-[#f8f8f8] rounded-3xl">
                 <Avatar
                     className="w-20 h-auto border-none rounded-3xl bg-transparent"
                     src={src}
