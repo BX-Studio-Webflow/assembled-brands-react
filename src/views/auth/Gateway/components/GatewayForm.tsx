@@ -11,6 +11,7 @@ import type { EventWithDetailsAndCount } from '@/@types/events'
 import type { CommonProps } from '@/@types/common'
 import { AxiosError } from 'axios'
 import { apiPurchaseMembership } from '@/services/LeadsService'
+import { Skeleton } from '@/components/ui'
 
 interface GatewayFormProps extends CommonProps {
     event?: EventWithDetailsAndCount
@@ -90,7 +91,20 @@ const GatewayForm = (props: GatewayFormProps) => {
 
     // Only render loading after all hooks
     if (!event) {
-        return <div>Loading event...</div>
+       return (
+           <div className="flex flex-col gap-4">
+               <Skeleton height={150} />
+               <div className="flex flex-auto items-center gap-2">
+                   <div>
+                       <Skeleton variant="circle" height={35} width={35} />
+                   </div>
+                   <div className="flex flex-col gap-4 w-full">
+                       <Skeleton height={10} />
+                       <Skeleton height={10} width="60%" />
+                   </div>
+               </div>
+           </div>
+       )
     }
 
     return (
