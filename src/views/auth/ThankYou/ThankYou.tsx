@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
-import Button from '@/components/ui/Button'
 import ThankYouForm from './components/ThankYouForm'
-import { useNavigate } from 'react-router'
 
 import { apiValidateTicketPayment } from '@/services/LeadsService'
 import useSWR from 'swr'
@@ -9,11 +7,7 @@ import { EventWithDetailsAndCount } from '@/@types/events'
 import { apiGetEvent } from '@/services/EventService'
 import SplitWithImage from '@/components/layouts/AuthLayout/SplitWithImage'
 
-type ThankYouProps = {
-    signInUrl?: string
-}
-
-export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
+export const ThankYouBase = () => {
     const [params, setParams] = useState<{
         code: string
         token: string
@@ -23,11 +17,6 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
         token: '',
         email: '',
     })
-    const navigate = useNavigate()
-
-    const handleContinue = () => {
-        navigate(signInUrl)
-    }
 
     useEffect(() => {
         // Check if we're on the callback URL with a code
@@ -100,16 +89,7 @@ export const ThankYouBase = ({ signInUrl = '/sign-in' }: ThankYouProps) => {
                             isValidateTicketPaymentLoading
                         }
                         isEventLoading={isEventLoading}
-                    >
-                        <Button
-                            block
-                            variant="solid"
-                            type="button"
-                            onClick={handleContinue}
-                        >
-                            Continue
-                        </Button>
-                    </ThankYouForm>
+                    ></ThankYouForm>
                 </div>
             </SplitWithImage>
         </div>

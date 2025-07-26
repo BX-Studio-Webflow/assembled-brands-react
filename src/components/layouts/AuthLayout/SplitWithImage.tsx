@@ -15,9 +15,9 @@ const SplitWithImage = ({ children, content, src, ...rest }: SplitProps) => {
         <div className="grid lg:grid-cols-2 h-full p-6 bg-white dark:bg-gray-800">
             <div className="flex flex-col justify-center items-center bg-[#f8f8f8] rounded-3xl">
                 <Avatar
-                    className="w-20 h-auto border-none rounded-3xl bg-transparent"
+                    className="w-40 h-auto border-none rounded-3xl bg-transparent"
                     src={src}
-                    shape="square"
+                    shape="round"
                 />
             </div>
             <div className="flex flex-col justify-center items-center">
