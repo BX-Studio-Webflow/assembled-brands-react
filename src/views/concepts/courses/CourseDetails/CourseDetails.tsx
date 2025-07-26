@@ -113,9 +113,9 @@ const CourseDetails = () => {
                         title={data.course.course_name}
                         isContentEdit={isContentEdit}
                         selected={selectedNav}
+                        courseId={id ?? ''}
                         onEdit={handleEdit}
                         onChange={handleNavigationChange}
-                        courseId={id ?? ''}
                     />
                     <div className="mt-6 flex gap-12">
                         {larger.xl && (

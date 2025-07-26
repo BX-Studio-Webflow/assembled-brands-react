@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react'
 import Alert from '@/components/ui/Alert'
-import Button from '@/components/ui/Button'
 import GatewayForm from './components/GatewayForm'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
-import { useNavigate } from 'react-router'
 import SplitWithImage from '@/components/layouts/AuthLayout/SplitWithImage'
 import { apiValidateTicketPayment } from '@/services/LeadsService'
 import useSWR from 'swr'
 import { EventWithDetailsAndCount } from '@/@types/events'
 import { apiGetEvent } from '@/services/EventService'
 
-type GatewayProps = {
-    signInUrl?: string
-}
-
-export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
+export const GatewayBase = () => {
     const [purchaseComplete, setResetComplete] = useState(false)
 
     const [message, setMessage] = useTimeOutMessage()
@@ -27,11 +21,6 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
         token: '',
         email: '',
     })
-    const navigate = useNavigate()
-
-    const handleContinue = () => {
-        navigate(signInUrl)
-    }
 
     useEffect(() => {
         // Check if we're on the callback URL with a code
@@ -79,7 +68,7 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
                 title={event?.event_name || ''}
                 description={event?.event_description || ''}
                 src={
-                    event?.asset?.image_presigned_url ||
+                    event?.host?.profile_image ||
                     '/img/others/auth-split-img.png'
                 }
                 className="h-full"
@@ -110,16 +99,7 @@ export const GatewayBase = ({ signInUrl = '/sign-in' }: GatewayProps) => {
                         purchaseComplete={purchaseComplete}
                         setMessage={setMessage}
                         setResetComplete={setResetComplete}
-                    >
-                        <Button
-                            block
-                            variant="solid"
-                            type="button"
-                            onClick={handleContinue}
-                        >
-                            Continue
-                        </Button>
-                    </GatewayForm>
+                    ></GatewayForm>
                 </div>
             </SplitWithImage>
         </div>

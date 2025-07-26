@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Avatar from '@/components/ui/Avatar'
-import IconText from '@/components/shared/IconText'
-import { TbMail, TbExternalLink } from 'react-icons/tb'
+import { TbExternalLink } from 'react-icons/tb'
 import { Link } from 'react-router'
 import Radio from '@/components/ui/Radio'
 import Checkbox from '@/components/ui/Checkbox'
@@ -91,20 +90,20 @@ const GatewayForm = (props: GatewayFormProps) => {
 
     // Only render loading after all hooks
     if (!event) {
-       return (
-           <div className="flex flex-col gap-4">
-               <Skeleton height={150} />
-               <div className="flex flex-auto items-center gap-2">
-                   <div>
-                       <Skeleton variant="circle" height={35} width={35} />
-                   </div>
-                   <div className="flex flex-col gap-4 w-full">
-                       <Skeleton height={10} />
-                       <Skeleton height={10} width="60%" />
-                   </div>
-               </div>
-           </div>
-       )
+        return (
+            <div className="flex flex-col gap-4">
+                <Skeleton height={150} />
+                <div className="flex flex-auto items-center gap-2">
+                    <div>
+                        <Skeleton variant="circle" height={35} width={35} />
+                    </div>
+                    <div className="flex flex-col gap-4 w-full">
+                        <Skeleton height={10} />
+                        <Skeleton height={10} width="60%" />
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -140,13 +139,7 @@ const GatewayForm = (props: GatewayFormProps) => {
                             </div>
                             <TbExternalLink className="text-xl hidden group-hover:block" />
                         </Link>
-                        <hr className="my-5" />
-                        <IconText
-                            className="mb-4"
-                            icon={<TbMail className="text-xl opacity-70" />}
-                        >
-                            <span>{event.host.email}</span>
-                        </IconText>
+
                         <hr className="my-5" />
                         <h6 className="mb-4 font-bold">Choose Ticket</h6>
                         <Radio.Group
