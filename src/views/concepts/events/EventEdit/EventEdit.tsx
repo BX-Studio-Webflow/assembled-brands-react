@@ -104,8 +104,10 @@ const EventEdit = () => {
                     payment_type: plan.payment_type,
                     cost: plan.isFree ? 0 : plan.cost,
                     isFree: plan.isFree,
+                    id: plan.id,
                 })),
             }
+          
 
             await apiUpdateEvent(Number(id), payload)
 
@@ -155,6 +157,7 @@ const EventEdit = () => {
         const membershipPlans = (data?.memberships || []).map((plan) => {
             const isFree = plan.price === 0
             return {
+                id: plan.id,
                 name: plan.name || '',
                 isFree,
                 cost: isFree ? 0 : plan.price || 0,

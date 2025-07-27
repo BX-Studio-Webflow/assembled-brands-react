@@ -119,6 +119,7 @@ const EventForm = (props: EventFormProps) => {
                 asset_id: Number(values.asset_id),
                 membership_plans: values.membership_plans.map((plan) => ({
                     ...plan,
+                    id: plan.id,
                     date:
                         typeof plan.date === 'object' &&
                         plan.date instanceof Date
