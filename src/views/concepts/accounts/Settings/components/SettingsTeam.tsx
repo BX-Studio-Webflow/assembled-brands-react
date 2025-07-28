@@ -232,7 +232,7 @@ const SettingsTeam = () => {
                     <h5>My Teams</h5>
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
-                    {data.my_teams.map((team: MyTeam, index: number) => (
+                    {data && data?.my_teams && data?.my_teams?.map((team: MyTeam, index: number) => (
                         <div
                             key={team.team_id}
                             className={classNames(
@@ -282,7 +282,7 @@ const SettingsTeam = () => {
                     </Button>
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
-                    {data.team_members.members.map(
+                    {data && data?.team_members && data?.team_members?.members?.map(
                         (member: TeamMember, index: number) => (
                             <div
                                 key={member.memberId}
@@ -333,7 +333,7 @@ const SettingsTeam = () => {
             </div>
 
             {/* Team Invitations Section */}
-            {data.team_invitations.length > 0 && (
+            {data && data?.team_invitations && data?.team_invitations?.length > 0 && (
                 <div className="mb-8">
                     <h5 className="mb-4">Sent Team Invitations</h5>
                     <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
