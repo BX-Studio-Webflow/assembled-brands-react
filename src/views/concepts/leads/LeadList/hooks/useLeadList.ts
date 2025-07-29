@@ -23,13 +23,13 @@ export default function useLeadList() {
         },
     )
 
-    const customerList = data || []
+    const leadList = data || []
 
-    const customerListTotal = data?.length || 0
+    const leadListTotal = data?.length || 0
 
     return {
-        customerList,
-        customerListTotal,
+        leadList,
+        leadListTotal,
         error,
         isLoading,
         tableData,

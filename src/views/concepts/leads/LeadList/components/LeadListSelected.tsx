@@ -13,8 +13,7 @@ import { TbChecks } from 'react-icons/tb'
 import { apiDeleteLead } from '@/services/LeadsService'
 
 const LeadListSelected = () => {
-    const { selectedLead, customerList, mutate, setSelectAllLead } =
-        useLeadList()
+    const { selectedLead, leadList, mutate, setSelectAllLead } = useLeadList()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [sendMessageDialogOpen, setSendMessageDialogOpen] = useState(false)
@@ -35,7 +34,7 @@ const LeadListSelected = () => {
                 selectedLead.map((lead) => apiDeleteLead(String(lead.id))),
             )
             // Update local state after successful deletion
-            const newLeadList = customerList.filter((customer) => {
+            const newLeadList = leadList.filter((customer) => {
                 return !selectedLead.some(
                     (selected) => selected.id === customer.id,
                 )

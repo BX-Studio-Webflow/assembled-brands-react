@@ -73,8 +73,8 @@ const LeadListTable = () => {
     const [toDeleteId, setToDeleteId] = useState<string | null>(null)
 
     const {
-        customerList,
-        customerListTotal,
+        leadList,
+        leadListTotal,
         tableData,
         isLoading,
         setTableData,
@@ -345,13 +345,13 @@ const LeadListTable = () => {
             <DataTable
                 selectable
                 columns={columns}
-                data={customerList}
-                noData={!isLoading && customerList.length === 0}
+                data={leadList}
+                noData={!isLoading && leadList.length === 0}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ width: 28, height: 28 }}
                 loading={isLoading}
                 pagingData={{
-                    total: customerListTotal,
+                    total: leadListTotal,
                     pageIndex: tableData.pageIndex as number,
                     pageSize: tableData.pageSize as number,
                 }}

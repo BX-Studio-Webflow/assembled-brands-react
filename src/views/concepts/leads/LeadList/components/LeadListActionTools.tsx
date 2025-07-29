@@ -7,15 +7,11 @@ import { CSVLink } from 'react-csv'
 const LeadListActionTools = () => {
     const navigate = useNavigate()
 
-    const { customerList } = useLeadList()
+    const { leadList } = useLeadList()
 
     return (
         <div className="flex flex-col md:flex-row gap-3">
-            <CSVLink
-                className="w-full"
-                filename="customerList.csv"
-                data={customerList}
-            >
+            <CSVLink className="w-full" filename="leadList.csv" data={leadList}>
                 <Button
                     icon={<TbCloudDownload className="text-xl" />}
                     className="w-full"

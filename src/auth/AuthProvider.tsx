@@ -198,6 +198,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         try {
             await apiSignOut()
         } finally {
+            localStorage.removeItem('sessionUser')
             handleSignOut()
             navigatorRef.current?.navigate('/')
         }
