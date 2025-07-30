@@ -45,7 +45,7 @@ const getStatusTagProps = (
         default:
             return {
                 className:
-                    'text-gray-600 bg-gray-100 dark:text-gray-100 dark:bg-gray-500/20 border-0',
+                    'text-gray-600 bg-gray-200 dark:text-gray-100 dark:bg-gray-500/20 border-0',
                 children: 'event has ended',
                 suffix: <HiStop className="ml-1 rtl:mr-1" />,
             }
