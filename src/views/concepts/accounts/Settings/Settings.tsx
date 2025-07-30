@@ -37,8 +37,18 @@ const Settings = () => {
         const state = urlParams.get('state')
         const code = urlParams.get('code')
         const action = urlParams.get('action')
+        const error = urlParams.get('error')
+        const error_description = urlParams.get('error_description')
         if (state && code) {
             setParams({ state, code, action })
+        }
+        if (error && error_description) {
+            toast.push(
+                <NotificationComponent type="danger">
+                    {error_description}
+                </NotificationComponent>,
+                { placement: 'top-center' },
+            )
         }
     }, [])
 
