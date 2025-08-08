@@ -5,12 +5,12 @@ import { useSearchParams } from 'react-router'
 import { EventStreamResponse, LivestreamStatus } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 import { Card } from '@/components/ui'
-import ChatBody from '@/views/concepts/chat/Chat/components/ChatBody'
-import ChatSidebar from '@/views/concepts/chat/Chat/components/ChatSidebar'
 import EventHeader from '@/views/concepts/events/EventStream/components/EventHeader'
 import EventActions from '@/views/concepts/events/EventStream/components/EventActions'
 import EventWaitingCard from '@/views/concepts/events/EventStream/components/EventWaitingCard'
 import { EventProvider } from '@/views/concepts/events/EventStream/context/EventContext'
+import EventSidebar from '@/views/concepts/events/EventStream/components/EventSidebar'
+import EventBody from '@/views/concepts/events/EventStream/components/EventBody'
 
 const Stream = () => {
     const [searchParams] = useSearchParams()
@@ -114,12 +114,12 @@ const Stream = () => {
                                 bodyClass="h-full flex flex-col"
                             >
                                 <div className="flex flex-col lg:flex-row flex-auto h-full gap-2 sm:gap-4 lg:gap-8">
-                                    <ChatSidebar
+                                    <EventSidebar
                                         event={data}
                                         isHost={false}
                                         nextDate={nextDate}
                                     />
-                                    <ChatBody
+                                    <EventBody
                                         nextDate={nextDate}
                                         data={data}
                                         isHost={false}

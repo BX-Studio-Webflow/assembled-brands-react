@@ -5,8 +5,8 @@ import { useParams, useSearchParams } from 'react-router'
 import { EventStreamResponse, LivestreamStatus } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 
-import ChatBody from '../../chat/Chat/components/ChatBody'
-import ChatSidebar from '../../chat/Chat/components/ChatSidebar'
+import EventBody from './components/EventBody'
+import EventSidebar from './components/EventSidebar'
 import Card from '@/components/ui/Card'
 import { EventProvider } from './context/EventContext'
 import EventHeader from './components/EventHeader'
@@ -122,12 +122,12 @@ const EventStream = () => {
                             bodyClass="h-full flex flex-col"
                         >
                             <div className="flex flex-auto w-full h-full gap-4">
-                                <ChatSidebar
+                                <EventSidebar
                                     event={data}
                                     isHost={isHost}
                                     nextDate={nextDate}
                                 />
-                                <ChatBody
+                                <EventBody
                                     data={data}
                                     isHost={isHost}
                                     nextDate={nextDate}
