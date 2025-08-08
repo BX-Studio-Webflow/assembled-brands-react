@@ -245,7 +245,7 @@ const EventHeader = ({
 
     return (
         <div className="pt-2 px-2 sm:px-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="flex flex-row justify-between sm:justify-start sm:items-center gap-2 sm:gap-3">
                 <span className="font-bold text-base sm:text-lg md:text-xl">
                     {eventName}
                 </span>
