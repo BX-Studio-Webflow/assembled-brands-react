@@ -199,6 +199,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             await apiSignOut()
         } finally {
             localStorage.removeItem('sessionUser')
+            localStorage.removeItem('team_id')
             handleSignOut()
             navigatorRef.current?.navigate('/')
         }
