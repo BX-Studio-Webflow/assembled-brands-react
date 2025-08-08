@@ -120,8 +120,8 @@ const EventVideoPlayer: React.FC<EventVideoPlayerProps> = ({
         container.appendChild(video)
 
         const controls = isHost
-            ? ['current-time', 'mute', 'volume', 'fullscreen']
-            : ['current-time', 'mute', 'volume', 'fullscreen']
+            ? ['mute', 'volume', 'fullscreen']
+            : ['mute', 'volume', 'fullscreen']
 
         const startPlayback = (videoElement: HTMLVideoElement) => {
             playerRef.current = new Plyr(videoElement, {
