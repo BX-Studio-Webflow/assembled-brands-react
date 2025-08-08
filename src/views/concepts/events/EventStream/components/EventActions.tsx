@@ -11,7 +11,7 @@ import { apiSaveInstantCallback } from '@/services/EventService'
 import { Badge, toast } from '@/components/ui'
 import { Notification } from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
-import { HiOutlineUser } from 'react-icons/hi'
+import { HiOutlineUser, HiPhone, HiCalendar, HiStar } from 'react-icons/hi'
 import { apiGetTelemetryByEventId } from '@/services/TelemetryService'
 import { GetTelemetryByEventIdResponse } from '@/@types/telemetry'
 
@@ -148,7 +148,7 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
             </Dialog>
         </>
     ) : isHost && eventStatus === 'early' ? (
-        <div className="flex items-center gap-2 print:hidden mr-2">
+        <div className="flex items-center gap-2 print:hidden px-2 sm:px-4">
             <div className="flex">
                 <Tooltip
                     title={
@@ -188,7 +188,7 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
                     }
                 >
                     <Badge
-                        className="mr-4"
+                        className="mr-2 sm:mr-4"
                         content={telemetryData?.lobby_telemetry?.length || 0}
                     >
                         <Avatar icon={<HiOutlineUser />} />
@@ -197,41 +197,54 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
             </div>
         </div>
     ) : !isHost ? (
-        <div className="flex items-center gap-2 print:hidden mr-2">
+        <div className="flex flex-row items-center gap-2 print:hidden px-2 sm:px-4 w-full sm:w-auto">
             {eventStatus === 'ended' ||
                 (eventStatus === 'live' && (
                     <Button
                         variant="solid"
+                        size="sm"
+                        className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
                         customColorClass={() =>
                             'bg-green-400 hover:bg-green-500 text-white'
                         }
                         onClick={() => handleInstantCallback()}
                     >
-                        Instant Call Back
+                        <HiPhone className="sm:hidden" />
+                        <span className="hidden sm:inline">
+                            Instant Call Back
+                        </span>
                     </Button>
                 ))}
             {(eventStatus === 'live' || eventStatus === 'ended') &&
                 data.event.calendar_url && (
                     <Button
                         variant="solid"
+                        size="sm"
+                        className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
                         customColorClass={() =>
                             'bg-teal-400 hover:bg-teal-500 text-white'
                         }
                         onClick={() => handleScheduleCallback()}
                     >
-                        Schedule a Call Back
+                        <HiCalendar className="sm:hidden" />
+                        <span className="hidden sm:inline">
+                            Schedule a Call Back
+                        </span>
                     </Button>
                 )}
             {(eventStatus === 'live' || eventStatus === 'ended') &&
                 data.event.calendar_url && (
                     <Button
                         variant="solid"
+                        size="sm"
+                        className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
                         customColorClass={() =>
                             'bg-amber-400 hover:bg-amber-500 text-white'
                         }
                         onClick={() => handleUpgradeClick()}
                     >
-                        Upgrade Now
+                        <HiStar className="sm:hidden" />
+                        <span className="hidden sm:inline">Upgrade Now</span>
                     </Button>
                 )}
         </div>

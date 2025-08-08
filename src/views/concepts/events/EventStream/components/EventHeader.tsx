@@ -244,12 +244,16 @@ const EventHeader = ({
     }, [eventId, token, email, code, isHost, status])
 
     return (
-        <div className="pt-2 ml-2">
-            <div className="flex items-center gap-3">
-                <span className="font-bold text-lg">{eventName}</span>
+        <div className="pt-2 px-2 sm:px-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <span className="font-bold text-base sm:text-lg md:text-xl">
+                    {eventName}
+                </span>
                 <Tag {...getStatusTagProps(status, nextDate)} />
             </div>
-            <span className="text-sm mt-8">{eventDescription}</span>
+            <span className="text-xs sm:text-sm mt-2 sm:mt-4 md:mt-8">
+                {eventDescription}
+            </span>
         </div>
     )
 }

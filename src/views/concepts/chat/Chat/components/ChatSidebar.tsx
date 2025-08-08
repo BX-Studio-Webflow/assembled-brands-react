@@ -15,8 +15,8 @@ const ChatSidebar = ({ event, isHost, nextDate }: ChatSidebarProps) => {
     return (
         <div
             className={classNames(
-                'w-full md:w-[400px] md:block',
-                selectedChat.id && 'hidden',
+                'w-full lg:w-[400px] lg:block',
+                selectedChat.id && 'hidden lg:block',
             )}
         >
             <ChatList event={event} isHost={isHost} nextDate={nextDate} />

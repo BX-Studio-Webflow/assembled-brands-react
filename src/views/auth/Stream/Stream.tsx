@@ -85,10 +85,11 @@ const Stream = () => {
         >
             <Loading
                 loading={isLoading}
-                className="h-screen w-screen mr-16 ml-16 py-8"
+                className="h-screen w-screen px-2 sm:px-4 md:px-8 lg:px-16 py-4 sm:py-6 md:py-8"
             >
-                <div className="flex flex-col w-full h-full m-2">
-                    <div className="flex flex-row justify-between gap-4 mb-4 w-full">
+                <div className="flex flex-col w-full h-full">
+                    {/* Header Section - Mobile Optimized */}
+                    <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mb-4 w-full">
                         <EventHeader
                             eventId={String(data?.event.id)}
                             status={eventStatus as LivestreamStatus}
@@ -104,13 +105,15 @@ const Stream = () => {
                             eventStatus={eventStatus as LivestreamStatus}
                         />
                     </div>
+
+                    {/* Live Event Content */}
                     {data && eventStatus === 'live' && (
                         <>
                             <Card
                                 className="w-full h-full border-0"
                                 bodyClass="h-full flex flex-col"
                             >
-                                <div className="flex flex-auto h-full gap-8">
+                                <div className="flex flex-col lg:flex-row flex-auto h-full gap-2 sm:gap-4 lg:gap-8">
                                     <ChatSidebar
                                         event={data}
                                         isHost={false}
@@ -129,6 +132,8 @@ const Stream = () => {
                             </Card>
                         </>
                     )}
+
+                    {/* Waiting/Ended Event Content */}
                     {data && eventStatus !== 'live' && (
                         <EventWaitingCard
                             event={data}
