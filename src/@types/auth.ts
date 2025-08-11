@@ -35,7 +35,7 @@ export type User = {
     bio: string | null
     is_banned: boolean
     is_deleted: boolean
-    stripe_account_id: string | null
+    stripe_connect_id: string | null
     subscription_status: 'active' | 'inactive' | 'expired' | null
     auth_provider: 'google' | 'email'
 }
@@ -163,7 +163,7 @@ export type UpdateUserProfileResponse = {
             bio: string | null
             is_banned: boolean
             is_deleted: boolean
-            stripe_account_id: string
+            stripe_connect_id: string
             subscription_status: 'active' | 'inactive' | 'expired'
             auth_provider: 'google' | 'email'
         }
@@ -194,7 +194,7 @@ export type DashboardResponse = {
                 updated_at: string
                 created_at: string
             } | null
-            stripe_account_status:
+            stripe_connect_status:
                 | 'pending'
                 | 'active'
                 | 'rejected'

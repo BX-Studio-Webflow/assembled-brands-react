@@ -43,7 +43,7 @@ const initialState: AuthState = {
         bio: null,
         is_banned: false,
         is_deleted: false,
-        stripe_account_id: null,
+        stripe_connect_id: null,
         subscription_status: 'inactive',
         authority: [],
         id: 0,

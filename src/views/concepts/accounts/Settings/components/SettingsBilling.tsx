@@ -69,13 +69,13 @@ const SettingsBilling = () => {
                                 <h6 className="font-bold">Stripe</h6>
                                 <Tag
                                     className={
-                                        user?.stripe_account_id
+                                        user?.stripe_connect_id
                                             ? 'bg-success-subtle text-success rounded-md border-0'
                                             : 'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0'
                                     }
                                 >
                                     <span className="capitalize">
-                                        {user?.stripe_account_id
+                                        {user?.stripe_connect_id
                                             ? 'Active'
                                             : 'Inactive'}
                                     </span>
@@ -83,13 +83,13 @@ const SettingsBilling = () => {
                             </div>
                             <div className="font-semibold mt-1">
                                 <span>
-                                    {user?.stripe_account_id
+                                    {user?.stripe_connect_id
                                         ? 'Connected'
                                         : 'Unconnected'}
                                 </span>
                                 <span> | </span>
                                 <span>
-                                    {user?.stripe_account_id
+                                    {user?.stripe_connect_id
                                         ? 'All set for payouts'
                                         : 'Please link your account'}
                                 </span>
@@ -97,7 +97,7 @@ const SettingsBilling = () => {
                         </div>
                     </div>
                     <div className="flex">
-                        {user?.stripe_account_id ? (
+                        {user?.stripe_connect_id ? (
                             <></>
                         ) : (
                             <Button

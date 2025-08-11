@@ -52,7 +52,7 @@ const AuthContext = createContext<Auth>({
         is_banned: false,
         is_deleted: false,
         auth_provider: 'email',
-        stripe_account_id: '',
+        stripe_connect_id: '',
         subscription_status: 'inactive',
         authority: [],
     },

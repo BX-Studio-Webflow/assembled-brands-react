@@ -97,7 +97,7 @@ function AuthProvider({ children }: AuthProviderProps) {
             is_banned: false,
             is_deleted: false,
             dial_code: '',
-            stripe_account_id: null,
+            stripe_connect_id: null,
             subscription_status: 'inactive',
             auth_provider: 'email',
         })
