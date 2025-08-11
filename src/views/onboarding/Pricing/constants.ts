@@ -181,8 +181,8 @@ export const pricingPlansData = {
                 'emailAutomation',
             ],
             production: {
-                productId: 'prod_SB7HDumob3GYpw',
-                priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+                productId: 'prod_Sqdn0QZ7D4MAJA',
+                priceId: 'price_1RuwVuRQHG5W5P1LTLiFs03M',
             },
             development: {
                 productId: 'prod_S0AzGhVZfAqbc4',
@@ -208,8 +208,8 @@ export const pricingPlansData = {
                 'emailAutomation',
             ],
             production: {
-                productId: 'prod_SB7HDumob3GYpw',
-                priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+                productId: 'prod_SqdoIUD669T4aJ',
+                priceId: 'price_1RuwWlRQHG5W5P1LlXhaZkDc',
             },
             development: {
                 productId: 'prod_S0AzGhVZfAqbc4',
@@ -235,8 +235,8 @@ export const pricingPlansData = {
                 'emailAutomation',
             ],
             production: {
-                productId: 'prod_SB7HDumob3GYpw',
-                priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+                productId: 'prod_Sqdo48NvmJyKBE',
+                priceId: 'price_1RuwXHRQHG5W5P1LjdvpmUgJ',
             },
             development: {
                 productId: 'prod_S0AzGhVZfAqbc4',
