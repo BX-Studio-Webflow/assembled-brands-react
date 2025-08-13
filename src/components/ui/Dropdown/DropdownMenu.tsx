@@ -302,7 +302,7 @@ const DropdownMenu = (props: DropdownMenuProps & HTMLProps<HTMLElement>) => {
                                     ref={refs.setFloating}
                                     style={floatingStyles}
                                     {...getFloatingProps()}
-                                    className="outline-hidden z-30"
+                                    className="outline-hidden z-50"
                                 >
                                     <ul
                                         className={classNames(

@@ -236,7 +236,7 @@ const HorizontalMenuDropdown = (props: HorizontalMenuDropdownProps) => {
                                     <div
                                         ref={refs.setFloating}
                                         style={floatingStyles}
-                                        className="outline-hidden z-30"
+                                        className="outline-hidden z-50"
                                         {...getFloatingProps()}
                                     >
                                         {menuContent?.({
