@@ -25,8 +25,23 @@ const FileManagerRenameDialog = ({
     )
     const currentName = currentFile ? currentFile.asset_name : ''
 
+    // Extract filename without extension
+    const getFilenameWithoutExtension = (filename: string) => {
+        const lastDotIndex = filename.lastIndexOf('.')
+        return lastDotIndex !== -1
+            ? filename.substring(0, lastDotIndex)
+            : filename
+    }
+
+    // Get file extension
+    const getFileExtension = (filename: string) => {
+        const lastDotIndex = filename.lastIndexOf('.')
+        return lastDotIndex !== -1 ? filename.substring(lastDotIndex) : ''
+    }
+
     useEffect(() => {
-        setNewName(currentName)
+        // Set only the filename without extension
+        setNewName(getFilenameWithoutExtension(currentName))
     }, [renameDialog.id, currentName])
 
     const handleDialogClose = () => {
@@ -37,7 +52,11 @@ const FileManagerRenameDialog = ({
         if (!renameDialog.id || !newName) return
         setLoading(true)
         try {
-            await apiRenameAsset(Number(renameDialog.id), newName)
+            // Add the extension back when submitting
+            const extension = getFileExtension(currentName)
+            const fullFilename = newName + extension
+
+            await apiRenameAsset(Number(renameDialog.id), fullFilename)
             toast.push(
                 <Notification
                     title={'File renamed successfully'}

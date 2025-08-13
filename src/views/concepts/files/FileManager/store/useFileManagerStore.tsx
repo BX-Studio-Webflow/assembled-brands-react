@@ -32,7 +32,7 @@ type FileManagerAction = {
 
 const initialState: FileManagerState = {
     fileList: [],
-    layout: 'grid',
+    layout: 'list',
     selectedFile: '',
     openedDirectoryId: '',
     deleteDialog: { open: false, id: '' },
