@@ -33,7 +33,7 @@ type EventFormProps = {
 
 const defaultPlan = {
     name: '',
-    isFree: false,
+    isFree: true,
     cost: 0,
     date: new Date(),
     payment_type: 'one_off' as const,
@@ -169,14 +169,8 @@ const EventForm = (props: EventFormProps) => {
                                     <EventDetailsSection
                                         control={methods.control}
                                         errors={methods.formState.errors}
-                                    />
-
-                                    <EventConfigurationSection
-                                        control={methods.control}
-                                        errors={methods.formState.errors}
                                         assets={assets}
                                     />
-
                                     <MembershipPlansSection
                                         control={methods.control}
                                         errors={methods.formState.errors}
@@ -184,6 +178,11 @@ const EventForm = (props: EventFormProps) => {
                                         append={() => append(defaultPlan)}
                                         remove={remove}
                                         plans={plans}
+                                    />
+                                    <EventConfigurationSection
+                                        control={methods.control}
+                                        errors={methods.formState.errors}
+                                        assets={assets}
                                     />
                                 </div>
                             </div>

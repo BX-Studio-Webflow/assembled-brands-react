@@ -36,7 +36,7 @@ const MembershipPlansSection = ({
             {safeFields.map((field, idx) => (
                 <Card
                     key={field.id}
-                    className="mb-4 bEvent bEvent-green-400 bg-green-50 relative"
+                    className="mb-4 bEvent relative"
                 >
                     {/* X icon in the top right */}
                     {idx > 0 && (
@@ -49,10 +49,9 @@ const MembershipPlansSection = ({
                             <FiX size={18} />
                         </button>
                     )}
-                    <h4 className="mb-4 font-bold">Date & Price Plan</h4>
+                    <h4 className="mb-4 font-bold">Date & Price</h4>
                     <FormItem
-                        label="Ticket Title ie Thursday Event (Event title, Date or Time not required)
-"
+                        label="Unique name"
                         invalid={Boolean(errors.membership_plans?.[idx]?.name)}
                         errorMessage={
                             errors.membership_plans?.[idx]?.name?.message
@@ -109,7 +108,7 @@ const MembershipPlansSection = ({
                         </FormItem>
                     )}
                     <FormItem
-                        label="Start date/time of this plan"
+                        label="Date and Time"
                         invalid={Boolean(errors.membership_plans?.[idx]?.date)}
                         errorMessage={
                             errors.membership_plans?.[idx]?.date?.message
@@ -127,6 +126,26 @@ const MembershipPlansSection = ({
                                             : new Date(field.value)
                                     }
                                     onChange={(date) => field.onChange(date)}
+                                />
+                            )}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label="Duration in minutes"
+                        invalid={Boolean(errors.membership_plans?.[idx]?.cost)}
+                        errorMessage={
+                            errors.membership_plans?.[idx]?.cost?.message
+                        }
+                    >
+                        <Controller
+                            name={`membership_plans.${idx}.cost` as const}
+                            control={control}
+                            render={({ field }) => (
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="e.g. £120.99"
+                                    {...field}
                                 />
                             )}
                         />

@@ -3,7 +3,7 @@ import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import Checkbox from '@/components/ui/Checkbox'
 import Select from '@/components/ui/Select'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
 import type { Asset } from '@/@types/asset'
@@ -21,17 +21,6 @@ type AssetOption = {
 }
 
 const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
-    const { watch } = useFormContext<EventFormType>()
-    const eventType = watch('event_type')
-
-    const assetOptions: AssetOption[] = assets
-        .filter((asset) => asset.asset_type === 'video')
-        .map((asset) => ({
-            value: asset.id.toString(),
-            label: asset.asset_name,
-            color: '#00B8D9', // Default color for all assets
-        }))
-
     const imageAssetOptions: AssetOption[] = assets
         .filter((asset) => asset.asset_type === 'image')
         .map((asset) => ({
@@ -65,71 +54,6 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
                     )}
                 />
             </FormItem>
-
-            {eventType === 'prerecorded' && (
-                <FormItem
-                    label="Select Asset"
-                    invalid={Boolean(errors.asset_id)}
-                    errorMessage={errors.asset_id?.message}
-                >
-                    <Controller
-                        name="asset_id"
-                        control={control}
-                        render={({ field: { onChange, value, ...field } }) => (
-                            <Select<AssetOption>
-                                placeholder="Please Select"
-                                options={assetOptions}
-                                value={assetOptions.find(
-                                    (option) =>
-                                        option.value === value?.toString(),
-                                )}
-                                onChange={(option) => onChange(option?.value)}
-                                {...field}
-                            />
-                        )}
-                    />
-                </FormItem>
-            )}
-
-            {eventType === 'live_venue' && (
-                <FormItem
-                    label="Live Venue Address"
-                    invalid={Boolean(errors.live_venue_address)}
-                    errorMessage={errors.live_venue_address?.message}
-                >
-                    <Controller
-                        name="live_venue_address"
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                type="text"
-                                placeholder="Enter live venue address"
-                                {...field}
-                            />
-                        )}
-                    />
-                </FormItem>
-            )}
-
-            {eventType === 'live_video_call' && (
-                <FormItem
-                    label="Live Video Call URL"
-                    invalid={Boolean(errors.live_video_url)}
-                    errorMessage={errors.live_video_url?.message}
-                >
-                    <Controller
-                        name="live_video_url"
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                type="text"
-                                placeholder="Enter live video call URL"
-                                {...field}
-                            />
-                        )}
-                    />
-                </FormItem>
-            )}
 
             <FormItem
                 label="Pre-Event Instructions shown on payment confirmation email (Optional)"

@@ -2,19 +2,43 @@ import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import Radio from '@/components/ui/Radio'
-import { Controller } from 'react-hook-form'
+import Select from '@/components/ui/Select'
+import { Controller, useFormContext } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
 import type { Control, FieldErrors } from 'react-hook-form'
+import type { Asset } from '@/@types/asset'
 
 type EventDetailsSectionProps = {
     control: Control<EventFormType>
     errors: FieldErrors<EventFormType>
+    assets?: Asset[]
 }
 
-const EventDetailsSection = ({ control, errors }: EventDetailsSectionProps) => {
+type AssetOption = {
+    value: string
+    label: string
+    color: string
+}
+
+const EventDetailsSection = ({
+    control,
+    errors,
+    assets = [],
+}: EventDetailsSectionProps) => {
+    const { watch } = useFormContext<EventFormType>()
+    const eventType = watch('event_type')
+
+    const assetOptions: AssetOption[] = assets
+        .filter((asset) => asset.asset_type === 'video')
+        .map((asset) => ({
+            value: asset.id.toString(),
+            label: asset.asset_name,
+            color: '#00B8D9', // Default color for all assets
+        }))
+
     return (
         <Card id="eventDetails">
-            <h4 className="mb-6">Event details</h4>
+            <h4 className="mb-6">Event Type</h4>
 
             <FormItem
                 label="Choose Event Type"
@@ -35,7 +59,7 @@ const EventDetailsSection = ({ control, errors }: EventDetailsSectionProps) => {
                                     field.onChange('prerecorded')
                                 }}
                             >
-                                Pre-Recorded
+                                Pre-recorded (Video Stream)
                             </Radio>
                             <Radio
                                 className="mr-4"
@@ -46,7 +70,7 @@ const EventDetailsSection = ({ control, errors }: EventDetailsSectionProps) => {
                                     field.onChange('live_venue')
                                 }}
                             >
-                                Live Venue
+                                In person Event (Physical Location)
                             </Radio>
                             <Radio
                                 name="event_type"
@@ -56,12 +80,77 @@ const EventDetailsSection = ({ control, errors }: EventDetailsSectionProps) => {
                                     field.onChange('live_video_call')
                                 }}
                             >
-                                Live Video Call
+                                Live Online Event (zoom)
                             </Radio>
                         </div>
                     )}
                 />
             </FormItem>
+
+            {eventType === 'prerecorded' && (
+                <FormItem
+                    label="Select Asset"
+                    invalid={Boolean(errors.asset_id)}
+                    errorMessage={errors.asset_id?.message}
+                >
+                    <Controller
+                        name="asset_id"
+                        control={control}
+                        render={({ field: { onChange, value, ...field } }) => (
+                            <Select<AssetOption>
+                                placeholder="Please Select"
+                                options={assetOptions}
+                                value={assetOptions.find(
+                                    (option) =>
+                                        option.value === value?.toString(),
+                                )}
+                                onChange={(option) => onChange(option?.value)}
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
+
+            {eventType === 'live_venue' && (
+                <FormItem
+                    label="Live Venue Address"
+                    invalid={Boolean(errors.live_venue_address)}
+                    errorMessage={errors.live_venue_address?.message}
+                >
+                    <Controller
+                        name="live_venue_address"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                placeholder="Enter live venue address"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
+
+            {eventType === 'live_video_call' && (
+                <FormItem
+                    label="Live Video Call URL"
+                    invalid={Boolean(errors.live_video_url)}
+                    errorMessage={errors.live_video_url?.message}
+                >
+                    <Controller
+                        name="live_video_url"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                placeholder="Enter live video call URL"
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
 
             <FormItem
                 label="Event name"
