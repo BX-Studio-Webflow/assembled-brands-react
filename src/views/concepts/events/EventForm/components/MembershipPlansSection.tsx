@@ -34,10 +34,7 @@ const MembershipPlansSection = ({
     return (
         <div id="pricePlans">
             {safeFields.map((field, idx) => (
-                <Card
-                    key={field.id}
-                    className="mb-4 bEvent relative"
-                >
+                <Card key={field.id} className="mb-4 bEvent relative">
                     {/* X icon in the top right */}
                     {idx > 0 && (
                         <button
@@ -126,26 +123,6 @@ const MembershipPlansSection = ({
                                             : new Date(field.value)
                                     }
                                     onChange={(date) => field.onChange(date)}
-                                />
-                            )}
-                        />
-                    </FormItem>
-                    <FormItem
-                        label="Duration in minutes"
-                        invalid={Boolean(errors.membership_plans?.[idx]?.cost)}
-                        errorMessage={
-                            errors.membership_plans?.[idx]?.cost?.message
-                        }
-                    >
-                        <Controller
-                            name={`membership_plans.${idx}.cost` as const}
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="e.g. £120.99"
-                                    {...field}
                                 />
                             )}
                         />

@@ -177,6 +177,7 @@ export interface EventWithDetailsAndCount {
     status: 'active' | 'suspended' | 'cancelled' | 'ended'
     live_video_url: string
     success_url: string
+    duration: number
     instructions: string
     landing_page_url: string
     calendar_url: string

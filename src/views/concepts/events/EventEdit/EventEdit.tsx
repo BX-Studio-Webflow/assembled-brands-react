@@ -179,6 +179,7 @@ const EventEdit = () => {
             asset_id: data?.asset_id || 0,
             image_asset_id: data?.image_asset_id || 0,
             instructions: data?.instructions || '',
+            duration: data?.duration || 0,
             landing_page_url: data?.landing_page_url || '',
             success_url: data?.success_url || '',
             calendar_url: data?.calendar_url || '',

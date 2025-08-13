@@ -36,6 +36,14 @@ const EventDetailsSection = ({
             color: '#00B8D9', // Default color for all assets
         }))
 
+    const imageAssetOptions: AssetOption[] = assets
+        .filter((asset) => asset.asset_type === 'image')
+        .map((asset) => ({
+            value: asset.id.toString(),
+            label: asset.asset_name,
+            color: '#00B8D9', // Default color for all assets
+        }))
+
     return (
         <Card id="eventDetails">
             <h4 className="mb-6">Event Type</h4>
@@ -153,6 +161,26 @@ const EventDetailsSection = ({
             )}
 
             <FormItem
+                label="Duration (minutes)"
+                invalid={Boolean(errors.duration)}
+                errorMessage={errors.duration?.message}
+            >
+                <Controller
+                    name="duration"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            type="number"
+                            step="1"
+                            min="1"
+                            placeholder="e.g. 60"
+                            {...field}
+                        />
+                    )}
+                />
+            </FormItem>
+
+            <FormItem
                 label="Event name"
                 invalid={Boolean(errors.event_name)}
                 errorMessage={errors.event_name?.message}
@@ -183,6 +211,28 @@ const EventDetailsSection = ({
                             type="text"
                             autoComplete="on"
                             placeholder="Event description"
+                            {...field}
+                        />
+                    )}
+                />
+            </FormItem>
+
+            <FormItem
+                label="Select Event Image"
+                invalid={Boolean(errors.image_asset_id)}
+                errorMessage={errors.image_asset_id?.message}
+            >
+                <Controller
+                    name="image_asset_id"
+                    control={control}
+                    render={({ field: { onChange, value, ...field } }) => (
+                        <Select<AssetOption>
+                            placeholder="Please Select"
+                            options={imageAssetOptions}
+                            value={imageAssetOptions.find(
+                                (option) => option.value === value?.toString(),
+                            )}
+                            onChange={(option) => onChange(option?.value)}
                             {...field}
                         />
                     )}

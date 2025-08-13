@@ -47,6 +47,8 @@ const defaultValues = {
     event_type: 'live_venue' as const,
     terms: true as const,
     asset_id: 0,
+    image_asset_id: 0,
+    duration: 60,
     live_video_url: '',
     live_venue_address: '',
     course_url_external: '',
@@ -182,7 +184,6 @@ const EventForm = (props: EventFormProps) => {
                                     <EventConfigurationSection
                                         control={methods.control}
                                         errors={methods.formState.errors}
-                                        assets={assets}
                                     />
                                 </div>
                             </div>

@@ -2,79 +2,22 @@ import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import Checkbox from '@/components/ui/Checkbox'
-import Select from '@/components/ui/Select'
 import { Controller } from 'react-hook-form'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
-import type { Asset } from '@/@types/asset'
 
 type Props = {
     control: Control<EventFormType>
     errors: FieldErrors<EventFormType>
-    assets?: Asset[]
 }
 
-type AssetOption = {
-    value: string
-    label: string
-    color: string
-}
-
-const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
-    const imageAssetOptions: AssetOption[] = assets
-        .filter((asset) => asset.asset_type === 'image')
-        .map((asset) => ({
-            value: asset.id.toString(),
-            label: asset.asset_name,
-            color: '#00B8D9', // Default color for all assets
-        }))
-
+const EventConfigurationSection = ({ control, errors }: Props) => {
     return (
         <Card id="eventAssets">
             <h4 className="mb-6">Event Configuration</h4>
 
             <FormItem
-                label="Select Event Image"
-                invalid={Boolean(errors.image_asset_id)}
-                errorMessage={errors.image_asset_id?.message}
-            >
-                <Controller
-                    name="image_asset_id"
-                    control={control}
-                    render={({ field: { onChange, value, ...field } }) => (
-                        <Select<AssetOption>
-                            placeholder="Please Select"
-                            options={imageAssetOptions}
-                            value={imageAssetOptions.find(
-                                (option) => option.value === value?.toString(),
-                            )}
-                            onChange={(option) => onChange(option?.value)}
-                            {...field}
-                        />
-                    )}
-                />
-            </FormItem>
-
-            <FormItem
-                label="Pre-Event Instructions shown on payment confirmation email (Optional)"
-                invalid={Boolean(errors.instructions)}
-                errorMessage={errors.instructions?.message}
-            >
-                <Controller
-                    name="instructions"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            type="text"
-                            placeholder="Please be early"
-                            {...field}
-                        />
-                    )}
-                />
-            </FormItem>
-
-            <FormItem
-                label="From – URL of the landing page where leads originate."
+                label="Event landing page URL"
                 invalid={Boolean(errors.landing_page_url)}
                 errorMessage={errors.landing_page_url?.message}
             >
@@ -92,7 +35,7 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
             </FormItem>
 
             <FormItem
-                label="Form Success – Destination page after the landing page form is submitted."
+                label="Event success page redirect URL"
                 invalid={Boolean(errors.success_url)}
                 errorMessage={errors.success_url?.message}
             >
@@ -110,7 +53,7 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
             </FormItem>
 
             <FormItem
-                label="Schedule Callback on Event – Your calendar link for scheduling callbacks or meetings."
+                label="In Event Link - Scheduled Callback URL"
                 invalid={Boolean(errors.calendar_url)}
                 errorMessage={errors.calendar_url?.message}
             >
@@ -127,7 +70,7 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
                 />
             </FormItem>
             <FormItem
-                label="Upgrade on Event – Your sales page link for purchases or upgrades."
+                label="In Event Link - Upgrade URL"
                 invalid={Boolean(errors.upgrade_url)}
                 errorMessage={errors.upgrade_url?.message}
             >
@@ -138,6 +81,24 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
                         <Input
                             type="text"
                             placeholder="https://www.something.com"
+                            {...field}
+                        />
+                    )}
+                />
+            </FormItem>
+
+            <FormItem
+                label="Event note"
+                invalid={Boolean(errors.instructions)}
+                errorMessage={errors.instructions?.message}
+            >
+                <Controller
+                    name="instructions"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            type="text"
+                            placeholder="Please be early"
                             {...field}
                         />
                     )}

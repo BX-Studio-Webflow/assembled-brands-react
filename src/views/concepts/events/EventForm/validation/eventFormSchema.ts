@@ -18,6 +18,10 @@ export const EventFormSchema = z
         event_name: z.string().min(1, 'Event name is required'),
         event_description: z.string().min(1, 'Description is required'),
         image_asset_id: z.preprocess((val) => Number(val), z.number()),
+        duration: z.preprocess(
+            (val) => Number(val),
+            z.number().min(1, 'Duration must be at least 1 minute'),
+        ),
 
         // Membership Plans
         membership_plans: z
