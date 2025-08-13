@@ -5,7 +5,6 @@ import FileManagerHeader from './components/FileManagerHeader'
 import FileSegment from './components/FileSegment'
 import FileList from './components/FileList'
 import FileManagerDeleteDialog from './components/FileManagerDeleteDialog'
-import FileManagerInviteDialog from './components/FileManagerInviteDialog'
 import FileManagerRenameDialog from './components/FileManagerRenameDialog'
 import { useFileManagerStore } from './store/useFileManagerStore'
 import { apiGetAssets } from '@/services/AssetService'
@@ -25,7 +24,6 @@ const FileManager = () => {
         fileList,
         setFileList,
         setDeleteDialog,
-        setInviteDialog,
         setRenameDialog,
         setSelectedFile,
     } = useFileManagerStore()
@@ -43,21 +41,8 @@ const FileManager = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const handleShare = (id: string) => {
-        setInviteDialog({ id, open: true })
-    }
-
     const handleDelete = (id: string) => {
         setDeleteDialog({ id, open: true })
-    }
-
-    const handleDownload = (url: string, fileName: string) => {
-        const link = document.createElement('a')
-        link.href = url
-        link.download = fileName
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
     }
 
     const handleRename = (id: string) => {
@@ -65,6 +50,11 @@ const FileManager = () => {
     }
 
     const handleClick = (fileId: string) => {
+        // Find the file by ID and open in new tab
+        const file = fileList.find((f) => f.id.toString() === fileId)
+        if (file) {
+            window.open(file.presignedUrl, '_blank')
+        }
         setSelectedFile(fileId)
     }
 
@@ -110,8 +100,6 @@ const FileManager = () => {
                         <FileList
                             fileList={fileList}
                             layout={layout}
-                            onDownload={handleDownload}
-                            onShare={handleShare}
                             onDelete={handleDelete}
                             onRename={handleRename}
                             onClick={handleClick}
@@ -121,7 +109,6 @@ const FileManager = () => {
             </div>
 
             <FileManagerDeleteDialog onDeleteSuccess={trigger} />
-            <FileManagerInviteDialog />
             <FileManagerRenameDialog onRenameSuccess={trigger} />
         </>
     )

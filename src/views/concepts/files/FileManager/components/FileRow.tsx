@@ -96,7 +96,7 @@ const FileRow = (props: FileRowProps) => {
         }
         return <span className="text-gray-500">0%</span>
     }
-
+  console.log(fileType)
     return (
         <Tr>
             <Td width="50%">

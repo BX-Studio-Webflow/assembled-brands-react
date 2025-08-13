@@ -1,12 +1,7 @@
 import { useRef } from 'react'
 import Dropdown from '@/components/ui/Dropdown'
 import EllipsisButton from '@/components/shared/EllipsisButton'
-import {
-    TbCloudDownload,
-    TbPencil,
-    TbTrash,
-    TbFolderSymlink,
-} from 'react-icons/tb'
+import { TbPencil, TbTrash, TbFolderSymlink } from 'react-icons/tb'
 import type { DropdownItemCallbackProps } from '../types'
 import type { DropdownRef } from '@/components/ui/Dropdown'
 import type { MouseEvent, SyntheticEvent } from 'react'
@@ -14,7 +9,7 @@ import type { MouseEvent, SyntheticEvent } from 'react'
 type FileItemDropdownProps = DropdownItemCallbackProps
 
 const FileItemDropdown = (props: FileItemDropdownProps) => {
-    const { onDelete, onRename, onDownload, onOpen } = props
+    const { onDelete, onRename, onOpen } = props
 
     const dropdownRef = useRef<DropdownRef>(null)
 
@@ -46,13 +41,6 @@ const FileItemDropdown = (props: FileItemDropdownProps) => {
                     <span>Open</span>
                 </Dropdown.Item>
             )}
-            <Dropdown.Item
-                eventKey="download"
-                onClick={(e) => handleDropdownItemClick(e, onDownload)}
-            >
-                <TbCloudDownload className="text-xl" />
-                <span>Download</span>
-            </Dropdown.Item>
             <Dropdown.Item
                 eventKey="rename"
                 onClick={(e) => handleDropdownItemClick(e, onRename)}

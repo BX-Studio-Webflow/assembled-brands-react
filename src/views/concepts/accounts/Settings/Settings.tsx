@@ -11,7 +11,6 @@ import { apiSaveStripeOauthState } from '@/services/AuthService'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router'
 
-
 const Profile = lazy(() => import('./components/SettingsProfile'))
 const Security = lazy(() => import('./components/SettingsSecurity'))
 //const Notification = lazy(() => import('./components/SettingsNotification'))

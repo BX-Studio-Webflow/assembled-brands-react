@@ -26,8 +26,6 @@ export type File = {
 
 export type DropdownItemCallbackProps = {
     onOpen?: () => void
-    onDownload?: () => void
-    onShare?: () => void
     onRename?: () => void
     onDelete?: () => void
 }

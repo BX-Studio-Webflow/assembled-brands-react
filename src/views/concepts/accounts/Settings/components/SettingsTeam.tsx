@@ -232,33 +232,35 @@ const SettingsTeam = () => {
                     <h5>My Teams</h5>
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
-                    {data && data?.my_teams && data?.my_teams?.map((team: MyTeam, index: number) => (
-                        <div
-                            key={team.team_id}
-                            className={classNames(
-                                'flex items-center justify-between p-4',
-                                !isLastChild(data.my_teams, index) &&
-                                    'border-b border-gray-200 dark:border-gray-600',
-                            )}
-                        >
-                            <div className="flex items-center gap-3">
-                                <Avatar
-                                    src={team.business.logo}
-                                    alt={team.team_name}
-                                    size={40}
-                                />
-                                <div>
-                                    <div className="font-semibold">
-                                        {team.team_name}
-                                    </div>
-                                    <div className="text-sm text-gray-500">
-                                        {team.business.email}
+                    {data &&
+                        data?.my_teams &&
+                        data?.my_teams?.map((team: MyTeam, index: number) => (
+                            <div
+                                key={team.team_id}
+                                className={classNames(
+                                    'flex items-center justify-between p-4',
+                                    !isLastChild(data.my_teams, index) &&
+                                        'border-b border-gray-200 dark:border-gray-600',
+                                )}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <Avatar
+                                        src={team.business.logo}
+                                        alt={team.team_name}
+                                        size={40}
+                                    />
+                                    <div>
+                                        <div className="font-semibold">
+                                            {team.team_name}
+                                        </div>
+                                        <div className="text-sm text-gray-500">
+                                            {team.business.email}
+                                        </div>
                                     </div>
                                 </div>
+                                <Tag className="capitalize">{team.role}</Tag>
                             </div>
-                            <Tag className="capitalize">{team.role}</Tag>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             </div>
 
@@ -282,69 +284,16 @@ const SettingsTeam = () => {
                     </Button>
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
-                    {data && data?.team_members && data?.team_members?.members?.map(
-                        (member: TeamMember, index: number) => (
-                            <div
-                                key={member.memberId}
-                                className={classNames(
-                                    'flex items-center justify-between p-4',
-                                    !isLastChild(
-                                        data.team_members.members,
-                                        index,
-                                    ) &&
-                                        'border-b border-gray-200 dark:border-gray-600',
-                                )}
-                            >
-                                <div>
-                                    <div className="font-semibold">
-                                        {member.name}
-                                    </div>
-                                    <div className="text-sm text-gray-500">
-                                        {member.email}
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Tag
-                                        className={classNames(
-                                            'capitalize',
-                                            member.role === 'host'
-                                                ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded'
-                                                : 'text-white bg-indigo-600 border-0',
-                                        )}
-                                    >
-                                        {member.role}
-                                    </Tag>
-                                    <Button
-                                        size="sm"
-                                        icon={<TbTrash />}
-                                        onClick={() =>
-                                            handleRevokeMember(
-                                                data.team_members.team_id,
-                                                member.memberId,
-                                                member.name,
-                                            )
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        ),
-                    )}
-                </div>
-            </div>
-
-            {/* Team Invitations Section */}
-            {data && data?.team_invitations && data?.team_invitations?.length > 0 && (
-                <div className="mb-8">
-                    <h5 className="mb-4">Sent Team Invitations</h5>
-                    <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
-                        {data.team_invitations.map(
-                            (invitation: TeamInvitation, index: number) => (
+                    {data &&
+                        data?.team_members &&
+                        data?.team_members?.members?.map(
+                            (member: TeamMember, index: number) => (
                                 <div
-                                    key={invitation.id}
+                                    key={member.memberId}
                                     className={classNames(
                                         'flex items-center justify-between p-4',
                                         !isLastChild(
-                                            data.team_invitations,
+                                            data.team_members.members,
                                             index,
                                         ) &&
                                             'border-b border-gray-200 dark:border-gray-600',
@@ -352,44 +301,103 @@ const SettingsTeam = () => {
                                 >
                                     <div>
                                         <div className="font-semibold">
-                                            {invitation.invitee_email}
+                                            {member.name}
                                         </div>
                                         <div className="text-sm text-gray-500">
-                                            Invited on{' '}
-                                            {new Date(
-                                                invitation.created_at,
-                                            ).toLocaleDateString()}
+                                            {member.email}
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Tag
-                                            className={
-                                                invitation.status === 'pending'
-                                                    ? 'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0'
-                                                    : 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded'
-                                            }
+                                            className={classNames(
+                                                'capitalize',
+                                                member.role === 'host'
+                                                    ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded'
+                                                    : 'text-white bg-indigo-600 border-0',
+                                            )}
                                         >
-                                            {invitation.status}
+                                            {member.role}
                                         </Tag>
-                                        {invitation.status === 'pending' && (
-                                            <Button
-                                                size="sm"
-                                                icon={<TbTrash />}
-                                                onClick={() =>
-                                                    handleRevokeInvitation(
-                                                        invitation.id,
-                                                        invitation.invitee_email,
-                                                    )
-                                                }
-                                            />
-                                        )}
+                                        <Button
+                                            size="sm"
+                                            icon={<TbTrash />}
+                                            onClick={() =>
+                                                handleRevokeMember(
+                                                    data.team_members.team_id,
+                                                    member.memberId,
+                                                    member.name,
+                                                )
+                                            }
+                                        />
                                     </div>
                                 </div>
                             ),
                         )}
-                    </div>
                 </div>
-            )}
+            </div>
+
+            {/* Team Invitations Section */}
+            {data &&
+                data?.team_invitations &&
+                data?.team_invitations?.length > 0 && (
+                    <div className="mb-8">
+                        <h5 className="mb-4">Sent Team Invitations</h5>
+                        <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
+                            {data.team_invitations.map(
+                                (invitation: TeamInvitation, index: number) => (
+                                    <div
+                                        key={invitation.id}
+                                        className={classNames(
+                                            'flex items-center justify-between p-4',
+                                            !isLastChild(
+                                                data.team_invitations,
+                                                index,
+                                            ) &&
+                                                'border-b border-gray-200 dark:border-gray-600',
+                                        )}
+                                    >
+                                        <div>
+                                            <div className="font-semibold">
+                                                {invitation.invitee_email}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                Invited on{' '}
+                                                {new Date(
+                                                    invitation.created_at,
+                                                ).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Tag
+                                                className={
+                                                    invitation.status ===
+                                                    'pending'
+                                                        ? 'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0'
+                                                        : 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded'
+                                                }
+                                            >
+                                                {invitation.status}
+                                            </Tag>
+                                            {invitation.status ===
+                                                'pending' && (
+                                                <Button
+                                                    size="sm"
+                                                    icon={<TbTrash />}
+                                                    onClick={() =>
+                                                        handleRevokeInvitation(
+                                                            invitation.id,
+                                                            invitation.invitee_email,
+                                                        )
+                                                    }
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                ),
+                            )}
+                        </div>
+                    </div>
+                )}
 
             {/* My Invitations Section */}
             {data.my_invitations.length > 0 && (

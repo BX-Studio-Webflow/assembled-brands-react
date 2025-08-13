@@ -107,7 +107,6 @@ const EventEdit = () => {
                     id: plan.id,
                 })),
             }
-          
 
             await apiUpdateEvent(Number(id), payload)
 
