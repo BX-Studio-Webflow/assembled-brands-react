@@ -4,7 +4,6 @@ import EllipsisButton from '@/components/shared/EllipsisButton'
 import {
     TbCloudDownload,
     TbPencil,
-    TbUserPlus,
     TbTrash,
     TbFolderSymlink,
 } from 'react-icons/tb'
@@ -15,7 +14,7 @@ import type { MouseEvent, SyntheticEvent } from 'react'
 type FileItemDropdownProps = DropdownItemCallbackProps
 
 const FileItemDropdown = (props: FileItemDropdownProps) => {
-    const { onDelete, onShare, onRename, onDownload, onOpen } = props
+    const { onDelete, onRename, onDownload, onOpen } = props
 
     const dropdownRef = useRef<DropdownRef>(null)
 
@@ -60,13 +59,6 @@ const FileItemDropdown = (props: FileItemDropdownProps) => {
             >
                 <TbPencil className="text-xl" />
                 <span>Rename</span>
-            </Dropdown.Item>
-            <Dropdown.Item
-                eventKey="share"
-                onClick={(e) => handleDropdownItemClick(e, onShare)}
-            >
-                <TbUserPlus className="text-xl" />
-                <span>Share</span>
             </Dropdown.Item>
             <Dropdown.Item
                 eventKey="share"

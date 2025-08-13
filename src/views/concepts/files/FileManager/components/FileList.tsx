@@ -77,7 +77,6 @@ const FileList = (props: FileListProps) => {
                         onDownload={() =>
                             onDownload(file.presignedUrl, file.asset_name)
                         }
-                        onShare={() => onShare(file.id.toString())}
                         onDelete={() => onDelete(file.id.toString())}
                         onRename={() => onRename(file.id.toString())}
                     />
