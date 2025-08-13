@@ -2,12 +2,10 @@ import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import Checkbox from '@/components/ui/Checkbox'
-import Radio from '@/components/ui/Radio'
 import Select from '@/components/ui/Select'
 import { Controller, useFormContext } from 'react-hook-form'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
-import { useState, useEffect } from 'react'
 import type { Asset } from '@/@types/asset'
 
 type Props = {
@@ -23,16 +21,8 @@ type AssetOption = {
 }
 
 const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
-    const [eventType, setEventType] = useState<string>('')
     const { watch } = useFormContext<EventFormType>()
-    const formEventType = watch('event_type')
-
-    // Initialize and update eventType when form value changes
-    useEffect(() => {
-        if (formEventType) {
-            setEventType(formEventType)
-        }
-    }, [formEventType])
+    const eventType = watch('event_type')
 
     const assetOptions: AssetOption[] = assets
         .filter((asset) => asset.asset_type === 'video')
@@ -52,6 +42,8 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
 
     return (
         <Card id="eventAssets">
+            <h4 className="mb-6">Event Configuration</h4>
+
             <FormItem
                 label="Select Event Image"
                 invalid={Boolean(errors.image_asset_id)}
@@ -70,56 +62,6 @@ const EventConfigurationSection = ({ control, errors, assets = [] }: Props) => {
                             onChange={(option) => onChange(option?.value)}
                             {...field}
                         />
-                    )}
-                />
-            </FormItem>
-
-            <FormItem
-                label="Choose Event Type"
-                invalid={Boolean(errors.event_type)}
-                errorMessage={errors.event_type?.message}
-            >
-                <Controller
-                    name="event_type"
-                    control={control}
-                    render={({ field }) => (
-                        <div>
-                            <Radio
-                                className="mr-4"
-                                name="event_type"
-                                value="prerecorded"
-                                checked={field.value === 'prerecorded'}
-                                onChange={() => {
-                                    field.onChange('prerecorded')
-                                    setEventType('prerecorded')
-                                }}
-                            >
-                                Pre-Recorded
-                            </Radio>
-                            <Radio
-                                className="mr-4"
-                                name="event_type"
-                                value="live_venue"
-                                checked={field.value === 'live_venue'}
-                                onChange={() => {
-                                    field.onChange('live_venue')
-                                    setEventType('live_venue')
-                                }}
-                            >
-                                Live Venue
-                            </Radio>
-                            <Radio
-                                name="event_type"
-                                value="live_video_call"
-                                checked={field.value === 'live_video_call'}
-                                onChange={() => {
-                                    field.onChange('live_video_call')
-                                    setEventType('live_video_call')
-                                }}
-                            >
-                                Live Video Call
-                            </Radio>
-                        </div>
                     )}
                 />
             </FormItem>
