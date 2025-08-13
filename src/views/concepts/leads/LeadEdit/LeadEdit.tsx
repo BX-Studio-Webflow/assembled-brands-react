@@ -221,7 +221,7 @@ const LeadEdit = () => {
                                         onFormSubmit={handleFormSubmit}
                                     >
                                         <Container>
-                                            <div className="flex flex-col sm:flex-row items-center justify-end px-4 sm:px-8 gap-4 sm:gap-0">
+                                            <div className="flex flex-col sm:flex-row items-center justify-end gap-4 sm:gap-0">
                                                 <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
                                                     <Button
                                                         block
