@@ -221,10 +221,11 @@ const LeadEdit = () => {
                                         onFormSubmit={handleFormSubmit}
                                     >
                                         <Container>
-                                            <div className="flex items-center justify-end px-8">
-                                                <div className="flex items-center">
+                                            <div className="flex flex-col sm:flex-row items-center justify-end px-4 sm:px-8 gap-4 sm:gap-0">
+                                                <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
                                                     <Button
-                                                        className="ltr:mr-3 rtl:ml-3"
+                                                        block
+                                                        className="w-full sm:w-auto"
                                                         type="button"
                                                         customColorClass={() =>
                                                             'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
@@ -235,15 +236,17 @@ const LeadEdit = () => {
                                                         Delete
                                                     </Button>
                                                     <Button
+                                                        block
                                                         type="button"
-                                                        className="ltr:mr-3 rtl:ml-3"
+                                                        className="w-full sm:w-auto"
                                                         icon={<HiChatAlt />}
                                                         onClick={handleChat}
                                                     >
                                                         Message
                                                     </Button>
                                                     <Button
-                                                        className="ltr:mr-3 rtl:ml-3"
+                                                        block
+                                                        className="w-full sm:w-auto"
                                                         variant="solid"
                                                         type="submit"
                                                         loading={isSubmiting}
