@@ -92,6 +92,7 @@ const EventEdit = () => {
                 instructions: values.instructions,
                 landing_page_url: values.landing_page_url,
                 success_url: values.success_url,
+                duration: values.duration,
                 calendar_url: values.calendar_url,
                 upgrade_url: values.upgrade_url,
                 membership_plans: values.membership_plans.map((plan) => ({
@@ -671,9 +672,9 @@ const x = setInterval(function () {
                 newEvent={false}
             >
                 <Container>
-                    <div className="flex items-center justify-between px-8">
-                        <span>
-                            <div className="flex-wrap inline-flex xl:flex items-center gap-2 ml-2">
+                    <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 gap-4 sm:gap-0">
+                        <span className="w-full sm:w-auto">
+                            <div className="flex flex-wrap items-center gap-2 ml-2 justify-center sm:justify-start">
                                 <Tooltip title="Copy lead form code">
                                     <Button
                                         type="button"
@@ -724,29 +725,28 @@ const x = setInterval(function () {
                                 )}
                             </div>
                         </span>
-                        <div className="flex items-center mr-2">
-                            <Tooltip title="Delete this event permanently">
-                                <Button
-                                    className="ltr:mr-3 rtl:ml-3"
-                                    type="button"
-                                    customColorClass={() =>
-                                        'bEvent-error ring-1 ring-error text-error hover:bEvent-error hover:ring-error hover:text-error bg-transparent'
-                                    }
-                                    icon={<TbTrash />}
-                                    onClick={handleDelete}
-                                >
-                                    Delete
-                                </Button>
-                            </Tooltip>
-                            <Tooltip title="Save changes to this event">
-                                <Button
-                                    variant="solid"
-                                    type="submit"
-                                    loading={isSubmiting}
-                                >
-                                    Update
-                                </Button>
-                            </Tooltip>
+                        <div className="flex flex-col sm:flex-row items-center gap-2 ml-2 mr-2 w-full sm:w-auto">
+                            <Button
+                                block
+                                className="w-full sm:w-auto"
+                                type="button"
+                                customColorClass={() =>
+                                    'bEvent-error ring-1 ring-error text-error hover:bEvent-error hover:ring-error hover:text-error bg-transparent'
+                                }
+                                icon={<TbTrash />}
+                                onClick={handleDelete}
+                            >
+                                Delete
+                            </Button>
+                            <Button
+                                block
+                                className="w-full sm:w-auto"
+                                variant="solid"
+                                type="submit"
+                                loading={isSubmiting}
+                            >
+                                Update
+                            </Button>
                         </div>
                     </div>
                 </Container>
