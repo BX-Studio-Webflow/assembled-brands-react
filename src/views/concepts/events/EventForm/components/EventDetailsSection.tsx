@@ -57,7 +57,7 @@ const EventDetailsSection = ({
                     name="event_type"
                     control={control}
                     render={({ field }) => (
-                        <div>
+                        <div className="flex flex-col sm:flex-row gap-1">
                             <Radio
                                 className="mr-4"
                                 name="event_type"
