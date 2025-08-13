@@ -7,7 +7,7 @@ const LeadsListTableTools = () => {
     const { tableData, setTableData } = useLeadList()
 
     const handleInputChange = (val: string) => {
-        console.log('val', val)
+       
         const newTableData = cloneDeep(tableData)
         newTableData.search = val
         newTableData.pageIndex = 1
