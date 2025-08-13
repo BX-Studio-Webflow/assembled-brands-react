@@ -16,7 +16,7 @@ const Security = lazy(() => import('./components/SettingsSecurity'))
 const Billing = lazy(() => import('./components/SettingsBilling'))
 const Team = lazy(() => import('./components/SettingsTeam'))
 const Business = lazy(() => import('./components/SettingsBusiness'))
-
+const Stripe = lazy(() => import('./components/SettingsStripe'))
 const Settings = () => {
     const { smaller, larger } = useResponsive()
     const { currentView, setCurrentView } = useSettingsStore()
@@ -70,7 +70,7 @@ const Settings = () => {
 
     useEffect(() => {
         if (params.action == 'billing' || params.action == 'stripe-connect') {
-            setCurrentView('billing')
+            setCurrentView('stripe')
         }
         if (params.code && params.state) {
             toast.push(
@@ -120,6 +120,7 @@ const Settings = () => {
                         {currentView === 'team' && <Team />}
                         {/* {currentView === 'notification' && <Notification />} */}
                         {currentView === 'billing' && <Billing />}
+                        {currentView === 'stripe' && <Stripe />}
                     </Suspense>
                 </div>
             </div>
