@@ -9,6 +9,8 @@ import toast from '@/components/ui/toast'
 import useSWR from 'swr'
 import { apiSaveStripeOauthState } from '@/services/AuthService'
 import { AxiosError } from 'axios'
+import { useNavigate } from 'react-router'
+
 
 const Profile = lazy(() => import('./components/SettingsProfile'))
 const Security = lazy(() => import('./components/SettingsSecurity'))
@@ -18,6 +20,7 @@ const Team = lazy(() => import('./components/SettingsTeam'))
 const Business = lazy(() => import('./components/SettingsBusiness'))
 const Stripe = lazy(() => import('./components/SettingsStripe'))
 const Settings = () => {
+    const navigate = useNavigate()
     const { smaller, larger } = useResponsive()
     const { currentView, setCurrentView } = useSettingsStore()
 
@@ -65,6 +68,9 @@ const Settings = () => {
             revalidateOnFocus: false,
             revalidateIfStale: false,
             revalidateOnReconnect: false,
+            onSuccess: () => {
+                navigate('/concepts/account/settings?action=billing')
+            },
         },
     )
 
