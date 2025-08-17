@@ -8,7 +8,7 @@ export interface MailRequestBody {
     filterType?: 'everyone' | 'attended' | 'notAttended'
     button_link: string
     recipients: number[]
-    selectedMemberships?: number[]
+    selectedMembership?: number
 }
 export interface MailSearchRequestBody {
     search_by: 'name' | 'tag' | 'event'

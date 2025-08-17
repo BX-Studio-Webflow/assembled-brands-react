@@ -21,6 +21,7 @@ import useMail from '../hooks/useMail'
 import useQuery from '@/utils/hooks/useQuery'
 import { MailCreateResponse } from '@/@types/mail'
 import { EventWithDetails } from '@/@types/events'
+import dayjs from 'dayjs'
 
 type FormSchema = {
     content: string
@@ -28,17 +29,27 @@ type FormSchema = {
     type: string
     filterType: 'everyone' | 'attended' | 'notAttended'
     recipients: number | null
-    selectedMemberships: number[]
+    selectedMembership: number | null
 }
 
-const validationSchema: ZodType<FormSchema> = z.object({
-    title: z.string().min(1, { message: 'Please enter title' }),
-    content: z.string().min(1, { message: 'Please enter message' }),
-    type: z.string(),
-    filterType: z.enum(['everyone', 'attended', 'notAttended']),
-    recipients: z.number().nullable(),
-    selectedMemberships: z.array(z.number()),
-})
+const validationSchema: ZodType<FormSchema> = z
+    .object({
+        title: z.string().min(1, { message: 'Please enter title' }),
+        content: z.string().min(1, { message: 'Please enter message' }),
+        type: z.string(),
+        filterType: z.enum(['everyone', 'attended', 'notAttended']),
+        recipients: z.number().nullable(),
+        selectedMembership: z.number().nullable(),
+    })
+    .superRefine((data, ctx) => {
+        if (data.type === 'event' && !data.selectedMembership) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Please select a membership for event type',
+                path: ['selectedMembership'],
+            })
+        }
+    })
 
 interface Lead {
     id: number
@@ -156,7 +167,7 @@ const MailEditor = ({
             type: 'name',
             filterType: 'everyone',
             recipients: null,
-            selectedMemberships: [],
+            selectedMembership: null,
         })
         setSearchResults([])
     }
@@ -174,7 +185,9 @@ const MailEditor = ({
                 filterType: value.filterType,
                 button_link: 'https://example.com',
                 recipients: value.recipients ? [value.recipients] : [],
-                selectedMemberships: value.selectedMemberships,
+                ...(value.selectedMembership && {
+                    selectedMembership: value.selectedMembership,
+                }),
             }
 
             const response = (await apiCreateMail(
@@ -247,7 +260,7 @@ const MailEditor = ({
                                                 type: 'event',
                                                 filterType: 'everyone',
                                                 recipients: null,
-                                                selectedMemberships: [],
+                                                selectedMembership: null,
                                             })
                                         }}
                                     >
@@ -268,7 +281,7 @@ const MailEditor = ({
                                                 type: 'tag',
                                                 filterType: 'everyone',
                                                 recipients: null,
-                                                selectedMemberships: [],
+                                                selectedMembership: null,
                                             })
                                         }}
                                     >
@@ -289,7 +302,7 @@ const MailEditor = ({
                                                 type: 'name',
                                                 filterType: 'everyone',
                                                 recipients: null,
-                                                selectedMemberships: [],
+                                                selectedMembership: null,
                                             })
                                         }}
                                     >
@@ -446,11 +459,16 @@ const MailEditor = ({
 
                     {watch('type') === 'event' &&
                         watch('recipients') !== null && (
-                            <FormItem label="Memberships">
+                            <FormItem
+                                label="Memberships"
+                                invalid={Boolean(errors.selectedMembership)}
+                                errorMessage={
+                                    errors.selectedMembership?.message
+                                }
+                            >
                                 <Controller
-                                    name="selectedMemberships"
+                                    name="selectedMembership"
                                     control={control}
-                                    defaultValue={[]}
                                     render={({ field }) => {
                                         // Get the selected event to show its memberships
                                         const selectedEventId =
@@ -484,41 +502,39 @@ const MailEditor = ({
                                                             key={membership.id}
                                                             className="mr-4"
                                                             name={`membership-${membership.id}`}
-                                                            checked={field.value.includes(
-                                                                membership.id,
-                                                            )}
+                                                            checked={
+                                                                field.value ===
+                                                                membership.id
+                                                            }
                                                             onChange={() => {
-                                                                const currentValue =
-                                                                    field.value ||
-                                                                    []
                                                                 if (
-                                                                    currentValue.includes(
-                                                                        membership.id,
-                                                                    )
+                                                                    field.value ===
+                                                                    membership.id
                                                                 ) {
-                                                                    // Remove membership if already selected
+                                                                    // Deselect if already selected
                                                                     field.onChange(
-                                                                        currentValue.filter(
-                                                                            (
-                                                                                id,
-                                                                            ) =>
-                                                                                id !==
-                                                                                membership.id,
-                                                                        ),
+                                                                        null,
                                                                     )
                                                                 } else {
-                                                                    // Add membership if not selected
+                                                                    // Select this membership
                                                                     field.onChange(
-                                                                        [
-                                                                            ...currentValue,
-                                                                            membership.id,
-                                                                        ],
+                                                                        membership.id,
                                                                     )
                                                                 }
                                                             }}
                                                         >
-                                                            {membership.name} -
-                                                            ${membership.price}
+                                                            {dayjs
+                                                                .unix(
+                                                                    Number(
+                                                                        membership
+                                                                            .dates[0]
+                                                                            .date,
+                                                                    ),
+                                                                )
+                                                                .format(
+                                                                    'ddd, DD MMM YYYY',
+                                                                )}{' '}
+                                                            -{membership.name}
                                                         </Radio>
                                                     ),
                                                 )}

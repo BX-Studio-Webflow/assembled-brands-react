@@ -102,6 +102,7 @@ export interface Membership {
     created_at: string
     updated_at: string
     user_id: number
+    dates: MembershipDate[]
 }
 
 // Request type for creating an event
