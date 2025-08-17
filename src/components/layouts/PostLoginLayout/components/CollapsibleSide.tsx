@@ -11,6 +11,7 @@ import LayoutBase from '@/components//template/LayoutBase'
 import useResponsive from '@/utils/hooks/useResponsive'
 import { LAYOUT_COLLAPSIBLE_SIDE } from '@/constants/theme.constant'
 import type { CommonProps } from '@/@types/common'
+import UserResourceDropdown from '@/components/template/UserResourceDropdown'
 
 const CollapsibleSide = ({ children }: CommonProps) => {
     const { larger, smaller } = useResponsive()
@@ -35,9 +36,11 @@ const CollapsibleSide = ({ children }: CommonProps) => {
                         headerEnd={
                             <>
                                 {/* <LanguageSelector /> */}
-                                <Notification />
+
                                 {/* <SidePanel /> */}
-                                <UserProfileDropdown hoverable={false} />
+                                <UserResourceDropdown hoverable={true} />
+                                <Notification />
+                                <UserProfileDropdown hoverable={true} />
                             </>
                         }
                     />
