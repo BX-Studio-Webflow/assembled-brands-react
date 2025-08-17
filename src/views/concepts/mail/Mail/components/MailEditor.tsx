@@ -227,11 +227,11 @@ const MailEditor = ({
             onClose={handleDialogClose}
             onRequestClose={handleDialogClose}
         >
-            <h4 className="mb-4">
+            <h4 className="mb-4 px-1">
                 {messageDialog.mode === 'new' && 'New Message'}
                 {messageDialog.mode === 'reply' && 'Reply'}
             </h4>
-            <div className="max-h-200 overflow-y-auto">
+            <div className="max-h-200 overflow-y-auto px-1">
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <FormItem
                         label="Type"
