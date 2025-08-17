@@ -8,6 +8,7 @@ import type { BaseFileItemProps } from '../types'
 
 type FileRowProps = BaseFileItemProps & {
     content_type: string
+    assetType: 'video' | 'image' | 'audio' | 'document' | 'profile_picture'
     mediaconvert_job_status?: string
     mediaconvert_job_progress?: number
 }
@@ -17,6 +18,7 @@ const { Tr, Td } = Table
 const FileRow = (props: FileRowProps) => {
     const {
         fileType,
+        assetType,
         size,
         name,
         content_type,
@@ -28,7 +30,7 @@ const FileRow = (props: FileRowProps) => {
 
     const getStatusDisplay = () => {
         // Non-video types are completed by default
-        if (fileType !== 'video') {
+        if (assetType !== 'video') {
             return (
                 <Tag className="text-emerald-600 bg-emerald-100 dark:bg-emerald-500/20 dark:text-emerald-100 border-0">
                     Completed
@@ -66,7 +68,7 @@ const FileRow = (props: FileRowProps) => {
 
     const getProgressDisplay = () => {
         // Non-video types are completed by default
-        if (fileType !== 'video') {
+        if (assetType !== 'video') {
             return <span className="text-emerald-600 font-medium">100%</span>
         }
 

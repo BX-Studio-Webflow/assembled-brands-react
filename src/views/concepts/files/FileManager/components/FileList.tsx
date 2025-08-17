@@ -73,6 +73,7 @@ const FileList = (props: FileListProps) => {
                 {list.map((file) => (
                     <FileRow
                         key={file.id}
+                        assetType={file.asset_type}
                         fileType={file.asset_name.split('.').pop()}
                         size={Number(file.asset_size)}
                         name={file.asset_name}
