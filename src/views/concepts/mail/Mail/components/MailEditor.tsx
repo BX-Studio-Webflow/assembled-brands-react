@@ -16,17 +16,19 @@ import { apiCreateMail, apiSearchMails } from '@/services/MailService'
 import { AxiosError } from 'axios'
 import Radio from '@/components/ui/Radio'
 import Select from '@/components/ui/Select'
-import type { MultiValue } from 'react-select'
+import type { SingleValue } from 'react-select'
 import useMail from '../hooks/useMail'
 import useQuery from '@/utils/hooks/useQuery'
 import { MailCreateResponse } from '@/@types/mail'
+import { EventWithDetails } from '@/@types/events'
 
 type FormSchema = {
     content: string
     title: string
     type: string
     filterType: 'everyone' | 'attended' | 'notAttended'
-    recipients: number[]
+    recipients: number | null
+    selectedMemberships: number[]
 }
 
 const validationSchema: ZodType<FormSchema> = z.object({
@@ -34,7 +36,8 @@ const validationSchema: ZodType<FormSchema> = z.object({
     content: z.string().min(1, { message: 'Please enter message' }),
     type: z.string(),
     filterType: z.enum(['everyone', 'attended', 'notAttended']),
-    recipients: z.array(z.number()),
+    recipients: z.number().nullable(),
+    selectedMemberships: z.array(z.number()),
 })
 
 interface Lead {
@@ -64,24 +67,6 @@ interface Lead {
     }
 }
 
-interface Event {
-    id: number
-    event_name: string
-    event_description: string
-    event_type: string
-    asset_id: number
-    created_at: string
-    status: string
-    live_video_url: string
-    success_url: string
-    instructions: string
-    landing_page_url: string
-    calendar_url: string | null
-    live_venue_address: string
-    updated_at: string
-    host_id: number
-}
-
 interface Tag {
     id: number
     host_id: number
@@ -90,7 +75,7 @@ interface Tag {
     updated_at: string
 }
 
-type SearchResult = Lead | Event | Tag
+type SearchResult = Lead | EventWithDetails | Tag
 
 interface SearchResponse {
     search_by: string
@@ -100,14 +85,17 @@ interface SearchResponse {
 
 type SearchType = 'name' | 'tag' | 'event'
 
-const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
+const MailEditor = ({
+    events,
+    tags,
+}: {
+    events: EventWithDetails[]
+    tags: Tag[]
+}) => {
     const { mail, messageDialog, toggleMessageDialog } = useMailStore()
     const [formSubmiting, setFormSubmiting] = useState(false)
     const [searchResults, setSearchResults] = useState<SearchResult[]>([])
     const [searchLoading, setSearchLoading] = useState(false)
-    const [selectedOptions, setSelectedOptions] = useState<
-        { value: number; label: string }[]
-    >([])
 
     const { fetchMails } = useMail()
     const query = useQuery()
@@ -167,9 +155,9 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
             content: '',
             type: 'name',
             filterType: 'everyone',
-            recipients: [],
+            recipients: null,
+            selectedMemberships: [],
         })
-        setSelectedOptions([])
         setSearchResults([])
     }
 
@@ -185,7 +173,8 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                 type: value.type,
                 filterType: value.filterType,
                 button_link: 'https://example.com',
-                recipients: value.recipients,
+                recipients: value.recipients ? [value.recipients] : [],
+                selectedMemberships: value.selectedMemberships,
             }
 
             const response = (await apiCreateMail(
@@ -249,7 +238,7 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                         onChange={() => {
                                             field.onChange('event')
                                             // Clear recipients when type changes
-                                            setSelectedOptions([])
+
                                             setSearchResults([])
                                             // Reset the recipients field in the form
                                             reset({
@@ -257,7 +246,8 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                                 content: watch('content') || '',
                                                 type: 'event',
                                                 filterType: 'everyone',
-                                                recipients: [],
+                                                recipients: null,
+                                                selectedMemberships: [],
                                             })
                                         }}
                                     >
@@ -270,8 +260,6 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                         onChange={() => {
                                             field.onChange('tag')
 
-                                            // Clear recipients when type changes
-                                            setSelectedOptions([])
                                             setSearchResults([])
                                             // Reset the recipients field in the form
                                             reset({
@@ -279,7 +267,8 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                                 content: watch('content') || '',
                                                 type: 'tag',
                                                 filterType: 'everyone',
-                                                recipients: [],
+                                                recipients: null,
+                                                selectedMemberships: [],
                                             })
                                         }}
                                     >
@@ -291,8 +280,7 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                         checked={field.value === 'name'}
                                         onChange={() => {
                                             field.onChange('name')
-                                            // Clear recipients when type changes
-                                            setSelectedOptions([])
+
                                             setSearchResults([])
                                             // Reset the recipients field in the form
                                             reset({
@@ -300,7 +288,8 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                                 content: watch('content') || '',
                                                 type: 'name',
                                                 filterType: 'everyone',
-                                                recipients: [],
+                                                recipients: null,
+                                                selectedMemberships: [],
                                             })
                                         }}
                                     >
@@ -375,7 +364,6 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                             control={control}
                             render={({ field }) => (
                                 <Select
-                                    isMulti
                                     isLoading={searchLoading}
                                     placeholder={
                                         watch('type') === 'tag'
@@ -384,16 +372,16 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                               ? 'Type to search events'
                                               : 'Type to search recipients'
                                     }
-                                    value={selectedOptions}
                                     options={(() => {
                                         const currentType = watch('type')
 
                                         // If type is 'event', use events prop
                                         if (currentType === 'event') {
                                             return events.map((event) => ({
-                                                value: event.id,
-                                                label: event.event_name,
-                                                title: event.event_description,
+                                                value: event.event.id,
+                                                label: event.event.event_name,
+                                                title: event.event
+                                                    .event_description,
                                             }))
                                         }
 
@@ -444,21 +432,102 @@ const MailEditor = ({ events, tags }: { events: Event[]; tags: Tag[] }) => {
                                         }
                                     }}
                                     onChange={(
-                                        selected: MultiValue<{
+                                        selected: SingleValue<{
                                             value: number
                                             label: string
                                         }>,
                                     ) => {
-                                        const values = selected.map(
-                                            (option) => option.value,
-                                        )
-                                        field.onChange(values)
-                                        setSelectedOptions([...selected])
+                                        field.onChange(selected?.value || null)
                                     }}
                                 />
                             )}
                         />
                     </FormItem>
+
+                    {watch('type') === 'event' &&
+                        watch('recipients') !== null && (
+                            <FormItem label="Memberships">
+                                <Controller
+                                    name="selectedMemberships"
+                                    control={control}
+                                    defaultValue={[]}
+                                    render={({ field }) => {
+                                        // Get the selected event to show its memberships
+                                        const selectedEventId =
+                                            watch('recipients')
+
+                                        const selectedEvent = events.find(
+                                            (event) =>
+                                                selectedEventId ===
+                                                event.event.id,
+                                        )
+                                        console.log(selectedEvent)
+
+                                        if (
+                                            !selectedEvent?.memberships ||
+                                            selectedEvent.memberships.length ===
+                                                0
+                                        ) {
+                                            return (
+                                                <div className="text-gray-500">
+                                                    No memberships available for
+                                                    this event
+                                                </div>
+                                            )
+                                        }
+
+                                        return (
+                                            <div className="flex flex-wrap gap-4">
+                                                {selectedEvent.memberships.map(
+                                                    (membership) => (
+                                                        <Radio
+                                                            key={membership.id}
+                                                            className="mr-4"
+                                                            name={`membership-${membership.id}`}
+                                                            checked={field.value.includes(
+                                                                membership.id,
+                                                            )}
+                                                            onChange={() => {
+                                                                const currentValue =
+                                                                    field.value ||
+                                                                    []
+                                                                if (
+                                                                    currentValue.includes(
+                                                                        membership.id,
+                                                                    )
+                                                                ) {
+                                                                    // Remove membership if already selected
+                                                                    field.onChange(
+                                                                        currentValue.filter(
+                                                                            (
+                                                                                id,
+                                                                            ) =>
+                                                                                id !==
+                                                                                membership.id,
+                                                                        ),
+                                                                    )
+                                                                } else {
+                                                                    // Add membership if not selected
+                                                                    field.onChange(
+                                                                        [
+                                                                            ...currentValue,
+                                                                            membership.id,
+                                                                        ],
+                                                                    )
+                                                                }
+                                                            }}
+                                                        >
+                                                            {membership.name} -
+                                                            ${membership.price}
+                                                        </Radio>
+                                                    ),
+                                                )}
+                                            </div>
+                                        )
+                                    }}
+                                />
+                            </FormItem>
+                        )}
                     <FormItem
                         label="Title"
                         invalid={Boolean(errors.title)}

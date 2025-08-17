@@ -6,28 +6,11 @@ import useSWR from 'swr'
 
 const Mail = () => {
     //useSWR to fetch the events and tags
-    const { data: events } = useSWR('/event', () => apiGetEvents())
+    const { data: eventsData } = useSWR('/event', () => apiGetEvents())
     const { data: tags } = useSWR('/tags', () => apiGetTags())
 
-    // Transform events to match the expected Event interface
-    const transformedEvents =
-        events?.events?.map((eventWithDetails) => ({
-            id: eventWithDetails.event.id,
-            event_name: eventWithDetails.event.event_name,
-            event_description: eventWithDetails.event.event_description,
-            event_type: eventWithDetails.event.event_type,
-            asset_id: eventWithDetails.event.asset_id,
-            created_at: eventWithDetails.event.created_at,
-            status: eventWithDetails.event.status,
-            live_video_url: eventWithDetails.event.live_video_url,
-            success_url: eventWithDetails.event.success_url,
-            instructions: eventWithDetails.event.instructions,
-            landing_page_url: eventWithDetails.event.landing_page_url,
-            calendar_url: eventWithDetails.event.calendar_url,
-            live_venue_address: eventWithDetails.event.live_venue_address,
-            updated_at: eventWithDetails.event.updated_at,
-            host_id: eventWithDetails.event.host_id,
-        })) || []
+    // Use events directly with proper types
+    const events = eventsData?.events || []
 
     // Transform tags to match the expected Tag interface
     const transformedTags =
@@ -47,7 +30,7 @@ const Mail = () => {
     return (
         <>
             <MailBody />
-            <MailEditor events={transformedEvents} tags={transformedTags} />
+            <MailEditor events={events} tags={transformedTags} />
         </>
     )
 }
