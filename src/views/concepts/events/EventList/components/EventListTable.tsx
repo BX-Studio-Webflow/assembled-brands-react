@@ -17,6 +17,8 @@ import { FaVideo, FaMapMarkerAlt, FaFilm, FaLink } from 'react-icons/fa'
 import { useAuth } from '@/auth'
 import dayjs from 'dayjs'
 import { AxiosError } from 'axios'
+import Dialog from '@/components/ui/Dialog'
+import Button from '@/components/ui/Button'
 
 const EventStatusColor: Record<
     string,
@@ -42,6 +44,7 @@ const EventStatusColor: Record<
 const ActionColumn = ({ row }: { row: EventItem }) => {
     const navigate = useNavigate()
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [venueDialogOpen, setVenueDialogOpen] = useState(false)
     const { mutate } = useEventlist()
 
     const onDelete = () => {
@@ -74,12 +77,20 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
         setDeleteDialogOpen(false)
     }
 
-    const onView = () => {
-        navigate(`/concepts/event/stream/${row.id}`)
+    const onView = (event_type: string) => {
+        if (event_type === 'prerecorded')
+            navigate(`/concepts/event/stream/${row.id}`)
+        else if (event_type === 'live_venue') setVenueDialogOpen(true)
+        else if (event_type === 'live_video_call')
+            window.open(row.live_video_url, '_blank')
     }
 
     const onEdit = () => {
         navigate(`/concepts/event/event-edit/${row.id}`)
+    }
+
+    const onVenueDialogClose = () => {
+        setVenueDialogOpen(false)
     }
 
     return (
@@ -93,16 +104,15 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
                         <TbPencil />
                     </span>
                 </Tooltip>
-                {row.event_type === 'prerecorded' && (
-                    <Tooltip wrapperClass="flex" title="View Event">
-                        <span
-                            className={`cursor-pointer p-2  hover:text-blue-500`}
-                            onClick={onView}
-                        >
-                            <TbEye />
-                        </span>
-                    </Tooltip>
-                )}
+
+                <Tooltip wrapperClass="flex" title="View Event">
+                    <span
+                        className={`cursor-pointer p-2  hover:text-blue-500`}
+                        onClick={() => onView(row.event_type)}
+                    >
+                        <TbEye />
+                    </span>
+                </Tooltip>
                 <Tooltip wrapperClass="flex" title="Delete Event">
                     <span
                         className="cursor-pointer p-2 hover:text-red-500"
@@ -126,6 +136,37 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
                     cannot be undone.
                 </p>
             </ConfirmDialog>
+            <Dialog
+                isOpen={venueDialogOpen}
+                onClose={onVenueDialogClose}
+                onRequestClose={onVenueDialogClose}
+            >
+                <h5 className="mb-4">Venue Information</h5>
+                <div className="mb-4">
+                    <h6 className="font-semibold mb-2">Event Details</h6>
+                    <p className="text-gray-600 mb-2">{row.event_name}</p>
+                    <p className="text-gray-600 mb-2">
+                        {row.event_description || 'No description available'}
+                    </p>
+                </div>
+                <div className="mb-4">
+                    <h6 className="font-semibold mb-2">Venue Address</h6>
+                    <p className="text-gray-600">
+                        {row.live_venue_address || 'No venue address available'}
+                    </p>
+                </div>
+                {row.instructions && (
+                    <div className="mb-4">
+                        <h6 className="font-semibold mb-2">Instructions</h6>
+                        <p className="text-gray-600">{row.instructions}</p>
+                    </div>
+                )}
+                <div className="text-right mt-6">
+                    <Button variant="solid" onClick={onVenueDialogClose}>
+                        Close
+                    </Button>
+                </div>
+            </Dialog>
         </>
     )
 }
