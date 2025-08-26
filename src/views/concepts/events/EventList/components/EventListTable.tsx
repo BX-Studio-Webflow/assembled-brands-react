@@ -85,17 +85,25 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
     return (
         <>
             <div className="flex justify-end text-lg gap-1">
-                <Tooltip wrapperClass="flex" title="Edit">
-                    <span className={`cursor-pointer p-2`} onClick={onEdit}>
+                <Tooltip wrapperClass="flex" title="Edit Event">
+                    <span
+                        className={`cursor-pointer p-2  hover:text-blue-500`}
+                        onClick={onEdit}
+                    >
                         <TbPencil />
                     </span>
                 </Tooltip>
-                <Tooltip wrapperClass="flex" title="View">
-                    <span className={`cursor-pointer p-2`} onClick={onView}>
-                        <TbEye />
-                    </span>
-                </Tooltip>
-                <Tooltip wrapperClass="flex" title="Delete">
+                {row.event_type === 'prerecorded' && (
+                    <Tooltip wrapperClass="flex" title="View Event">
+                        <span
+                            className={`cursor-pointer p-2  hover:text-blue-500`}
+                            onClick={onView}
+                        >
+                            <TbEye />
+                        </span>
+                    </Tooltip>
+                )}
+                <Tooltip wrapperClass="flex" title="Delete Event">
                     <span
                         className="cursor-pointer p-2 hover:text-red-500"
                         onClick={onDelete}
