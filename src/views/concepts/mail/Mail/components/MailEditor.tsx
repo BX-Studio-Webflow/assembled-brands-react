@@ -460,7 +460,7 @@ const MailEditor = ({
                     {watch('type') === 'event' &&
                         watch('recipients') !== null && (
                             <FormItem
-                                label="Memberships"
+                                label="Date"
                                 invalid={Boolean(errors.selectedMembership)}
                                 errorMessage={
                                     errors.selectedMembership?.message
@@ -479,7 +479,6 @@ const MailEditor = ({
                                                 selectedEventId ===
                                                 event.event.id,
                                         )
-                                        console.log(selectedEvent)
 
                                         if (
                                             !selectedEvent?.memberships ||
@@ -494,51 +493,41 @@ const MailEditor = ({
                                             )
                                         }
 
+                                        // Create options for the select
+                                        const membershipOptions =
+                                            selectedEvent.memberships.map(
+                                                (membership) => ({
+                                                    value: membership.id,
+                                                    label: `${dayjs
+                                                        .unix(
+                                                            Number(
+                                                                membership
+                                                                    .dates[0]
+                                                                    .date,
+                                                            ),
+                                                        )
+                                                        .format(
+                                                            'ddd, DD MMM YYYY',
+                                                        )} - ${membership.name}`,
+                                                }),
+                                            )
+
                                         return (
-                                            <div className="flex flex-wrap gap-4">
-                                                {selectedEvent.memberships.map(
-                                                    (membership) => (
-                                                        <Radio
-                                                            key={membership.id}
-                                                            className="mr-4"
-                                                            name={`membership-${membership.id}`}
-                                                            checked={
-                                                                field.value ===
-                                                                membership.id
-                                                            }
-                                                            onChange={() => {
-                                                                if (
-                                                                    field.value ===
-                                                                    membership.id
-                                                                ) {
-                                                                    // Deselect if already selected
-                                                                    field.onChange(
-                                                                        null,
-                                                                    )
-                                                                } else {
-                                                                    // Select this membership
-                                                                    field.onChange(
-                                                                        membership.id,
-                                                                    )
-                                                                }
-                                                            }}
-                                                        >
-                                                            {dayjs
-                                                                .unix(
-                                                                    Number(
-                                                                        membership
-                                                                            .dates[0]
-                                                                            .date,
-                                                                    ),
-                                                                )
-                                                                .format(
-                                                                    'ddd, DD MMM YYYY',
-                                                                )}{' '}
-                                                            -{membership.name}
-                                                        </Radio>
-                                                    ),
+                                            <Select
+                                                options={membershipOptions}
+                                                value={membershipOptions.find(
+                                                    (option) =>
+                                                        option.value ===
+                                                        field.value,
                                                 )}
-                                            </div>
+                                                placeholder="Choose date"
+                                                isClearable={true}
+                                                onChange={(selected) => {
+                                                    field.onChange(
+                                                        selected?.value || null,
+                                                    )
+                                                }}
+                                            />
                                         )
                                     }}
                                 />
