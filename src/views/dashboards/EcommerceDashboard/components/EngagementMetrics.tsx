@@ -35,28 +35,48 @@ const initialMetrics = (
         name: 'Active Bookings',
         value: data?.active_bookings || 0,
         checked: false,
-        priority: 'High',
+        priority:
+            (data?.active_bookings || 0) <= 50
+                ? 'Low'
+                : (data?.active_bookings || 0) <= 200
+                  ? 'Medium'
+                  : 'High',
     },
     {
         id: 'pending_callbacks',
         name: 'Pending Callbacks',
         value: data?.pending_callbacks || 0,
         checked: false,
-        priority: 'Medium',
+        priority:
+            (data?.pending_callbacks || 0) <= 50
+                ? 'Low'
+                : (data?.pending_callbacks || 0) <= 200
+                  ? 'Medium'
+                  : 'High',
     },
     {
         id: 'team_members',
         name: 'Team Members',
         value: data?.team_members || 0,
         checked: false,
-        priority: 'Low',
+        priority:
+            (data?.team_members || 0) <= 50
+                ? 'Low'
+                : (data?.team_members || 0) <= 200
+                  ? 'Medium'
+                  : 'High',
     },
     {
         id: 'pending_invitations',
         name: 'Pending Invitations',
         value: data?.pending_invitations || 0,
         checked: false,
-        priority: 'Medium',
+        priority:
+            (data?.pending_invitations || 0) <= 50
+                ? 'Low'
+                : (data?.pending_invitations || 0) <= 200
+                  ? 'Medium'
+                  : 'High',
     },
 ]
 
