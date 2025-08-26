@@ -45,7 +45,7 @@ const validationSchema: ZodType<FormSchema> = z
         if (data.type === 'event' && !data.selectedMembership) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: 'Please select a membership for event type',
+                message: 'Please select a date',
                 path: ['selectedMembership'],
             })
         }
