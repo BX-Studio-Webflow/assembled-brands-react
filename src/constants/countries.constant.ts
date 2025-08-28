@@ -425,11 +425,6 @@ export const countryList = [
         value: 'GT',
     },
     {
-        label: 'Guernsey',
-        dialCode: '+44',
-        value: 'GG',
-    },
-    {
         label: 'Guinea',
         dialCode: '+224',
         value: 'GN',
@@ -500,11 +495,6 @@ export const countryList = [
         value: 'IE',
     },
     {
-        label: 'Isle of Man',
-        dialCode: '+44',
-        value: 'IM',
-    },
-    {
         label: 'Israel',
         dialCode: '+972',
         value: 'IL',
@@ -523,11 +513,6 @@ export const countryList = [
         label: 'Japan',
         dialCode: '+81',
         value: 'JP',
-    },
-    {
-        label: 'Jersey',
-        dialCode: '+44',
-        value: 'JE',
     },
     {
         label: 'Jordan',
