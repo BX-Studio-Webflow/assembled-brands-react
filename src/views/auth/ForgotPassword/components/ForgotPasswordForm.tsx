@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { ZodType } from 'zod'
 import type { CommonProps } from '@/@types/common'
+import { AxiosError } from 'axios'
 
 interface ForgotPasswordFormProps extends CommonProps {
     emailSent: boolean
@@ -45,9 +46,10 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
                 setSubmitting(false)
                 setEmailSent?.(true)
             }
-        } catch (errors) {
+        } catch (error) {
             setMessage?.(
-                typeof errors === 'string' ? errors : 'Some error occured!',
+                (error as AxiosError).message ||
+                    'Some error occured!',
             )
             setSubmitting(false)
         }
