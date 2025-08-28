@@ -8,6 +8,7 @@ import type { CommonProps } from '@/@types/common'
 import { AxiosError } from 'axios'
 import { apiPurchaseMembership } from '@/services/LeadsService'
 import { Skeleton } from '@/components/ui'
+import NoUserFound from '@/assets/svg/NoUserFound'
 
 interface GatewayFormProps extends CommonProps {
     event?: EventWithDetailsAndCount
@@ -122,10 +123,15 @@ const GatewayForm = (props: GatewayFormProps) => {
                     }}
                 >
                     <Card>
-                        <h6 className="mb-4 font-bold">Choose Ticket</h6>
+                        {upcoming.length > 0 && (
+                            <h6 className="mb-4 font-bold">Choose Ticket</h6>
+                        )}
                         {upcoming.length === 0 ? (
-                            <div className="text-center py-8 text-gray-500">
-                                No upcoming events available at this time.
+                            <div className="flex flex-col items-center gap-4">
+                                <NoUserFound />
+                                <span className="font-semibold">
+                                    No upcoming events available at this time.
+                                </span>
                             </div>
                         ) : (
                             <Radio.Group
@@ -153,33 +159,42 @@ const GatewayForm = (props: GatewayFormProps) => {
                                 ))}
                             </Radio.Group>
                         )}
-                        <hr className="my-5" />
-                        <h6 className="mb-4 font-bold">Dates Available</h6>
-                        <Checkbox.Group
-                            value={selectedDates}
-                            onChange={setSelectedDates}
-                        >
-                            {selectedMembership?.dates?.map((date) => (
-                                <Checkbox
-                                    key={date.id}
-                                    value={date.id.toString()}
-                                    className="block mb-2 w-full flex items-center gap-x-2"
+
+                        {upcoming.length > 0 && (
+                            <div>
+                                <hr className="my-5" />
+                                <h6 className="mb-4 font-bold">
+                                    Dates Available
+                                </h6>
+                                <Checkbox.Group
+                                    value={selectedDates}
+                                    onChange={setSelectedDates}
                                 >
-                                    {new Date(
-                                        Number(date.date) * 1000,
-                                    ).toLocaleString()}
-                                </Checkbox>
-                            ))}
-                        </Checkbox.Group>
-                        <Button
-                            block
-                            className="mt-4"
-                            loading={isSubmitting}
-                            variant="solid"
-                            type="submit"
-                        >
-                            {isSubmitting ? 'Placing Order...' : 'Purchase'}
-                        </Button>
+                                    {selectedMembership?.dates?.map((date) => (
+                                        <Checkbox
+                                            key={date.id}
+                                            value={date.id.toString()}
+                                            className="block mb-2 w-full flex items-center gap-x-2"
+                                        >
+                                            {new Date(
+                                                Number(date.date) * 1000,
+                                            ).toLocaleString()}
+                                        </Checkbox>
+                                    ))}
+                                </Checkbox.Group>
+                                <Button
+                                    block
+                                    className="mt-4"
+                                    loading={isSubmitting}
+                                    variant="solid"
+                                    type="submit"
+                                >
+                                    {isSubmitting
+                                        ? 'Placing Order...'
+                                        : 'Purchase'}
+                                </Button>
+                            </div>
+                        )}
                     </Card>
                 </form>
             ) : (
