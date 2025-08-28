@@ -18,6 +18,7 @@ export interface Lead {
     created_at: string
     updated_at: string
     events: Event[]
+    date_array: number[] | null
     membership: Membership | null
     callback: Callback | null
     tags: {

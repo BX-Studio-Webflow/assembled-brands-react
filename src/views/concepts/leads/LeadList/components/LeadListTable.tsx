@@ -255,9 +255,9 @@ const LeadListTable = () => {
                             >
                                 <span className="capitalize">
                                     {eventName}{' '}
-                                    {row.dates?.date
+                                    {row.date_array && row.date_array.length > 0
                                         ? dayjs(
-                                              Number(row.dates?.date) * 1000,
+                                              Number(row.date_array[0]) * 1000,
                                           ).format('dddd, D MMM YYYY · h:mm A')
                                         : ''}
                                 </span>
