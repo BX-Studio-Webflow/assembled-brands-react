@@ -117,11 +117,25 @@ const EventForm = (props: EventFormProps) => {
         try {
             const payload = {
                 ...values,
+                event_name: values.event_name.trim(),
+                event_description: values.event_description?.trim(),
+                live_video_url: values.live_video_url?.trim(),
+                live_venue_address: values.live_venue_address?.trim(),
+                course_url_external: values.course_url_external?.trim(),
+                landing_page_url: values.landing_page_url?.trim(),
+                success_url: values.success_url?.trim(),
+                calendar_url: values.calendar_url?.trim(),
+                upgrade_url: values.upgrade_url?.trim(),
+                instructions: values.instructions?.trim(),
                 image_asset_id: Number(values.image_asset_id),
                 asset_id: Number(values.asset_id),
                 membership_plans: values.membership_plans.map((plan) => ({
                     ...plan,
                     id: plan.id,
+                    name: plan.name.trim(),
+                    isFree: plan.isFree,
+                    cost: plan.cost,
+                    payment_type: plan.payment_type,
                     date:
                         typeof plan.date === 'object' &&
                         plan.date instanceof Date
