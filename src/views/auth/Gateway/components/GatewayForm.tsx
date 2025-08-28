@@ -191,7 +191,7 @@ const GatewayForm = (props: GatewayFormProps) => {
                                 >
                                     {isSubmitting
                                         ? 'Placing Order...'
-                                        : 'Purchase'}
+                                        : 'Continue'}
                                 </Button>
                             </div>
                         )}
