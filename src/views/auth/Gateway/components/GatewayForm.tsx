@@ -143,20 +143,39 @@ const GatewayForm = (props: GatewayFormProps) => {
                                 className="w-full flex-col"
                                 onChange={handleMembershipChange}
                             >
-                                {upcoming.map((m) => (
-                                    <Radio
-                                        key={m.id}
-                                        value={m.id.toString()}
-                                        className="block mb-2 p-4 rounded-lg border cursor-pointer bg-blue-50 w-full"
-                                    >
-                                        <div className="flex flex-col justify-between w-full">
-                                            <span>{m.name}</span>
-                                            <span className="font-bold">
-                                                £{m.price}
-                                            </span>
-                                        </div>
-                                    </Radio>
-                                ))}
+                                {upcoming.map((m) => {
+                                    const date = new Date(
+                                        parseInt(m.dates[0].date) * 1000,
+                                    )
+                                    const dateText = date.toLocaleString(
+                                        'en-US',
+                                        {
+                                            month: 'long',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            hour12: true,
+                                        },
+                                    )
+
+                                    const label =
+                                        m.price === 0
+                                            ? `${m.name}, ${dateText} - Free`
+                                            : `${m.name}, ${dateText} - £${m.price}`
+
+                                    return (
+                                        <Radio
+                                            key={m.id}
+                                            value={m.id.toString()}
+                                            className="block mb-2 p-4 rounded-lg border cursor-pointer bg-blue-50 w-full"
+                                        >
+                                            <div className="flex flex-col justify-between w-full">
+                                                <span>{label}</span>
+                                            </div>
+                                        </Radio>
+                                    )
+                                })}
                             </Radio.Group>
                         )}
 
