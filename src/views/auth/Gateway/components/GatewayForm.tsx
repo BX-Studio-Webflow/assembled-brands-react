@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
-import Avatar from '@/components/ui/Avatar'
-import { TbExternalLink } from 'react-icons/tb'
-import { Link } from 'react-router'
 import Radio from '@/components/ui/Radio'
 import Checkbox from '@/components/ui/Checkbox'
 import type { EventWithDetailsAndCount } from '@/@types/events'
@@ -68,6 +65,15 @@ const GatewayForm = (props: GatewayFormProps) => {
         setSelectedDates([])
     }
 
+    // Filter and sort upcoming memberships
+    const now = Date.now()
+    const upcoming =
+        event?.memberships
+            ?.filter((m) => parseInt(m.dates[0]?.date || '0') * 1000 > now)
+            .sort(
+                (a, b) => parseInt(a.dates[0].date) - parseInt(b.dates[0].date),
+            ) || []
+
     // Example submit handler (update as needed)
     const onFormSubmit = async () => {
         try {
@@ -116,56 +122,37 @@ const GatewayForm = (props: GatewayFormProps) => {
                     }}
                 >
                     <Card>
-                        <h4 className="mb-4">Host</h4>
-                        <Link
-                            className="group flex items-center justify-between"
-                            to="/concepts/customers/customer-details/11"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Avatar
-                                    shape="circle"
-                                    src={event.host.profile_image}
-                                />
-                                <div>
-                                    <div className="font-bold heading-text">
-                                        {event.host.name}
-                                    </div>
-                                    <span>
-                                        <span className="font-semibold">
-                                            {event.host.email}{' '}
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                            <TbExternalLink className="text-xl hidden group-hover:block" />
-                        </Link>
-
-                        <hr className="my-5" />
                         <h6 className="mb-4 font-bold">Choose Ticket</h6>
-                        <Radio.Group
-                            value={
-                                selectedMembershipId !== null
-                                    ? selectedMembershipId.toString()
-                                    : ''
-                            }
-                            className="w-full flex-col"
-                            onChange={handleMembershipChange}
-                        >
-                            {event.memberships?.map((m) => (
-                                <Radio
-                                    key={m.id}
-                                    value={m.id.toString()}
-                                    className="block mb-2 p-4 rounded-lg border cursor-pointer bg-blue-50 w-full"
-                                >
-                                    <div className="flex flex-col justify-between w-full">
-                                        <span>{m.name}</span>
-                                        <span className="font-bold">
-                                            £{m.price}
-                                        </span>
-                                    </div>
-                                </Radio>
-                            ))}
-                        </Radio.Group>
+                        {upcoming.length === 0 ? (
+                            <div className="text-center py-8 text-gray-500">
+                                No upcoming events available at this time.
+                            </div>
+                        ) : (
+                            <Radio.Group
+                                value={
+                                    selectedMembershipId !== null
+                                        ? selectedMembershipId.toString()
+                                        : ''
+                                }
+                                className="w-full flex-col"
+                                onChange={handleMembershipChange}
+                            >
+                                {upcoming.map((m) => (
+                                    <Radio
+                                        key={m.id}
+                                        value={m.id.toString()}
+                                        className="block mb-2 p-4 rounded-lg border cursor-pointer bg-blue-50 w-full"
+                                    >
+                                        <div className="flex flex-col justify-between w-full">
+                                            <span>{m.name}</span>
+                                            <span className="font-bold">
+                                                £{m.price}
+                                            </span>
+                                        </div>
+                                    </Radio>
+                                ))}
+                            </Radio.Group>
+                        )}
                         <hr className="my-5" />
                         <h6 className="mb-4 font-bold">Dates Available</h6>
                         <Checkbox.Group
