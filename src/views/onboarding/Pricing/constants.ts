@@ -3,51 +3,67 @@ export const featuresList: {
     description: Record<string, string>
 }[] = [
     {
+        id: 'landingPages',
+        description: {
+            basic: 'Up to 10 Landing Pages',
+            popular: 'Up to 10 Landing Pages',
+            advanced: 'Up to 10 Landing Pages',
+        },
+    },
+    {
+        id: 'leadCollection',
+        description: {
+            basic: 'Collect leads from landing pages direct to CRM',
+            popular: 'Collect leads from landing pages direct to CRM',
+            advanced: 'Collect leads from landing pages direct to CRM',
+        },
+    },
+    {
         id: 'leadCRM',
         description: {
-            basic: 'Lead CRM',
-            standard: 'Advanced Lead CRM',
-            pro: 'Enterprise Lead CRM with Analytics',
+            basic: 'CRM to manage Leads',
+            popular: 'CRM to manage Leads',
+            advanced: 'CRM to manage Leads',
         },
     },
     {
-        id: 'streamingEvents',
+        id: 'cohortMessaging',
         description: {
-            basic: 'Create Streaming Events',
-            standard: 'Create & Manage Streaming Events',
-            pro: 'Advanced Streaming Events with Analytics',
+            basic: 'Cohort messaging with tags',
+            popular: 'Cohort messaging with tags',
+            advanced: 'Cohort messaging with tags',
         },
     },
     {
-        id: 'venueEvents',
+        id: 'hostEvents',
         description: {
-            basic: 'Manage Life Venue Events',
-            standard: 'Manage & Track Venue Events',
-            pro: 'Full Venue Event Management Suite',
+            basic: 'Host Events (Pre-recorded/Live/In-Person)',
+            popular: 'Host Events (Pre-recorded/Live/In-Person)',
+            advanced: 'Host Events (Pre-recorded/Live/In-Person)',
         },
     },
     {
-        id: 'podcasts',
+        id: 'reminderEmails',
         description: {
-            basic: 'Manage & Host Podcasts',
-            standard: 'Advanced Podcast Management',
-            pro: 'Enterprise Podcast Platform',
+            basic: 'Reminder email sequences',
+            popular: 'Reminder email sequences',
+            advanced: 'Reminder email sequences',
         },
     },
     {
-        id: 'stripeIntegration',
+        id: 'courseHosting',
         description: {
-            basic: 'Create & Manage Price Plan Directly with Stripe',
-            standard: 'Advanced Stripe Integration',
-            pro: 'Full Stripe Integration Suite',
+            basic: '',
+            popular: 'Members area for Course hosting on website',
+            advanced: 'Course hosting on website',
         },
     },
     {
-        id: 'emailAutomation',
+        id: 'liveCommunity',
         description: {
-            basic: 'Automated Email to keep your customers in the loop',
-            standard: 'Advanced Email Automation',
-            pro: 'Enterprise Email Automation Suite',
+            basic: '',
+            popular: '',
+            advanced: 'Members area for Live online Community Page',
         },
     },
 ]
@@ -165,84 +181,93 @@ export const pricingPlansData = {
     plans: [
         {
             id: 'basic',
-            name: 'Early Bird Special',
+            name: 'Basic',
             description:
-                'Ideal for individuals or small teams. Billed Monthly, No locked in periods..',
+                'Perfect for those who want to generate leads through a landing page while effortlessly managing events be it live, pre-recorded, or in-person experiences.',
+            price: {
+                monthly: 199,
+                annually: 2388,
+            },
+            features: [
+                'landingPages',
+                'leadCollection',
+                'leadCRM',
+                'cohortMessaging',
+                'hostEvents',
+                'reminderEmails',
+            ],
+            production: {
+                productId: 'prod_Sqdn0QZ7D4MAJA',
+                priceIdMonthly: 'price_1S7fn1RQHG5W5P1LyPv4nRZ2',
+                priceIdAnnually: 'price_1S7fmcRQHG5W5P1Lp0hxN0oL',
+            },
+            development: {
+                productId: 'prod_S0AzGhVZfAqbc4',
+                priceIdMonthly: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+                priceIdAnnually: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+            },
+            recommended: false,
+        },
+        {
+            id: 'popular',
+            name: 'Popular',
+            description:
+                'Everything in basic, plus hosting paid courses',
             price: {
                 monthly: 299,
                 annually: 3588,
             },
             features: [
+                'landingPages',
+                'leadCollection',
                 'leadCRM',
-                'streamingEvents',
-                'venueEvents',
-                'podcasts',
-                'stripeIntegration',
-                'emailAutomation',
-            ],
-            production: {
-                productId: 'prod_Sqdn0QZ7D4MAJA',
-                priceId: 'price_1RuwVuRQHG5W5P1LTLiFs03M',
-            },
-            development: {
-                productId: 'prod_S0AzGhVZfAqbc4',
-                priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
-            },
-            recommended: false,
-        },
-        {
-            id: 'standard',
-            name: 'Standard',
-            description:
-                'Perfect for growing teams. Offers advanced features for better productivity and collaboration.',
-            price: {
-                monthly: 499,
-                annually: 5988,
-            },
-            features: [
-                'leadCRM',
-                'streamingEvents',
-                'venueEvents',
-                'podcasts',
-                'stripeIntegration',
-                'emailAutomation',
+                'cohortMessaging',
+                'hostEvents',
+                'reminderEmails',
+                'courseHosting',
             ],
             production: {
                 productId: 'prod_SqdoIUD669T4aJ',
-                priceId: 'price_1RuwWlRQHG5W5P1LlXhaZkDc',
+                priceIdMonthly: 'price_1S7fpYRQHG5W5P1LWpSbil66',
+                priceIdAnnually: 'price_1S7fpxRQHG5W5P1LAhcDuF1M',
             },
             development: {
                 productId: 'prod_S0AzGhVZfAqbc4',
-                priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+                priceIdMonthly: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+                priceIdAnnually: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
             },
-            recommended: false,
+            recommended: true,
         },
         {
-            id: 'pro',
-            name: 'Pro',
+            id: 'advanced',
+            name: 'Advanced',
             description:
-                'Best for large teams. Includes premium features and dedicated support for optimal workflow.',
+                'Everything in popular plus live online community page',
             price: {
-                monthly: 999,
-                annually: 7988,
+                monthly: 399,
+                annually: 4788,
             },
             features: [
+                'landingPages',
+                'leadCollection',
                 'leadCRM',
-                'streamingEvents',
-                'venueEvents',
-                'podcasts',
-                'stripeIntegration',
-                'emailAutomation',
+                'cohortMessaging',
+                'hostEvents',
+                'reminderEmails',
+                'courseHosting',
+                'liveCommunity',
             ],
             production: {
                 productId: 'prod_Sqdo48NvmJyKBE',
-                priceId: 'price_1RuwXHRQHG5W5P1LjdvpmUgJ',
+                priceIdMonthly: 'price_1S7fqgRQHG5W5P1LYi15vGRu',
+                priceIdAnnually: 'price_1S7fquRQHG5W5P1LVKjZknUU',
             },
             development: {
                 productId: 'prod_S0AzGhVZfAqbc4',
-                priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+                priceIdMonthly: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+                priceIdAnnually: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
             },
-            recommended: true,
+            recommended: false,
         },
     ],
 }
@@ -250,13 +275,15 @@ export const pricingPlansData = {
 export const subscriptionConfig = {
     production: {
         productId: 'prod_SB7HDumob3GYpw',
-        priceId: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+        priceIdMonthly: 'price_1RGl2xI0TpDVyeKFFuichoT9',
+        priceIdAnnually: 'price_1RGl2xI0TpDVyeKFFuichoT9',
         successUrl: `${window.location.origin}/dashboards/information?action=success`,
         cancelUrl: `${window.location.origin}/onboarding/pricing?action=cancelled`,
     },
     development: {
         productId: 'prod_S0AzGhVZfAqbc4',
-        priceId: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+        priceIdMonthly: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
+        priceIdAnnually: 'price_1RE7jXI0TpDVyeKFYO3CVtei',
         successUrl: `${window.location.origin}/dashboards/information?action=success`,
         cancelUrl: `${window.location.origin}/onboarding/pricing?action=cancelled`,
     },

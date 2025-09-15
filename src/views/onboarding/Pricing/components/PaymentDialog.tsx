@@ -56,9 +56,10 @@ const PaymentDialog = () => {
                 console.log(plan)
                 throw new Error('Invalid plan configuration')
             }
-
+           const priceId = plan[env][`priceId${selectedPlan.paymentCycle === 'monthly' ? 'Monthly' : 'Annually'}`] as string
+           console.log({ priceId })
             const result = await apiCreateSubscription({
-                priceId: plan[env].priceId,
+                priceId,
                 productId: plan[env].productId,
                 successUrl: pricingPlansData.successUrl,
                 cancelUrl: pricingPlansData.cancelUrl,
