@@ -52,6 +52,7 @@
     "libphonenumber-js": "^1.12.8",
     "lodash": "^4.17.21",
     "marked": "^15.0.3",
+    "papaparse": "^5.5.3",
     "plyr": "^3.7.8",
     "react": "19.0.0",
     "react-apexcharts": "^1.7.0",

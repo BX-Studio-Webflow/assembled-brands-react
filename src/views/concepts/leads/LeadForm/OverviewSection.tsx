@@ -255,7 +255,7 @@ const OverviewSection = ({
                         name="notes"
                         control={control}
                         render={({ field }) => (
-                                 <Input placeholder="Add some notes" textArea {...field} />
+                                 <Input textArea placeholder="Add some notes" {...field} />
                         )}
                     />
                 </FormItem>

@@ -99,6 +99,12 @@ export interface Lead {
     }
 }
 
+export interface ParsedLead {
+    name: string
+    email: string
+    phone: string
+}
+
 export interface Event {
     id: number
     event_name: string

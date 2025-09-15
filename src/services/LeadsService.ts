@@ -3,6 +3,7 @@ import type {
     CreateLeadRequestBody,
     Lead,
     LeadSearchParams,
+    ParsedLead,
     PurchaseMembershipResponse,
     Tag,
     TagAssignment,
@@ -28,6 +29,14 @@ export async function apiGetLead<T>(id: string) {
 export async function apiCreateLead(data: CreateLeadRequestBody) {
     return ApiService.fetchDataWithAxios<Lead>({
         url: '/lead',
+        method: 'post',
+        data,
+    })
+}
+
+export async function apiCreateLeadBulk(data: ParsedLead[]) {
+    return ApiService.fetchDataWithAxios<Lead>({
+        url: '/lead/bulk',
         method: 'post',
         data,
     })

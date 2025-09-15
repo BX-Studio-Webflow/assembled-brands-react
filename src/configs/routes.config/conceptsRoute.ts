@@ -53,6 +53,21 @@ const conceptsRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'concepts.customers.bulkCustomerCreate',
+        path: `${CONCEPTS_PREFIX_PATH}/lead/bulk-lead-create`,
+        component: lazy(() => import('@/views/concepts/leads/LeadBulkCreate')),
+        authority: [ADMIN, USER],
+        meta: {
+            header: {
+                title: 'Bulk create leads',
+                description:
+                    'Bulk create leads easily.',
+                contained: true,
+            },
+            footer: false,
+        },
+    },
 
     {
         key: 'concepts.events.eventList',
