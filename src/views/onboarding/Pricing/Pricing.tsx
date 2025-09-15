@@ -7,9 +7,10 @@ import { useEffect } from 'react'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { TbPlus } from 'react-icons/tb'
-import { HiOutlineCog, HiPhone } from 'react-icons/hi'
+import { HiOutlineCog, HiOutlineUser, HiPhone } from 'react-icons/hi'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/auth'
+import { PiUserDuotone } from 'react-icons/pi'
 
 const Pricing = () => {
     useEffect(() => {
@@ -38,7 +39,7 @@ const Pricing = () => {
                     <h3>Pricing</h3>
                     <div className="flex items-center gap-1">
                     <PaymentCycleToggle />
-                    <Button className="mr-2" icon={<HiOutlineCog />} onClick={() => {
+                    <Button className="mr-2" icon={<PiUserDuotone />} onClick={() => {
                       signOut()
                     }}>
                 <span>
