@@ -55,6 +55,7 @@ const AuthContext = createContext<Auth>({
         stripe_connect_id: '',
         subscription_status: 'inactive',
         authority: [],
+        dial_code: '',
     },
     signIn: async () => defaultFunctionPlaceHolder(),
     signUp: async () => defaultFunctionPlaceHolder(),
