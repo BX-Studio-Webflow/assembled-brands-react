@@ -30,6 +30,7 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
     phoneNumber: z.string().min(1, 'Please input your mobile number'),
     img: z.string(),
     event_id: z.number().optional(),
+    notes: z.string().optional(),
 })
 
 const LeadForm = (props: LeadFormProps) => {

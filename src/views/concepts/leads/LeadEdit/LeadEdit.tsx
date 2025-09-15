@@ -113,6 +113,7 @@ const LeadEdit = () => {
                 dial_code: values.dialCode,
                 phone: values.phoneNumber,
                 host_id: user?.id || 0,
+                notes: values.notes,
             }
             await apiUpdateLead(id as string, leadData)
             setIsSubmiting(false)
@@ -155,6 +156,7 @@ const LeadEdit = () => {
                 postcode: '',
                 tags: [],
                 event_id: data.event_id,
+                notes: data.notes,
             }
         }
 

@@ -29,6 +29,7 @@ const LeadCreate = () => {
             phone: values.phoneNumber,
             host_id: user?.id || 0,
             event_id: values.event_id,
+            notes: values.notes,
         }
         try {
             // Make API call
@@ -83,6 +84,7 @@ const LeadCreate = () => {
                     phoneNumber: '',
                     dialCode: '',
                     event_id: 0,
+                    notes: '',
                 }}
                 onFormSubmit={handleFormSubmit}
             >
