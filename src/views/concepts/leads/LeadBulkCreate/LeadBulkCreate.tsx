@@ -9,7 +9,7 @@ import { Button, Upload } from '@/components/ui'
 import { FcDocument } from 'react-icons/fc'
 import BulkLeadTable from './BulkLeadTable'
 import { HiOutlineInboxIn } from 'react-icons/hi'
-import { ParsedLead } from '@/@types/lead'
+import { CreateLeadRequestBody, ParsedLead } from '@/@types/lead'
 
 
 
@@ -28,9 +28,6 @@ const LeadBulkCreate = () => {
    
  
 
-    const handleCancel = () => {
-        setDiscardConfirmationOpen(false)
-    }
 
     const handleParsing = (files: File[]) => {
         if (files.length === 0) return
@@ -61,7 +58,6 @@ const LeadBulkCreate = () => {
                 return
             }
 
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase())
             const data = lines.slice(1).map(line => {
                 const values = line.split(',').map(v => v.trim())
                 return {
@@ -88,11 +84,19 @@ const LeadBulkCreate = () => {
 
     const handleImport = async () => {
         try {
-            // Make API call
-            await apiCreateLeadBulk(parsedLeads)
+            setIsSubmiting(true)
+            const payload: CreateLeadRequestBody[] = parsedLeads.map(lead => ({
+                name: lead.name,
+                email: lead.email,
+                phone: lead.phone,
+                dial_code: '',
+                event_id: undefined,
+                notes: "Created from bulk import"
+            }))
+            await apiCreateLeadBulk(payload)
             toast.push(
                 <Notification type="success">
-                    Lead created successfully!
+                    Leads imported successfully!
                 </Notification>,
                 {
                     placement: 'top-center',
@@ -108,6 +112,8 @@ const LeadBulkCreate = () => {
                 { placement: 'top-center' },
             )
             throw error
+        } finally {
+            setIsSubmiting(false)
         }
     }
 

@@ -168,6 +168,7 @@ export interface CreateLeadRequestBody {
     event_id?: number
 }
 
+
 export interface TagAssignmentResponse {
     id: number
     tag: string

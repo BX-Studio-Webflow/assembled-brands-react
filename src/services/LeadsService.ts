@@ -34,7 +34,7 @@ export async function apiCreateLead(data: CreateLeadRequestBody) {
     })
 }
 
-export async function apiCreateLeadBulk(data: ParsedLead[]) {
+export async function apiCreateLeadBulk(data: CreateLeadRequestBody[]) {
     return ApiService.fetchDataWithAxios<Lead>({
         url: '/lead/bulk',
         method: 'post',
