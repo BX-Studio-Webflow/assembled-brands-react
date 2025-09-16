@@ -205,8 +205,6 @@ const OverviewSection = ({
                         )}
                     />
                 </FormItem>
-
-                
             </div>
             {newLead && (
                 <FormItem
@@ -244,21 +242,23 @@ const OverviewSection = ({
                 </FormItem>
             )}
             <FormItem
-                    className="w-full"
-                    invalid={
-                        Boolean(errors.notes)
-                    }
-                    errorMessage={errors.notes?.message}
-                >
-                    <label className="form-label mb-2">Notes</label>
-                    <Controller
-                        name="notes"
-                        control={control}
-                        render={({ field }) => (
-                                 <Input textArea placeholder="Add some notes" {...field} />
-                        )}
-                    />
-                </FormItem>
+                className="w-full"
+                invalid={Boolean(errors.notes)}
+                errorMessage={errors.notes?.message}
+            >
+                <label className="form-label mb-2">Notes</label>
+                <Controller
+                    name="notes"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            textArea
+                            placeholder="Add some notes"
+                            {...field}
+                        />
+                    )}
+                />
+            </FormItem>
             {actions && <div className="mt-4">{actions}</div>}
         </Card>
     )

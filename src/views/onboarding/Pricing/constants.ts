@@ -211,8 +211,7 @@ export const pricingPlansData = {
         {
             id: 'popular',
             name: 'Popular',
-            description:
-                'Everything in basic, plus hosting paid courses',
+            description: 'Everything in basic, plus hosting paid courses',
             price: {
                 monthly: 299,
                 annually: 3588,

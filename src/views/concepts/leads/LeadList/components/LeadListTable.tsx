@@ -255,9 +255,11 @@ const LeadListTable = () => {
                             >
                                 <span className="capitalize">
                                     {eventName}{' '}
-                                    {row.metadata?.dates && row.metadata?.dates.length > 0
+                                    {row.metadata?.dates &&
+                                    row.metadata?.dates.length > 0
                                         ? dayjs(
-                                              Number(row.metadata?.dates[0]) * 1000,
+                                              Number(row.metadata?.dates[0]) *
+                                                  1000,
                                           ).format('dddd, D MMM YYYY · h:mm A')
                                         : ''}
                                 </span>
@@ -379,7 +381,7 @@ const LeadListTable = () => {
                 <p>
                     {' '}
                     Are you sure you want to remove this lead? This action
-                    can&apos;t be undo.{' '}
+                    can&apos;t be undone.{' '}
                 </p>
             </ConfirmDialog>
         </>

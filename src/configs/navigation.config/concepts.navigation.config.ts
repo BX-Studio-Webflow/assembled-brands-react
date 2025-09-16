@@ -77,7 +77,8 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         key: 'concepts.customers.bulkCustomerCreate',
                         path: `${CONCEPTS_PREFIX_PATH}/lead/bulk-lead-create`,
                         title: 'Import',
-                        translateKey: 'nav.conceptsCustomers.bulkCustomerCreate',
+                        translateKey:
+                            'nav.conceptsCustomers.bulkCustomerCreate',
                         icon: 'bulkCustomerCreate',
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [ADMIN, USER],

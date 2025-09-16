@@ -47,10 +47,7 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
                 setEmailSent?.(true)
             }
         } catch (error) {
-            setMessage?.(
-                (error as AxiosError).message ||
-                    'Some error occured!',
-            )
+            setMessage?.((error as AxiosError).message || 'Some error occured!')
             setSubmitting(false)
         }
 

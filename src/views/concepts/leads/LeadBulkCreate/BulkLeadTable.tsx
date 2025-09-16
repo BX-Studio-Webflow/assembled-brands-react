@@ -1,9 +1,7 @@
-
 import { ParsedLead } from '@/@types/lead'
 import Table from '@/components/ui/Table'
 
 const { Tr, Th, Td, THead, TBody } = Table
-
 
 type BulkLeadTableProps = {
     data: ParsedLead[]
@@ -41,4 +39,3 @@ const BulkLeadTable = ({ data }: BulkLeadTableProps) => {
 }
 
 export default BulkLeadTable
-

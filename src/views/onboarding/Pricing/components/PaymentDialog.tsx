@@ -56,14 +56,21 @@ const PaymentDialog = () => {
                 console.log(plan)
                 throw new Error('Invalid plan configuration')
             }
-           const priceId = plan[env][`priceId${selectedPlan.paymentCycle === 'monthly' ? 'Monthly' : 'Annually'}`] as string
-           console.log({ priceId, plan })
+            const priceId = plan[env][
+                `priceId${selectedPlan.paymentCycle === 'monthly' ? 'Monthly' : 'Annually'}`
+            ] as string
+            console.log({ priceId, plan })
             const result = await apiCreateSubscription({
                 priceId,
                 productId: plan[env].productId,
                 successUrl: pricingPlansData.successUrl,
                 cancelUrl: pricingPlansData.cancelUrl,
-                product: plan.id as "basic" | "popular" | "advanced" | "enterprise" | "subscription",
+                product: plan.id as
+                    | 'basic'
+                    | 'popular'
+                    | 'advanced'
+                    | 'enterprise'
+                    | 'subscription',
             })
 
             toast.push(

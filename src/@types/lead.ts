@@ -169,14 +169,12 @@ export interface CreateLeadRequestBody {
     event_id?: number
     host_id: number
     notes?: string
-    
 }
 
 export interface CreateLeadBulkRequestBody {
     leads: CreateLeadRequestBody[]
     event_id?: number
 }
-
 
 export interface TagAssignmentResponse {
     id: number

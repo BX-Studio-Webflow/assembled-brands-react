@@ -4,7 +4,6 @@ import type {
     CreateLeadRequestBody,
     Lead,
     LeadSearchParams,
-    ParsedLead,
     PurchaseMembershipResponse,
     Tag,
     TagAssignment,
@@ -154,7 +153,7 @@ export async function apiPurchaseMembership(data: {
 }
 
 export async function apiBulkDeleteLeads(ids: number[]) {
-    return ApiService.fetchDataWithAxios<{ message: string; count: number}>({
+    return ApiService.fetchDataWithAxios<{ message: string; count: number }>({
         url: '/lead/bulk-delete',
         method: 'post',
         data: { ids },

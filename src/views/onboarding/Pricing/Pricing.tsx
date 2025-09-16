@@ -29,25 +29,26 @@ const Pricing = () => {
     }, [])
     const { signOut } = useAuth()
 
-
     return (
         <>
             <Card className="mb-4 mt-10 mr-10 ml-10">
                 <div className="flex items-center justify-between mb-8">
                     <h3>Pricing</h3>
                     <div className="flex items-center gap-1">
-                    <PaymentCycleToggle />
-                    <Button className="mr-2" icon={<PiUserDuotone />} onClick={() => {
-                      signOut()
-                    }}>
-                <span>
-                    <span>Logout</span>
-                </span>
-            </Button>
-                      
-              
+                        <PaymentCycleToggle />
+                        <Button
+                            className="mr-2"
+                            icon={<PiUserDuotone />}
+                            onClick={() => {
+                                signOut()
+                            }}
+                        >
+                            <span>
+                                <span>Logout</span>
+                            </span>
+                        </Button>
                     </div>
-                        </div>
+                </div>
                 <Plans />
             </Card>
             <Faq />

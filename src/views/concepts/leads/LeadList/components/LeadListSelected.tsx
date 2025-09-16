@@ -10,7 +10,8 @@ import RichTextEditor from '@/components/shared/RichTextEditor'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import useLeadList from '../hooks/useLeadList'
 import { TbChecks } from 'react-icons/tb'
-import { apiDeleteLead } from '@/services/LeadsService'
+import { apiBulkDeleteLeads } from '@/services/LeadsService'
+import { getAvatarColorClasses } from '@/utils/avatarColor'
 
 const LeadListSelected = () => {
     const { selectedLead, leadList, mutate, setSelectAllLead } = useLeadList()
@@ -30,15 +31,20 @@ const LeadListSelected = () => {
     const handleConfirmDelete = async () => {
         try {
             // Delete all leads in parallel
-            await Promise.all(
-                selectedLead.map((lead) => apiDeleteLead(String(lead.id))),
-            )
+            const selectedLeadIds = selectedLead.map((lead) => lead.id)
+            await apiBulkDeleteLeads(selectedLeadIds)
             // Update local state after successful deletion
             const newLeadList = leadList.filter((customer) => {
                 return !selectedLead.some(
                     (selected) => selected.id === customer.id,
                 )
             })
+            toast.push(
+                <Notification type="success">
+                    You deleted {selectedLeadIds.length} leads successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
             mutate(newLeadList)
             setSelectAllLead([])
         } catch (error) {
@@ -51,7 +57,9 @@ const LeadListSelected = () => {
         setSendMessageLoading(true)
         setTimeout(() => {
             toast.push(
-                <Notification type="success">Message sent!</Notification>,
+                <Notification type="success">
+                    Message sent to {selectedLead.length} leads!
+                </Notification>,
                 { placement: 'top-center' },
             )
             setSendMessageLoading(false)
@@ -124,7 +132,7 @@ const LeadListSelected = () => {
                 <p>
                     {' '}
                     Are you sure you want to remove these leads? This action
-                    can&apos;t be undo.{' '}
+                    can&apos;t be undone.{' '}
                 </p>
             </ConfirmDialog>
             <Dialog
@@ -143,7 +151,11 @@ const LeadListSelected = () => {
                 >
                     {selectedLead.map((customer) => (
                         <Tooltip key={customer.id} title={customer.name}>
-                            <Avatar size={30} src={customer.img} alt="" />
+                            <Avatar
+                                className={getAvatarColorClasses(customer.id)}
+                            >
+                                {customer.name.charAt(0)}
+                            </Avatar>
                         </Tooltip>
                     ))}
                 </Avatar.Group>

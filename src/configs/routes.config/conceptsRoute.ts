@@ -61,8 +61,7 @@ const conceptsRoute: Routes = [
         meta: {
             header: {
                 title: 'Bulk create leads',
-                description:
-                    'Bulk create leads easily.',
+                description: 'Bulk create leads easily.',
                 contained: true,
             },
             footer: false,
