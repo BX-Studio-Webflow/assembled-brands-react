@@ -1,5 +1,6 @@
 import ApiService from './ApiService'
 import type {
+    CreateLeadBulkRequestBody,
     CreateLeadRequestBody,
     Lead,
     LeadSearchParams,
@@ -34,7 +35,7 @@ export async function apiCreateLead(data: CreateLeadRequestBody) {
     })
 }
 
-export async function apiCreateLeadBulk(data: CreateLeadRequestBody[]) {
+export async function apiCreateLeadBulk(data: CreateLeadBulkRequestBody) {
     return ApiService.fetchDataWithAxios<Lead>({
         url: '/lead/bulk',
         method: 'post',

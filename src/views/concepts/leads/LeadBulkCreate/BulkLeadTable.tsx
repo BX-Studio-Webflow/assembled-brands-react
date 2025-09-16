@@ -1,13 +1,9 @@
 
+import { ParsedLead } from '@/@types/lead'
 import Table from '@/components/ui/Table'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-type ParsedLead = {
-    name: string
-    email: string
-    phone: string
-}
 
 type BulkLeadTableProps = {
     data: ParsedLead[]
@@ -25,6 +21,7 @@ const BulkLeadTable = ({ data }: BulkLeadTableProps) => {
                     <Tr>
                         <Th>Name</Th>
                         <Th>Email</Th>
+                        <Th>Dial Code</Th>
                         <Th>Phone</Th>
                     </Tr>
                 </THead>
@@ -33,6 +30,7 @@ const BulkLeadTable = ({ data }: BulkLeadTableProps) => {
                         <Tr key={index}>
                             <Td>{lead.name}</Td>
                             <Td>{lead.email}</Td>
+                            <Td>{lead.dial_code}</Td>
                             <Td>{lead.phone}</Td>
                         </Tr>
                     ))}

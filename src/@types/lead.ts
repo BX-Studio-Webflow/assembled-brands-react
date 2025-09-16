@@ -103,6 +103,7 @@ export interface ParsedLead {
     name: string
     email: string
     phone: string
+    dial_code: string
 }
 
 export interface Event {
@@ -165,6 +166,14 @@ export interface CreateLeadRequestBody {
     email: string
     phone: string
     dial_code: string
+    event_id?: number
+    host_id: number
+    notes?: string
+    
+}
+
+export interface CreateLeadBulkRequestBody {
+    leads: CreateLeadRequestBody[]
     event_id?: number
 }
 

@@ -9,7 +9,7 @@ import { Button, Upload } from '@/components/ui'
 import { FcDocument } from 'react-icons/fc'
 import BulkLeadTable from './BulkLeadTable'
 import { HiOutlineInboxIn } from 'react-icons/hi'
-import { CreateLeadRequestBody, ParsedLead } from '@/@types/lead'
+import { CreateLeadBulkRequestBody, CreateLeadRequestBody, ParsedLead } from '@/@types/lead'
 
 
 
@@ -63,7 +63,8 @@ const LeadBulkCreate = () => {
                 return {
                     name: values[0] || '',
                     email: values[1] || '',
-                    phone: values[2] || ''
+                    phone: values[2] || '',
+                    dial_code: values[3] || ''
                 }
             })
 
@@ -85,14 +86,19 @@ const LeadBulkCreate = () => {
     const handleImport = async () => {
         try {
             setIsSubmiting(true)
-            const payload: CreateLeadRequestBody[] = parsedLeads.map(lead => ({
+            const payload: CreateLeadBulkRequestBody = {
+                leads: parsedLeads.map(lead => ({
                 name: lead.name,
                 email: lead.email,
                 phone: lead.phone,
-                dial_code: '',
+                dial_code: lead.dial_code,
+                host_id: user?.id || 0,
                 event_id: undefined,
-                notes: "Created from bulk import"
-            }))
+                notes: "Created from bulk import",
+              
+            })),
+            event_id: undefined
+        }
             await apiCreateLeadBulk(payload)
             toast.push(
                 <Notification type="success">
