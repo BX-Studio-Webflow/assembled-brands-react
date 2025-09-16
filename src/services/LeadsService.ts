@@ -152,3 +152,11 @@ export async function apiPurchaseMembership(data: {
         data,
     })
 }
+
+export async function apiBulkDeleteLeads(ids: number[]) {
+    return ApiService.fetchDataWithAxios<{ message: string; count: number}>({
+        url: '/lead/bulk-delete',
+        method: 'post',
+        data: { ids },
+    })
+}
