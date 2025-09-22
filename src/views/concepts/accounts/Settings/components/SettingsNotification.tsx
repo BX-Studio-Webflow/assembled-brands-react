@@ -7,40 +7,14 @@ import cloneDeep from 'lodash/cloneDeep'
 import { TbMessageCircleCheck } from 'react-icons/tb'
 import type { GetSettingsNotificationResponse } from '../types'
 
-type EmailNotificationFields =
+type EmailNotificationCategory =
     | 'newsAndUpdate'
     | 'tipsAndTutorial'
     | 'offerAndPromotion'
     | 'followUpReminder'
 
-const emailNotificationOption: {
-    label: string
-    value: EmailNotificationFields
-    desc: string
-}[] = [
-    {
-        label: 'News & updates',
-        value: 'newsAndUpdate',
-        desc: 'New about product and features update',
-    },
-    {
-        label: 'Tips & tutorials',
-        value: 'tipsAndTutorial',
-        desc: 'Tips & trick in order to increase your performance efficiency',
-    },
-    {
-        label: 'Offer & promotions',
-        value: 'offerAndPromotion',
-        desc: 'Promotion about product price & lastest discount',
-    },
-    {
-        label: 'Follow up remider',
-        value: 'followUpReminder',
-        desc: 'Receive notification all the reminder that have been made',
-    },
-]
 
-const notifyMeOption: {
+const followUpTemplateOptions: {
     label: string
     value: string
     desc: string
@@ -48,12 +22,12 @@ const notifyMeOption: {
     {
         label: 'Use default template',
         value: 'useDefaultTemplate',
-        desc: 'Broadcast notifications to the channel for each new message',
+        desc: 'Broadcast notifications to the leads using the default template',
     },
     {
         label: 'Use custom template',
         value: 'useCustomTemplate',
-        desc: 'Only alert me in the channel if someone mentions me in a message',
+        desc: 'Broadcast notifications to the leads using the custom template',
     },
     
 ]
@@ -78,41 +52,25 @@ const SettingsNotification = () => {
         },
     )
 
-    const handleEmailNotificationOptionChange = (values: string[]) => {
-        const newData = cloneDeep(data)
-        newData.email = values
-        mutate(newData, false)
-    }
+	// Derived, clearly named view variables
+	const isFollowUpEmailsEnabled = data.desktop
+	const isPostEventEmailsEnabled = data.unreadMessageBadge
+	const followUpTemplate = data.notifymeAbout
+	const postEventTemplate = (data as any).postEventTemplate || ''
 
-    const handleEmailNotificationOptionCheckAll = (value: boolean) => {
-        const newData = cloneDeep(data)
-        if (value) {
-            newData.email = [
-                'newsAndUpdate',
-                'tipsAndTutorial',
-                'offerAndPromotion',
-                'followUpReminder',
-            ]
-        } else {
-            newData.email = []
-        }
-
-        mutate(newData, false)
-    }
-
-    const handleDesktopNotificationCheck = (value: boolean) => {
+	const handleFollowUpToggle = (value: boolean) => {
         const newData = cloneDeep(data)
         newData.desktop = value
         mutate(newData, false)
     }
 
-    const handleUnreadMessagebadgeCheck = (value: boolean) => {
+	const handlePostEventToggle = (value: boolean) => {
         const newData = cloneDeep(data)
         newData.unreadMessageBadge = value
         mutate(newData, false)
     }
 
-    const handleNotifyMeChange = (value: string) => {
+	const handleFollowUpTemplateChange = (value: string) => {
         const newData = cloneDeep(data)
         newData.notifymeAbout = value
         mutate(newData, false)
@@ -128,97 +86,93 @@ const SettingsNotification = () => {
         <div>
             <h4>Notification</h4>
             <div className="mt-2">
-                <div className="flex items-center justify-between py-6 border-b border-gray-200 dark:border-gray-600">
-                    <div>
-                        <h5>Enable follow up emails</h5>
-                        <p>
-                            Decide whether you want to attended leads to be notified a day after the event
-                            .
-                        </p>
-                    </div>
-                    <div>
-                        <Switcher
-                            checked={data.desktop}
-                            onChange={handleDesktopNotificationCheck}
-                        />
-                    </div>
-                </div>
-                <div className="flex items-center justify-between py-6 border-b border-gray-200 dark:border-gray-600">
-                    <div>
-                        <h5>Enable post event emails</h5>
-                        <p>
-                        Decide whether you want registered leads to be notified 3 days after the event.
-                        
-                        </p>
-                    </div>
-                    <div>
-                        <Switcher
-                            checked={data.unreadMessageBadge}
-                            onChange={handleUnreadMessagebadgeCheck}
-                        />
-                    </div>
-                </div>
-                {data.desktop && (
-                    <div className="py-6 border-b border-gray-200 dark:border-gray-600">
-                        <h5>Decide template to use for follow up emails</h5>
-                        <div className="mt-4">
-                            <Radio.Group
-                                vertical
-                                className="flex flex-col gap-6"
-                                value={data.notifymeAbout}
-                                onChange={handleNotifyMeChange}
-                            >
-                                {notifyMeOption.map((option) => (
-                                    <div key={option.value} className="flex gap-4">
-                                        <div className="mt-1.5">
-                                            <Radio value={option.value} />
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <div className="mt-1">
-                                                <TbMessageCircleCheck className="text-lg" />
-                                            </div>
-                                            <div>
-                                                <h6>{option.label}</h6>
-                                                <p>{option.desc}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </Radio.Group>
-                        </div>
-                    </div>
-                )}
-
-                {data.unreadMessageBadge && (
-                    <div className="py-6 border-b border-gray-200 dark:border-gray-600">
-                        <h5>Decide template to use for post event emails</h5>
-                        <div className="mt-4">
-                            <Radio.Group
-                                vertical
-                                className="flex flex-col gap-6"
-                                value={(data as any).postEventTemplate || ''}
-                                onChange={handlePostEventTemplateChange}
-                            >
-                                {notifyMeOption.map((option) => (
-                                    <div key={option.value} className="flex gap-4">
-                                        <div className="mt-1.5">
-                                            <Radio value={option.value} />
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <div className="mt-1">
-                                                <TbMessageCircleCheck className="text-lg" />
-                                            </div>
-                                            <div>
-                                                <h6>{option.label}</h6>
-                                                <p>{option.desc}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </Radio.Group>
-                        </div>
-                    </div>
-                )}
+				<div className="py-6 border-b border-gray-200 dark:border-gray-600">
+					<div className="flex items-center justify-between">
+						<div>
+							<h5>Enable follow up emails</h5>
+							<p>
+								Decide whether you want to attended leads to be notified a day after the event.
+							</p>
+						</div>
+						<div>
+						<Switcher
+							checked={isFollowUpEmailsEnabled}
+							onChange={handleFollowUpToggle}
+						/>
+						</div>
+					</div>
+					{isFollowUpEmailsEnabled && (
+						<div className="mt-4">
+							<Radio.Group
+								vertical
+								className="flex flex-col gap-6"
+								value={followUpTemplate}
+								onChange={handleFollowUpTemplateChange}
+							>
+								{followUpTemplateOptions.map((option) => (
+									<div key={option.value} className="flex gap-4">
+										<div className="mt-1.5">
+											<Radio value={option.value} />
+										</div>
+										<div className="flex gap-2">
+											<div className="mt-1">
+												<TbMessageCircleCheck className="text-lg" />
+											</div>
+											<div>
+												<h6>{option.label}</h6>
+												<p>{option.desc}</p>
+											</div>
+										</div>
+									</div>
+								))}
+							</Radio.Group>
+						</div>
+					)}
+				</div>
+				<div className="py-6 border-b border-gray-200 dark:border-gray-600">
+					<div className="flex items-center justify-between">
+						<div>
+							<h5>Enable post event emails</h5>
+							<p>
+							Decide whether you want registered leads to be notified 3 days after the event.
+							
+							</p>
+						</div>
+						<div>
+						<Switcher
+							checked={isPostEventEmailsEnabled}
+							onChange={handlePostEventToggle}
+						/>
+						</div>
+					</div>
+					{isPostEventEmailsEnabled && (
+						<div className="mt-4">
+							<Radio.Group
+								vertical
+								className="flex flex-col gap-6"
+								value={postEventTemplate}
+								onChange={handlePostEventTemplateChange}
+							>
+								{followUpTemplateOptions.map((option) => (
+									<div key={option.value} className="flex gap-4">
+										<div className="mt-1.5">
+											<Radio value={option.value} />
+										</div>
+										<div className="flex gap-2">
+											<div className="mt-1">
+												<TbMessageCircleCheck className="text-lg" />
+											</div>
+											<div>
+												<h6>{option.label}</h6>
+												<p>{option.desc}</p>
+											</div>
+										</div>
+									</div>
+								))}
+							</Radio.Group>
+						</div>
+					)}
+				</div>
                 
             </div>
         </div>
