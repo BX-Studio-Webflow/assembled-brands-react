@@ -371,7 +371,7 @@ const EventEdit = () => {
   <!------------>
 </form>
 
-<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/r5.js"></script>`
+<script src="https://cdn.jsdelivr.net/gh/brian-kiplagat/yeebli-js-code@latest/r9.js"></script>`
         const host_id = data?.host_id?.toString() || ''
         const success_url = data?.success_url || data?.live_video_url
 
