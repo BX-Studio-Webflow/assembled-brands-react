@@ -1,7 +1,7 @@
 export type View =
     | 'profile'
     | 'security'
-    //| 'notification'
+    | 'notification'
     | 'billing'
     | 'team'
     | 'business'
@@ -79,6 +79,7 @@ export type GetSettingsNotificationResponse = {
     desktop: boolean
     unreadMessageBadge: boolean
     notifymeAbout: string
+    postEventTemplate?: string
 }
 
 export type GetSettingsBillingResponse = {

@@ -46,20 +46,16 @@ const notifyMeOption: {
     desc: string
 }[] = [
     {
-        label: 'All new messages',
-        value: 'allNewMessage',
+        label: 'Use default template',
+        value: 'useDefaultTemplate',
         desc: 'Broadcast notifications to the channel for each new message',
     },
     {
-        label: 'Mentions only',
-        value: 'mentionsOnly',
+        label: 'Use custom template',
+        value: 'useCustomTemplate',
         desc: 'Only alert me in the channel if someone mentions me in a message',
     },
-    {
-        label: 'Nothing',
-        value: 'nothing',
-        desc: `Don't notify me anything`,
-    },
+    
 ]
 
 const SettingsNotification = () => {
@@ -69,6 +65,7 @@ const SettingsNotification = () => {
             desktop: false,
             unreadMessageBadge: false,
             notifymeAbout: '',
+            postEventTemplate: '',
         },
         mutate,
     } = useSWR(
@@ -121,16 +118,22 @@ const SettingsNotification = () => {
         mutate(newData, false)
     }
 
+    const handlePostEventTemplateChange = (value: string) => {
+        const newData = cloneDeep(data)
+        ;(newData as any).postEventTemplate = value
+        mutate(newData, false)
+    }
+
     return (
         <div>
             <h4>Notification</h4>
             <div className="mt-2">
                 <div className="flex items-center justify-between py-6 border-b border-gray-200 dark:border-gray-600">
                     <div>
-                        <h5>Enable desktop notification</h5>
+                        <h5>Enable follow up emails</h5>
                         <p>
-                            Decide whether you want to be notified of new
-                            message & updates
+                            Decide whether you want to attended leads to be notified a day after the event
+                            .
                         </p>
                     </div>
                     <div>
@@ -142,10 +145,10 @@ const SettingsNotification = () => {
                 </div>
                 <div className="flex items-center justify-between py-6 border-b border-gray-200 dark:border-gray-600">
                     <div>
-                        <h5>Enable unread notification badge</h5>
+                        <h5>Enable post event emails</h5>
                         <p>
-                            Display a red indicator on of the notification icon
-                            when you have unread message
+                        Decide whether you want registered leads to be notified 3 days after the event.
+                        
                         </p>
                     </div>
                     <div>
@@ -155,67 +158,68 @@ const SettingsNotification = () => {
                         />
                     </div>
                 </div>
-                <div className="py-6 border-b border-gray-200 dark:border-gray-600">
-                    <h5>Enable unread notification badge</h5>
-                    <div className="mt-4">
-                        <Radio.Group
-                            vertical
-                            className="flex flex-col gap-6"
-                            value={data.notifymeAbout}
-                            onChange={handleNotifyMeChange}
-                        >
-                            {notifyMeOption.map((option) => (
-                                <div key={option.value} className="flex gap-4">
-                                    <div className="mt-1.5">
-                                        <Radio value={option.value} />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <div className="mt-1">
-                                            <TbMessageCircleCheck className="text-lg" />
+                {data.desktop && (
+                    <div className="py-6 border-b border-gray-200 dark:border-gray-600">
+                        <h5>Decide template to use for follow up emails</h5>
+                        <div className="mt-4">
+                            <Radio.Group
+                                vertical
+                                className="flex flex-col gap-6"
+                                value={data.notifymeAbout}
+                                onChange={handleNotifyMeChange}
+                            >
+                                {notifyMeOption.map((option) => (
+                                    <div key={option.value} className="flex gap-4">
+                                        <div className="mt-1.5">
+                                            <Radio value={option.value} />
                                         </div>
-                                        <div>
-                                            <h6>{option.label}</h6>
-                                            <p>{option.desc}</p>
+                                        <div className="flex gap-2">
+                                            <div className="mt-1">
+                                                <TbMessageCircleCheck className="text-lg" />
+                                            </div>
+                                            <div>
+                                                <h6>{option.label}</h6>
+                                                <p>{option.desc}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </Radio.Group>
-                    </div>
-                </div>
-                <div className="flex items-center justify-between py-6">
-                    <div>
-                        <h5>Email notification</h5>
-                        <p>
-                            Substance can send you email notification for any
-                            new direct message
-                        </p>
-                    </div>
-                    <div>
-                        <Switcher
-                            checked={data.email.length > 0}
-                            onChange={handleEmailNotificationOptionCheckAll}
-                        />
-                    </div>
-                </div>
-                <Checkbox.Group
-                    vertical
-                    className="flex flex-col gap-6"
-                    value={data.email}
-                    onChange={handleEmailNotificationOptionChange}
-                >
-                    {emailNotificationOption.map((option) => (
-                        <div key={option.value} className="flex gap-4">
-                            <div className="mt-1.5">
-                                <Checkbox value={option.value} />
-                            </div>
-                            <div>
-                                <h6>{option.label}</h6>
-                                <p>{option.desc}</p>
-                            </div>
+                                ))}
+                            </Radio.Group>
                         </div>
-                    ))}
-                </Checkbox.Group>
+                    </div>
+                )}
+
+                {data.unreadMessageBadge && (
+                    <div className="py-6 border-b border-gray-200 dark:border-gray-600">
+                        <h5>Decide template to use for post event emails</h5>
+                        <div className="mt-4">
+                            <Radio.Group
+                                vertical
+                                className="flex flex-col gap-6"
+                                value={(data as any).postEventTemplate || ''}
+                                onChange={handlePostEventTemplateChange}
+                            >
+                                {notifyMeOption.map((option) => (
+                                    <div key={option.value} className="flex gap-4">
+                                        <div className="mt-1.5">
+                                            <Radio value={option.value} />
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <div className="mt-1">
+                                                <TbMessageCircleCheck className="text-lg" />
+                                            </div>
+                                            <div>
+                                                <h6>{option.label}</h6>
+                                                <p>{option.desc}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </Radio.Group>
+                        </div>
+                    </div>
+                )}
+                
             </div>
         </div>
     )
