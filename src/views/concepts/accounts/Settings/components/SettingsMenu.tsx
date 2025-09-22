@@ -20,10 +20,10 @@ const menuList: { label: string; value: View; icon: ReactNode }[] = [
     { label: 'Profile', value: 'profile', icon: <TbUserSquare /> },
     { label: 'Business', value: 'business', icon: <TbBuilding /> },
     { label: 'Security', value: 'security', icon: <TbLock /> },
-    { label: 'Notification', value: 'notification', icon: <TbBell /> },
     { label: 'Team', value: 'team', icon: <TbUsers /> },
     { label: 'Billing', value: 'billing', icon: <TbFileDollar /> },
     { label: 'Stripe', value: 'stripe', icon: <TbBrandStripe /> },
+    { label: 'Notification', value: 'notification', icon: <TbBell /> },
 ]
 
 export const SettingsMenu = ({ onChange }: { onChange?: () => void }) => {

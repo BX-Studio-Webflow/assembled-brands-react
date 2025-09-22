@@ -6,6 +6,7 @@ import useSWR from 'swr'
 import cloneDeep from 'lodash/cloneDeep'
 import { TbMessageCircleCheck } from 'react-icons/tb'
 import type { GetSettingsNotificationResponse } from '../types'
+import { Input } from '@/components/ui'
 
 type EmailNotificationCategory =
     | 'newsAndUpdate'
@@ -102,6 +103,7 @@ const SettingsNotification = () => {
 						</div>
 					</div>
 					{isFollowUpEmailsEnabled && (
+                        <div className="flex flex-col gap-4">
 						<div className="mt-4">
 							<Radio.Group
 								vertical
@@ -127,6 +129,12 @@ const SettingsNotification = () => {
 								))}
 							</Radio.Group>
 						</div>
+						{followUpTemplate === 'useCustomTemplate' && (
+							<div>
+								<Input textArea placeholder="Enter your custom template" />
+							</div>
+						)}
+                    </div>
 					)}
 				</div>
 				<div className="py-6 border-b border-gray-200 dark:border-gray-600">
@@ -146,6 +154,7 @@ const SettingsNotification = () => {
 						</div>
 					</div>
 					{isPostEventEmailsEnabled && (
+                        <div className="flex flex-col gap-4">
 						<div className="mt-4">
 							<Radio.Group
 								vertical
@@ -171,6 +180,12 @@ const SettingsNotification = () => {
 								))}
 							</Radio.Group>
 						</div>
+						{postEventTemplate === 'useCustomTemplate' && (
+							<div>
+								<Input textArea placeholder="Enter your custom template" />
+							</div>
+						)}
+                    </div>
 					)}
 				</div>
                 
