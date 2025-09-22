@@ -18,6 +18,7 @@ export interface Lead {
     notes: string | null
     created_at: string
     updated_at: string
+    event: Event | null
     events: Event[]
     date_array: number[] | null
     metadata: {

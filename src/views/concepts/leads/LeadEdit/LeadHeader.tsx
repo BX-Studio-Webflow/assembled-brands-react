@@ -15,7 +15,7 @@ const LeadHeader = ({ lead }: LeadHeaderProps) => {
         <div className="flex flex-row justify-between gap-4">
             <div className="flex flex-col gap-2 mb-4">
                 <h6 className="font-bold">
-                    {lead.bookings[0]?.event.event_name ||
+                    {lead.event?.event_name ||
                         'No Event Registered'}
                 </h6>
                 {latestPayment ? (
