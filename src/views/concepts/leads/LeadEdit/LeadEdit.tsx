@@ -147,7 +147,7 @@ const LeadEdit = () => {
                 postcode: '',
                 tags: [],
                 event_id: data.event_id,
-                notes: data.notes,
+                notes: data.notes || '',
                 lead_status: data.lead_status,
             }
         }
