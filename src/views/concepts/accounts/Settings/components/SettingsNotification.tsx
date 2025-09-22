@@ -131,7 +131,7 @@ const SettingsNotification = () => {
 						</div>
 						{followUpTemplate === 'useCustomTemplate' && (
 							<div>
-								<Input textArea placeholder="Enter your custom template" />
+								<Input textArea placeholder="Enter your custom template" style={{ minHeight: 300 }} />
 							</div>
 						)}
                     </div>
@@ -182,7 +182,7 @@ const SettingsNotification = () => {
 						</div>
 						{postEventTemplate === 'useCustomTemplate' && (
 							<div>
-								<Input textArea placeholder="Enter your custom template" />
+								<Input textArea placeholder="Enter your custom template" style={{ minHeight: 300 }} />
 							</div>
 						)}
                     </div>
