@@ -1,6 +1,4 @@
 import Card from '@/components/ui/Card'
-import ChatSidebar from './components/ChatSidebar'
-import ChatBody from './components/ChatBody'
 
 
 const Chat = () => {

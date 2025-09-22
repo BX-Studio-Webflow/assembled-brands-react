@@ -55,11 +55,8 @@ const LeadEdit = () => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
-    // Status computation logic
-    const hasEvent = data?.event_id
-    const hasCallback = data?.callback && Object.keys(data.callback).length > 0
-    const attendedEvent = data?.attended_event
-
+   
+  
     let statusText = 'New lead'
     let statusIcon = (
         <HiPlusCircle className="text-base text-green-600 mr-1 rtl:ml-1" />
@@ -67,35 +64,28 @@ const LeadEdit = () => {
     let statusClass =
         'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
 
-    if (hasEvent && hasCallback) {
+    if (data?.lead_status === 'call_back') {
         statusText = 'Call Back'
         statusIcon = (
             <HiPhone className="text-base text-orange-600 mr-1 rtl:ml-1" />
         )
         statusClass =
             'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
-    } else if (hasCallback) {
-        statusText = 'Call Back'
-        statusIcon = (
-            <HiPhone className="text-base text-orange-600 mr-1 rtl:ml-1" />
-        )
-        statusClass =
-            'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
-    } else if (attendedEvent) {
+    }  else if (data?.lead_status === 'attended_event') {
         statusText = 'Attended event'
         statusIcon = (
             <HiCheckCircle className="text-base text-emerald-600 mr-1 rtl:ml-1" />
         )
         statusClass =
             'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0'
-    } else if (hasEvent) {
+    } else if (data?.lead_status === 'registered_for_event') {
         statusText = 'Registered for event'
         statusIcon = (
             <HiCalendar className="text-base text-blue-600 mr-1 rtl:ml-1" />
         )
         statusClass =
             'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100 border-0'
-    } else {
+    } else if (data?.lead_status === 'new_lead') {
         statusText = 'New lead'
         statusIcon = (
             <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
