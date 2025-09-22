@@ -152,10 +152,6 @@ const LeadListTable = () => {
                 cell: (props) => {
                     const row = props.row.original
 
-                    // Determine status based on the logic:
-                    // - If lead has empty event array: newLead
-                    // - If lead has truthy callback: hasCallback
-                    // - If both conditions are true: bothEventAndCallback
                     let statusText = 'New lead'
                     let statusIcon = (
                         <HiPlusCircle className="text-base text-green-600 mr-1 rtl:ml-1" />
@@ -163,48 +159,33 @@ const LeadListTable = () => {
                     let statusClass =
                         'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
 
-                    const hasEvent =
-                        row.events &&
-                        Array.isArray(row.events) &&
-                        row.events.length > 0
-                    const hasCallback =
-                        row.callback && Object.keys(row.callback).length > 0
-                    const attendedEvent = row.attended_event
-
-                    if (hasEvent && hasCallback) {
+                    if (row.lead_status === 'call_back') {
                         statusText = 'Call Back'
                         statusIcon = (
                             <HiPhone className="text-base text-orange-600 mr-1 rtl:ml-1" />
                         )
                         statusClass =
                             'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
-                    } else if (hasCallback) {
-                        statusText = 'Call Back'
-                        statusIcon = (
-                            <HiPhone className="text-base text-orange-600 mr-1 rtl:ml-1" />
-                        )
-                        statusClass =
-                            'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
-                    } else if (attendedEvent) {
+                    }  else if (row.lead_status === 'attended_event') {
                         statusText = 'Attended event'
                         statusIcon = (
                             <HiCheckCircle className="text-base text-emerald-600 mr-1 rtl:ml-1" />
                         )
                         statusClass =
                             'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0'
-                    } else if (hasEvent) {
+                    } else if (row.lead_status === 'registered_for_event') {
                         statusText = 'Registered for event'
                         statusIcon = (
                             <HiCalendar className="text-base text-blue-600 mr-1 rtl:ml-1" />
                         )
                         statusClass =
                             'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100 border-0'
-                    } else {
-                        statusText = 'New lead'
-                        statusIcon = (
-                            <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
-                        )
-                        statusClass =
+                        } else if (row.lead_status === 'new_lead') {
+                            statusText = 'New lead'
+                            statusIcon = (
+                                <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
+                            )
+                            statusClass =
                             'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100 border-0'
                     }
 
@@ -222,12 +203,8 @@ const LeadListTable = () => {
                 accessorKey: 'events',
                 cell: (props) => {
                     const row = props.row.original
-                    const hasEvent =
-                        row.events &&
-                        Array.isArray(row.events) &&
-                        row.events.length > 0
 
-                    if (!hasEvent) {
+                    if (row.lead_status === 'new_lead') {
                         return (
                             <Tag
                                 className="bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0"
