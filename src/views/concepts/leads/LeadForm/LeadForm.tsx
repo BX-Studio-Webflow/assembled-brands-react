@@ -24,7 +24,7 @@ type LeadFormProps = {
 
 const validationSchema: ZodType<LeadFormSchema> = z.object({
     firstName: z.string().min(1, 'First name is required'),
-    lastName: z.string().min(1, 'Last name is required'),
+    lastName: z.string().optional(),
     email: z.string().email('Invalid email address'),
     dialCode: z.string().min(1, 'Please select your country code'),
     phoneNumber: z.string().min(1, 'Please input your mobile number'),
