@@ -9,6 +9,7 @@ export type OverviewFields = {
     img: string
     notes?: string
     event_id?: number
+    lead_status: 'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'
 }
 
 export type AddressFields = {

@@ -31,6 +31,7 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
     img: z.string(),
     event_id: z.number().optional(),
     notes: z.string().optional(),
+    lead_status: z.enum(['new_lead', 'call_back', 'registered_for_event', 'attended_event']),
 })
 
 const LeadForm = (props: LeadFormProps) => {

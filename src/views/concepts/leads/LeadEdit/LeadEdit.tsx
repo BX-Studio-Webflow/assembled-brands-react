@@ -104,6 +104,7 @@ const LeadEdit = () => {
                 phone: values.phoneNumber,
                 host_id: user?.id || 0,
                 notes: values.notes,
+                lead_status: values.lead_status,
             }
             await apiUpdateLead(id as string, leadData)
             setIsSubmiting(false)
@@ -147,6 +148,7 @@ const LeadEdit = () => {
                 tags: [],
                 event_id: data.event_id,
                 notes: data.notes,
+                lead_status: data.lead_status,
             }
         }
 

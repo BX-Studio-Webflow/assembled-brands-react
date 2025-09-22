@@ -12,6 +12,7 @@ import Tag from '@/components/ui/Tag'
 import type { FormSectionBaseProps } from './types'
 import type { ControlProps, OptionProps } from 'react-select'
 import { GetEventsResponse } from '@/@types/events'
+import type { Lead } from '@/@types/lead'
 
 type OverviewSectionProps = FormSectionBaseProps & {
     actions?: React.ReactNode
@@ -85,6 +86,13 @@ const OverviewSection = ({
             return country
         })
     }, [])
+
+    const leadStatusList: { value: Lead['lead_status']; label: string }[] = [
+        { value: 'new_lead', label: 'New lead' },
+        { value: 'call_back', label: 'Call Back' },
+        { value: 'registered_for_event', label: 'Registered for event' },
+        { value: 'attended_event', label: 'Attended event' },
+    ]
 
     return (
         <Card>
@@ -236,6 +244,30 @@ const OverviewSection = ({
                                     field.onChange(option?.value)
                                 }
                                 onBlur={field.onBlur}
+                            />
+                        )}
+                    />
+                </FormItem>
+            )}
+
+            {!newLead && (
+                <FormItem
+                    label="Lead Status"
+                    invalid={Boolean((errors as any).lead_status)}
+                    errorMessage={(errors as any).lead_status?.message}
+                >
+                    <Controller
+                        name="lead_status"
+                        control={control}
+                        render={({ field }) => (
+                                <Select<{ value: Lead['lead_status']; label: string }>
+                                    options={leadStatusList}
+                                    value={
+                                        leadStatusList.find((opt) => opt.value === field.value) || null
+                                    }
+                                    name={field.name}
+                                    onChange={(option) => field.onChange(option?.value)}
+                                    onBlur={field.onBlur}
                             />
                         )}
                     />
