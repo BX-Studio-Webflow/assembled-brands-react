@@ -22,7 +22,7 @@ export interface ClickAnalytics {
         status_identifier: string
         lead_status: number
         source_url: string | null
-        membership_level: number
+        membership_id: number
         created_at: string
         updated_at: string
     } | null

@@ -68,7 +68,7 @@ interface Lead {
     lead_status: string | null
     dates: string | null
     source_url: string | null
-    membership_level: string | null
+    membership_id: string | null
     tags?: {
         id: number
         tag: string

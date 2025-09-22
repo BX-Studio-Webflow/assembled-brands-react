@@ -29,7 +29,7 @@ export interface EventTelemetry {
         status_identifier: string
         lead_status: number
         source_url: string | null
-        membership_level: number
+        membership_id: number
         attended_event: boolean
         email_event_countdown: boolean
         email_final_reminder: boolean

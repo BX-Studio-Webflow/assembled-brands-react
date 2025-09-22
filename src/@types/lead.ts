@@ -13,7 +13,7 @@ export interface Lead {
     status_identifier: string
     lead_status: string | null
     source_url: string | null
-    membership_level: string | null
+    membership_id: string | null
     attended_event: boolean
     notes: string | null
     created_at: string
