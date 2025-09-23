@@ -4,8 +4,8 @@ import Switcher from '@/components/ui/Switcher'
 import { FormItem, Form } from '@/components/ui/Form'
 import { TbMessageCircleCheck } from 'react-icons/tb'
 import type { GetSettingsProfileResponse } from '../types'
-import { Button, Input, Notification, toast } from '@/components/ui'
-import { useForm, Controller } from 'react-hook-form'
+import { Button, Input, Notification, toast, Checkbox } from '@/components/ui'
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AxiosError } from 'axios'
@@ -18,6 +18,20 @@ type FormSchema = {
     postEventEnabled: boolean
     followUpTemplateMode: 'default' | 'custom'
     postEventTemplateMode: 'default' | 'custom'
+    followUpWhoGetsIt: (
+     
+        | 'new_lead'
+        | 'call_back'
+        | 'registered_for_event'
+        | 'attended_event'
+    )[]
+    postEventWhoGetsIt: (
+       
+        | 'new_lead'
+        | 'call_back'
+        | 'registered_for_event'
+        | 'attended_event'
+    )[]
     followUpCustomTemplate: string
     postEventCustomTemplate: string
 }
@@ -27,6 +41,8 @@ const validationSchema = z.object({
     postEventEnabled: z.boolean(),
     followUpTemplateMode: z.enum(['default', 'custom']),
     postEventTemplateMode: z.enum(['default', 'custom']),
+    followUpWhoGetsIt: z.array(z.enum([ 'new_lead', 'call_back', 'registered_for_event', 'attended_event'])),
+    postEventWhoGetsIt: z.array(z.enum(['new_lead', 'call_back', 'registered_for_event', 'attended_event'])),
     followUpCustomTemplate: z.string().optional(),
     postEventCustomTemplate: z.string().optional(),
 })
@@ -47,6 +63,29 @@ const followUpTemplateOptions: {
         desc: 'Broadcast notifications to the leads using the custom template',
     },
     
+]
+
+const leadOptions = [
+    {
+        label: 'All',
+        value: 'all',
+    },
+    {
+        label: 'New Lead',
+        value: 'new_lead',
+    },
+    {
+        label: 'Call Back',
+        value: 'call_back',
+    },
+    {
+        label: 'Registered for Event',
+        value: 'registered_for_event',
+    },
+    {
+        label: 'Attended Event',
+        value: 'attended_event',
+    },
 ]
 
 type SettingsNotificationProps = {
@@ -71,6 +110,12 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
             postEventTemplateMode: data.user.post_event_template_mode || 'default',
             followUpCustomTemplate: data.user.follow_up_template || '',
             postEventCustomTemplate: data.user.post_event_template || '',
+            followUpWhoGetsIt: Array.isArray(data.user.follow_up_who_gets_it)
+                ? (data.user.follow_up_who_gets_it as FormSchema['followUpWhoGetsIt'])
+                : (['new_lead'] as FormSchema['followUpWhoGetsIt']),
+            postEventWhoGetsIt: Array.isArray(data.user.post_event_who_gets_it)
+                ? (data.user.post_event_who_gets_it as FormSchema['postEventWhoGetsIt'])
+                : (['new_lead'] as FormSchema['postEventWhoGetsIt']),
         },
         resolver: zodResolver(validationSchema),
     })
@@ -82,7 +127,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 
 	// Handlers removed - form state is managed by react-hook-form
 
-    const onSubmit = async (values: FormSchema) => {
+    const onSubmit: SubmitHandler<FormSchema> = async (values) => {
         console.log('Form submitted:', values)
         try {
 			const body: UpdateSettingsNotificationBody = {
@@ -92,6 +137,8 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 				post_event_template_mode: values.postEventTemplateMode,
 				follow_up_template: values.followUpCustomTemplate,
 				post_event_template: values.postEventCustomTemplate,
+				follow_up_who_gets_it: values.followUpWhoGetsIt || ['all'],
+				post_event_who_gets_it: values.postEventWhoGetsIt || ['all'],
 			}
             await apiUpdateSettingsNotification(body)
             toast.push(
@@ -142,6 +189,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 					{isFollowUpEmailsEnabled && (
                         <div className="flex flex-col gap-4">
 						<div className="mt-4">
+							
 							<Controller
 								name="followUpTemplateMode"
 								control={control}
@@ -173,6 +221,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 							/>
 						</div>
 						{followUpTemplateMode === 'custom' && (
+							<div>
 							<FormItem
 								label="Custom Follow-up Template"
 								invalid={Boolean(errors.followUpCustomTemplate)}
@@ -191,6 +240,22 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 									)}
 								/>
 							</FormItem>
+							<FormItem label="Who gets it?">
+							<Controller
+								name="followUpWhoGetsIt"
+								control={control}
+								render={({ field }) => (
+									<Checkbox.Group value={field.value} onChange={field.onChange}>
+										{leadOptions.map((opt) => (
+											<Checkbox key={opt.value} value={opt.value}>
+												{opt.label}
+											</Checkbox>
+										))}
+									</Checkbox.Group>
+								)}
+							/>
+						</FormItem>
+						</div>
 						)}
                     </div>
 					)}
@@ -220,6 +285,10 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 					{isPostEventEmailsEnabled && (
                         <div className="flex flex-col gap-4">
 						<div className="mt-4">
+						
+							
+							</div>
+							<div>
 							<Controller
 								name="postEventTemplateMode"
 								control={control}
@@ -251,6 +320,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 							/>
 						</div>
 						{postEventTemplateMode === 'custom' && (
+							<div>
 							<FormItem
 								label="Custom Post-event Template"
 								invalid={Boolean(errors.postEventCustomTemplate)}
@@ -269,7 +339,22 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 									)}
 								/>
 							</FormItem>
-							
+							<FormItem label="Who gets it?">
+							<Controller
+								name="postEventWhoGetsIt"
+								control={control}
+								render={({ field }) => (
+									<Checkbox.Group value={field.value} onChange={field.onChange}>
+										{leadOptions.map((opt) => (
+											<Checkbox key={opt.value} value={opt.value}>
+												{opt.label}
+											</Checkbox>
+										))}
+									</Checkbox.Group>
+								)}
+							/>
+						</FormItem>
+							</div>
 						)}
 						
                     </div>

@@ -9,7 +9,6 @@ import NumericInput from '@/components/shared/NumericInput'
 import { countryList } from '@/constants/countries.constant'
 import { components } from 'react-select'
 import type { ControlProps, OptionProps } from 'react-select'
-import useSWR from 'swr'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
@@ -18,7 +17,6 @@ import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
 import {
-    apiGetUserMe,
     apiUploadBusinessProfileImage,
 } from '@/services/AuthService'
 import { apiUpdateBusiness } from '@/services/BusinessService'

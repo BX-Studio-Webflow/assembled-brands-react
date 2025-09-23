@@ -77,6 +77,8 @@ export type GetSettingsProfileResponse = {
         post_event_template: string | null
         follow_up_template_mode: 'default' | 'custom'
         post_event_template_mode: 'default' | 'custom'
+        follow_up_who_gets_it: 'all' | 'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'
+        post_event_who_gets_it: 'all' | 'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'
     }
 }
 
