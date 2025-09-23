@@ -67,10 +67,6 @@ const followUpTemplateOptions: {
 
 const leadOptions = [
     {
-        label: 'All',
-        value: 'all',
-    },
-    {
         label: 'New Lead',
         value: 'new_lead',
     },
