@@ -73,18 +73,11 @@ export type GetSettingsProfileResponse = {
         profile_picture: string
         is_follow_up_emails_enabled: boolean
         is_post_event_emails_enabled: boolean
-        follow_up_template: string
-        post_event_template: string
+        follow_up_template: string | null
+        post_event_template: string | null
     }
 }
 
-export type GetSettingsNotificationResponse = {
-    email: string[]
-    desktop: boolean
-    unreadMessageBadge: boolean
-    notifymeAbout: string
-    postEventTemplate?: string
-}
 
 export type GetSettingsBillingResponse = {
     data: {

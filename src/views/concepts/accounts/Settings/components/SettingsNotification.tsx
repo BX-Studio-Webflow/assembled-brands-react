@@ -1,4 +1,4 @@
-import Checkbox from '@/components/ui/Checkbox'
+
 import Radio from '@/components/ui/Radio'
 import Switcher from '@/components/ui/Switcher'
 import { FormItem, Form } from '@/components/ui/Form'
@@ -12,11 +12,6 @@ import { z } from 'zod'
 import { AxiosError } from 'axios'
 import { apiUpdateSettingsNotification } from '@/services/AuthService'
 
-type EmailNotificationCategory =
-    | 'newsAndUpdate'
-    | 'tipsAndTutorial'
-    | 'offerAndPromotion'
-    | 'followUpReminder'
 
 type FormSchema = {
     followUpTemplate: string
@@ -67,7 +62,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
     } = useForm<FormSchema>({
         defaultValues: {
             followUpTemplate: data.user.follow_up_template || '',
-            postEventTemplate: (data as any).postEventTemplate || '',
+            postEventTemplate: data.user.post_event_template || '',
             followUpCustomTemplate: '',
             postEventCustomTemplate: '',
         },
