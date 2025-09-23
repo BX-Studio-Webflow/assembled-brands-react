@@ -18,6 +18,7 @@ import type {
     DashboardResponse,
     SaveOauthStateBody,
     SaveOauthStateResponse,
+    UpdateSettingsNotificationBody,
 } from '@/@types/auth'
 import { UploadBusinessLogoRequest } from '@/@types/business'
 

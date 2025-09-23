@@ -11,9 +11,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AxiosError } from 'axios'
 import { apiUpdateSettingsNotification } from '@/services/AuthService'
+import { UpdateSettingsNotificationBody } from '@/@types/auth'
 
 
 type FormSchema = {
+    followUpEnabled: boolean
+    postEventEnabled: boolean
     followUpTemplate: string
     postEventTemplate: string
     followUpCustomTemplate: string
@@ -61,6 +64,8 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
         watch,
     } = useForm<FormSchema>({
         defaultValues: {
+            followUpEnabled: data.user.is_follow_up_emails_enabled || false,
+            postEventEnabled: data.user.is_post_event_emails_enabled || false,
             followUpTemplate: data.user.follow_up_template || '',
             postEventTemplate: data.user.post_event_template || '',
             followUpCustomTemplate: '',
@@ -71,43 +76,47 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 
     const followUpTemplate = watch('followUpTemplate')
     const postEventTemplate = watch('postEventTemplate')
-
-	// Derived, clearly named view variables
-	const isFollowUpEmailsEnabled = data.user.is_follow_up_emails_enabled
-	const isPostEventEmailsEnabled = data.user.is_post_event_emails_enabled
+    const isFollowUpEmailsEnabled = watch('followUpEnabled')
+    const isPostEventEmailsEnabled = watch('postEventEnabled')
 
 	const handleFollowUpToggle = (value: boolean) => {
         const newData = cloneDeep(data)
         newData.user.is_follow_up_emails_enabled = value
-        mutate()
+       
     }
 
 	const handlePostEventToggle = (value: boolean) => {
         const newData = cloneDeep(data)
         newData.user.is_post_event_emails_enabled = value
-        mutate()
+       
     }
 
 	const handleFollowUpTemplateChange = (value: string) => {
         const newData = cloneDeep(data)
         newData.user.follow_up_template = value
-        mutate()
+       
     }
 
     const handlePostEventTemplateChange = (value: string) => {
         const newData = cloneDeep(data)
         newData.user.post_event_template = value
-        mutate()
+       
     }
 
     const onSubmit = async (values: FormSchema) => {
         console.log('Form submitted:', values)
         try {
-            await apiUpdateSettingsNotification(values)
+			const body: UpdateSettingsNotificationBody = {
+				is_follow_up_emails_enabled: values.followUpEnabled,
+				is_post_event_emails_enabled: values.postEventEnabled,
+				follow_up_template: values.followUpTemplate,
+				post_event_template: values.postEventTemplate,
+			}
+            await apiUpdateSettingsNotification(body)
             toast.push(
                 
 					<Notification type="success">
-						Business details updated successfully!
+						Notification settings updated successfully!
 					</Notification>,
 					{ placement: 'top-center' },
 				)
@@ -137,21 +146,37 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 							</p>
 						</div>
 						<div>
-						<Switcher
-							checked={isFollowUpEmailsEnabled}
-							onChange={handleFollowUpToggle}
+						<Controller
+							name="followUpEnabled"
+							control={control}
+							render={({ field }) => (
+								<Switcher
+									checked={field.value || false}
+									onChange={(value) => {
+										field.onChange(value)
+										handleFollowUpToggle(value)
+									}}
+								/>
+							)}
 						/>
 						</div>
 					</div>
 					{isFollowUpEmailsEnabled && (
                         <div className="flex flex-col gap-4">
 						<div className="mt-4">
-							<Radio.Group
-								vertical
-								className="flex flex-col gap-6"
-								value={followUpTemplate}
-								onChange={handleFollowUpTemplateChange}
-							>
+							<Controller
+								name="followUpTemplate"
+								control={control}
+								render={({ field }) => (
+									<Radio.Group
+										vertical
+										className="flex flex-col gap-6"
+										value={field.value}
+										onChange={(value) => {
+											field.onChange(value)
+											handleFollowUpTemplateChange(value)
+										}}
+									>
 								{followUpTemplateOptions.map((option) => (
 									<div key={option.value} className="flex gap-4">
 										<div className="mt-1.5">
@@ -168,7 +193,9 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 										</div>
 									</div>
 								))}
-							</Radio.Group>
+									</Radio.Group>
+								)}
+							/>
 						</div>
 						{followUpTemplate === 'useCustomTemplate' && (
 							<FormItem
@@ -203,21 +230,37 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 							</p>
 						</div>
 						<div>
-						<Switcher
-							checked={isPostEventEmailsEnabled}
-							onChange={handlePostEventToggle}
+						<Controller
+							name="postEventEnabled"
+							control={control}
+							render={({ field }) => (
+								<Switcher
+									checked={field.value || false}
+									onChange={(value) => {
+										field.onChange(value)
+										handlePostEventToggle(value)
+									}}
+								/>
+							)}
 						/>
 						</div>
 					</div>
 					{isPostEventEmailsEnabled && (
                         <div className="flex flex-col gap-4">
 						<div className="mt-4">
-							<Radio.Group
-								vertical
-								className="flex flex-col gap-6"
-								value={postEventTemplate}
-								onChange={handlePostEventTemplateChange}
-							>
+							<Controller
+								name="postEventTemplate"
+								control={control}
+								render={({ field }) => (
+									<Radio.Group
+										vertical
+										className="flex flex-col gap-6"
+										value={field.value}
+										onChange={(value) => {
+											field.onChange(value)
+											handlePostEventTemplateChange(value)
+										}}
+									>
 								{followUpTemplateOptions.map((option) => (
 									<div key={option.value} className="flex gap-4">
 										<div className="mt-1.5">
@@ -234,7 +277,9 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 										</div>
 									</div>
 								))}
-							</Radio.Group>
+									</Radio.Group>
+								)}
+							/>
 						</div>
 						{postEventTemplate === 'useCustomTemplate' && (
 							<FormItem

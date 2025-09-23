@@ -21,6 +21,13 @@ export type ResetPassword = {
     email: string
 }
 
+export type UpdateSettingsNotificationBody = {
+    is_follow_up_emails_enabled: boolean
+    is_post_event_emails_enabled: boolean
+    follow_up_template: string
+    post_event_template: string
+}
+
 export type User = {
     id: number
     email: string
