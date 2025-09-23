@@ -17,32 +17,32 @@ import { UpdateSettingsNotificationBody } from '@/@types/auth'
 type FormSchema = {
     followUpEnabled: boolean
     postEventEnabled: boolean
-    followUpTemplate: string
-    postEventTemplate: string
+    followUpTemplateMode: 'default' | 'custom'
+    postEventTemplateMode: 'default' | 'custom'
     followUpCustomTemplate: string
     postEventCustomTemplate: string
 }
 
 const validationSchema = z.object({
-    followUpTemplate: z.string().min(1, { message: 'Template selection required' }),
-    postEventTemplate: z.string().min(1, { message: 'Template selection required' }),
+    followUpTemplateMode: z.enum(['default', 'custom']),
+    postEventTemplateMode: z.enum(['default', 'custom']),
     followUpCustomTemplate: z.string().optional(),
     postEventCustomTemplate: z.string().optional(),
 })
 
 const followUpTemplateOptions: {
     label: string
-    value: string
+    value: 'default' | 'custom'
     desc: string
 }[] = [
     {
         label: 'Use default template',
-        value: 'useDefaultTemplate',
+        value: 'default',
         desc: 'Broadcast notifications to the leads using the default template',
     },
     {
         label: 'Use custom template',
-        value: 'useCustomTemplate',
+        value: 'custom',
         desc: 'Broadcast notifications to the leads using the custom template',
     },
     
@@ -66,16 +66,16 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
         defaultValues: {
             followUpEnabled: data.user.is_follow_up_emails_enabled || false,
             postEventEnabled: data.user.is_post_event_emails_enabled || false,
-            followUpTemplate: data.user.follow_up_template || '',
-            postEventTemplate: data.user.post_event_template || '',
-            followUpCustomTemplate: '',
-            postEventCustomTemplate: '',
+            followUpTemplateMode: data.user.follow_up_template_mode || 'default',
+            postEventTemplateMode: data.user.post_event_template_mode || 'default',
+            followUpCustomTemplate: data.user.follow_up_template || '',
+            postEventCustomTemplate: data.user.post_event_template || '',
         },
         resolver: zodResolver(validationSchema),
     })
 
-    const followUpTemplate = watch('followUpTemplate')
-    const postEventTemplate = watch('postEventTemplate')
+    const followUpTemplateMode = watch('followUpTemplateMode')
+    const postEventTemplateMode = watch('postEventTemplateMode')
     const isFollowUpEmailsEnabled = watch('followUpEnabled')
     const isPostEventEmailsEnabled = watch('postEventEnabled')
 
@@ -91,26 +91,28 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
        
     }
 
-	const handleFollowUpTemplateChange = (value: string) => {
+	const handleFollowUpTemplateChange = (value: 'default' | 'custom') => {
         const newData = cloneDeep(data)
-        newData.user.follow_up_template = value
-       
+        newData.user.follow_up_template_mode = value
+        
     }
 
-    const handlePostEventTemplateChange = (value: string) => {
+    const handlePostEventTemplateChange = (value: 'default' | 'custom') => {
         const newData = cloneDeep(data)
-        newData.user.post_event_template = value
-       
+        newData.user.post_event_template_mode = value
+        
     }
 
     const onSubmit = async (values: FormSchema) => {
         console.log('Form submitted:', values)
         try {
 			const body: UpdateSettingsNotificationBody = {
-				is_follow_up_emails_enabled: values.followUpEnabled,
-				is_post_event_emails_enabled: values.postEventEnabled,
-				follow_up_template: values.followUpTemplate,
-				post_event_template: values.postEventTemplate,
+				is_follow_up_emails_enabled: values.followUpEnabled || false,
+				is_post_event_emails_enabled: values.postEventEnabled || false,
+				follow_up_template_mode: values.followUpTemplateMode,
+				post_event_template_mode: values.postEventTemplateMode,
+				follow_up_template: values.followUpCustomTemplate,
+				post_event_template: values.postEventCustomTemplate,
 			}
             await apiUpdateSettingsNotification(body)
             toast.push(
@@ -165,7 +167,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
                         <div className="flex flex-col gap-4">
 						<div className="mt-4">
 							<Controller
-								name="followUpTemplate"
+								name="followUpTemplateMode"
 								control={control}
 								render={({ field }) => (
 									<Radio.Group
@@ -197,7 +199,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 								)}
 							/>
 						</div>
-						{followUpTemplate === 'useCustomTemplate' && (
+						{followUpTemplateMode === 'custom' && (
 							<FormItem
 								label="Custom Follow-up Template"
 								invalid={Boolean(errors.followUpCustomTemplate)}
@@ -249,7 +251,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
                         <div className="flex flex-col gap-4">
 						<div className="mt-4">
 							<Controller
-								name="postEventTemplate"
+								name="postEventTemplateMode"
 								control={control}
 								render={({ field }) => (
 									<Radio.Group
@@ -281,7 +283,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 								)}
 							/>
 						</div>
-						{postEventTemplate === 'useCustomTemplate' && (
+						{postEventTemplateMode === 'custom' && (
 							<FormItem
 								label="Custom Post-event Template"
 								invalid={Boolean(errors.postEventCustomTemplate)}

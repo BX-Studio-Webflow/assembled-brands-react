@@ -75,6 +75,8 @@ export type GetSettingsProfileResponse = {
         is_post_event_emails_enabled: boolean
         follow_up_template: string | null
         post_event_template: string | null
+        follow_up_template_mode: 'default' | 'custom'
+        post_event_template_mode: 'default' | 'custom'
     }
 }
 
