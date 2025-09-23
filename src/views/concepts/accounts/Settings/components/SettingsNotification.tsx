@@ -2,7 +2,6 @@
 import Radio from '@/components/ui/Radio'
 import Switcher from '@/components/ui/Switcher'
 import { FormItem, Form } from '@/components/ui/Form'
-import cloneDeep from 'lodash/cloneDeep'
 import { TbMessageCircleCheck } from 'react-icons/tb'
 import type { GetSettingsProfileResponse } from '../types'
 import { Button, Input, Notification, toast } from '@/components/ui'
@@ -24,6 +23,8 @@ type FormSchema = {
 }
 
 const validationSchema = z.object({
+    followUpEnabled: z.boolean(),
+    postEventEnabled: z.boolean(),
     followUpTemplateMode: z.enum(['default', 'custom']),
     postEventTemplateMode: z.enum(['default', 'custom']),
     followUpCustomTemplate: z.string().optional(),
@@ -79,29 +80,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
     const isFollowUpEmailsEnabled = watch('followUpEnabled')
     const isPostEventEmailsEnabled = watch('postEventEnabled')
 
-	const handleFollowUpToggle = (value: boolean) => {
-        const newData = cloneDeep(data)
-        newData.user.is_follow_up_emails_enabled = value
-       
-    }
-
-	const handlePostEventToggle = (value: boolean) => {
-        const newData = cloneDeep(data)
-        newData.user.is_post_event_emails_enabled = value
-       
-    }
-
-	const handleFollowUpTemplateChange = (value: 'default' | 'custom') => {
-        const newData = cloneDeep(data)
-        newData.user.follow_up_template_mode = value
-        
-    }
-
-    const handlePostEventTemplateChange = (value: 'default' | 'custom') => {
-        const newData = cloneDeep(data)
-        newData.user.post_event_template_mode = value
-        
-    }
+	// Handlers removed - form state is managed by react-hook-form
 
     const onSubmit = async (values: FormSchema) => {
         console.log('Form submitted:', values)
@@ -154,10 +133,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 							render={({ field }) => (
 								<Switcher
 									checked={field.value || false}
-									onChange={(value) => {
-										field.onChange(value)
-										handleFollowUpToggle(value)
-									}}
+									onChange={field.onChange}
 								/>
 							)}
 						/>
@@ -174,10 +150,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 										vertical
 										className="flex flex-col gap-6"
 										value={field.value}
-										onChange={(value) => {
-											field.onChange(value)
-											handleFollowUpTemplateChange(value)
-										}}
+										onChange={field.onChange}
 									>
 								{followUpTemplateOptions.map((option) => (
 									<div key={option.value} className="flex gap-4">
@@ -238,10 +211,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 							render={({ field }) => (
 								<Switcher
 									checked={field.value || false}
-									onChange={(value) => {
-										field.onChange(value)
-										handlePostEventToggle(value)
-									}}
+									onChange={field.onChange}
 								/>
 							)}
 						/>
@@ -258,10 +228,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 										vertical
 										className="flex flex-col gap-6"
 										value={field.value}
-										onChange={(value) => {
-											field.onChange(value)
-											handlePostEventTemplateChange(value)
-										}}
+										onChange={field.onChange}
 									>
 								{followUpTemplateOptions.map((option) => (
 									<div key={option.value} className="flex gap-4">
