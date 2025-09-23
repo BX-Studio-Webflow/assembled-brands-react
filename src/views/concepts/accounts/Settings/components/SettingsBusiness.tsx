@@ -95,11 +95,9 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
     )
 }
 
-const SettingsBusiness = () => {
-    const { data, mutate } = useSWR('/user/me', () =>
-        apiGetUserMe<GetSettingsProfileResponse>(),
-    )
-
+const SettingsBusiness = (props: { data: GetSettingsProfileResponse, mutate: () => void }) => {
+    const { data, mutate } = props
+    
     const dialCodeList = useMemo(() => {
         const newCountryList: Array<CountryOption> = JSON.parse(
             JSON.stringify(countryList),

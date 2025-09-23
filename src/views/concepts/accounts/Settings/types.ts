@@ -71,6 +71,10 @@ export type GetSettingsProfileResponse = {
         is_banned: boolean
         is_deleted: boolean
         profile_picture: string
+        is_follow_up_emails_enabled: boolean
+        is_post_event_emails_enabled: boolean
+        follow_up_template: string
+        post_event_template: string
     }
 }
 

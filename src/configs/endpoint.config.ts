@@ -7,6 +7,7 @@ const endpointConfig = {
     forgotPassword: '/user/request-reset-password',
     resetPassword: '/user/reset-password',
     saveBusinessDetails: '/business/my',
+    updateSettingsNotification: '/user/notification-settings',
 }
 
 export default endpointConfig

@@ -7,9 +7,10 @@ import { useSettingsStore } from './store/settingsStore'
 import { Notification as NotificationComponent } from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import useSWR from 'swr'
-import { apiSaveStripeOauthState } from '@/services/AuthService'
+import { apiGetUserMe, apiSaveStripeOauthState } from '@/services/AuthService'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router'
+import { GetSettingsProfileResponse } from './types'
 
 const Profile = lazy(() => import('./components/SettingsProfile'))
 const Security = lazy(() => import('./components/SettingsSecurity'))
@@ -32,6 +33,10 @@ const Settings = () => {
         code: '',
         action: '',
     })
+
+    const { data: userData, mutate: userMutate } = useSWR('/user/me', () =>
+        apiGetUserMe<GetSettingsProfileResponse>(),
+    )
 
     useEffect(() => {
         // Check if we're on the callback URL with a code
@@ -120,10 +125,10 @@ const Settings = () => {
                     )}
                     <Suspense fallback={<></>}>
                         {currentView === 'profile' && <Profile />}
-                        {currentView === 'business' && <Business />}
+                        {currentView === 'business' && userData && <Business data={userData} mutate={userMutate} />}
                         {currentView === 'security' && <Security />}
                         {currentView === 'team' && <Team />}
-                         {currentView === 'notification' && <Notification />}
+                         {currentView === 'notification' && userData && <Notification data={userData} mutate={userMutate} />}
                         {currentView === 'billing' && <Billing />}
                         {currentView === 'stripe' && <Stripe />}
                     </Suspense>

@@ -60,6 +60,14 @@ export async function apiResetPassword<T>(data: ResetPassword) {
     })
 }
 
+export async function apiUpdateSettingsNotification<T>(data: UpdateSettingsNotificationBody) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: endpointConfig.updateSettingsNotification,
+        method: 'put',
+        data,
+    })
+}
+
 export async function apiSaveBusinessDetails(data: BusinessDetails) {
     return ApiService.fetchDataWithAxios({
         url: endpointConfig.saveBusinessDetails,

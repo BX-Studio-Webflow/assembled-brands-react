@@ -1,12 +1,16 @@
 import Checkbox from '@/components/ui/Checkbox'
 import Radio from '@/components/ui/Radio'
 import Switcher from '@/components/ui/Switcher'
-import { apiGetSettingsNotification } from '@/services/AccontsService'
-import useSWR from 'swr'
+import { FormItem, Form } from '@/components/ui/Form'
 import cloneDeep from 'lodash/cloneDeep'
 import { TbMessageCircleCheck } from 'react-icons/tb'
-import type { GetSettingsNotificationResponse } from '../types'
-import { Input } from '@/components/ui'
+import type { GetSettingsProfileResponse } from '../types'
+import { Button, Input, Notification, toast } from '@/components/ui'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { AxiosError } from 'axios'
+import { apiUpdateSettingsNotification } from '@/services/AuthService'
 
 type EmailNotificationCategory =
     | 'newsAndUpdate'
@@ -14,6 +18,19 @@ type EmailNotificationCategory =
     | 'offerAndPromotion'
     | 'followUpReminder'
 
+type FormSchema = {
+    followUpTemplate: string
+    postEventTemplate: string
+    followUpCustomTemplate: string
+    postEventCustomTemplate: string
+}
+
+const validationSchema = z.object({
+    followUpTemplate: z.string().min(1, { message: 'Template selection required' }),
+    postEventTemplate: z.string().min(1, { message: 'Template selection required' }),
+    followUpCustomTemplate: z.string().optional(),
+    postEventCustomTemplate: z.string().optional(),
+})
 
 const followUpTemplateOptions: {
     label: string
@@ -33,59 +50,88 @@ const followUpTemplateOptions: {
     
 ]
 
-const SettingsNotification = () => {
+type SettingsNotificationProps = {
+    data: GetSettingsProfileResponse
+    mutate: () => void
+}
+
+const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
+   
+
     const {
-        data = {
-            email: [],
-            desktop: false,
-            unreadMessageBadge: false,
-            notifymeAbout: '',
-            postEventTemplate: '',
+        handleSubmit,
+        reset,
+        formState: { errors },
+        control,
+        watch,
+    } = useForm<FormSchema>({
+        defaultValues: {
+            followUpTemplate: data.user.follow_up_template || '',
+            postEventTemplate: (data as any).postEventTemplate || '',
+            followUpCustomTemplate: '',
+            postEventCustomTemplate: '',
         },
-        mutate,
-    } = useSWR(
-        '/api/settings/notification/',
-        () => apiGetSettingsNotification<GetSettingsNotificationResponse>(),
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-            revalidateOnReconnect: false,
-        },
-    )
+        resolver: zodResolver(validationSchema),
+    })
+
+    const followUpTemplate = watch('followUpTemplate')
+    const postEventTemplate = watch('postEventTemplate')
 
 	// Derived, clearly named view variables
-	const isFollowUpEmailsEnabled = data.desktop
-	const isPostEventEmailsEnabled = data.unreadMessageBadge
-	const followUpTemplate = data.notifymeAbout
-	const postEventTemplate = (data as any).postEventTemplate || ''
+	const isFollowUpEmailsEnabled = data.user.is_follow_up_emails_enabled
+	const isPostEventEmailsEnabled = data.user.is_post_event_emails_enabled
 
 	const handleFollowUpToggle = (value: boolean) => {
         const newData = cloneDeep(data)
-        newData.desktop = value
-        mutate(newData, false)
+        newData.user.is_follow_up_emails_enabled = value
+        mutate()
     }
 
 	const handlePostEventToggle = (value: boolean) => {
         const newData = cloneDeep(data)
-        newData.unreadMessageBadge = value
-        mutate(newData, false)
+        newData.user.is_post_event_emails_enabled = value
+        mutate()
     }
 
 	const handleFollowUpTemplateChange = (value: string) => {
         const newData = cloneDeep(data)
-        newData.notifymeAbout = value
-        mutate(newData, false)
+        newData.user.follow_up_template = value
+        mutate()
     }
 
     const handlePostEventTemplateChange = (value: string) => {
         const newData = cloneDeep(data)
-        ;(newData as any).postEventTemplate = value
-        mutate(newData, false)
+        newData.user.post_event_template = value
+        mutate()
+    }
+
+    const onSubmit = async (values: FormSchema) => {
+        console.log('Form submitted:', values)
+        try {
+            await apiUpdateSettingsNotification(values)
+            toast.push(
+                
+					<Notification type="success">
+						Business details updated successfully!
+					</Notification>,
+					{ placement: 'top-center' },
+				)
+            
+            mutate()
+        } catch (error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
     }
 
     return (
         <div>
             <h4>Notification</h4>
+            <Form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-2">
 				<div className="py-6 border-b border-gray-200 dark:border-gray-600">
 					<div className="flex items-center justify-between">
@@ -130,9 +176,24 @@ const SettingsNotification = () => {
 							</Radio.Group>
 						</div>
 						{followUpTemplate === 'useCustomTemplate' && (
-							<div>
-								<Input textArea placeholder="Enter your custom template" style={{ minHeight: 300 }} />
-							</div>
+							<FormItem
+								label="Custom Follow-up Template"
+								invalid={Boolean(errors.followUpCustomTemplate)}
+								errorMessage={errors.followUpCustomTemplate?.message}
+							>
+								<Controller
+									name="followUpCustomTemplate"
+									control={control}
+									render={({ field }) => (
+										<Input
+											textArea
+											placeholder="Enter your custom template"
+											style={{ minHeight: 300 }}
+											{...field}
+										/>
+									)}
+								/>
+							</FormItem>
 						)}
                     </div>
 					)}
@@ -181,15 +242,40 @@ const SettingsNotification = () => {
 							</Radio.Group>
 						</div>
 						{postEventTemplate === 'useCustomTemplate' && (
-							<div>
-								<Input textArea placeholder="Enter your custom template" style={{ minHeight: 300 }} />
-							</div>
+							<FormItem
+								label="Custom Post-event Template"
+								invalid={Boolean(errors.postEventCustomTemplate)}
+								errorMessage={errors.postEventCustomTemplate?.message}
+							>
+								<Controller
+									name="postEventCustomTemplate"
+									control={control}
+									render={({ field }) => (
+										<Input
+											textArea
+											placeholder="Enter your custom template"
+											style={{ minHeight: 300 }}
+											{...field}
+										/>
+									)}
+								/>
+							</FormItem>
+							
 						)}
+						
                     </div>
 					)}
+					
 				</div>
-                
+                <FormItem>
+                <div className="flex justify-end mt-4">
+                <Button variant="solid" type="submit">
+                    Save Changes
+                </Button>
+                </div>
+            </FormItem>
             </div>
+            </Form>
         </div>
     )
 }
