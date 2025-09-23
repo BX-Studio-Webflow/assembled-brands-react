@@ -211,7 +211,8 @@ export const pricingPlansData = {
         {
             id: 'popular',
             name: 'Popular',
-            description: 'Everything in basic, plus hosting paid courses',
+            description:
+                'Everything in Basic, plus the ability to host paid courses with a dedicated members area, enabling you to monetize your expertise while continuing to collect leads and run live, pre-recorded, or in-person events.',
             price: {
                 monthly: 299,
                 annually: 3588,
@@ -241,7 +242,7 @@ export const pricingPlansData = {
             id: 'advanced',
             name: 'Advanced',
             description:
-                'Everything in popular plus live online community page',
+                'Everything in Popular, plus a live online community page to engage your audience, nurture relationships, and drive retention alongside paid courses, lead capture, and flexible event experiences.',
             price: {
                 monthly: 399,
                 annually: 4788,
