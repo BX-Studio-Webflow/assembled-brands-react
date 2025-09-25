@@ -82,18 +82,19 @@ const leadOptions = [
         label: 'New Lead',
         value: 'new_lead',
     },
-    {
-        label: 'Call Back',
-        value: 'call_back',
-    },
-    {
+	{
         label: 'Registered for Event',
         value: 'registered_for_event',
     },
-    {
+	{
         label: 'Attended Event',
         value: 'attended_event',
     },
+    {
+        label: 'Call Back',
+        value: 'call_back',
+    },   
+   
 ]
 
 type SettingsNotificationProps = {
