@@ -253,8 +253,8 @@ const OverviewSection = ({
             {!newLead && (
                 <FormItem
                     label="Lead Status"
-                    invalid={Boolean((errors as any).lead_status)}
-                    errorMessage={(errors as any).lead_status?.message}
+                    invalid={Boolean((errors).lead_status)}
+                    errorMessage={(errors).lead_status?.message}
                 >
                     <Controller
                         name="lead_status"
@@ -287,6 +287,7 @@ const OverviewSection = ({
                             textArea
                             placeholder="Add some notes"
                             {...field}
+                            value={field.value || ''}
                         />
                     )}
                 />

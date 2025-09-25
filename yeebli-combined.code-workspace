@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../yeebli-backend"
+		},
+		{
+			"path": "../ecme-ts"
 		}
 	],
 	"settings": {}

@@ -6,6 +6,7 @@ import NewBulkMail from './NewBulkMail'
 import { apiGetFollowUpEmails } from '@/services/MailService'
 import useSWR from 'swr'
 import { FollowUpEmail } from '@/@types/mail'
+import BulkMailListContent from './BulkMailListContent'
     
 
 
@@ -31,7 +32,7 @@ const SettingsNotification = () => {
                             </p>
                         </div>
                         <div>
-                            <Button onClick={() => setShowNewBulkMail(true)} className="mr-2" icon={<HiOutlineMail />}>
+                            <Button className="mr-2" icon={<HiOutlineMail />} onClick={() => setShowNewBulkMail(true)}>
                                 <span>New Bulk Mail</span>
                             </Button>
                         </div>
@@ -40,8 +41,11 @@ const SettingsNotification = () => {
             </div>
           
             {showNewBulkMail && (
-                <NewBulkMail setShowNewBulkMail={setShowNewBulkMail} />
+                <NewBulkMail setShowNewBulkMail={setShowNewBulkMail} mutate={mutate} />
             )}
+			{data && (
+				<BulkMailListContent data={data} mutate={mutate} />
+			)}
         </div>
     )
 }

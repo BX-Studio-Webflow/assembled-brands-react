@@ -67,9 +67,10 @@ const validationSchema: ZodType<FormSchema> = z
 
     interface NewBulkMailProps {
         setShowNewBulkMail: (show: boolean) => void
+        mutate: () => void
     }
 
-const NewBulkMail = ({ setShowNewBulkMail }: NewBulkMailProps) => {
+const NewBulkMail = ({ setShowNewBulkMail, mutate }: NewBulkMailProps) => {
     const [showNewBulkMail, setShowNewBulkMailLocal] = useState(true)
     const [formSubmiting, setFormSubmiting] = useState(false)
     const { user } = useAuth()
@@ -120,6 +121,9 @@ const NewBulkMail = ({ setShowNewBulkMail }: NewBulkMailProps) => {
 					</Notification>,
 					{ placement: 'top-center' },
 				)
+
+           
+            mutate()
             
            
         } catch (error) {

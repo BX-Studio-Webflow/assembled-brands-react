@@ -31,6 +31,14 @@ export async function apiGetFollowUpEmails<T>() {
     })
 }
 
+export async function apiDeleteFollowUpEmail(id: number) {
+    return ApiService.fetchDataWithAxios({
+        url: `/email/follow-up/${id}`,
+        method: 'delete',
+    })
+}
+
+
 
 export async function apiCreateMail(data: MailRequestBody) {
     return ApiService.fetchDataWithAxios({

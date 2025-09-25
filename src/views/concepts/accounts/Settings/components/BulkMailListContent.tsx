@@ -1,0 +1,116 @@
+import Card from '@/components/ui/Card'
+import { Link } from 'react-router'
+
+
+import { TbTrash } from 'react-icons/tb'
+
+import type { FollowUpEmail } from '@/@types/mail'
+import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import { useState } from 'react'
+import { toast } from '@/components/ui/toast'
+import { apiDeleteFollowUpEmail } from '@/services/MailService'
+import Notification from '@/components/ui/Notification'
+import { AxiosError } from 'axios'
+
+interface BulkMailListContentProps {
+    data: FollowUpEmail[]
+    mutate: () => void
+}
+
+const BulkMailListContent = ({ data, mutate }: BulkMailListContentProps) => {
+    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
+    const [toDeleteId, setToDeleteId] = useState<number | null>(null)
+    
+    const handleDelete = (customer: FollowUpEmail) => {
+        setDeleteConfirmationOpen(true)
+        setToDeleteId(customer.id)
+    }
+
+    const handleCancel = () => {
+        setDeleteConfirmationOpen(false)
+        setToDeleteId(null)
+    }
+
+    const handleConfirmDelete = async () => {
+        if (!toDeleteId) return
+        try {
+            await apiDeleteFollowUpEmail(toDeleteId)
+            toast.push(
+                <Notification type="success">
+                    Follow up email deleted successfully!
+                </Notification>,
+                { placement: 'top-center' },
+            )
+            mutate()
+        } catch(error) {
+            toast.push(
+                <Notification type="danger">
+                    {(error as AxiosError).message}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        } finally {
+            setDeleteConfirmationOpen(false)
+            setToDeleteId(null)
+        }
+    }
+ 
+
+    return (
+        <div>
+            
+            <div className="mt-8">
+                <h5 className="mb-3">Follow up emails</h5>
+                <div className="flex flex-col gap-4">
+                    {data.map((email) => (
+                            <Card key={email.id}>
+                                <div className="flex justify-between">
+                                    <div className="flex flex-col gap-4">
+                                        <div className="flex flex-col">
+                                            <h6 className="font-bold hover:text-primary">
+                                                <Link
+                                                    to={`/concepts/projects/project-details/${email.id}`}
+                                                >
+                                                    {email.title}
+                                                </Link>
+                                            </h6>
+                                            <span>{email.timeline} days after event</span>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                   
+                                    <div className="my-1 sm:my-0 col-span-12 sm:col-span-1 flex md:items-center justify-end">
+                                        <div
+                                            className="cursor-pointer text-lg hover:text-red-500"
+                                            role="button"
+                                            onClick={() => handleDelete(email)}
+                                        >
+                                            <TbTrash />
+                                        </div>
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                </div>
+            </div>
+            <ConfirmDialog
+                isOpen={deleteConfirmationOpen}
+                type="danger"
+                title="Remove follow up email"
+                onClose={handleCancel}
+                onRequestClose={handleCancel}
+                onCancel={handleCancel}
+                onConfirm={handleConfirmDelete}
+            >
+                <p>
+                    {' '}
+                    Are you sure you want to remove this follow up email? This action
+                    can&apos;t be undone.{' '}
+                </p>
+            </ConfirmDialog>
+        </div>
+    )
+}
+
+export default BulkMailListContent
