@@ -1,4 +1,4 @@
-import { MailRequestBody, MailSearchRequestBody } from '@/@types/mail'
+import { CreateBulkMailBody, MailRequestBody, MailSearchRequestBody } from '@/@types/mail'
 import ApiService from './ApiService'
 
 export async function apiGetMails<T>(params?: Record<string, unknown>) {
@@ -13,6 +13,14 @@ export async function apiGetMail<T>(id: string) {
     return ApiService.fetchDataWithAxios<T>({
         url: `/email/${id}`,
         method: 'get',
+    })
+}
+
+export async function apiCreateBulkMail(data: CreateBulkMailBody) {
+    return ApiService.fetchDataWithAxios({
+        url: '/email/bulk',
+        method: 'post',
+        data,
     })
 }
 
