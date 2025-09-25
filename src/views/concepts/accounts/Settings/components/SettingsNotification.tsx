@@ -39,6 +39,42 @@ const validationSchema = z.object({
     postEventWhoGetsIt: z.array(z.enum(['new_lead', 'call_back', 'registered_for_event', 'attended_event'])),
     followUpCustomTemplate: z.string().optional(),
     postEventCustomTemplate: z.string().optional(),
+}).refine((data) => {
+    // If follow-up emails are enabled, custom template must be truthy
+    if (data.followUpEnabled && (!data.followUpCustomTemplate || data.followUpCustomTemplate.trim() === '')) {
+        return false
+    }
+    return true
+}, {
+    message: "Custom template is required when follow-up emails are enabled",
+    path: ["followUpCustomTemplate"]
+}).refine((data) => {
+    // If post-event emails are enabled, custom template must be truthy
+    if (data.postEventEnabled && (!data.postEventCustomTemplate || data.postEventCustomTemplate.trim() === '')) {
+        return false
+    }
+    return true
+}, {
+    message: "Custom template is required when post-event emails are enabled",
+    path: ["postEventCustomTemplate"]
+}).refine((data) => {
+    // If follow-up emails are enabled, at least one checkbox must be selected
+    if (data.followUpEnabled && (!data.followUpWhoGetsIt || data.followUpWhoGetsIt.length === 0)) {
+        return false
+    }
+    return true
+}, {
+    message: "At least one option must be selected when follow-up emails are enabled",
+    path: ["followUpWhoGetsIt"]
+}).refine((data) => {
+    // If post-event emails are enabled, at least one checkbox must be selected
+    if (data.postEventEnabled && (!data.postEventWhoGetsIt || data.postEventWhoGetsIt.length === 0)) {
+        return false
+    }
+    return true
+}, {
+    message: "At least one option must be selected when post-event emails are enabled",
+    path: ["postEventWhoGetsIt"]
 })
 
 const leadOptions = [
@@ -174,7 +210,11 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 									)}
 								/>
 							</FormItem>
-							<FormItem label="Who gets it?">
+							<FormItem 
+								label="Who gets it?"
+								invalid={Boolean(errors.followUpWhoGetsIt)}
+								errorMessage={errors.followUpWhoGetsIt?.message}
+							>
 							<Controller
 								name="followUpWhoGetsIt"
 								control={control}
@@ -238,7 +278,11 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 									)}
 								/>
 							</FormItem>
-							<FormItem label="Who gets it?">
+							<FormItem 
+								label="Who gets it?"
+								invalid={Boolean(errors.postEventWhoGetsIt)}
+								errorMessage={errors.postEventWhoGetsIt?.message}
+							>
 							<Controller
 								name="postEventWhoGetsIt"
 								control={control}
