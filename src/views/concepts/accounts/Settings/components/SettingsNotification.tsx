@@ -18,9 +18,9 @@ const SettingsNotification = () => {
                 <div className="py-6 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h5>Bulk Mail</h5>
+                            <h5>Enable follow up emails</h5>
                             <p>
-                                Create and send bulk emails to your leads.
+							Decide whether you want to leads to be notified after the event.
                             </p>
                         </div>
                         <div>

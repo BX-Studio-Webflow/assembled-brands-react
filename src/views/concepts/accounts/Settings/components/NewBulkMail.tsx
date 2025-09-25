@@ -17,6 +17,8 @@ import { AxiosError } from 'axios'
 
 import Checkbox from '@/components/ui/Checkbox'
 import { CreateBulkMailBody } from '@/@types/mail'
+import { useAuth } from '@/auth'
+
 
 type FormSchema = {
    
@@ -70,7 +72,7 @@ const validationSchema: ZodType<FormSchema> = z
 const NewBulkMail = ({ setShowNewBulkMail }: NewBulkMailProps) => {
     const [showNewBulkMail, setShowNewBulkMailLocal] = useState(true)
     const [formSubmiting, setFormSubmiting] = useState(false)
-
+    const { user } = useAuth()
    
    
 
@@ -108,6 +110,7 @@ const NewBulkMail = ({ setShowNewBulkMail }: NewBulkMailProps) => {
 				content: value.content,
 				follow_up_who_gets_it: value.followUpWhoGetsIt || [],
 				timeline: value.timeline || 0,
+				user_id: user?.id || 0,
 			}
             await apiCreateBulkMail(body)
             toast.push(
@@ -197,6 +200,7 @@ const NewBulkMail = ({ setShowNewBulkMail }: NewBulkMailProps) => {
                                     autoComplete="off"
                                     placeholder="Enter timeline in days"
                                     min="1"
+                                    max="10"
                                     value={field.value || ''}
                                     onChange={(e) => {
                                         const value = e.target.value

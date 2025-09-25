@@ -25,4 +25,5 @@ export type CreateBulkMailBody = {
     content: string
     follow_up_who_gets_it: Array<'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'>
     timeline: number
+    user_id: number
 }
