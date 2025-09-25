@@ -27,3 +27,14 @@ export type CreateBulkMailBody = {
     timeline: number
     user_id: number
 }
+
+export type FollowUpEmail = {
+    id: number;
+    created_at: Date | null;
+    updated_at: Date | null;
+    user_id: number;
+    follow_up_who_gets_it: ("new_lead" | "call_back" | "registered_for_event" | "attended_event")[] | null;
+    title: string;
+    content: string;
+    timeline: number;
+    enabled: boolean | null;}

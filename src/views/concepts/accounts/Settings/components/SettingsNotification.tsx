@@ -3,14 +3,21 @@ import { Button } from '@/components/ui'
 import { HiOutlineMail } from 'react-icons/hi'
 import { useState } from 'react'
 import NewBulkMail from './NewBulkMail'
-
+import { apiGetFollowUpEmails } from '@/services/MailService'
+import useSWR from 'swr'
+import { FollowUpEmail } from '@/@types/mail'
+    
 
 
 
 const SettingsNotification = () => {
 	const [showNewBulkMail, setShowNewBulkMail] = useState(false)
-
-
+    const { data, error, isLoading, mutate } = useSWR(
+        ['/email/follow-up'],
+       apiGetFollowUpEmails<FollowUpEmail[]>, {
+            revalidateOnFocus: false,
+        },
+    )
     return (
         <div>
             <h4>Notification</h4>
