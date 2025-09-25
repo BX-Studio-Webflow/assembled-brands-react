@@ -131,7 +131,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
             <h4>Notification</h4>
             <Form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-2">
-				<div className="py-6 border-b border-gray-200 dark:border-gray-600">
+				<div className="py-6 border-b border-gray-200 dark:border-gray-600 flex flex-col gap-4">
 					<div className="flex items-center justify-between">
 						<div>
 							<h5>Enable follow up emails</h5>
@@ -157,7 +157,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
                         {isFollowUpEmailsEnabled && (
 							<div>
 							<FormItem
-								label="Custom Follow-up Template"
+								label="Enter your custom template"
 								invalid={Boolean(errors.followUpCustomTemplate)}
 								errorMessage={errors.followUpCustomTemplate?.message}
 							>
@@ -194,7 +194,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
                     </div>
 					)}
 				</div>
-				<div className="py-6 border-b border-gray-200 dark:border-gray-600">
+				<div className="py-6 border-b border-gray-200 dark:border-gray-600 flex flex-col gap-4">
 					<div className="flex items-center justify-between">
 						<div>
 							<h5>Enable post event emails</h5>
@@ -221,7 +221,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
                         {isPostEventEmailsEnabled && (
 							<div>
 							<FormItem
-								label="Custom Post-event Template"
+								label="Enter your custom template"
 								invalid={Boolean(errors.postEventCustomTemplate)}
 								errorMessage={errors.postEventCustomTemplate?.message}
 							>
