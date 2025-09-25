@@ -10,7 +10,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { ZodType } from 'zod'
-import { apiCreateBulkMail } from '@/services/MailService'
+import { apiCreateFollowUpEmail } from '@/services/MailService'
 import { AxiosError } from 'axios'
 
 
@@ -112,11 +112,11 @@ const NewBulkMail = ({ setShowNewBulkMail }: NewBulkMailProps) => {
 				timeline: value.timeline || 0,
 				user_id: user?.id || 0,
 			}
-            await apiCreateBulkMail(body)
+            await apiCreateFollowUpEmail(body)
             toast.push(
                 
 					<Notification type="success">
-						Bulk mail created successfully!
+						Follow up email created successfully!
 					</Notification>,
 					{ placement: 'top-center' },
 				)

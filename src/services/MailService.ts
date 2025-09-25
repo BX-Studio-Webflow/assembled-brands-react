@@ -16,9 +16,9 @@ export async function apiGetMail<T>(id: string) {
     })
 }
 
-export async function apiCreateBulkMail(data: CreateBulkMailBody) {
+export async function apiCreateFollowUpEmail(data: CreateBulkMailBody) {
     return ApiService.fetchDataWithAxios({
-        url: '/email/bulk',
+        url: '/email/follow-up',
         method: 'post',
         data,
     })
