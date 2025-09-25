@@ -26,8 +26,7 @@ export type UpdateSettingsNotificationBody = {
     is_post_event_emails_enabled: boolean
     follow_up_template: string
     post_event_template: string
-    follow_up_template_mode: 'default' | 'custom'
-    post_event_template_mode: 'default' | 'custom'
+   
     follow_up_who_gets_it: Array<'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'>
     post_event_who_gets_it: Array<'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'>
 }

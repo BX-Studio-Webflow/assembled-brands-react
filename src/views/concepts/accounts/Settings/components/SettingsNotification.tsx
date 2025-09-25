@@ -1,8 +1,6 @@
 
-import Radio from '@/components/ui/Radio'
 import Switcher from '@/components/ui/Switcher'
 import { FormItem, Form } from '@/components/ui/Form'
-import { TbMessageCircleCheck } from 'react-icons/tb'
 import type { GetSettingsProfileResponse } from '../types'
 import { Button, Input, Notification, toast, Checkbox } from '@/components/ui'
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
@@ -16,8 +14,6 @@ import { UpdateSettingsNotificationBody } from '@/@types/auth'
 type FormSchema = {
     followUpEnabled: boolean
     postEventEnabled: boolean
-    followUpTemplateMode: 'default' | 'custom'
-    postEventTemplateMode: 'default' | 'custom'
     followUpWhoGetsIt: (
      
         | 'new_lead'
@@ -39,31 +35,11 @@ type FormSchema = {
 const validationSchema = z.object({
     followUpEnabled: z.boolean(),
     postEventEnabled: z.boolean(),
-    followUpTemplateMode: z.enum(['default', 'custom']),
-    postEventTemplateMode: z.enum(['default', 'custom']),
     followUpWhoGetsIt: z.array(z.enum([ 'new_lead', 'call_back', 'registered_for_event', 'attended_event'])),
     postEventWhoGetsIt: z.array(z.enum(['new_lead', 'call_back', 'registered_for_event', 'attended_event'])),
     followUpCustomTemplate: z.string().optional(),
     postEventCustomTemplate: z.string().optional(),
 })
-
-const followUpTemplateOptions: {
-    label: string
-    value: 'default' | 'custom'
-    desc: string
-}[] = [
-    {
-        label: 'Use default template',
-        value: 'default',
-        desc: 'Broadcast notifications to the leads using the default template',
-    },
-    {
-        label: 'Use custom template',
-        value: 'custom',
-        desc: 'Broadcast notifications to the leads using the custom template',
-    },
-    
-]
 
 const leadOptions = [
     {
@@ -102,8 +78,6 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
         defaultValues: {
             followUpEnabled: data.user.is_follow_up_emails_enabled || false,
             postEventEnabled: data.user.is_post_event_emails_enabled || false,
-            followUpTemplateMode: data.user.follow_up_template_mode || 'default',
-            postEventTemplateMode: data.user.post_event_template_mode || 'default',
             followUpCustomTemplate: data.user.follow_up_template || '',
             postEventCustomTemplate: data.user.post_event_template || '',
             followUpWhoGetsIt: Array.isArray(data.user.follow_up_who_gets_it)
@@ -116,8 +90,6 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
         resolver: zodResolver(validationSchema),
     })
 
-    const followUpTemplateMode = watch('followUpTemplateMode')
-    const postEventTemplateMode = watch('postEventTemplateMode')
     const isFollowUpEmailsEnabled = watch('followUpEnabled')
     const isPostEventEmailsEnabled = watch('postEventEnabled')
 
@@ -128,9 +100,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
         try {
 			const body: UpdateSettingsNotificationBody = {
 				is_follow_up_emails_enabled: values.followUpEnabled || false,
-				is_post_event_emails_enabled: values.postEventEnabled || false,
-				follow_up_template_mode: values.followUpTemplateMode,
-				post_event_template_mode: values.postEventTemplateMode,
+				is_post_event_emails_enabled: values.postEventEnabled || false,               
 				follow_up_template: values.followUpCustomTemplate,
 				post_event_template: values.postEventCustomTemplate,
 				follow_up_who_gets_it: values.followUpWhoGetsIt || ['all'],
@@ -184,39 +154,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 					</div>
 					{isFollowUpEmailsEnabled && (
                         <div className="flex flex-col gap-4">
-						<div className="mt-4">
-							
-							<Controller
-								name="followUpTemplateMode"
-								control={control}
-								render={({ field }) => (
-									<Radio.Group
-										vertical
-										className="flex flex-col gap-6"
-										value={field.value}
-										onChange={field.onChange}
-									>
-								{followUpTemplateOptions.map((option) => (
-									<div key={option.value} className="flex gap-4">
-										<div className="mt-1.5">
-											<Radio value={option.value} />
-										</div>
-										<div className="flex gap-2">
-											<div className="mt-1">
-												<TbMessageCircleCheck className="text-lg" />
-											</div>
-											<div>
-												<h6>{option.label}</h6>
-												<p>{option.desc}</p>
-											</div>
-										</div>
-									</div>
-								))}
-									</Radio.Group>
-								)}
-							/>
-						</div>
-						{followUpTemplateMode === 'custom' && (
+                        {isFollowUpEmailsEnabled && (
 							<div>
 							<FormItem
 								label="Custom Follow-up Template"
@@ -280,42 +218,7 @@ const SettingsNotification = ({ data, mutate }: SettingsNotificationProps) => {
 					</div>
 					{isPostEventEmailsEnabled && (
                         <div className="flex flex-col gap-4">
-						<div className="mt-4">
-						
-							
-							</div>
-							<div>
-							<Controller
-								name="postEventTemplateMode"
-								control={control}
-								render={({ field }) => (
-									<Radio.Group
-										vertical
-										className="flex flex-col gap-6"
-										value={field.value}
-										onChange={field.onChange}
-									>
-								{followUpTemplateOptions.map((option) => (
-									<div key={option.value} className="flex gap-4">
-										<div className="mt-1.5">
-											<Radio value={option.value} />
-										</div>
-										<div className="flex gap-2">
-											<div className="mt-1">
-												<TbMessageCircleCheck className="text-lg" />
-											</div>
-											<div>
-												<h6>{option.label}</h6>
-												<p>{option.desc}</p>
-											</div>
-										</div>
-									</div>
-								))}
-									</Radio.Group>
-								)}
-							/>
-						</div>
-						{postEventTemplateMode === 'custom' && (
+                        {isPostEventEmailsEnabled && (
 							<div>
 							<FormItem
 								label="Custom Post-event Template"
