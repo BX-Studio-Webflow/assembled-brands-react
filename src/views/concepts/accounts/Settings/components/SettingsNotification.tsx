@@ -33,7 +33,7 @@ const SettingsNotification = () => {
                         </div>
                         <div>
                             <Button className="mr-2" icon={<HiOutlineMail />} onClick={() => setShowNewBulkMail(true)}>
-                                <span>New Bulk Mail</span>
+                                <span>Add follow up</span>
                             </Button>
                         </div>
                     </div>
@@ -44,7 +44,7 @@ const SettingsNotification = () => {
                 <NewBulkMail setShowNewBulkMail={setShowNewBulkMail} mutate={mutate} />
             )}
 			{data && (
-				<BulkMailListContent data={data} mutate={mutate} />
+				<BulkMailListContent data={data} mutate={mutate} isLoading={isLoading} />
 			)}
         </div>
     )

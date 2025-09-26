@@ -147,7 +147,7 @@ const NewBulkMail = ({ setShowNewBulkMail, mutate }: NewBulkMailProps) => {
             onRequestClose={handleDialogClose}
         >
             <h4 className="mb-4 px-1">
-                {showNewBulkMail && 'New Bulk Mail'}
+                {showNewBulkMail && 'New Follow Up Email'}
             </h4>
             <div className="max-h-200 overflow-y-auto px-1">
                 <Form onSubmit={handleSubmit(onSubmit)}>
