@@ -13,7 +13,7 @@ import BulkMailListContent from './BulkMailListContent'
 
 const SettingsNotification = () => {
 	const [showNewBulkMail, setShowNewBulkMail] = useState(false)
-    const { data, error, isLoading, mutate } = useSWR(
+    const { data, isLoading, mutate } = useSWR(
         ['/email/follow-up'],
        apiGetFollowUpEmails<FollowUpEmail[]>, {
             revalidateOnFocus: false,

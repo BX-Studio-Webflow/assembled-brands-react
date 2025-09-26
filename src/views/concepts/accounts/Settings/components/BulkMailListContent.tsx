@@ -1,5 +1,4 @@
 import Card from '@/components/ui/Card'
-import { Link } from 'react-router'
 
 
 import { TbTrash } from 'react-icons/tb'
@@ -14,7 +13,6 @@ import { AxiosError } from 'axios'
 import { Skeleton } from '@/components/ui/Skeleton'
 import NoUserFound from '@/assets/svg/NoUserFound'
 import EditBulkMail from './EditBulkMail'
-import Switcher from '@/components/ui/Switcher'
 
 interface BulkMailListContentProps {
     data: FollowUpEmail[]
