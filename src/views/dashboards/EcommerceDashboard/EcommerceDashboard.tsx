@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import useSWR from 'swr'
 import Loading from '@/components/shared/Loading'
 import Overview from './components/Overview'
-import EngagementMetrics from './components/EngagementMetrics'
-import PrerecordedEventsTable from './components/PrerecordedEventsTable'
+import PrerecordedEventsTable from './components/EventsStaticsTable'
 import { apiGetDashboard } from '@/services/AuthService'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
@@ -70,9 +69,7 @@ const EcommerceDashboard = () => {
                 />
             </div>
 
-            <div className="col-span-1">
-                <EngagementMetrics data={data?.data?.engagement} />
-            </div>
+           
         </div>
     )
 }

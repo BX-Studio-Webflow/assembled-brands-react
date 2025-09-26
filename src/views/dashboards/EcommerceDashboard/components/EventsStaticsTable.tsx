@@ -159,7 +159,7 @@ const PrerecordedEventsTable = ({ data = [] }: PrerecordedEventsData) => {
     return (
         <Card>
             <div className="flex items-center justify-between mb-6">
-                <h4>Event Statistics</h4>
+                <h4>Upcoming 30 day stats</h4>
                 <Button
                     size="sm"
                     onClick={() => navigate('/concepts/event/event-list')}
