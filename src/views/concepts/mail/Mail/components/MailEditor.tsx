@@ -366,8 +366,8 @@ const MailEditor = ({
                             watch('type') === 'tag'
                                 ? 'Tags'
                                 : watch('type') === 'event'
-                                  ? 'Events'
-                                  : 'Recipients'
+                                    ? 'Events'
+                                    : 'Recipients'
                         }
                         invalid={Boolean(errors.recipients)}
                         errorMessage={errors.recipients?.message}
@@ -382,8 +382,26 @@ const MailEditor = ({
                                         watch('type') === 'tag'
                                             ? 'Type to search tags'
                                             : watch('type') === 'event'
-                                              ? 'Type to search events'
-                                              : 'Type to search recipients'
+                                                ? 'Type to search events'
+                                                : 'Type to search recipients'
+                                    }
+                                    value={
+                                        field.value ? (
+                                            (() => {
+                                                const currentType = watch('type')
+                                                let currentOptions: { value: number, label: string }[] = []
+
+                                                if (currentType === 'event') {
+                                                    currentOptions = events.map(e => ({ value: e.event.id, label: e.event.event_name }))
+                                                } else if (currentType === 'tag') {
+                                                    currentOptions = tags.map(t => ({ value: t.id, label: t.tag }))
+                                                } else if (currentType === 'name') {
+                                                    currentOptions = searchResults.filter(r => 'name' in r).map(r => 'name' in r ? { value: r.id, label: `${r.name} - ${r.email}` } : null).filter(Boolean) as { value: number, label: string }[]
+                                                }
+
+                                                return currentOptions.find(option => option.value === field.value) || null
+                                            })()
+                                        ) : null
                                     }
                                     options={(() => {
                                         const currentType = watch('type')
@@ -483,7 +501,7 @@ const MailEditor = ({
                                         if (
                                             !selectedEvent?.memberships ||
                                             selectedEvent.memberships.length ===
-                                                0
+                                            0
                                         ) {
                                             return (
                                                 <div className="text-gray-500">
