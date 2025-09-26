@@ -75,11 +75,11 @@ const Overview = ({ data }: StatisticGroupsProps) => {
     return (
         <Card>
             <div className="flex items-center justify-between">
-                <h4>Overview</h4>
+                <h4>Event Count</h4>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-2xl p-3 bg-gray-100 dark:bg-gray-700 mt-4">
                 <StatisticCard
-                    title="Total Earned"
+                    title="Upcoming events"
                     value={
                         <NumericFormat
                             displayType="text"
@@ -95,7 +95,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     onClick={setSelectedCategory}
                 />
                 <StatisticCard
-                    title="Total Registration"
+                    title="Total events"
                     value={
                         <NumericFormat
                             displayType="text"
@@ -110,7 +110,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     onClick={setSelectedCategory}
                 />
                 <StatisticCard
-                    title="Total Non Attendee"
+                    title="Cancelled events"
                     value={
                         <AbbreviateNumber value={data.totalNonAttendee || 0} />
                     }
