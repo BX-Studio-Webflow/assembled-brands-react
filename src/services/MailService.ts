@@ -24,6 +24,14 @@ export async function apiCreateFollowUpEmail(data: CreateBulkMailBody) {
     })
 }
 
+export async function apiUpdateFollowUpEmail(id: number, data: CreateBulkMailBody) {
+    return ApiService.fetchDataWithAxios({
+        url: `/email/follow-up/${id}`,
+        method: 'put',
+        data,
+    })
+}
+
 export async function apiGetFollowUpEmails<T>() {
     return ApiService.fetchDataWithAxios<T>({
         url: '/email/follow-up',

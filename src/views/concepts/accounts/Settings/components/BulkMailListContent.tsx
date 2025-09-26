@@ -13,6 +13,8 @@ import Notification from '@/components/ui/Notification'
 import { AxiosError } from 'axios'
 import { Skeleton } from '@/components/ui/Skeleton'
 import NoUserFound from '@/assets/svg/NoUserFound'
+import EditBulkMail from './EditBulkMail'
+import Switcher from '@/components/ui/Switcher'
 
 interface BulkMailListContentProps {
     data: FollowUpEmail[]
@@ -23,7 +25,8 @@ interface BulkMailListContentProps {
 const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentProps) => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [toDeleteId, setToDeleteId] = useState<number | null>(null)
-
+    const [toEditId, setToEditId] = useState<number | null>(null)
+    const [showEditBulkMail, setShowEditBulkMail] = useState(false)
     const handleDelete = (customer: FollowUpEmail) => {
         setDeleteConfirmationOpen(true)
         setToDeleteId(customer.id)
@@ -94,12 +97,15 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
                                 <div className="flex justify-between">
                                     <div className="flex flex-col gap-4">
                                         <div className="flex flex-col">
-                                            <h6 className="font-bold hover:text-primary">
-                                                <Link
-                                                    to={`/concepts/accounts/settings/notification/${email.id}`}
-                                                >
-                                                    {email.title}
-                                                </Link>
+                                            <h6 className="font-bold hover:text-primary"
+                                                onClick={() => {
+                                                    setShowEditBulkMail(true)
+                                                    setToEditId(email.id)
+                                                }}
+                                            >
+
+                                                {email.title}
+
                                             </h6>
                                             <span>{email.timeline} days after event</span>
                                         </div>
@@ -107,7 +113,7 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
 
 
 
-                                    <div className="my-1 sm:my-0 col-span-12 sm:col-span-1 flex md:items-center justify-end">
+                                    <div className="my-1 sm:my-0 col-span-12 sm:col-span-1 flex md:items-center gap-2 justify-end">
                                         <div
                                             className="cursor-pointer text-lg hover:text-red-500"
                                             role="button"
@@ -136,6 +142,9 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
                     can&apos;t be undone.{' '}
                 </p>
             </ConfirmDialog>
+            {showEditBulkMail && (
+                <EditBulkMail setShowEditBulkMail={setShowEditBulkMail} mutate={mutate} data={data.find((email) => email.id === toEditId) as FollowUpEmail} />
+            )}
         </div>
     )
 }
