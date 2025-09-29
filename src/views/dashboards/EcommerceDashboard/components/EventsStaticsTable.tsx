@@ -10,7 +10,6 @@ import {
     createColumnHelper,
 } from '@tanstack/react-table'
 import { useNavigate } from 'react-router'
-import { NumericFormat } from 'react-number-format'
 import dayjs from 'dayjs'
 import Tag from '@/components/ui/Tag'
 
@@ -25,9 +24,9 @@ type EventStats = {
     non_attendees: number
     fallthrough_rate: number
     earnings: number
-    upcoming_dates: Array<{ id: number; date: string; lead_count: number }>
-    dates: Array<{ id: number; date: string; lead_count: number }>
-    membership_name: string
+    upcoming_dates: Array<{ id: number; date: string; lead_count: number; membership_name: string }>
+    dates: Array<{ id: number; date: string; lead_count: number; membership_name: string }>
+    membership_name: string[]
 }
 
 type EventsStatsData = {
@@ -134,6 +133,23 @@ const columns = [
             )
         },
     }),
+    columnHelper.accessor('membership_name', {
+        header: 'Membership Name',
+        cell: (props) => {
+            const dates = props.row.original.dates || []
+            return (
+                <div className="flex flex-col gap-2">
+                    {dates.length > 0 ? (
+                        dates.map((d, index) => (
+                            <span key={index} className="font-semibold">{d.membership_name}</span>
+                        ))
+                    ) : (
+                        <span className="font-semibold">No membership name</span>
+                    )}
+                </div>
+            )
+        },
+    }),
     columnHelper.accessor('event_type', {
         header: 'Type',
         cell: (props) => {
@@ -159,14 +175,7 @@ const columns = [
         },
     }),
 
-    columnHelper.accessor('membership_name', {
-        header: 'Membership Name',
-        cell: (props) => {
-            const membershipName = props.getValue()
-
-            return <span className="font-semibold">{membershipName}</span>
-        },
-    }),
+  
     columnHelper.accessor('upcoming_dates', {
         header: 'Status',
         cell: (props) => {

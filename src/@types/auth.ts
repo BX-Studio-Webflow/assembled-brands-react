@@ -330,8 +330,19 @@ export type DashboardResponse = {
             non_attendees: number
             fallthrough_rate: number
             earnings: number
-            upcoming_dates: string[]
-            dates: string[]
+            upcoming_dates: {
+                id: number
+                date: string
+                lead_count: number
+                membership_name: string
+            }[]
+            dates: {
+                id: number
+                date: string
+                lead_count: number
+                membership_name: string
+            }[]
+            membership_name: string[]
         }>
         totals: {
             total_registrations: number
