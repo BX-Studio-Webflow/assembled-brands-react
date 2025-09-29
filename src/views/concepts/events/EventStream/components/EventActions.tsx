@@ -178,11 +178,11 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
                                     )}
                                 {(!telemetryData?.lobby_telemetry ||
                                     telemetryData?.lobby_telemetry.length ===
-                                        0) && (
-                                    <div className="text-gray-400 text-sm italic">
-                                        No one in lobby yet
-                                    </div>
-                                )}
+                                    0) && (
+                                        <div className="text-gray-400 text-sm italic">
+                                            No one in lobby yet
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     }
@@ -197,57 +197,68 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
             </div>
         </div>
     ) : !isHost ? (
-        <div className="flex flex-row items-center gap-2 print:hidden px-2 sm:px-4 w-full sm:w-auto">
-            {eventStatus === 'ended' ||
-                (eventStatus === 'live' && (
-                    <Button
-                        variant="solid"
-                        size="sm"
-                        className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
-                        customColorClass={() =>
-                            'bg-green-400 hover:bg-green-500 text-white'
-                        }
-                        onClick={() => handleInstantCallback()}
-                    >
-                        <HiPhone className="sm:hidden" />
-                        <span className="hidden sm:inline">
-                            Instant Call Back
-                        </span>
-                    </Button>
-                ))}
-            {(eventStatus === 'live' || eventStatus === 'ended') &&
-                data.event.calendar_url && (
-                    <Button
-                        variant="solid"
-                        size="sm"
-                        className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
-                        customColorClass={() =>
-                            'bg-teal-400 hover:bg-teal-500 text-white'
-                        }
-                        onClick={() => handleScheduleCallback()}
-                    >
-                        <HiCalendar className="sm:hidden" />
-                        <span className="hidden sm:inline">
-                            Schedule a Call Back
-                        </span>
-                    </Button>
-                )}
-            {(eventStatus === 'live' || eventStatus === 'ended') &&
-                data.event.calendar_url && (
-                    <Button
-                        variant="solid"
-                        size="sm"
-                        className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
-                        customColorClass={() =>
-                            'bg-amber-400 hover:bg-amber-500 text-white'
-                        }
-                        onClick={() => handleUpgradeClick()}
-                    >
-                        <HiStar className="sm:hidden" />
-                        <span className="hidden sm:inline">Upgrade Now</span>
-                    </Button>
-                )}
-        </div>
+        (() => {
+            // Check if any buttons should be rendered
+            const shouldShowInstantCallback = eventStatus === 'ended' || eventStatus === 'live'
+            const shouldShowScheduleCallback = (eventStatus === 'live' || eventStatus === 'ended') && data.event.calendar_url
+            const shouldShowUpgrade = (eventStatus === 'live' || eventStatus === 'ended') && data.event.upgrade_url
+
+            // Only render the container if at least one button should be shown
+            if (!shouldShowInstantCallback && !shouldShowScheduleCallback && !shouldShowUpgrade) {
+                return <></>
+            }
+
+            return (
+                <div className="flex flex-row items-center gap-2 print:hidden px-2 sm:px-4 w-full sm:w-auto">
+                    {shouldShowInstantCallback && (
+                        <Button
+                            variant="solid"
+                            size="sm"
+                            className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
+                            customColorClass={() =>
+                                'bg-green-400 hover:bg-green-500 text-white'
+                            }
+                            onClick={() => handleInstantCallback()}
+                        >
+                            <HiPhone className="sm:hidden" />
+                            <span className="hidden sm:inline">
+                                Instant Call Back
+                            </span>
+                        </Button>
+                    )}
+                    {shouldShowScheduleCallback && (
+                        <Button
+                            variant="solid"
+                            size="sm"
+                            className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
+                            customColorClass={() =>
+                                'bg-teal-400 hover:bg-teal-500 text-white'
+                            }
+                            onClick={() => handleScheduleCallback()}
+                        >
+                            <HiCalendar className="sm:hidden" />
+                            <span className="hidden sm:inline">
+                                Schedule a Call Back
+                            </span>
+                        </Button>
+                    )}
+                    {shouldShowUpgrade && (
+                        <Button
+                            variant="solid"
+                            size="sm"
+                            className="flex-1 sm:flex-none sm:w-auto flex items-center justify-center"
+                            customColorClass={() =>
+                                'bg-amber-400 hover:bg-amber-500 text-white'
+                            }
+                            onClick={() => handleUpgradeClick()}
+                        >
+                            <HiStar className="sm:hidden" />
+                            <span className="hidden sm:inline">Upgrade Now</span>
+                        </Button>
+                    )}
+                </div>
+            )
+        })()
     ) : (
         <></>
     )

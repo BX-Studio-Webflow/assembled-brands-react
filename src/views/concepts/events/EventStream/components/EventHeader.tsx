@@ -244,14 +244,20 @@ const EventHeader = ({
     }, [eventId, token, email, code, isHost, status])
 
     return (
-        <div className="pt-2 px-2 sm:px-4">
-            <div className="flex flex-row justify-between sm:justify-start sm:items-center gap-2 sm:gap-3">
-                <span className="font-bold text-base sm:text-lg md:text-xl">
-                    {eventName}
-                </span>
-                <Tag {...getStatusTagProps(status, nextDate)} />
+        <div className="pt-2 px-2 sm:px-4 w-full">
+            {/* Header row - optimized for mobile */}
+            <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3">
+                <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3">
+                    <span className="font-bold text-sm xs:text-base sm:text-lg md:text-xl truncate">
+                        {eventName}
+                    </span>
+                    <div className="flex-shrink-0">
+                        <Tag {...getStatusTagProps(status, nextDate)} />
+                    </div>
+                </div>
             </div>
-            <span className="text-xs sm:text-sm mt-2 sm:mt-4 md:mt-8">
+            {/* Description - better spacing and readability */}
+            <span className="text-xs sm:text-sm mt-2 sm:mt-3 md:mt-4 block leading-relaxed">
                 {eventDescription}
             </span>
         </div>
