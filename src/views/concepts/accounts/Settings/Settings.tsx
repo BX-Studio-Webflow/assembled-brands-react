@@ -125,10 +125,14 @@ const Settings = () => {
                     )}
                     <Suspense fallback={<></>}>
                         {currentView === 'profile' && <Profile />}
-                        {currentView === 'business' && userData && <Business data={userData} mutate={userMutate} />}
+                        {currentView === 'business' && userData && (
+                            <Business data={userData} mutate={userMutate} />
+                        )}
                         {currentView === 'security' && <Security />}
                         {currentView === 'team' && <Team />}
-                         {currentView === 'notification' && userData && <Notification data={userData} mutate={userMutate} />}
+                        {currentView === 'notification' && userData && (
+                            <Notification data={userData} mutate={userMutate} />
+                        )}
                         {currentView === 'billing' && <Billing />}
                         {currentView === 'stripe' && <Stripe />}
                     </Suspense>

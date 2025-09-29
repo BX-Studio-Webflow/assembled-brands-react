@@ -55,8 +55,6 @@ const LeadEdit = () => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
-   
-  
     let statusText = 'New lead'
     let statusIcon = (
         <HiPlusCircle className="text-base text-green-600 mr-1 rtl:ml-1" />
@@ -71,7 +69,7 @@ const LeadEdit = () => {
         )
         statusClass =
             'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
-    }  else if (data?.lead_status === 'attended_event') {
+    } else if (data?.lead_status === 'attended_event') {
         statusText = 'Attended event'
         statusIcon = (
             <HiCheckCircle className="text-base text-emerald-600 mr-1 rtl:ml-1" />

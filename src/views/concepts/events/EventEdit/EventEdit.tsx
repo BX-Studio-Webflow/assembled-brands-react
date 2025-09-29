@@ -99,7 +99,7 @@ const EventEdit = () => {
                     name: plan.name,
                     date:
                         typeof plan.date === 'object' &&
-                            plan.date instanceof Date
+                        plan.date instanceof Date
                             ? Math.floor(plan.date.getTime() / 1000)
                             : Math.floor(plan.date / 1000),
                     payment_type: plan.payment_type,
@@ -189,14 +189,14 @@ const EventEdit = () => {
                 membershipPlans.length > 0
                     ? membershipPlans
                     : [
-                        {
-                            name: '',
-                            isFree: false,
-                            cost: 0,
-                            date: new Date(),
-                            payment_type: 'one_off',
-                        },
-                    ],
+                          {
+                              name: '',
+                              isFree: false,
+                              cost: 0,
+                              date: new Date(),
+                              payment_type: 'one_off',
+                          },
+                      ],
             terms: true,
             course_url_external: '',
             course_internal: false,
@@ -706,7 +706,6 @@ const x = setInterval(function () {
                                     </Tooltip>
                                 )}
 
-
                                 {data?.event_type === 'prerecorded' && (
                                     <Tooltip title="Clear chat and attendance logs">
                                         <Button
@@ -723,8 +722,6 @@ const x = setInterval(function () {
                                         onClick={handleCancelEvent}
                                     />
                                 </Tooltip>
-
-
                             </div>
                         </span>
                         <div className="flex flex-col sm:flex-row items-center gap-2 ml-2 mr-2 w-full sm:w-auto">

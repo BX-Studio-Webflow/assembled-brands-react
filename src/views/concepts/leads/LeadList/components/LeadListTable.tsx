@@ -166,7 +166,7 @@ const LeadListTable = () => {
                         )
                         statusClass =
                             'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
-                    }  else if (row.lead_status === 'attended_event') {
+                    } else if (row.lead_status === 'attended_event') {
                         statusText = 'Attended event'
                         statusIcon = (
                             <HiCheckCircle className="text-base text-emerald-600 mr-1 rtl:ml-1" />
@@ -180,12 +180,12 @@ const LeadListTable = () => {
                         )
                         statusClass =
                             'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100 border-0'
-                        } else if (row.lead_status === 'new_lead') {
-                            statusText = 'New lead'
-                            statusIcon = (
-                                <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
-                            )
-                            statusClass =
+                    } else if (row.lead_status === 'new_lead') {
+                        statusText = 'New lead'
+                        statusIcon = (
+                            <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
+                        )
+                        statusClass =
                             'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100 border-0'
                     }
 

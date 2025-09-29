@@ -11,7 +11,11 @@ export interface Lead {
     host_id: number
     token: string
     status_identifier: string
-    lead_status: 'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'
+    lead_status:
+        | 'new_lead'
+        | 'call_back'
+        | 'registered_for_event'
+        | 'attended_event'
     source_url: string | null
     membership_id: string | null
     attended_event: boolean

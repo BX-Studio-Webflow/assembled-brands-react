@@ -1,6 +1,5 @@
 import Card from '@/components/ui/Card'
 
-
 import { TbTrash } from 'react-icons/tb'
 
 import type { FollowUpEmail } from '@/@types/mail'
@@ -20,7 +19,11 @@ interface BulkMailListContentProps {
     isLoading: boolean
 }
 
-const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentProps) => {
+const BulkMailListContent = ({
+    data,
+    mutate,
+    isLoading,
+}: BulkMailListContentProps) => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [toDeleteId, setToDeleteId] = useState<number | null>(null)
     const [toEditId, setToEditId] = useState<number | null>(null)
@@ -78,7 +81,6 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
 
     return (
         <div>
-
             <div className="mt-8">
                 <h5 className="mb-3">My templates</h5>
                 <div className="flex flex-col gap-4">
@@ -86,7 +88,8 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
                         <div className="flex flex-col items-center gap-4">
                             <NoUserFound />
                             <span className="font-semibold">
-                                No templates saved. Click on the add follow up button to get started.
+                                No templates saved. Click on the add follow up
+                                button to get started.
                             </span>
                         </div>
                     ) : (
@@ -95,21 +98,21 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
                                 <div className="flex justify-between">
                                     <div className="flex flex-col gap-4">
                                         <div className="flex flex-col">
-                                            <h6 className="font-bold hover:text-primary"
+                                            <h6
+                                                className="font-bold hover:text-primary"
                                                 onClick={() => {
                                                     setShowEditBulkMail(true)
                                                     setToEditId(email.id)
                                                 }}
                                             >
-
                                                 {email.title}
-
                                             </h6>
-                                            <span>{email.timeline} days after event</span>
+                                            <span>
+                                                {email.timeline} days after
+                                                event
+                                            </span>
                                         </div>
                                     </div>
-
-
 
                                     <div className="my-1 sm:my-0 col-span-12 sm:col-span-1 flex md:items-center gap-2 justify-end">
                                         <div
@@ -122,7 +125,8 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
                                     </div>
                                 </div>
                             </Card>
-                        )))}
+                        ))
+                    )}
                 </div>
             </div>
             <ConfirmDialog
@@ -136,12 +140,20 @@ const BulkMailListContent = ({ data, mutate, isLoading }: BulkMailListContentPro
             >
                 <p>
                     {' '}
-                    Are you sure you want to remove this follow up email? This action
-                    can&apos;t be undone.{' '}
+                    Are you sure you want to remove this follow up email? This
+                    action can&apos;t be undone.{' '}
                 </p>
             </ConfirmDialog>
             {showEditBulkMail && (
-                <EditBulkMail setShowEditBulkMail={setShowEditBulkMail} mutate={mutate} data={data.find((email) => email.id === toEditId) as FollowUpEmail} />
+                <EditBulkMail
+                    setShowEditBulkMail={setShowEditBulkMail}
+                    mutate={mutate}
+                    data={
+                        data.find(
+                            (email) => email.id === toEditId,
+                        ) as FollowUpEmail
+                    }
+                />
             )}
         </div>
     )

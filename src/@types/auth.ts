@@ -26,11 +26,13 @@ export type UpdateSettingsNotificationBody = {
     is_post_event_emails_enabled: boolean
     follow_up_template: string
     post_event_template: string
-    follow_up_who_gets_it: Array<'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'>
-    post_event_who_gets_it: Array<'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'>
+    follow_up_who_gets_it: Array<
+        'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'
+    >
+    post_event_who_gets_it: Array<
+        'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event'
+    >
 }
-
-
 
 export type User = {
     id: number
@@ -182,7 +184,6 @@ export type UpdateUserProfileResponse = {
 }
 
 export type DashboardResponse = {
-
     profile: {
         id: number
         name: string
@@ -205,20 +206,16 @@ export type DashboardResponse = {
             updated_at: string
             created_at: string
         } | null
-        stripe_connect_status:
-        | 'pending'
-        | 'active'
-        | 'rejected'
-        | 'restricted'
+        stripe_connect_status: 'pending' | 'active' | 'rejected' | 'restricted'
         subscription_status:
-        | 'trialing'
-        | 'active'
-        | 'past_due'
-        | 'canceled'
-        | 'incomplete'
-        | 'incomplete_expired'
-        | 'paused'
-        | 'unpaid'
+            | 'trialing'
+            | 'active'
+            | 'past_due'
+            | 'canceled'
+            | 'incomplete'
+            | 'incomplete_expired'
+            | 'paused'
+            | 'unpaid'
         trial_ends_at: string | null
     }
     content: {
@@ -246,12 +243,12 @@ export type DashboardResponse = {
             amount: string
             currency: string
             status:
-            | 'pending'
-            | 'processing'
-            | 'succeeded'
-            | 'failed'
-            | 'canceled'
-            | 'refunded'
+                | 'pending'
+                | 'processing'
+                | 'succeeded'
+                | 'failed'
+                | 'canceled'
+                | 'refunded'
             payment_type: 'one_off' | 'subscription'
             metadata: {
                 dates: number[]
@@ -274,12 +271,12 @@ export type DashboardResponse = {
             amount: string
             currency: string
             status:
-            | 'pending'
-            | 'processing'
-            | 'succeeded'
-            | 'failed'
-            | 'canceled'
-            | 'refunded'
+                | 'pending'
+                | 'processing'
+                | 'succeeded'
+                | 'failed'
+                | 'canceled'
+                | 'refunded'
             payment_type: 'one_off' | 'subscription'
             metadata: {
                 dates: number[]
@@ -357,7 +354,6 @@ export type DashboardResponse = {
         total: number
         cancelled: number
     }
-
 }
 export type SaveOauthStateBody = {
     code: string

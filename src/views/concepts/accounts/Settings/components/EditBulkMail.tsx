@@ -13,15 +13,11 @@ import type { ZodType } from 'zod'
 import { apiUpdateFollowUpEmail } from '@/services/MailService'
 import { AxiosError } from 'axios'
 
-
-
 import Checkbox from '@/components/ui/Checkbox'
 import { CreateBulkMailBody, FollowUpEmail } from '@/@types/mail'
 import { useAuth } from '@/auth'
 
-
 type FormSchema = {
-
     content: string
     title: string
     timeline: number | null
@@ -50,20 +46,26 @@ const leadOptions = [
         label: 'Call Back',
         value: 'call_back',
     },
-
 ]
 
-const validationSchema: ZodType<FormSchema> = z
-    .object({
-        title: z.string().min(1, { message: 'Please enter title' }),
-        content: z.string().min(1, { message: 'Please enter message' }),
+const validationSchema: ZodType<FormSchema> = z.object({
+    title: z.string().min(1, { message: 'Please enter title' }),
+    content: z.string().min(1, { message: 'Please enter message' }),
 
-        followUpWhoGetsIt: z.array(z.enum(['new_lead', 'call_back', 'registered_for_event', 'attended_event'])),
+    followUpWhoGetsIt: z.array(
+        z.enum([
+            'new_lead',
+            'call_back',
+            'registered_for_event',
+            'attended_event',
+        ]),
+    ),
 
-        timeline: z.number().min(1, { message: 'Please enter a valid timeline' }).nullable(),
-
-    })
-
+    timeline: z
+        .number()
+        .min(1, { message: 'Please enter a valid timeline' })
+        .nullable(),
+})
 
 interface EditBulkMailProps {
     setShowEditBulkMail: (show: boolean) => void
@@ -71,19 +73,20 @@ interface EditBulkMailProps {
     data: FollowUpEmail
 }
 
-const EditBulkMail = ({ setShowEditBulkMail, mutate, data }: EditBulkMailProps) => {
+const EditBulkMail = ({
+    setShowEditBulkMail,
+    mutate,
+    data,
+}: EditBulkMailProps) => {
     const [showEditBulkMail, setShowEditBulkMailLocal] = useState(true)
     const [formSubmiting, setFormSubmiting] = useState(false)
     const { user } = useAuth()
-
-
 
     const {
         handleSubmit,
         reset,
         formState: { errors },
         control,
-
     } = useForm<FormSchema>({
         resolver: zodResolver(validationSchema),
         defaultValues: {
@@ -93,9 +96,6 @@ const EditBulkMail = ({ setShowEditBulkMail, mutate, data }: EditBulkMailProps) 
             followUpWhoGetsIt: data.follow_up_who_gets_it || [],
         },
     })
-
-
-
 
     const handleDialogClose = () => {
         setShowEditBulkMailLocal(false)
@@ -120,17 +120,13 @@ const EditBulkMail = ({ setShowEditBulkMail, mutate, data }: EditBulkMailProps) 
             }
             await apiUpdateFollowUpEmail(data.id, body)
             toast.push(
-
                 <Notification type="success">
                     Follow up email updated successfully!
                 </Notification>,
                 { placement: 'top-center' },
             )
 
-
             mutate()
-
-
         } catch (error) {
             toast.push(
                 <Notification type="danger">
@@ -156,8 +152,6 @@ const EditBulkMail = ({ setShowEditBulkMail, mutate, data }: EditBulkMailProps) 
             </h4>
             <div className="max-h-200 overflow-y-auto px-1">
                 <Form onSubmit={handleSubmit(onSubmit)}>
-
-
                     <FormItem
                         label="Title"
                         invalid={Boolean(errors.title)}
@@ -213,7 +207,9 @@ const EditBulkMail = ({ setShowEditBulkMail, mutate, data }: EditBulkMailProps) 
                                     value={field.value || ''}
                                     onChange={(e) => {
                                         const value = e.target.value
-                                        field.onChange(value ? parseInt(value, 10) : null)
+                                        field.onChange(
+                                            value ? parseInt(value, 10) : null,
+                                        )
                                     }}
                                 />
                             )}
@@ -228,9 +224,15 @@ const EditBulkMail = ({ setShowEditBulkMail, mutate, data }: EditBulkMailProps) 
                             name="followUpWhoGetsIt"
                             control={control}
                             render={({ field }) => (
-                                <Checkbox.Group value={field.value} onChange={field.onChange}>
+                                <Checkbox.Group
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                >
                                     {leadOptions.map((opt) => (
-                                        <Checkbox key={opt.value} value={opt.value}>
+                                        <Checkbox
+                                            key={opt.value}
+                                            value={opt.value}
+                                        >
                                             {opt.label}
                                         </Checkbox>
                                     ))}

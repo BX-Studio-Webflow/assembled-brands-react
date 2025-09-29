@@ -16,9 +16,7 @@ import { HiOutlineUser } from 'react-icons/hi'
 import { TbPlus } from 'react-icons/tb'
 import type { ZodType } from 'zod'
 import type { GetSettingsProfileResponse } from '../types'
-import {
-    apiUploadBusinessProfileImage,
-} from '@/services/AuthService'
+import { apiUploadBusinessProfileImage } from '@/services/AuthService'
 import { apiUpdateBusiness } from '@/services/BusinessService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -93,9 +91,12 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
     )
 }
 
-const SettingsBusiness = (props: { data: GetSettingsProfileResponse, mutate: () => void }) => {
+const SettingsBusiness = (props: {
+    data: GetSettingsProfileResponse
+    mutate: () => void
+}) => {
     const { data, mutate } = props
-    
+
     const dialCodeList = useMemo(() => {
         const newCountryList: Array<CountryOption> = JSON.parse(
             JSON.stringify(countryList),

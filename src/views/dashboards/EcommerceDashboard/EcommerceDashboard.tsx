@@ -49,7 +49,6 @@ const EcommerceDashboard = () => {
         return <div>Error loading dashboard data</div>
     }
 
-    
     return (
         <div className="grid grid-cols-1 gap-4">
             <div className="col-span-1">
@@ -57,12 +56,8 @@ const EcommerceDashboard = () => {
             </div>
 
             <div className="col-span-1">
-                <EventsStatsTable
-                    data={data?.events.events || []}
-                />
+                <EventsStatsTable data={data?.events.events || []} />
             </div>
-
-
         </div>
     )
 }

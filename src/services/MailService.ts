@@ -1,4 +1,8 @@
-import { CreateBulkMailBody, MailRequestBody, MailSearchRequestBody } from '@/@types/mail'
+import {
+    CreateBulkMailBody,
+    MailRequestBody,
+    MailSearchRequestBody,
+} from '@/@types/mail'
 import ApiService from './ApiService'
 
 export async function apiGetMails<T>(params?: Record<string, unknown>) {
@@ -24,7 +28,10 @@ export async function apiCreateFollowUpEmail(data: CreateBulkMailBody) {
     })
 }
 
-export async function apiUpdateFollowUpEmail(id: number, data: CreateBulkMailBody) {
+export async function apiUpdateFollowUpEmail(
+    id: number,
+    data: CreateBulkMailBody,
+) {
     return ApiService.fetchDataWithAxios({
         url: `/email/follow-up/${id}`,
         method: 'put',
@@ -45,8 +52,6 @@ export async function apiDeleteFollowUpEmail(id: number) {
         method: 'delete',
     })
 }
-
-
 
 export async function apiCreateMail(data: MailRequestBody) {
     return ApiService.fetchDataWithAxios({

@@ -24,8 +24,18 @@ type EventStats = {
     non_attendees: number
     fallthrough_rate: number
     earnings: number
-    upcoming_dates: Array<{ id: number; date: string; lead_count: number; membership_name: string }>
-    dates: Array<{ id: number; date: string; lead_count: number; membership_name: string }>
+    upcoming_dates: Array<{
+        id: number
+        date: string
+        lead_count: number
+        membership_name: string
+    }>
+    dates: Array<{
+        id: number
+        date: string
+        lead_count: number
+        membership_name: string
+    }>
     membership_name: string[]
 }
 
@@ -90,7 +100,6 @@ const columns = [
         cell: (props) => <EventColumn row={props.row.original} />,
     }),
 
-
     columnHelper.accessor('dates', {
         header: 'Dates',
         cell: (props) => {
@@ -112,7 +121,6 @@ const columns = [
                         <span className="font-semibold">No dates</span>
                     )}
                 </div>
-
             )
         },
     }),
@@ -124,7 +132,9 @@ const columns = [
                 <div className="flex flex-col gap-2">
                     {dates.length > 0 ? (
                         dates.map((d) => (
-                            <span key={d.id} className="font-semibold">{d.lead_count}</span>
+                            <span key={d.id} className="font-semibold">
+                                {d.lead_count}
+                            </span>
                         ))
                     ) : (
                         <span className="font-semibold">0</span>
@@ -141,10 +151,14 @@ const columns = [
                 <div className="flex flex-col gap-2">
                     {dates.length > 0 ? (
                         dates.map((d, index) => (
-                            <span key={index} className="font-semibold">{d.membership_name}</span>
+                            <span key={index} className="font-semibold">
+                                {d.membership_name}
+                            </span>
                         ))
                     ) : (
-                        <span className="font-semibold">No membership name</span>
+                        <span className="font-semibold">
+                            No membership name
+                        </span>
                     )}
                 </div>
             )
@@ -165,17 +179,18 @@ const columns = [
                 type === 'prerecorded'
                     ? 'Pre-Recorded'
                     : type === 'live_venue'
-                        ? 'Live Venue'
-                        : 'Live Video Call'
+                      ? 'Live Venue'
+                      : 'Live Video Call'
             return (
-                <Tag className={map[type] || 'text-white bg-indigo-600 border-0'}>
+                <Tag
+                    className={map[type] || 'text-white bg-indigo-600 border-0'}
+                >
                     {label}
                 </Tag>
             )
         },
     }),
 
-  
     columnHelper.accessor('upcoming_dates', {
         header: 'Status',
         cell: (props) => {

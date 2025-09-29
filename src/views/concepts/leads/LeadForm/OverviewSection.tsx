@@ -253,21 +253,28 @@ const OverviewSection = ({
             {!newLead && (
                 <FormItem
                     label="Lead Status"
-                    invalid={Boolean((errors).lead_status)}
-                    errorMessage={(errors).lead_status?.message}
+                    invalid={Boolean(errors.lead_status)}
+                    errorMessage={errors.lead_status?.message}
                 >
                     <Controller
                         name="lead_status"
                         control={control}
                         render={({ field }) => (
-                                <Select<{ value: Lead['lead_status']; label: string }>
-                                    options={leadStatusList}
-                                    value={
-                                        leadStatusList.find((opt) => opt.value === field.value) || null
-                                    }
-                                    name={field.name}
-                                    onChange={(option) => field.onChange(option?.value)}
-                                    onBlur={field.onBlur}
+                            <Select<{
+                                value: Lead['lead_status']
+                                label: string
+                            }>
+                                options={leadStatusList}
+                                value={
+                                    leadStatusList.find(
+                                        (opt) => opt.value === field.value,
+                                    ) || null
+                                }
+                                name={field.name}
+                                onChange={(option) =>
+                                    field.onChange(option?.value)
+                                }
+                                onBlur={field.onBlur}
                             />
                         )}
                     />
