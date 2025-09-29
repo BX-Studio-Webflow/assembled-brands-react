@@ -316,7 +316,7 @@ export type DashboardResponse = {
         }
     }
     events: {
-        events: Array<{
+        events_flat: Array<{
             event_id: number
             event_name: string
             event_type: string

@@ -56,7 +56,7 @@ const EcommerceDashboard = () => {
             </div>
 
             <div className="col-span-1">
-                <EventsStatsTable data={(data as any)?.events?.events_flat || data?.events.events || []} />
+                <EventsStatsTable data={data?.events?.events_flat || []} />
             </div>
         </div>
     )
