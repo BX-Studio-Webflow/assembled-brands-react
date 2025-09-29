@@ -33,14 +33,6 @@ const EcommerceDashboard = () => {
             revalidateOnFocus: false,
         },
     )
-
-    useEffect(() => {
-        if (data) {
-            console.log('Dashboard data:', data)
-            console.log()
-        }
-    }, [data])
-
     if (isLoading) {
         return <Loading loading={true} />
     }

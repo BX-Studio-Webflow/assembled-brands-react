@@ -333,12 +333,12 @@ export type DashboardResponse = {
                 lead_count: number
                 membership_name: string
             }[]
-            dates: {
+            dateItem: {
                 id: number
                 date: string
                 lead_count: number
                 membership_name: string
-            }[]
+            }
             membership_name: string[]
         }>
         totals: {

@@ -12,41 +12,13 @@ import {
 import { useNavigate } from 'react-router'
 import dayjs from 'dayjs'
 import Tag from '@/components/ui/Tag'
+import { DashboardResponse } from '@/@types/auth'
 
-type EventStats = {
-    event_id: number
-    event_name: string
-    event_type: string
-    status: string
-    created_at: string
-    registrations: number
-    attendees: number
-    non_attendees: number
-    fallthrough_rate: number
-    earnings: number
-    upcoming_dates: Array<{
-        id: number
-        date: string
-        lead_count: number
-        membership_name: string
-    }>
-    dates: Array<{
-        id: number
-        date: string
-        lead_count: number
-        membership_name: string
-    }>
-    membership_name: string[]
-    dateItem?: {
-        id: number
-        date: string
-        lead_count: number
-        membership_name: string
-    }
-}
+
+type EventRow = DashboardResponse['events']['events_flat'][number]
 
 type EventsStatsData = {
-    data: EventStats[]
+    data: EventRow[]
     title: 'past' | 'upcoming'
 }
 
@@ -82,7 +54,7 @@ const eventStatusColor: Record<
     },
 }
 
-const EventColumn = ({ row }: { row: EventStats }) => {
+const EventColumn = ({ row }: { row: EventRow }) => {
     const navigate = useNavigate()
 
     const handleView = useCallback(() => {
@@ -99,7 +71,7 @@ const EventColumn = ({ row }: { row: EventStats }) => {
     )
 }
 
-const columnHelper = createColumnHelper<EventStats>()
+const columnHelper = createColumnHelper<EventRow>()
 
 const columns = [
     columnHelper.accessor('event_name', {
@@ -184,7 +156,7 @@ const columns = [
 
 const EventsStatsTable = ({ data = [], title = 'upcoming' }: EventsStatsData) => {
     const navigate = useNavigate()
-  
+
 
     const table = useReactTable({
         data,
