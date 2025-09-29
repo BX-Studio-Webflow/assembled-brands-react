@@ -84,7 +84,6 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                         <NumericFormat
                             displayType="text"
                             value={data.totalEarned || 0}
-                            prefix={'$'}
                             thousandSeparator={true}
                         />
                     }

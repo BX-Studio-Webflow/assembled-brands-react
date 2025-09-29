@@ -7,6 +7,7 @@ import { apiGetDashboard } from '@/services/AuthService'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { DashboardResponse } from '@/@types/auth'
+import EventsStatsTable from './components/EventsStaticsTable'
 
 const EcommerceDashboard = () => {
     useEffect(() => {
@@ -50,11 +51,11 @@ const EcommerceDashboard = () => {
     }
 
     const overviewData = {
-        totalEarned: parseFloat(data?.data?.revenue?.total_revenue || '0'),
+        totalEarned: parseFloat(data?.revenue?.total_revenue || '0'),
         totalRegistration:
-            data?.data?.prerecorded_events?.totals?.total_registrations || 0,
+            data?.events?.totals?.total_registrations || 0,
         totalNonAttendee:
-            data?.data?.prerecorded_events?.totals?.total_non_attendees || 0,
+            data?.events?.totals?.total_non_attendees || 0,
     }
 
     return (
@@ -64,12 +65,12 @@ const EcommerceDashboard = () => {
             </div>
 
             <div className="col-span-1">
-                <PrerecordedEventsTable
-                    data={data?.data?.prerecorded_events?.events || []}
+                <EventsStatsTable
+                    data={data?.events.events || []}
                 />
             </div>
 
-           
+
         </div>
     )
 }

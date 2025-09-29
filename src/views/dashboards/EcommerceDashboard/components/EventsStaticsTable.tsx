@@ -11,8 +11,10 @@ import {
 } from '@tanstack/react-table'
 import { useNavigate } from 'react-router'
 import { NumericFormat } from 'react-number-format'
+import dayjs from 'dayjs'
+import Tag from '@/components/ui/Tag'
 
-type PrerecordedEvent = {
+type EventStats = {
     event_id: number
     event_name: string
     event_type: string
@@ -23,10 +25,12 @@ type PrerecordedEvent = {
     non_attendees: number
     fallthrough_rate: number
     earnings: number
+    upcoming_dates: string[]
+    dates: string[]
 }
 
-type PrerecordedEventsData = {
-    data: PrerecordedEvent[]
+type EventsStatsData = {
+    data: EventStats[]
 }
 
 const { Tr, Td, TBody, THead, Th } = Table
@@ -54,9 +58,14 @@ const eventStatusColor: Record<
         dotClass: 'bg-red-500',
         textClass: 'text-red-500',
     },
+    inactive: {
+        label: 'Inactive',
+        dotClass: 'bg-red-500',
+        textClass: 'text-red-500',
+    },
 }
 
-const EventColumn = ({ row }: { row: PrerecordedEvent }) => {
+const EventColumn = ({ row }: { row: EventStats }) => {
     const navigate = useNavigate()
 
     const handleView = useCallback(() => {
@@ -73,12 +82,54 @@ const EventColumn = ({ row }: { row: PrerecordedEvent }) => {
     )
 }
 
-const columnHelper = createColumnHelper<PrerecordedEvent>()
+const columnHelper = createColumnHelper<EventStats>()
 
 const columns = [
     columnHelper.accessor('event_name', {
         header: 'Event Name',
         cell: (props) => <EventColumn row={props.row.original} />,
+    }),
+
+
+    columnHelper.accessor('dates', {
+        header: 'Dates',
+        cell: (props) => {
+            const dates = props.getValue()
+            const formattedDates = dates.map((date) => dayjs(Number(date) * 1000).format('ddd, DD MMM YYYY'))
+            return (
+                <div className="flex flex-col gap-2">
+                    {formattedDates.length > 0 ? formattedDates.map((date) => (<span className="font-semibold">
+                        {' '}
+                        {date}
+                    </span>)) : <span className="font-semibold">No dates</span>}
+                </div>
+
+            )
+        },
+    }),
+    columnHelper.accessor('event_type', {
+        header: 'Type',
+        cell: (props) => {
+            const type = props.getValue()
+            const map: Record<string, string> = {
+                prerecorded: 'text-white bg-indigo-600 border-0',
+                live_venue:
+                    'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded',
+                live_video_call:
+                    'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0',
+            }
+            const label =
+                type === 'prerecorded'
+                    ? 'Pre-Recorded'
+                    : type === 'live_venue'
+                        ? 'Live Venue'
+                        : 'Live Video Call'
+            return (
+                <Tag className={map[type] || 'text-white bg-indigo-600 border-0'}>
+                    {label}
+                </Tag>
+            )
+        },
     }),
     columnHelper.accessor('registrations', {
         header: 'Registrations',
@@ -93,46 +144,20 @@ const columns = [
             )
         },
     }),
-    columnHelper.accessor('attendees', {
-        header: 'Attendees',
+    columnHelper.accessor('upcoming_dates', {
+        header: 'Upcoming Dates',
         cell: (props) => {
-            return (
-                <NumericFormat
-                    className="heading-text font-bold"
-                    displayType="text"
-                    value={props.getValue()}
-                    thousandSeparator={true}
-                />
-            )
+            const upcomingDates = props.getValue()
+            const count = upcomingDates.length
+            return <span className="font-semibold">{count}</span>
         },
     }),
-    columnHelper.accessor('earnings', {
-        header: 'Earnings',
-        cell: (props) => {
-            const earnings = props.getValue()
-            return (
-                <NumericFormat
-                    className="heading-text font-bold"
-                    displayType="text"
-                    value={earnings}
-                    prefix={'$'}
-                    thousandSeparator={true}
-                    decimalScale={2}
-                />
-            )
-        },
-    }),
-    columnHelper.accessor('fallthrough_rate', {
-        header: 'Success Rate',
-        cell: (props) => {
-            const rate = props.getValue()
-            return <span className="font-semibold">{rate.toFixed(1)}%</span>
-        },
-    }),
-    columnHelper.accessor('status', {
+    columnHelper.accessor('upcoming_dates', {
+        id: 'status_by_upcoming',
         header: 'Status',
         cell: (props) => {
-            const { status } = props.row.original
+            const upcomingDates = props.getValue()
+            const status = upcomingDates.length > 0 ? 'active' : 'inactive'
             return (
                 <div className="flex items-center">
                     <Badge className={eventStatusColor[status].dotClass} />
@@ -147,7 +172,7 @@ const columns = [
     }),
 ]
 
-const PrerecordedEventsTable = ({ data = [] }: PrerecordedEventsData) => {
+const EventsStatsTable = ({ data = [] }: EventsStatsData) => {
     const navigate = useNavigate()
     console.log(data)
     const table = useReactTable({
@@ -210,4 +235,4 @@ const PrerecordedEventsTable = ({ data = [] }: PrerecordedEventsData) => {
     )
 }
 
-export default PrerecordedEventsTable
+export default EventsStatsTable
