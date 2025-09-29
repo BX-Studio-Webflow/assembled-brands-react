@@ -110,9 +110,9 @@ const columns = [
         id: 'date',
         header: 'Date',
         cell: (props) => {
-            const single = props.row.original.dateItem
-            const label = single
-                ? dayjs(Number(single.date) * 1000).format('ddd, DD MMM YYYY')
+            const date = props.row.original.dateItem
+            const label = date
+                ? dayjs(Number(date.date) * 1000).format('ddd, DD MMM YYYY')
                 : 'No date'
             return <span className="font-semibold">{label}</span>
         },
@@ -120,18 +120,18 @@ const columns = [
     columnHelper.accessor('registrations', {
         header: 'Registrations',
         cell: (props) => {
-            const single = props.row.original.dateItem
+            const date = props.row.original.dateItem
             return (
-                <span className="font-semibold">{single ? single.lead_count : 0}</span>
+                <span className="font-semibold">{date ? date.lead_count : 0}</span>
             )
         },
     }),
     columnHelper.accessor('membership_name', {
         header: 'Membership Name',
         cell: (props) => {
-            const single = props.row.original.dateItem
+            const date = props.row.original.dateItem
             return (
-                <span className="font-semibold">{single?.membership_name || 'No membership name'}</span>
+                <span className="font-semibold">{date?.membership_name || 'No membership name'}</span>
             )
         },
     }),
