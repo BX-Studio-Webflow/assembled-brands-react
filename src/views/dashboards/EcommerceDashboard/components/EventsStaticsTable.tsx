@@ -70,7 +70,7 @@ const EventColumn = ({ row }: { row: EventStats }) => {
     const navigate = useNavigate()
 
     const handleView = useCallback(() => {
-        navigate(`/events/${row.event_id}`)
+        navigate(`/concepts/event/event-edit/${row.event_id}`)
     }, [navigate, row])
 
     return (
