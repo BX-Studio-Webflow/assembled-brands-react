@@ -4,7 +4,7 @@ import AbbreviateNumber from '@/components/shared/AbbreviateNumber'
 import { useThemeStore } from '@/store/themeStore'
 import classNames from '@/utils/classNames'
 import { NumericFormat } from 'react-number-format'
-import { TbCoin, TbShoppingBagCheck, TbEye } from 'react-icons/tb'
+import { TbCalendarCancel, TbCalendarEvent, TbCalendarUser } from 'react-icons/tb'
 import type { ReactNode } from 'react'
 import type { StatisticCategory } from '../types'
 import type { DashboardResponse } from '@/@types/auth'
@@ -89,7 +89,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                         />
                     }
                     iconClass="bg-sky-200"
-                    icon={<TbCoin />}
+                    icon={<TbCalendarEvent />}
                     label="totalEarned"
                     active={selectedCategory === 'totalEarned'}
                     onClick={setSelectedCategory}
@@ -104,7 +104,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                         />
                     }
                     iconClass="bg-emerald-200"
-                    icon={<TbShoppingBagCheck />}
+                    icon={<TbCalendarUser />}
                     label="totalRegistration"
                     active={selectedCategory === 'totalRegistration'}
                     onClick={setSelectedCategory}
@@ -115,7 +115,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                         <AbbreviateNumber value={data?.event_counts?.cancelled || 0} />
                     }
                     iconClass="bg-purple-200"
-                    icon={<TbEye />}
+                    icon={<TbCalendarCancel />}
                     label="totalNonAttendee"
                     active={selectedCategory === 'totalNonAttendee'}
                     onClick={setSelectedCategory}
