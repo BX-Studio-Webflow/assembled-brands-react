@@ -6,7 +6,8 @@ import classNames from '@/utils/classNames'
 import { NumericFormat } from 'react-number-format'
 import { TbCoin, TbShoppingBagCheck, TbEye } from 'react-icons/tb'
 import type { ReactNode } from 'react'
-import type { StatisticData, StatisticCategory } from '../types'
+import type { StatisticCategory } from '../types'
+import type { DashboardResponse } from '@/@types/auth'
 
 type StatisticCardProps = {
     title: string
@@ -19,7 +20,7 @@ type StatisticCardProps = {
 }
 
 type StatisticGroupsProps = {
-    data: StatisticData
+    data: DashboardResponse | undefined
 }
 
 const StatisticCard = (props: StatisticCardProps) => {
@@ -83,7 +84,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={data.totalEarned || 0}
+                            value={data?.event_counts?.upcoming || 0}
                             thousandSeparator={true}
                         />
                     }
@@ -98,7 +99,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={data.totalRegistration || 0}
+                            value={data?.event_counts?.total || 0}
                             thousandSeparator={true}
                         />
                     }
@@ -111,7 +112,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                 <StatisticCard
                     title="Cancelled events"
                     value={
-                        <AbbreviateNumber value={data.totalNonAttendee || 0} />
+                        <AbbreviateNumber value={data?.event_counts?.cancelled || 0} />
                     }
                     iconClass="bg-purple-200"
                     icon={<TbEye />}

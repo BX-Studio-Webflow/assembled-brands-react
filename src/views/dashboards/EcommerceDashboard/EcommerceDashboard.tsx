@@ -50,18 +50,11 @@ const EcommerceDashboard = () => {
         return <div>Error loading dashboard data</div>
     }
 
-    const overviewData = {
-        totalEarned: parseFloat(data?.revenue?.total_revenue || '0'),
-        totalRegistration:
-            data?.events?.totals?.total_registrations || 0,
-        totalNonAttendee:
-            data?.events?.totals?.total_non_attendees || 0,
-    }
-
+    
     return (
         <div className="grid grid-cols-1 gap-4">
             <div className="col-span-1">
-                <Overview data={overviewData} />
+                <Overview data={data} />
             </div>
 
             <div className="col-span-1">

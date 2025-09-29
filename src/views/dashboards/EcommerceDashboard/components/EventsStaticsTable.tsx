@@ -98,10 +98,12 @@ const columns = [
             const formattedDates = dates.map((date) => dayjs(Number(date) * 1000).format('ddd, DD MMM YYYY'))
             return (
                 <div className="flex flex-col gap-2">
-                    {formattedDates.length > 0 ? formattedDates.map((date) => (<span className="font-semibold">
-                        {' '}
-                        {date}
-                    </span>)) : <span className="font-semibold">No dates</span>}
+                    {formattedDates.length > 0 ? formattedDates.map((date, idx) => (
+                        <span key={`${date}-${idx}`} className="font-semibold">
+                            {' '}
+                            {date}
+                        </span>
+                    )) : <span className="font-semibold">No dates</span>}
                 </div>
 
             )
@@ -174,7 +176,6 @@ const columns = [
 
 const EventsStatsTable = ({ data = [] }: EventsStatsData) => {
     const navigate = useNavigate()
-    console.log(data)
     const table = useReactTable({
         data,
         columns,

@@ -341,6 +341,11 @@ export type DashboardResponse = {
             overall_fallthrough_rate: number
         }
     }
+    event_counts: {
+        upcoming: number
+        total: number
+        cancelled: number
+    }
 
 }
 export type SaveOauthStateBody = {
