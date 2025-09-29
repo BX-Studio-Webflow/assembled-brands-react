@@ -14,7 +14,6 @@ import dayjs from 'dayjs'
 import Tag from '@/components/ui/Tag'
 import { DashboardResponse } from '@/@types/auth'
 
-
 type EventRow = DashboardResponse['events']['events_flat'][number]
 
 type EventsStatsData = {
@@ -78,7 +77,17 @@ const columns = [
         header: 'Event Name',
         cell: (props) => <EventColumn row={props.row.original} />,
     }),
-
+    columnHelper.accessor('membership_name', {
+        header: 'Membership Name',
+        cell: (props) => {
+            const date = props.row.original.dateItem
+            return (
+                <span className="font-semibold">
+                    {date?.membership_name || 'No membership name'}
+                </span>
+            )
+        },
+    }),
     columnHelper.display({
         id: 'date',
         header: 'Date',
@@ -95,16 +104,9 @@ const columns = [
         cell: (props) => {
             const date = props.row.original.dateItem
             return (
-                <span className="font-semibold">{date ? date.lead_count : 0}</span>
-            )
-        },
-    }),
-    columnHelper.accessor('membership_name', {
-        header: 'Membership Name',
-        cell: (props) => {
-            const date = props.row.original.dateItem
-            return (
-                <span className="font-semibold">{date?.membership_name || 'No membership name'}</span>
+                <span className="font-semibold">
+                    {date ? date.lead_count : 0}
+                </span>
             )
         },
     }),
@@ -123,8 +125,8 @@ const columns = [
                 type === 'prerecorded'
                     ? 'Pre-Recorded'
                     : type === 'live_venue'
-                        ? 'Live Venue'
-                        : 'Live Video Call'
+                      ? 'Live Venue'
+                      : 'Live Video Call'
             return (
                 <Tag
                     className={map[type] || 'text-white bg-indigo-600 border-0'}
@@ -154,9 +156,11 @@ const columns = [
     }),
 ]
 
-const EventsStatsTable = ({ data = [], title = 'upcoming' }: EventsStatsData) => {
+const EventsStatsTable = ({
+    data = [],
+    title = 'upcoming',
+}: EventsStatsData) => {
     const navigate = useNavigate()
-
 
     const table = useReactTable({
         data,
@@ -167,7 +171,9 @@ const EventsStatsTable = ({ data = [], title = 'upcoming' }: EventsStatsData) =>
     return (
         <Card>
             <div className="flex items-center justify-between mb-6">
-                <h4>{title === 'upcoming' ? 'Upcoming events' : 'Past events'}</h4>
+                <h4>
+                    {title === 'upcoming' ? 'Upcoming events' : 'Past events'}
+                </h4>
                 <Button
                     size="sm"
                     onClick={() => navigate('/concepts/event/event-list')}

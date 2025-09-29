@@ -178,11 +178,11 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
                                     )}
                                 {(!telemetryData?.lobby_telemetry ||
                                     telemetryData?.lobby_telemetry.length ===
-                                    0) && (
-                                        <div className="text-gray-400 text-sm italic">
-                                            No one in lobby yet
-                                        </div>
-                                    )}
+                                        0) && (
+                                    <div className="text-gray-400 text-sm italic">
+                                        No one in lobby yet
+                                    </div>
+                                )}
                             </div>
                         </div>
                     }
@@ -199,12 +199,21 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
     ) : !isHost ? (
         (() => {
             // Check if any buttons should be rendered
-            const shouldShowInstantCallback = eventStatus === 'ended' || eventStatus === 'live'
-            const shouldShowScheduleCallback = (eventStatus === 'live' || eventStatus === 'ended') && data.event.calendar_url
-            const shouldShowUpgrade = (eventStatus === 'live' || eventStatus === 'ended') && data.event.upgrade_url
+            const shouldShowInstantCallback =
+                eventStatus === 'ended' || eventStatus === 'live'
+            const shouldShowScheduleCallback =
+                (eventStatus === 'live' || eventStatus === 'ended') &&
+                data.event.calendar_url
+            const shouldShowUpgrade =
+                (eventStatus === 'live' || eventStatus === 'ended') &&
+                data.event.upgrade_url
 
             // Only render the container if at least one button should be shown
-            if (!shouldShowInstantCallback && !shouldShowScheduleCallback && !shouldShowUpgrade) {
+            if (
+                !shouldShowInstantCallback &&
+                !shouldShowScheduleCallback &&
+                !shouldShowUpgrade
+            ) {
                 return <></>
             }
 
@@ -253,7 +262,9 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
                             onClick={() => handleUpgradeClick()}
                         >
                             <HiStar className="sm:hidden" />
-                            <span className="hidden sm:inline">Upgrade Now</span>
+                            <span className="hidden sm:inline">
+                                Upgrade Now
+                            </span>
                         </Button>
                     )}
                 </div>
