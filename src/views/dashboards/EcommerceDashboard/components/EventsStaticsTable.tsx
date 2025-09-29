@@ -25,8 +25,8 @@ type EventStats = {
     non_attendees: number
     fallthrough_rate: number
     earnings: number
-    upcoming_dates: string[]
-    dates: string[]
+    upcoming_dates: Array<{ id: number; date: string; lead_count: number }>
+    dates: Array<{ id: number; date: string; lead_count: number }>
     membership_name: string
 }
 
@@ -96,15 +96,22 @@ const columns = [
         header: 'Dates',
         cell: (props) => {
             const dates = props.getValue()
-            const formattedDates = dates.map((date) => dayjs(Number(date) * 1000).format('ddd, DD MMM YYYY'))
+            const formatted = dates.map((d) => ({
+                id: d.id,
+                label: dayjs(Number(d.date) * 1000).format('ddd, DD MMM YYYY'),
+                count: d.lead_count,
+            }))
             return (
                 <div className="flex flex-col gap-2">
-                    {formattedDates.length > 0 ? formattedDates.map((date, idx) => (
-                        <span key={`${date}-${idx}`} className="font-semibold">
-                            {' '}
-                            {date}
-                        </span>
-                    )) : <span className="font-semibold">No dates</span>}
+                    {formatted.length > 0 ? (
+                        formatted.map((d) => (
+                            <span key={d.id} className="font-semibold">
+                                {d.label}
+                            </span>
+                        ))
+                    ) : (
+                        <span className="font-semibold">No dates</span>
+                    )}
                 </div>
 
             )
@@ -113,13 +120,17 @@ const columns = [
     columnHelper.accessor('registrations', {
         header: 'Registrations',
         cell: (props) => {
+            const dates = props.row.original.dates || []
             return (
-                <NumericFormat
-                    className="heading-text font-bold"
-                    displayType="text"
-                    value={props.getValue()}
-                    thousandSeparator={true}
-                />
+                <div className="flex flex-col gap-2">
+                    {dates.length > 0 ? (
+                        dates.map((d) => (
+                            <span key={d.id} className="font-semibold">{d.lead_count}</span>
+                        ))
+                    ) : (
+                        <span className="font-semibold">0</span>
+                    )}
+                </div>
             )
         },
     }),
@@ -147,17 +158,16 @@ const columns = [
             )
         },
     }),
-    
+
     columnHelper.accessor('membership_name', {
         header: 'Membership Name',
         cell: (props) => {
             const membershipName = props.getValue()
-           
+
             return <span className="font-semibold">{membershipName}</span>
         },
     }),
     columnHelper.accessor('upcoming_dates', {
-        id: 'status_by_upcoming',
         header: 'Status',
         cell: (props) => {
             const upcomingDates = props.getValue()
@@ -185,7 +195,7 @@ const EventsStatsTable = ({ data = [] }: EventsStatsData) => {
     const filteredData = data.filter((ev) => {
         const dates = ev.dates || []
         return dates.some((d) => {
-            const ts = Number(d)
+            const ts = Number(d.date)
             if (Number.isNaN(ts)) return false
             const dt = dayjs.unix(ts)
             return dt.isAfter(windowStart) && dt.isBefore(windowEnd)
