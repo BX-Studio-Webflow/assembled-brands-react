@@ -176,8 +176,22 @@ const columns = [
 
 const EventsStatsTable = ({ data = [] }: EventsStatsData) => {
     const navigate = useNavigate()
+    const now = dayjs()
+    const windowStart = now.subtract(15, 'day').startOf('day')
+    const windowEnd = now.add(30, 'day').endOf('day')
+
+    const filteredData = data.filter((ev) => {
+        const dates = ev.dates || []
+        return dates.some((d) => {
+            const ts = Number(d)
+            if (Number.isNaN(ts)) return false
+            const dt = dayjs.unix(ts)
+            return dt.isAfter(windowStart) && dt.isBefore(windowEnd)
+        })
+    })
+
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         getCoreRowModel: getCoreRowModel(),
     })
