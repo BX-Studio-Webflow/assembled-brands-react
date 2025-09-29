@@ -27,6 +27,7 @@ type EventStats = {
     earnings: number
     upcoming_dates: string[]
     dates: string[]
+    membership_name: string
 }
 
 type EventsStatsData = {
@@ -109,6 +110,19 @@ const columns = [
             )
         },
     }),
+    columnHelper.accessor('registrations', {
+        header: 'Registrations',
+        cell: (props) => {
+            return (
+                <NumericFormat
+                    className="heading-text font-bold"
+                    displayType="text"
+                    value={props.getValue()}
+                    thousandSeparator={true}
+                />
+            )
+        },
+    }),
     columnHelper.accessor('event_type', {
         header: 'Type',
         cell: (props) => {
@@ -133,25 +147,13 @@ const columns = [
             )
         },
     }),
-    columnHelper.accessor('registrations', {
-        header: 'Registrations',
+    
+    columnHelper.accessor('membership_name', {
+        header: 'Membership Name',
         cell: (props) => {
-            return (
-                <NumericFormat
-                    className="heading-text font-bold"
-                    displayType="text"
-                    value={props.getValue()}
-                    thousandSeparator={true}
-                />
-            )
-        },
-    }),
-    columnHelper.accessor('upcoming_dates', {
-        header: 'Upcoming Dates',
-        cell: (props) => {
-            const upcomingDates = props.getValue()
-            const count = upcomingDates.length
-            return <span className="font-semibold">{count}</span>
+            const membershipName = props.getValue()
+           
+            return <span className="font-semibold">{membershipName}</span>
         },
     }),
     columnHelper.accessor('upcoming_dates', {
