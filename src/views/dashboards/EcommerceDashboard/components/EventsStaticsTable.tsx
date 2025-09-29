@@ -37,6 +37,12 @@ type EventStats = {
         membership_name: string
     }>
     membership_name: string[]
+    dateItem?: {
+        id: number
+        date: string
+        lead_count: number
+        membership_name: string
+    }
 }
 
 type EventsStatsData = {
@@ -100,67 +106,32 @@ const columns = [
         cell: (props) => <EventColumn row={props.row.original} />,
     }),
 
-    columnHelper.accessor('dates', {
-        header: 'Dates',
+    columnHelper.display({
+        id: 'date',
+        header: 'Date',
         cell: (props) => {
-            const dates = props.getValue()
-            const formatted = dates.map((d) => ({
-                id: d.id,
-                label: dayjs(Number(d.date) * 1000).format('ddd, DD MMM YYYY'),
-                count: d.lead_count,
-            }))
-            return (
-                <div className="flex flex-col gap-2">
-                    {formatted.length > 0 ? (
-                        formatted.map((d) => (
-                            <span key={d.id} className="font-semibold">
-                                {d.label}
-                            </span>
-                        ))
-                    ) : (
-                        <span className="font-semibold">No dates</span>
-                    )}
-                </div>
-            )
+            const single = props.row.original.dateItem
+            const label = single
+                ? dayjs(Number(single.date) * 1000).format('ddd, DD MMM YYYY')
+                : 'No date'
+            return <span className="font-semibold">{label}</span>
         },
     }),
     columnHelper.accessor('registrations', {
         header: 'Registrations',
         cell: (props) => {
-            const dates = props.row.original.dates || []
+            const single = props.row.original.dateItem
             return (
-                <div className="flex flex-col gap-2">
-                    {dates.length > 0 ? (
-                        dates.map((d) => (
-                            <span key={d.id} className="font-semibold">
-                                {d.lead_count}
-                            </span>
-                        ))
-                    ) : (
-                        <span className="font-semibold">0</span>
-                    )}
-                </div>
+                <span className="font-semibold">{single ? single.lead_count : 0}</span>
             )
         },
     }),
     columnHelper.accessor('membership_name', {
         header: 'Membership Name',
         cell: (props) => {
-            const dates = props.row.original.dates || []
+            const single = props.row.original.dateItem
             return (
-                <div className="flex flex-col gap-2">
-                    {dates.length > 0 ? (
-                        dates.map((d, index) => (
-                            <span key={index} className="font-semibold">
-                                {d.membership_name}
-                            </span>
-                        ))
-                    ) : (
-                        <span className="font-semibold">
-                            No membership name
-                        </span>
-                    )}
-                </div>
+                <span className="font-semibold">{single?.membership_name || 'No membership name'}</span>
             )
         },
     }),
@@ -179,8 +150,8 @@ const columns = [
                 type === 'prerecorded'
                     ? 'Pre-Recorded'
                     : type === 'live_venue'
-                      ? 'Live Venue'
-                      : 'Live Video Call'
+                        ? 'Live Venue'
+                        : 'Live Video Call'
             return (
                 <Tag
                     className={map[type] || 'text-white bg-indigo-600 border-0'}
@@ -217,17 +188,15 @@ const EventsStatsTable = ({ data = [] }: EventsStatsData) => {
     const windowEnd = now.add(30, 'day').endOf('day')
 
     const filteredData = data.filter((ev) => {
-        const dates = ev.dates || []
-        return dates.some((d) => {
-            const ts = Number(d.date)
-            if (Number.isNaN(ts)) return false
-            const dt = dayjs.unix(ts)
-            return dt.isAfter(windowStart) && dt.isBefore(windowEnd)
-        })
+        const single = (ev as any).dateItem
+        const ts = Number(single?.date)
+        if (Number.isNaN(ts)) return false
+        const dt = dayjs.unix(ts)
+        return dt.isAfter(windowStart) && dt.isBefore(windowEnd)
     })
 
     const table = useReactTable({
-        data: filteredData,
+        data: filteredData as EventStats[],
         columns,
         getCoreRowModel: getCoreRowModel(),
     })
