@@ -49,6 +49,9 @@ const EcommerceDashboard = () => {
         return <div>Error loading dashboard data</div>
     }
 
+    const pastEvents = data?.events?.events_flat.filter((event) => event.upcoming_dates.length === 0)
+    const upcomingEvents = data?.events?.events_flat.filter((event) => event.upcoming_dates.length > 0)
+    
     return (
         <div className="grid grid-cols-1 gap-4">
             <div className="col-span-1">
@@ -56,7 +59,10 @@ const EcommerceDashboard = () => {
             </div>
 
             <div className="col-span-1">
-                <EventsStatsTable data={data?.events?.events_flat || []} />
+                <EventsStatsTable data={upcomingEvents || []} title="upcoming" />
+            </div>
+            <div className="col-span-1">
+                <EventsStatsTable data={pastEvents || []} title="past" />
             </div>
         </div>
     )

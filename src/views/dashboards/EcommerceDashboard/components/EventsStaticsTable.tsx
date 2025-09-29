@@ -47,6 +47,7 @@ type EventStats = {
 
 type EventsStatsData = {
     data: EventStats[]
+    title: 'past' | 'upcoming'
 }
 
 const { Tr, Td, TBody, THead, Th } = Table
@@ -181,7 +182,7 @@ const columns = [
     }),
 ]
 
-const EventsStatsTable = ({ data = [] }: EventsStatsData) => {
+const EventsStatsTable = ({ data = [], title = 'upcoming' }: EventsStatsData) => {
     const navigate = useNavigate()
   
 
@@ -194,7 +195,7 @@ const EventsStatsTable = ({ data = [] }: EventsStatsData) => {
     return (
         <Card>
             <div className="flex items-center justify-between mb-6">
-                <h4>Upcoming 30 day stats</h4>
+                <h4>{title === 'upcoming' ? 'Upcoming events' : 'Past events'}</h4>
                 <Button
                     size="sm"
                     onClick={() => navigate('/concepts/event/event-list')}
