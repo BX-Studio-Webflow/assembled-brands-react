@@ -144,7 +144,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 ],
             },
-           
+
             /*{
                 key: 'concepts.products',
                 path: '',
@@ -197,9 +197,25 @@ const conceptsNavigationConfig: NavigationTree[] = [
                 ],
             },*/
             {
+                key: 'concepts.mail',
+                path: `${CONCEPTS_PREFIX_PATH}/mail`,
+                title: 'Engage',
+                translateKey: 'nav.mail',
+                icon: 'mail',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.mailDesc',
+                        label: 'Manage your emails',
+                    },
+                },
+                subMenu: [],
+            },
+            {
                 key: 'concepts.fileManager',
                 path: `${CONCEPTS_PREFIX_PATH}/file-manager`,
-                title: 'File Manager',
+                title: 'Vault',
                 translateKey: 'nav.fileManager',
                 icon: 'fileManager',
                 type: NAV_ITEM_TYPE_ITEM,
@@ -265,22 +281,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 ],
             },*/
-            {
-                key: 'concepts.mail',
-                path: `${CONCEPTS_PREFIX_PATH}/mail`,
-                title: 'Mail',
-                translateKey: 'nav.mail',
-                icon: 'mail',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.mailDesc',
-                        label: 'Manage your emails',
-                    },
-                },
-                subMenu: [],
-            },
+
         ],
     },
 ]
