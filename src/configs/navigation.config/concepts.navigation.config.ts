@@ -24,6 +24,57 @@ const conceptsNavigationConfig: NavigationTree[] = [
         },
         subMenu: [
             {
+                key: 'concepts.events',
+                path: '',
+                title: 'Events',
+                translateKey: 'nav.conceptsEvents.events',
+                icon: 'dataDisplay',
+                type: NAV_ITEM_TYPE_COLLAPSE,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.conceptsEvents.eventsDesc',
+                        label: 'Customer events management',
+                    },
+                },
+                subMenu: [
+                    {
+                        key: 'concepts.events.eventList',
+                        path: `${CONCEPTS_PREFIX_PATH}/event/event-list`,
+                        title: 'Event List',
+                        translateKey: 'nav.conceptsEvents.eventList',
+                        icon: 'orderList',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsEvents.eventListDesc',
+                                label: 'View all customer events',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                    {
+                        key: 'concepts.events.eventCreate',
+                        path: `${CONCEPTS_PREFIX_PATH}/event/event-create`,
+                        title: 'Event Create',
+                        translateKey: 'nav.conceptsEvents.eventCreate',
+                        icon: 'orderCreate',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [ADMIN, USER],
+                        meta: {
+                            description: {
+                                translateKey:
+                                    'nav.conceptsEvents.eventCreateDesc',
+                                label: 'Create new event',
+                            },
+                        },
+                        subMenu: [],
+                    },
+                ],
+            },
+            {
                 key: 'concepts.customers',
                 path: '',
                 title: 'Leads',
@@ -93,57 +144,7 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 ],
             },
-            {
-                key: 'concepts.events',
-                path: '',
-                title: 'Events',
-                translateKey: 'nav.conceptsEvents.events',
-                icon: 'dataDisplay',
-                type: NAV_ITEM_TYPE_COLLAPSE,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.conceptsEvents.eventsDesc',
-                        label: 'Customer events management',
-                    },
-                },
-                subMenu: [
-                    {
-                        key: 'concepts.events.eventList',
-                        path: `${CONCEPTS_PREFIX_PATH}/event/event-list`,
-                        title: 'Event List',
-                        translateKey: 'nav.conceptsEvents.eventList',
-                        icon: 'orderList',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsEvents.eventListDesc',
-                                label: 'View all customer events',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.events.eventCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/event/event-create`,
-                        title: 'Event Create',
-                        translateKey: 'nav.conceptsEvents.eventCreate',
-                        icon: 'orderCreate',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsEvents.eventCreateDesc',
-                                label: 'Create new event',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                ],
-            },
+           
             /*{
                 key: 'concepts.products',
                 path: '',
