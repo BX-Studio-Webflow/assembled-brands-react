@@ -90,9 +90,6 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
             window.open(row.live_video_url, '_blank')
     }
 
-    const onEdit = () => {
-        navigate(`/concepts/event/event-edit/${row.id}`)
-    }
 
     const onVenueDialogClose = () => {
         setVenueDialogOpen(false)
@@ -106,7 +103,7 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
                         className={`cursor-pointer p-2  hover:text-blue-500`}
                         onClick={() => onView(row.event_type)}
                     >
-                        <FaLink />
+                        <TbLink/>
 
                     </span>
                 </Tooltip>

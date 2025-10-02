@@ -319,6 +319,11 @@ const LeadListTable = () => {
         }
     }
 
+    
+    const handleRowClick = (row: Lead) => {
+        navigate(`/concepts/lead/lead-edit/${row.id}`)
+    }
+
     return (
         <>
             <DataTable
@@ -345,6 +350,7 @@ const LeadListTable = () => {
                 onSort={handleSort}
                 onCheckBoxChange={handleRowSelect}
                 onIndeterminateCheckBoxChange={handleAllRowSelect}
+                onRowClick={handleRowClick}
             />
             <ConfirmDialog
                 isOpen={deleteConfirmationOpen}
