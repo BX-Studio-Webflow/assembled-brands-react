@@ -7,6 +7,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import type { EventFormType } from '../validation/eventFormSchema'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { Asset } from '@/@types/asset'
+import { Avatar } from '@/components/ui/Avatar'
 
 type EventDetailsSectionProps = {
     control: Control<EventFormType>
@@ -43,13 +44,15 @@ const EventDetailsSection = ({
             label: asset.asset_name,
             color: '#00B8D9', // Default color for all assets
         }))
+    const imageAssetId = watch('image_asset_id')
+    const imageAsset = assets.find((asset) => asset.id === Number(imageAssetId))
 
     return (
         <Card id="eventDetails">
-            <h4 className="mb-6">Event Type</h4>
+            <h4 className="mb-6">Event</h4>
 
             <FormItem
-                label="Choose Event Type"
+                label="Event Type"
                 invalid={Boolean(errors.event_type)}
                 errorMessage={errors.event_type?.message}
             >
@@ -238,6 +241,9 @@ const EventDetailsSection = ({
                     )}
                 />
             </FormItem>
+            {imageAssetId && (
+                <Avatar shape="round" style={{ width: '100%', maxWidth: '300px', height: 'auto' }} className="mr-4" src={imageAsset ? imageAsset.presignedUrl : '/img/avatars/thumb-1.jpg'} />
+            )}
         </Card>
     )
 }
