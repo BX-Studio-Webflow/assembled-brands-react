@@ -48,7 +48,7 @@ const MembershipPlansSection = ({
                     )}
                     <h4 className="mb-4 font-bold">Date & Price</h4>
                     <FormItem
-                        label="Unique name"
+                        label="Ticket name"
                         invalid={Boolean(errors.membership_plans?.[idx]?.name)}
                         errorMessage={
                             errors.membership_plans?.[idx]?.name?.message

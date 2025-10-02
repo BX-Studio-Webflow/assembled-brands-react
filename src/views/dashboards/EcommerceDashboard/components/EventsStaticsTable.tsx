@@ -78,7 +78,7 @@ const columns = [
         cell: (props) => <EventColumn row={props.row.original} />,
     }),
     columnHelper.accessor('membership_name', {
-        header: 'Membership Name',
+        header: 'Ticket name',
         cell: (props) => {
             const date = props.row.original.dateItem
             return (
