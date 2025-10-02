@@ -1,6 +1,6 @@
 import useCustomerList from '../hooks/useEventList'
 import DebouceInput from '@/components/shared/DebouceInput'
-import EventListTableFilter from './EventListTableFilter'
+// import EventListTableFilter from './EventListTableFilter'
 import { TbSearch } from 'react-icons/tb'
 import cloneDeep from 'lodash/cloneDeep'
 import type { ChangeEvent } from 'react'
@@ -29,7 +29,7 @@ const EventListTableTools = () => {
                 suffix={<TbSearch className="text-lg" />}
                 onChange={handleInputChange}
             />
-            <EventListTableFilter />
+            {/* <EventListTableFilter /> */}
         </div>
     )
 }

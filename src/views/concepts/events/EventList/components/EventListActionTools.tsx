@@ -11,7 +11,7 @@ const EventListActionTools = () => {
 
     return (
         <div className="flex flex-col md:flex-row gap-3">
-            <CSVLink
+            {/*<CSVLink
                 className="w-full"
                 filename="customerList.csv"
                 data={EventList}
@@ -22,7 +22,7 @@ const EventListActionTools = () => {
                 >
                     Download
                 </Button>
-            </CSVLink>
+            </CSVLink>*/}
             <Button
                 variant="solid"
                 icon={<TbPlus className="text-xl" />}
