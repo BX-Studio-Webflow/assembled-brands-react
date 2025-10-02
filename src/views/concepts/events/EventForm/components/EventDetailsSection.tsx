@@ -8,6 +8,7 @@ import type { EventFormType } from '../validation/eventFormSchema'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { Asset } from '@/@types/asset'
 import { Avatar } from '@/components/ui/Avatar'
+import { image } from 'd3-fetch'
 
 type EventDetailsSectionProps = {
     control: Control<EventFormType>
@@ -241,7 +242,7 @@ const EventDetailsSection = ({
                     )}
                 />
             </FormItem>
-            {imageAssetId && (
+            {imageAssetId && imageAsset?.presignedUrl && (
                 <Avatar shape="round" style={{ width: '100%', maxWidth: '300px', height: 'auto' }} className="mr-4" src={imageAsset ? imageAsset.presignedUrl : '/img/avatars/thumb-1.jpg'} />
             )}
         </Card>
