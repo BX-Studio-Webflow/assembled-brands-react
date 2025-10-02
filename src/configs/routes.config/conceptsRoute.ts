@@ -60,8 +60,8 @@ const conceptsRoute: Routes = [
         authority: [ADMIN, USER],
         meta: {
             header: {
-                title: 'Bulk create leads',
-                description: 'Bulk create leads easily.',
+                title: 'Import your leads',
+                description: 'Import your leads easily.',
                 contained: true,
             },
             footer: false,
