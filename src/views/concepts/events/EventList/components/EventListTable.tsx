@@ -218,7 +218,7 @@ const EventListTable = () => {
                 cell: (props: { row: { original: EventItem } }) => {
                     const { image_asset } = props.row.original
                     return (
-                        <Avatar className="mr-4" shape="round" src={image_asset?.presignedUrl || '/img/avatars/thumb-1.jpg'} />
+                        <Avatar style={{ width: '100%', height: '80px' }} className="mr-4" shape="round" src={image_asset?.presignedUrl || '/img/avatars/thumb-1.jpg'} />
                     )
                 },
             },
