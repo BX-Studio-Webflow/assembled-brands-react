@@ -9,7 +9,7 @@ import useEventlist from '../hooks/useEventList'
 import { apiDeleteEvent } from '@/services/EventService'
 import cloneDeep from 'lodash/cloneDeep'
 import { useNavigate } from 'react-router'
-import { TbTrash, TbEye, TbPencil } from 'react-icons/tb'
+import { TbTrash, TbEye, TbPencil, TbDownload, TbShare, TbLink } from 'react-icons/tb'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import type { EventItem } from '../types'
 import type { TableQueries } from '@/@types/common'
@@ -36,6 +36,11 @@ const EventStatusColor: Record<
     },
     cancelled: {
         label: 'Cancelled',
+        bgClass: 'bg-error-subtle',
+        textClass: 'text-error',
+    },
+    inactive: {
+        label: 'Inactive',
         bgClass: 'bg-error-subtle',
         textClass: 'text-error',
     },
@@ -96,21 +101,13 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
     return (
         <>
             <div className="flex justify-end text-lg gap-1">
-                <Tooltip wrapperClass="flex" title="Edit Event">
-                    <span
-                        className={`cursor-pointer p-2  hover:text-blue-500`}
-                        onClick={onEdit}
-                    >
-                        <TbPencil />
-                    </span>
-                </Tooltip>
-
                 <Tooltip wrapperClass="flex" title="View Event">
                     <span
                         className={`cursor-pointer p-2  hover:text-blue-500`}
                         onClick={() => onView(row.event_type)}
                     >
-                        <TbEye />
+                        <FaLink />
+                             
                     </span>
                 </Tooltip>
                 <Tooltip wrapperClass="flex" title="Delete Event">
@@ -179,55 +176,31 @@ const EventListTable = () => {
 
     const columns: ColumnDef<EventItem>[] = useMemo(
         () => [
-            {
-                header: 'Event',
-                accessorKey: 'event',
-                cell: (props) => {
-                    const { event_type, id } = props.row.original
-                    let icon = null
-                    if (event_type === 'prerecorded')
-                        icon = (
-                            <FaFilm
-                                className="inline-block mr-1"
-                                onClick={() => {
-                                    navigate(`/concepts/event/stream/${id}`)
-                                }}
-                            />
-                        )
-                    else if (event_type === 'live_venue')
-                        icon = <FaMapMarkerAlt className="inline-block mr-1" />
-                    else if (event_type === 'live_video_call')
-                        icon = <FaVideo className="inline-block mr-1" />
 
-                    return id ? (
-                        <span className="font-semibold flex items-center gap-2">
-                            {icon}
-                            id {id}
-                        </span>
-                    ) : null
-                },
-            },
             ...(user?.role === 'master' || user?.role === 'owner'
                 ? [
-                      {
-                          header: 'Host ID',
-                          accessorKey: 'host_id',
-                          cell: (props: { row: { original: EventItem } }) => {
-                              const { host_id } = props.row.original
-                              return (
-                                  <span className="font-semibold">
-                                      {host_id}
-                                  </span>
-                              )
-                          },
-                      },
-                  ]
+                    {
+                        header: 'Host ID',
+                        accessorKey: 'host_id',
+                        cell: (props: { row: { original: EventItem } }) => {
+                            const { host_id } = props.row.original
+                            return (
+                                <span className="font-semibold">
+                                    {host_id}
+                                </span>
+                            )
+                        },
+                    },
+                ]
                 : []),
             {
                 header: 'Status',
                 accessorKey: 'status',
                 cell: (props: { row: { original: EventItem } }) => {
-                    const { status } = props.row.original
+                    const { memberships } = props.row.original
+                    //if any date is in the future, return active
+                    const isActive = memberships?.some(m => m.dates?.some(d => dayjs(Number(d.date) * 1000).isAfter(dayjs())))
+                    const status = isActive ? 'active' : 'inactive'
                     return (
                         <Tag
                             className={EventStatusColor[status]?.bgClass || ''}
@@ -257,58 +230,45 @@ const EventListTable = () => {
                     return (
                         <span className="font-semibold">
                             {event_type === 'prerecorded'
-                                ? 'Pre-Recorded'
+                                ? 'Pre Recorded'
                                 : event_type === 'live_venue'
-                                  ? 'Live Venue'
-                                  : 'Live Video Call'}
+                                    ? 'Live Venue'
+                                    : 'Live Video Call'}
                         </span>
                     )
                 },
             },
 
             {
-                header: 'Price Plans',
+                header: 'Tickets',
                 accessorKey: 'memberships',
                 cell: (props: { row: { original: EventItem } }) => {
                     const { memberships } = props.row.original
+                    const date_list = memberships
+                        ?.map(
+                            (m) =>
+                                `${dayjs(
+                                    Number(m.dates?.[0]?.date) *
+                                    1000,
+                                ).format(
+                                    'ddd, DD MMM YYYY',
+                                )} - £${m?.price}`,
+                        )
+
                     return (
-                        <span className="font-semibold">
-                            {memberships && memberships?.length > 0
-                                ? memberships
-                                      .map(
-                                          (m) =>
-                                              `${dayjs(
-                                                  Number(m.dates?.[0]?.date) *
-                                                      1000,
-                                              ).format(
-                                                  'DD/MM/YYYY',
-                                              )} - £${m?.price}`,
-                                      )
-                                      .join(' ')
-                                : ''}
-                        </span>
-                    )
-                },
-            },
-            {
-                header: 'Landing Page',
-                accessorKey: 'landing_page_url',
-                cell: (props: { row: { original: EventItem } }) => {
-                    const { landing_page_url } = props.row.original
-                    return landing_page_url ? (
-                        <a
-                            href={landing_page_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                        <Tooltip title={
+                            <div>
+                                {date_list?.map((d) => (
+                                    <div key={d}>{d}</div>
+                                ))}
+                            </div>
+                        }>
                             <span className="font-semibold">
-                                <FaLink className="inline-block mr-1" />
+                                {memberships && memberships?.length > 0
+                                    ? date_list?.length
+                                    : ''}
                             </span>
-                        </a>
-                    ) : (
-                        <span role="img" aria-label="link">
-                            🔗
-                        </span>
+                        </Tooltip>
                     )
                 },
             },
@@ -321,15 +281,43 @@ const EventListTable = () => {
                         <span className="font-semibold">
                             {created_at
                                 ? new Date(created_at).toLocaleString('en-GB', {
-                                      day: '2-digit',
-                                      month: '2-digit',
-                                      year: 'numeric',
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                  })
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                })
                                 : ''}
                         </span>
                     )
+                },
+            },
+            {
+                header: 'Event',
+                accessorKey: 'event',
+                cell: (props) => {
+                    const { event_type, id } = props.row.original
+                    let icon = null
+                    if (event_type === 'prerecorded')
+                        icon = (
+                            <FaFilm
+                                className="inline-block mr-1"
+                                onClick={() => {
+                                    navigate(`/concepts/event/stream/${id}`)
+                                }}
+                            />
+                        )
+                    else if (event_type === 'live_venue')
+                        icon = <FaMapMarkerAlt className="inline-block mr-1" />
+                    else if (event_type === 'live_video_call')
+                        icon = <FaVideo className="inline-block mr-1" />
+
+                    return id ? (
+                        <span className="font-semibold flex items-center gap-2">
+                            {icon}
+                            id {id}
+                        </span>
+                    ) : null
                 },
             },
             {

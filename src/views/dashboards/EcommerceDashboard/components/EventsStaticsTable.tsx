@@ -123,7 +123,7 @@ const columns = [
             }
             const label =
                 type === 'prerecorded'
-                    ? 'Pre-Recorded'
+                    ? 'Pre Recorded'
                     : type === 'live_venue'
                         ? 'Live Venue'
                         : 'Live Video Call'
