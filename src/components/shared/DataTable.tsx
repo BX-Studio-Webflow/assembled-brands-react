@@ -42,6 +42,7 @@ type DataTableProps<T> = {
     onCheckBoxChange?: (checked: boolean, row: T) => void
     onIndeterminateCheckBoxChange?: (checked: boolean, rows: Row<T>[]) => void
     onPaginationChange?: (page: number) => void
+    onRowClick?: (row: T) => void
     onSelectChange?: (num: number) => void
     onSort?: (sort: OnSortParam) => void
     pageSizes?: number[]
@@ -119,6 +120,7 @@ function DataTable<T>(props: DataTableProps<T>) {
         onCheckBoxChange,
         onIndeterminateCheckBoxChange,
         onPaginationChange,
+        onRowClick,
         onSelectChange,
         onSort,
         pageSizes = [10, 25, 50, 100],
@@ -187,8 +189,8 @@ function DataTable<T>(props: DataTableProps<T>) {
                             checked={
                                 indeterminateCheckboxChecked
                                     ? indeterminateCheckboxChecked(
-                                          table.getRowModel().rows,
-                                      )
+                                        table.getRowModel().rows,
+                                    )
                                     : table.getIsAllRowsSelected()
                             }
                             indeterminate={table.getIsSomeRowsSelected()}
@@ -287,9 +289,9 @@ function DataTable<T>(props: DataTableProps<T>) {
                                             <div
                                                 className={classNames(
                                                     header.column.getCanSort() &&
-                                                        'cursor-pointer select-none point',
+                                                    'cursor-pointer select-none point',
                                                     loading &&
-                                                        'pointer-events-none',
+                                                    'pointer-events-none',
                                                 )}
                                                 onClick={header.column.getToggleSortingHandler()}
                                             >
@@ -346,7 +348,11 @@ function DataTable<T>(props: DataTableProps<T>) {
                                 .rows.slice(0, pageSize)
                                 .map((row) => {
                                     return (
-                                        <Tr key={row.id}>
+                                        <Tr
+                                            key={row.id}
+                                            className={onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''}
+                                            onClick={() => onRowClick?.(row.original as unknown as T)}
+                                        >
                                             {row
                                                 .getVisibleCells()
                                                 .map((cell) => {

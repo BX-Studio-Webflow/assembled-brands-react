@@ -107,7 +107,7 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
                         onClick={() => onView(row.event_type)}
                     >
                         <FaLink />
-                             
+
                     </span>
                 </Tooltip>
                 <Tooltip wrapperClass="flex" title="Delete Event">
@@ -354,6 +354,10 @@ const EventListTable = () => {
         handleSetTableData(newTableData)
     }
 
+    const handleRowClick = (row: EventItem) => {
+        navigate(`/concepts/event/event-edit/${row.id}`)
+    }
+
     return (
         <DataTable
             columns={columns}
@@ -368,6 +372,7 @@ const EventListTable = () => {
                 pageSize: tableData.pageSize as number,
             }}
             onPaginationChange={handlePaginationChange}
+            onRowClick={handleRowClick}
             onSelectChange={handleSelectChange}
             onSort={handleSort}
         />
