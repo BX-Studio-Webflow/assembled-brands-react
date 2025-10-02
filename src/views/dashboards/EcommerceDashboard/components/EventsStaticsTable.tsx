@@ -136,24 +136,6 @@ const columns = [
             )
         },
     }),
-
-    columnHelper.accessor('upcoming_dates', {
-        header: 'Status',
-        cell: (props) => {
-            const upcomingDates = props.getValue()
-            const status = upcomingDates.length > 0 ? 'active' : 'inactive'
-            return (
-                <div className="flex items-center">
-                    <Badge className={eventStatusColor[status].dotClass} />
-                    <span
-                        className={`ml-2 rtl:mr-2 capitalize font-semibold ${eventStatusColor[status].textClass}`}
-                    >
-                        {eventStatusColor[status].label}
-                    </span>
-                </div>
-            )
-        },
-    }),
 ]
 
 const EventsStatsTable = ({
