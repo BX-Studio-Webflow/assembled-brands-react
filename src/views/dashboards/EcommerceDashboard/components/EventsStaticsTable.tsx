@@ -125,8 +125,8 @@ const columns = [
                 type === 'prerecorded'
                     ? 'Pre-Recorded'
                     : type === 'live_venue'
-                      ? 'Live Venue'
-                      : 'Live Video Call'
+                        ? 'Live Venue'
+                        : 'Live Video Call'
             return (
                 <Tag
                     className={map[type] || 'text-white bg-indigo-600 border-0'}
@@ -156,12 +156,7 @@ const EventsStatsTable = ({
                 <h4>
                     {title === 'upcoming' ? 'Upcoming events' : 'Past events'}
                 </h4>
-                <Button
-                    size="sm"
-                    onClick={() => navigate('/concepts/event/event-list')}
-                >
-                    View All
-                </Button>
+
             </div>
             <Table>
                 <THead>
