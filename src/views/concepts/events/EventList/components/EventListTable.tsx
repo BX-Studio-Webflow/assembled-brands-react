@@ -19,6 +19,7 @@ import dayjs from 'dayjs'
 import { AxiosError } from 'axios'
 import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
+import { Avatar } from '@/components/ui/Avatar'
 
 const EventStatusColor: Record<
     string,
@@ -103,7 +104,7 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
                         className={`cursor-pointer p-2  hover:text-blue-500`}
                         onClick={() => onView(row.event_type)}
                     >
-                        <TbLink/>
+                        <TbLink />
 
                     </span>
                 </Tooltip>
@@ -208,6 +209,16 @@ const EventListTable = () => {
                                 {EventStatusColor[status]?.label || status}
                             </span>
                         </Tag>
+                    )
+                },
+            },
+            {
+                header: 'Image',
+                accessorKey: 'image_asset_id',
+                cell: (props: { row: { original: EventItem } }) => {
+                    const { image_asset } = props.row.original
+                    return (
+                        <Avatar className="mr-4" shape="round" src={image_asset?.presignedUrl || '/img/avatars/thumb-1.jpg'} />
                     )
                 },
             },

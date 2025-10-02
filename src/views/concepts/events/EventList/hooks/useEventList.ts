@@ -22,6 +22,7 @@ export default function useEventList() {
         asset: item.asset,
         host: item.host,
         memberships: item.memberships,
+        image_asset: item.image_asset,
     }))
 
     const EventListTotal = data?.total || 0

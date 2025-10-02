@@ -21,6 +21,22 @@ export type EventItem = {
         asset_size: number
         asset_type: 'video' | 'image' | 'audio' | 'document'
         asset_url: string
+        presignedUrl: string
+        content_type: string
+        created_at: string
+        duration: number
+        hls_url: string | null
+        id: number
+        processing_status: 'pending' | 'processing' | 'completed' | 'failed'
+        updated_at: string
+        user_id: number
+    }
+    image_asset?: {
+        asset_name: string
+        asset_size: number
+        asset_type: 'video' | 'image' | 'audio' | 'document'
+        asset_url: string
+        presignedUrl: string
         content_type: string
         created_at: string
         duration: number

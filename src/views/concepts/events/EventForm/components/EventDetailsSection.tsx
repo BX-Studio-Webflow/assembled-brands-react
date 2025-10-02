@@ -8,7 +8,6 @@ import type { EventFormType } from '../validation/eventFormSchema'
 import type { Control, FieldErrors } from 'react-hook-form'
 import type { Asset } from '@/@types/asset'
 import { Avatar } from '@/components/ui/Avatar'
-import { image } from 'd3-fetch'
 
 type EventDetailsSectionProps = {
     control: Control<EventFormType>

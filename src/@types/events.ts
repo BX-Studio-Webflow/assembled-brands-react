@@ -39,6 +39,7 @@ export interface EventQueryParams {
 export interface EventWithDetails {
     event: EventDetails
     asset: Asset
+    image_asset: Asset
     host: Host
     memberships: Membership[]
 }

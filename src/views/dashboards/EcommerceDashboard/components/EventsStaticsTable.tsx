@@ -1,6 +1,4 @@
 import { useCallback } from 'react'
-import Badge from '@/components/ui/Badge'
-import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Table from '@/components/ui/Table'
 import {
@@ -23,35 +21,6 @@ type EventsStatsData = {
 
 const { Tr, Td, TBody, THead, Th } = Table
 
-const eventStatusColor: Record<
-    string,
-    {
-        label: string
-        dotClass: string
-        textClass: string
-    }
-> = {
-    active: {
-        label: 'Active',
-        dotClass: 'bg-emerald-500',
-        textClass: 'text-emerald-500',
-    },
-    suspended: {
-        label: 'Suspended',
-        dotClass: 'bg-amber-500',
-        textClass: 'text-amber-500',
-    },
-    cancelled: {
-        label: 'Cancelled',
-        dotClass: 'bg-red-500',
-        textClass: 'text-red-500',
-    },
-    inactive: {
-        label: 'Inactive',
-        dotClass: 'bg-red-500',
-        textClass: 'text-red-500',
-    },
-}
 
 const EventColumn = ({ row }: { row: EventRow }) => {
     const navigate = useNavigate()
@@ -142,7 +111,6 @@ const EventsStatsTable = ({
     data = [],
     title = 'upcoming',
 }: EventsStatsData) => {
-    const navigate = useNavigate()
 
     const table = useReactTable({
         data,
