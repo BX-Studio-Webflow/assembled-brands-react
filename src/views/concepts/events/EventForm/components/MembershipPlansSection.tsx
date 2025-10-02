@@ -46,7 +46,7 @@ const MembershipPlansSection = ({
                             <FiX size={18} />
                         </button>
                     )}
-                    <h4 className="mb-4 font-bold">Date & Price</h4>
+                    <h4 className="mb-4 font-bold">Ticket Date & Price</h4>
                     <FormItem
                         label="Ticket name"
                         invalid={Boolean(errors.membership_plans?.[idx]?.name)}

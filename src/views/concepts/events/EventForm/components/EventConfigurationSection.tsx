@@ -14,7 +14,7 @@ type Props = {
 const EventConfigurationSection = ({ control, errors }: Props) => {
     return (
         <Card id="eventAssets">
-            <h4 className="mb-6">Event Configuration</h4>
+            <h4 className="mb-6">Landing Page Configuration</h4>
 
             <FormItem
                 label="Event landing page URL"
@@ -35,7 +35,7 @@ const EventConfigurationSection = ({ control, errors }: Props) => {
             </FormItem>
 
             <FormItem
-                label="Event success page redirect URL"
+                label="After Booking redirect URL"
                 invalid={Boolean(errors.success_url)}
                 errorMessage={errors.success_url?.message}
             >
