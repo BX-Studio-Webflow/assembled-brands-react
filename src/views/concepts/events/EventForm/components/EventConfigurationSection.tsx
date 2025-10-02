@@ -14,7 +14,7 @@ type Props = {
 const EventConfigurationSection = ({ control, errors }: Props) => {
     return (
         <Card id="eventAssets">
-            <h4 className="mb-6">Landing Page Configuration</h4>
+            <h4 className="mb-6">Landing Page Details</h4>
 
             <FormItem
                 label="Event landing page URL"
@@ -33,7 +33,7 @@ const EventConfigurationSection = ({ control, errors }: Props) => {
                     )}
                 />
             </FormItem>
-
+   
             <FormItem
                 label="After Booking redirect URL"
                 invalid={Boolean(errors.success_url)}
@@ -51,9 +51,26 @@ const EventConfigurationSection = ({ control, errors }: Props) => {
                     )}
                 />
             </FormItem>
-
             <FormItem
-                label="In Event Link - Scheduled Callback URL"
+                label="Booking note"
+                invalid={Boolean(errors.instructions)}
+                errorMessage={errors.instructions?.message}
+            >
+                <Controller
+                    name="instructions"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            type="text"
+                            placeholder="Please be early"
+                            {...field}
+                        />
+                    )}
+                />
+            </FormItem>
+            <h4 className="mb-6">In Event Links</h4>
+            <FormItem
+                label="Scheduled Callback URL"
                 invalid={Boolean(errors.calendar_url)}
                 errorMessage={errors.calendar_url?.message}
             >
@@ -70,7 +87,7 @@ const EventConfigurationSection = ({ control, errors }: Props) => {
                 />
             </FormItem>
             <FormItem
-                label="In Event Link - Upgrade URL"
+                label="Upgrade URL"
                 invalid={Boolean(errors.upgrade_url)}
                 errorMessage={errors.upgrade_url?.message}
             >
@@ -87,23 +104,7 @@ const EventConfigurationSection = ({ control, errors }: Props) => {
                 />
             </FormItem>
 
-            <FormItem
-                label="Event note"
-                invalid={Boolean(errors.instructions)}
-                errorMessage={errors.instructions?.message}
-            >
-                <Controller
-                    name="instructions"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            type="text"
-                            placeholder="Please be early"
-                            {...field}
-                        />
-                    )}
-                />
-            </FormItem>
+            
             <FormItem
                 label="Terms and Conditions"
                 invalid={Boolean(errors.terms)}
