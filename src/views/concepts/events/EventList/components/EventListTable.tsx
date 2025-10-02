@@ -174,7 +174,24 @@ const EventListTable = () => {
 
     const columns: ColumnDef<EventItem>[] = useMemo(
         () => [
-
+            {
+                header: 'Image',
+                accessorKey: 'image_asset_id',
+                cell: (props: { row: { original: EventItem } }) => {
+                    const { image_asset } = props.row.original
+                    return (
+                        <Avatar style={{ width: '100%', height: '80px' }} className="mr-4" shape="round" src={image_asset?.presignedUrl || '/img/avatars/thumb-1.jpg'} />
+                    )
+                },
+            },
+            {
+                header: 'Name',
+                accessorKey: 'event_name',
+                cell: (props: { row: { original: EventItem } }) => {
+                    const { event_name } = props.row.original
+                    return <span className="font-semibold">{event_name}</span>
+                },
+            },
             ...(user?.role === 'master' || user?.role === 'owner'
                 ? [
                     {
@@ -212,24 +229,8 @@ const EventListTable = () => {
                     )
                 },
             },
-            {
-                header: 'Image',
-                accessorKey: 'image_asset_id',
-                cell: (props: { row: { original: EventItem } }) => {
-                    const { image_asset } = props.row.original
-                    return (
-                        <Avatar style={{ width: '100%', height: '80px' }} className="mr-4" shape="round" src={image_asset?.presignedUrl || '/img/avatars/thumb-1.jpg'} />
-                    )
-                },
-            },
-            {
-                header: 'Name',
-                accessorKey: 'event_name',
-                cell: (props: { row: { original: EventItem } }) => {
-                    const { event_name } = props.row.original
-                    return <span className="font-semibold">{event_name}</span>
-                },
-            },
+           
+           
             {
                 header: 'Type',
                 accessorKey: 'event_type',
