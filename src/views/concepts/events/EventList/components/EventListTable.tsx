@@ -229,21 +229,32 @@ const EventListTable = () => {
                     )
                 },
             },
-           
-           
+
+
             {
                 header: 'Type',
                 accessorKey: 'event_type',
                 cell: (props: { row: { original: EventItem } }) => {
-                    const { event_type } = props.row.original
+                    const type = props.row.original.event_type
+                    const map: Record<string, string> = {
+                        prerecorded: 'text-white bg-indigo-600 border-0',
+                        live_venue:
+                            'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100 border-0 rounded',
+                        live_video_call:
+                            'text-red-600 bg-red-100 dark:text-red-100 dark:bg-red-500/20 border-0',
+                    }
+                    const label =
+                        type === 'prerecorded'
+                            ? 'Pre Recorded'
+                            : type === 'live_venue'
+                                ? 'Live Venue'
+                                : 'Live Video Call'
                     return (
-                        <span className="font-semibold">
-                            {event_type === 'prerecorded'
-                                ? 'Pre Recorded'
-                                : event_type === 'live_venue'
-                                    ? 'Live Venue'
-                                    : 'Live Video Call'}
-                        </span>
+                        <Tag
+                            className={map[type] || 'text-white bg-indigo-600 border-0'}
+                        >
+                            {label}
+                        </Tag>
                     )
                 },
             },

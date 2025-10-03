@@ -91,7 +91,7 @@ const EventDetailsSection = ({
                                     field.onChange('live_video_call')
                                 }}
                             >
-                                Live Online Event (zoom)
+                                Live Online Event (Zoom)
                             </Radio>
                         </div>
                     )}
