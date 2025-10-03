@@ -5,7 +5,7 @@ import DataTable from '@/components/shared/DataTable'
 import useLeadList from '../hooks/useLeadList'
 import { Link, useNavigate } from 'react-router'
 import cloneDeep from 'lodash/cloneDeep'
-import { TbPencil, TbTrash } from 'react-icons/tb'
+import { TbTrash } from 'react-icons/tb'
 import {
     HiPhone,
     HiCalendar,
@@ -37,23 +37,12 @@ const NameColumn = ({ row }: { row: Lead }) => {
 }
 
 const ActionColumn = ({
-    onEdit,
     onDelete,
 }: {
-    onEdit: () => void
     onDelete: () => void
 }) => {
     return (
         <div className="flex items-center gap-3">
-            <Tooltip title="Edit">
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold`}
-                    role="button"
-                    onClick={onEdit}
-                >
-                    <TbPencil />
-                </div>
-            </Tooltip>
             <Tooltip title="View">
                 <div
                     className={`text-xl cursor-pointer select-none font-semibold`}
@@ -83,10 +72,6 @@ const LeadListTable = () => {
         selectedLead,
         mutate,
     } = useLeadList()
-
-    const handleEdit = (customer: Lead) => {
-        navigate(`/concepts/lead/lead-edit/${customer.id}`)
-    }
 
     const handleDelete = (customer: Lead) => {
         setDeleteConfirmationOpen(true)
@@ -270,7 +255,6 @@ const LeadListTable = () => {
                 id: 'action',
                 cell: (props) => (
                     <ActionColumn
-                        onEdit={() => handleEdit(props.row.original)}
                         onDelete={() => handleDelete(props.row.original)}
                     />
                 ),
