@@ -139,7 +139,7 @@ const LeadListTable = () => {
 
                     let statusText = 'New lead'
                     let statusIcon = (
-                        <HiPlusCircle className="text-base text-green-600 mr-1 rtl:ml-1" />
+                        <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
                     )
                     let statusClass =
                         'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
