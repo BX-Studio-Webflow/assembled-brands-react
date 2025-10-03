@@ -362,6 +362,18 @@ function DataTable<T>(props: DataTableProps<T>) {
                                                             style={{
                                                                 width: cell.column.getSize(),
                                                             }}
+                                                            onClick={(e) => {
+                                                                if (cell.column.id === 'action') {
+                                                                    e.stopPropagation()
+                                                                    e.preventDefault()
+                                                                }
+                                                            }}
+                                                            onMouseDown={(e) => {
+                                                                if (cell.column.id === 'action') {
+                                                                    e.stopPropagation()
+                                                                    e.preventDefault()
+                                                                }
+                                                            }}
                                                         >
                                                             {flexRender(
                                                                 cell.column
