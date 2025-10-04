@@ -31,7 +31,7 @@ const NameColumn = ({ row }: { row: LeadListItem }) => {
     return (
         <div className="flex items-center">
             <Link
-                className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
+                className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap`}
                 to={`/concepts/lead/lead-edit/${row.id}`}
             >
                 {row.name}
