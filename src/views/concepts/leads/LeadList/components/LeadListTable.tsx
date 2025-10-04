@@ -280,7 +280,7 @@ const LeadListTable = () => {
                                     {eventName}{' '}
                                     {row.metadata?.dates &&
                                         row.metadata?.dates.length > 0
-                                        ? dayjs(
+                                        ? ' - ' + dayjs(
                                             Number(row.metadata?.dates[0]) *
                                             1000,
                                         ).format('MMMM D, YYYY')
