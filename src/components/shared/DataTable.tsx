@@ -363,13 +363,13 @@ function DataTable<T>(props: DataTableProps<T>) {
                                                                 width: cell.column.getSize(),
                                                             }}
                                                             onClick={(e) => {
-                                                                if (cell.column.id === 'action') {
+                                                                if (cell.column.id === 'action' || cell.column.id === 'select') {
                                                                     e.stopPropagation()
                                                                     e.preventDefault()
                                                                 }
                                                             }}
                                                             onMouseDown={(e) => {
-                                                                if (cell.column.id === 'action') {
+                                                                if (cell.column.id === 'action' || cell.column.id === 'select') {
                                                                     e.stopPropagation()
                                                                     e.preventDefault()
                                                                 }
