@@ -230,9 +230,9 @@ const LeadListTable = () => {
                                 }
                             >
                                 <Tag
-                                    className="bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0"
+                                    className="bg-lime-100 text-lime-600 dark:bg-lime-500/20 dark:text-lime-100 border-0"
                                     prefix={
-                                        <HiTag className="text-base text-gray-600 mr-1 rtl:ml-1" />
+                                        <HiTag className="text-base text-lime-600 mr-1 rtl:ml-1" />
                                     }
                                 >
                                     <span className="capitalize">
