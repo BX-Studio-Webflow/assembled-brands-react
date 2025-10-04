@@ -142,7 +142,7 @@ const LeadListTable = () => {
                         <HiPlusCircle className="text-base text-red-600 mr-1 rtl:ml-1" />
                     )
                     let statusClass =
-                        'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
+                        'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100 border-0'
 
                     if (row.lead_status === 'call_back') {
                         statusText = 'Call Back'
