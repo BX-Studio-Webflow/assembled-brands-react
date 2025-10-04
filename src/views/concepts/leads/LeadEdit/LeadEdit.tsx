@@ -93,6 +93,7 @@ const LeadEdit = () => {
     }
 
     const handleFormSubmit = async (values: LeadFormSchema) => {
+        console.log(values)
         setIsSubmiting(true)
         try {
             const leadData = {
@@ -280,6 +281,7 @@ const LeadEdit = () => {
                         onClose={handleCancel}
                         onRequestClose={handleCancel}
                         onConfirm={handleConfirmDelete}
+                        onCancel={handleCancel}
                     >
                         <p>
                             Are you sure you want to delete this lead? This
