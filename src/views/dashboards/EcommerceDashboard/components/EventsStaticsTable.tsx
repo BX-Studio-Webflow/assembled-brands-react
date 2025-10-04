@@ -21,7 +21,6 @@ type EventsStatsData = {
 
 const { Tr, Td, TBody, THead, Th } = Table
 
-
 const EventColumn = ({ row }: { row: EventRow }) => {
     const navigate = useNavigate()
 
@@ -94,8 +93,8 @@ const columns = [
                 type === 'prerecorded'
                     ? 'Pre Recorded'
                     : type === 'live_venue'
-                        ? 'Live Venue'
-                        : 'Live Video Call'
+                      ? 'Live Venue'
+                      : 'Live Video Call'
             return (
                 <Tag
                     className={map[type] || 'text-white bg-indigo-600 border-0'}
@@ -111,7 +110,6 @@ const EventsStatsTable = ({
     data = [],
     title = 'upcoming',
 }: EventsStatsData) => {
-
     const table = useReactTable({
         data,
         columns,
@@ -124,7 +122,6 @@ const EventsStatsTable = ({
                 <h4>
                     {title === 'upcoming' ? 'Upcoming events' : 'Past events'}
                 </h4>
-
             </div>
             <Table>
                 <THead>

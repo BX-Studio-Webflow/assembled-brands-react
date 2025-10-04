@@ -39,11 +39,7 @@ const NameColumn = ({ row }: { row: Lead }) => {
     )
 }
 
-const ActionColumn = ({
-    onDelete,
-}: {
-    onDelete: () => void
-}) => {
+const ActionColumn = ({ onDelete }: { onDelete: () => void }) => {
     return (
         <div className="flex items-center gap-3">
             <Tooltip title="View">
@@ -176,9 +172,32 @@ const LeadListTable = () => {
                         statusClass =
                             'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100 border-0'
                     }
-                    const sourceClass = row.status_identifier === 'manual' ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0' : row.status_identifier === 'landing_page' ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100 border-0' : row.status_identifier === 'manual_bulk_import' ? 'bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-100 border-0' : 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0'
-                    const sourceIcon = row.status_identifier === 'manual' ? <HiOutlineCursorClick className="text-base text-green-600 mr-1 rtl:ml-1" /> : row.status_identifier === 'landing_page' ? <HiOutlineGlobe className="text-base text-indigo-600 mr-1 rtl:ml-1" /> : row.status_identifier === 'manual_bulk_import' ? <HiUserGroup className="text-base text-violet-600 mr-1 rtl:ml-1" /> : <HiPlusCircle className="text-base text-gray-600 mr-1 rtl:ml-1" />
-                    const sourceText = row.status_identifier === 'manual' ? 'Manual' : row.status_identifier === 'landing_page' ? 'Landing page' : row.status_identifier === 'manual_bulk_import' ? 'Bulk import' : 'Unknown'
+                    const sourceClass =
+                        row.status_identifier === 'manual'
+                            ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
+                            : row.status_identifier === 'landing_page'
+                              ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100 border-0'
+                              : row.status_identifier === 'manual_bulk_import'
+                                ? 'bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-100 border-0'
+                                : 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0'
+                    const sourceIcon =
+                        row.status_identifier === 'manual' ? (
+                            <HiOutlineCursorClick className="text-base text-green-600 mr-1 rtl:ml-1" />
+                        ) : row.status_identifier === 'landing_page' ? (
+                            <HiOutlineGlobe className="text-base text-indigo-600 mr-1 rtl:ml-1" />
+                        ) : row.status_identifier === 'manual_bulk_import' ? (
+                            <HiUserGroup className="text-base text-violet-600 mr-1 rtl:ml-1" />
+                        ) : (
+                            <HiPlusCircle className="text-base text-gray-600 mr-1 rtl:ml-1" />
+                        )
+                    const sourceText =
+                        row.status_identifier === 'manual'
+                            ? 'Manual'
+                            : row.status_identifier === 'landing_page'
+                              ? 'Landing page'
+                              : row.status_identifier === 'manual_bulk_import'
+                                ? 'Bulk import'
+                                : 'Unknown'
 
                     return (
                         <div className="flex items-center gap-1">
@@ -227,11 +246,11 @@ const LeadListTable = () => {
                                 <span className="capitalize">
                                     {eventName}{' '}
                                     {row.metadata?.dates &&
-                                        row.metadata?.dates.length > 0
+                                    row.metadata?.dates.length > 0
                                         ? dayjs(
-                                            Number(row.metadata?.dates[0]) *
-                                            1000,
-                                        ).format('dddd, D MMM YYYY · h:mm A')
+                                              Number(row.metadata?.dates[0]) *
+                                                  1000,
+                                          ).format('dddd, D MMM YYYY · h:mm A')
                                         : ''}
                                 </span>
                             </Tag>
@@ -248,12 +267,12 @@ const LeadListTable = () => {
                         <span className="font-semibold">
                             {created_at
                                 ? new Date(created_at).toLocaleString('en-GB', {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                })
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      year: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                  })
                                 : ''}
                         </span>
                     )
@@ -269,7 +288,7 @@ const LeadListTable = () => {
                 ),
             },
         ],
-         
+
         [],
     )
 
@@ -311,7 +330,6 @@ const LeadListTable = () => {
             setSelectAllLead([])
         }
     }
-
 
     const handleRowClick = (row: Lead) => {
         navigate(`/concepts/lead/lead-edit/${row.id}`)

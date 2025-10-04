@@ -91,7 +91,6 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
             window.open(row.live_video_url, '_blank')
     }
 
-
     const onVenueDialogClose = () => {
         setVenueDialogOpen(false)
     }
@@ -105,7 +104,6 @@ const ActionColumn = ({ row }: { row: EventItem }) => {
                         onClick={() => onView(row.event_type)}
                     >
                         <TbLink />
-
                     </span>
                 </Tooltip>
                 <Tooltip wrapperClass="flex" title="Delete Event">
@@ -180,7 +178,15 @@ const EventListTable = () => {
                 cell: (props: { row: { original: EventItem } }) => {
                     const { image_asset } = props.row.original
                     return (
-                        <Avatar style={{ width: '100%', height: '80px' }} className="mr-4" shape="round" src={image_asset?.presignedUrl || '/img/avatars/thumb-1.jpg'} />
+                        <Avatar
+                            style={{ width: '100%', height: '80px' }}
+                            className="mr-4"
+                            shape="round"
+                            src={
+                                image_asset?.presignedUrl ||
+                                '/img/avatars/thumb-1.jpg'
+                            }
+                        />
                     )
                 },
             },
@@ -194,19 +200,19 @@ const EventListTable = () => {
             },
             ...(user?.role === 'master' || user?.role === 'owner'
                 ? [
-                    {
-                        header: 'Host ID',
-                        accessorKey: 'host_id',
-                        cell: (props: { row: { original: EventItem } }) => {
-                            const { host_id } = props.row.original
-                            return (
-                                <span className="font-semibold">
-                                    {host_id}
-                                </span>
-                            )
-                        },
-                    },
-                ]
+                      {
+                          header: 'Host ID',
+                          accessorKey: 'host_id',
+                          cell: (props: { row: { original: EventItem } }) => {
+                              const { host_id } = props.row.original
+                              return (
+                                  <span className="font-semibold">
+                                      {host_id}
+                                  </span>
+                              )
+                          },
+                      },
+                  ]
                 : []),
             {
                 header: 'Status',
@@ -214,7 +220,11 @@ const EventListTable = () => {
                 cell: (props: { row: { original: EventItem } }) => {
                     const { memberships } = props.row.original
                     //if any date is in the future, return active
-                    const isActive = memberships?.some(m => m.dates?.some(d => dayjs(Number(d.date) * 1000).isAfter(dayjs())))
+                    const isActive = memberships?.some((m) =>
+                        m.dates?.some((d) =>
+                            dayjs(Number(d.date) * 1000).isAfter(dayjs()),
+                        ),
+                    )
                     const status = isActive ? 'active' : 'inactive'
                     return (
                         <Tag
@@ -229,7 +239,6 @@ const EventListTable = () => {
                     )
                 },
             },
-
 
             {
                 header: 'Type',
@@ -247,11 +256,13 @@ const EventListTable = () => {
                         type === 'prerecorded'
                             ? 'Pre Recorded'
                             : type === 'live_venue'
-                                ? 'Live Venue'
-                                : 'Live Video Call'
+                              ? 'Live Venue'
+                              : 'Live Video Call'
                     return (
                         <Tag
-                            className={map[type] || 'text-white bg-indigo-600 border-0'}
+                            className={
+                                map[type] || 'text-white bg-indigo-600 border-0'
+                            }
                         >
                             {label}
                         </Tag>
@@ -264,25 +275,23 @@ const EventListTable = () => {
                 accessorKey: 'memberships',
                 cell: (props: { row: { original: EventItem } }) => {
                     const { memberships } = props.row.original
-                    const date_list = memberships
-                        ?.map(
-                            (m) =>
-                                `${dayjs(
-                                    Number(m.dates?.[0]?.date) *
-                                    1000,
-                                ).format(
-                                    'ddd, DD MMM YYYY',
-                                )} - £${m?.price}`,
-                        )
+                    const date_list = memberships?.map(
+                        (m) =>
+                            `${dayjs(Number(m.dates?.[0]?.date) * 1000).format(
+                                'ddd, DD MMM YYYY',
+                            )} - £${m?.price}`,
+                    )
 
                     return (
-                        <Tooltip title={
-                            <div>
-                                {date_list?.map((d) => (
-                                    <div key={d}>{d}</div>
-                                ))}
-                            </div>
-                        }>
+                        <Tooltip
+                            title={
+                                <div>
+                                    {date_list?.map((d) => (
+                                        <div key={d}>{d}</div>
+                                    ))}
+                                </div>
+                            }
+                        >
                             <span className="font-semibold">
                                 {memberships && memberships?.length > 0
                                     ? date_list?.length
@@ -301,12 +310,12 @@ const EventListTable = () => {
                         <span className="font-semibold">
                             {created_at
                                 ? new Date(created_at).toLocaleString('en-GB', {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                })
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      year: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                  })
                                 : ''}
                         </span>
                     )

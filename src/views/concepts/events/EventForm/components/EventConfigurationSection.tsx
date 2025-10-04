@@ -33,7 +33,7 @@ const EventConfigurationSection = ({ control, errors }: Props) => {
                     )}
                 />
             </FormItem>
-   
+
             <FormItem
                 label="After Booking redirect URL"
                 invalid={Boolean(errors.success_url)}
@@ -104,7 +104,6 @@ const EventConfigurationSection = ({ control, errors }: Props) => {
                 />
             </FormItem>
 
-            
             <FormItem
                 label="Terms and Conditions"
                 invalid={Boolean(errors.terms)}

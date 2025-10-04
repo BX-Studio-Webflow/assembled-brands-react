@@ -242,7 +242,16 @@ const EventDetailsSection = ({
                 />
             </FormItem>
             {imageAssetId && imageAsset?.presignedUrl && (
-                <Avatar shape="round" style={{ width: '100%', maxWidth: '300px', height: 'auto' }} className="mr-4" src={imageAsset ? imageAsset.presignedUrl : '/img/avatars/thumb-1.jpg'} />
+                <Avatar
+                    shape="round"
+                    style={{ width: '100%', maxWidth: '300px', height: 'auto' }}
+                    className="mr-4"
+                    src={
+                        imageAsset
+                            ? imageAsset.presignedUrl
+                            : '/img/avatars/thumb-1.jpg'
+                    }
+                />
             )}
         </Card>
     )

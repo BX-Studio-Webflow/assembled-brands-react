@@ -281,7 +281,6 @@ const conceptsNavigationConfig: NavigationTree[] = [
                     },
                 ],
             },*/
-
         ],
     },
 ]
