@@ -198,6 +198,87 @@ export interface LeadSearchParams {
     sort_order?: 'asc' | 'desc'
 }
 
+export interface LeadListItem {
+    id: number
+    name: string
+    email: string
+    phone: string
+    metadata: {
+        dates: number[]
+        event_name: string
+    } | null
+    dial_code: string
+    event_id: number | null
+    date_id: number
+    membership_active: boolean
+    host_id: number
+    token: string
+    status_identifier: string
+    lead_status:
+        | 'new_lead'
+        | 'call_back'
+        | 'registered_for_event'
+        | 'attended_event'
+    source_url: string | null
+    membership_id: number | null
+    created_at: string
+    updated_at: string
+    attended_event: boolean
+    events: {
+        id: number
+        event_name: string
+        event_description: string
+        event_type: 'prerecorded' | 'live_venue' | 'live_video_call'
+        asset_id: number
+        created_at: string
+        updated_at: string
+        status: 'active' | 'suspended' | 'cancelled' | 'inactive'
+        live_video_url: string
+        success_url: string
+        instructions: string
+        landing_page_url: string
+        live_venue_address: string
+        host_id: number
+    }[]
+    membership: {
+        id: number
+        name: string
+        created_at: string
+        updated_at: string
+        user_id: number
+        description: string
+        price: number
+        payment_type: 'one_off' | 'recurring'
+    } | null
+    callback: {
+        id: number
+        callback_type: string
+        status: string
+        notes: string
+        event_id: number
+        host_id: number
+        lead_id: number
+        created_at: string
+        updated_at: string
+    } | null
+    dates: {
+        id: number
+        date: string
+        membership_id: number
+        created_at: string
+        updated_at: string
+    } | null
+    tags: {
+        id: number
+        host_id: number
+        tag: string
+        created_at: string
+        updated_at: string
+    }[]
+}
+
+export type LeadList = LeadListItem[]
+
 export interface LeadResponse {
     list: Lead[]
     total: number

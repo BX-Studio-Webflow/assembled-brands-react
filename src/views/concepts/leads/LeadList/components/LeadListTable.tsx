@@ -16,9 +16,10 @@ import {
     HiOutlineGlobe,
     HiOutlineCursorClick,
     HiUserGroup,
+    HiTag,
 } from 'react-icons/hi'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
-import type { Lead } from '@/@types/lead'
+import type { LeadListItem } from '@/@types/lead'
 import type { TableQueries } from '@/@types/common'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import toast from '@/components/ui/toast'
@@ -26,7 +27,7 @@ import Notification from '@/components/ui/Notification'
 import { apiDeleteLead } from '@/services/LeadsService'
 import dayjs from 'dayjs'
 
-const NameColumn = ({ row }: { row: Lead }) => {
+const NameColumn = ({ row }: { row: LeadListItem }) => {
     return (
         <div className="flex items-center">
             <Link
@@ -72,7 +73,7 @@ const LeadListTable = () => {
         mutate,
     } = useLeadList()
 
-    const handleDelete = (customer: Lead) => {
+    const handleDelete = (customer: LeadListItem) => {
         setDeleteConfirmationOpen(true)
         setToDeleteId(String(customer.id))
     }
@@ -106,7 +107,7 @@ const LeadListTable = () => {
         }
     }
 
-    const columns: ColumnDef<Lead>[] = useMemo(
+    const columns: ColumnDef<LeadListItem>[] = useMemo(
         () => [
             {
                 header: 'Name',
@@ -176,10 +177,10 @@ const LeadListTable = () => {
                         row.status_identifier === 'manual'
                             ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
                             : row.status_identifier === 'landing_page'
-                              ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100 border-0'
-                              : row.status_identifier === 'manual_bulk_import'
-                                ? 'bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-100 border-0'
-                                : 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0'
+                                ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100 border-0'
+                                : row.status_identifier === 'manual_bulk_import'
+                                    ? 'bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-100 border-0'
+                                    : 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0'
                     const sourceIcon =
                         row.status_identifier === 'manual' ? (
                             <HiOutlineCursorClick className="text-base text-green-600 mr-1 rtl:ml-1" />
@@ -194,10 +195,10 @@ const LeadListTable = () => {
                         row.status_identifier === 'manual'
                             ? 'Manual'
                             : row.status_identifier === 'landing_page'
-                              ? 'Landing page'
-                              : row.status_identifier === 'manual_bulk_import'
-                                ? 'Bulk import'
-                                : 'Unknown'
+                                ? 'Landing page'
+                                : row.status_identifier === 'manual_bulk_import'
+                                    ? 'Bulk import'
+                                    : 'Unknown'
 
                     return (
                         <div className="flex items-center gap-1">
@@ -207,6 +208,38 @@ const LeadListTable = () => {
                             <Tag className={sourceClass} prefix={sourceIcon}>
                                 <span className="capitalize">{sourceText}</span>
                             </Tag>
+                        </div>
+                    )
+                },
+            },
+            {
+                header: 'Tags',
+                accessorKey: 'tags',
+                cell: (props) => {
+                    const row = props.row.original
+
+                    const tags = row.tags.map((tag) => tag.tag)
+
+                    return (
+                        <div className="flex items-center gap-1">
+                            <Tooltip
+                                title={
+                                    tags.length > 0
+                                        ? tags.join(', ')
+                                        : 'No tags'
+                                }
+                            >
+                                <Tag
+                                    className="bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0"
+                                    prefix={
+                                        <HiTag className="text-base text-gray-600 mr-1 rtl:ml-1" />
+                                    }
+                                >
+                                    <span className="capitalize">
+                                        {tags.length}
+                                    </span>
+                                </Tag>
+                            </Tooltip>
                         </div>
                     )
                 },
@@ -246,11 +279,11 @@ const LeadListTable = () => {
                                 <span className="capitalize">
                                     {eventName}{' '}
                                     {row.metadata?.dates &&
-                                    row.metadata?.dates.length > 0
+                                        row.metadata?.dates.length > 0
                                         ? dayjs(
-                                              Number(row.metadata?.dates[0]) *
-                                                  1000,
-                                          ).format('dddd, D MMM YYYY · h:mm A')
+                                            Number(row.metadata?.dates[0]) *
+                                            1000,
+                                        ).format('MMMM D, YYYY')
                                         : ''}
                                 </span>
                             </Tag>
@@ -266,13 +299,9 @@ const LeadListTable = () => {
                     return (
                         <span className="font-semibold">
                             {created_at
-                                ? new Date(created_at).toLocaleString('en-GB', {
-                                      day: '2-digit',
-                                      month: '2-digit',
-                                      year: 'numeric',
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                  })
+                                ? dayjs(created_at).format(
+                                    'MMMM D, YYYY h:mm A',
+                                )
                                 : ''}
                         </span>
                     )
@@ -318,11 +347,14 @@ const LeadListTable = () => {
         handleSetTableData(newTableData)
     }
 
-    const handleRowSelect = (checked: boolean, row: Lead) => {
+    const handleRowSelect = (checked: boolean, row: LeadListItem) => {
         setSelectedLead(checked, row)
     }
 
-    const handleAllRowSelect = (checked: boolean, rows: Row<Lead>[]) => {
+    const handleAllRowSelect = (
+        checked: boolean,
+        rows: Row<LeadListItem>[],
+    ) => {
         if (checked) {
             const originalRows = rows.map((row) => row.original)
             setSelectAllLead(originalRows)
@@ -331,7 +363,7 @@ const LeadListTable = () => {
         }
     }
 
-    const handleRowClick = (row: Lead) => {
+    const handleRowClick = (row: LeadListItem) => {
         navigate(`/concepts/lead/lead-edit/${row.id}`)
     }
 

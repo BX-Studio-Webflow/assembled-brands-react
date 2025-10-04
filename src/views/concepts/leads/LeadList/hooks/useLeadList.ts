@@ -1,7 +1,7 @@
 import { apiGetLeads } from '@/services/LeadsService'
 import useSWR from 'swr'
 import { useLeadListStore } from '../store/leadListStore'
-import type { Lead } from '@/@types/lead'
+import type { LeadListItem } from '@/@types/lead'
 
 export default function useLeadList() {
     const {
@@ -17,7 +17,7 @@ export default function useLeadList() {
     const { data, error, isLoading, mutate } = useSWR(
         ['/lead', { ...tableData, ...filterData }],
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, params]) => apiGetLeads<Lead[]>(params),
+        ([_, params]) => apiGetLeads<LeadListItem[]>(params),
         {
             revalidateOnFocus: false,
         },
