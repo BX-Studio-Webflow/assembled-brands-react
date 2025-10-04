@@ -33,6 +33,7 @@ import {
     HiCalendar,
     HiCheckCircle,
     HiPlusCircle,
+    HiClock,
 } from 'react-icons/hi'
 
 const LeadEdit = () => {
@@ -90,6 +91,13 @@ const LeadEdit = () => {
         )
         statusClass =
             'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100 border-0'
+    } else if (data?.lead_status === 'scheduled_call_back') {
+        statusText = 'Scheduled call back'
+        statusIcon = (
+            <HiClock className="text-base text-yellow-600 mr-1 rtl:ml-1" />
+        )
+        statusClass =
+            'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100 border-0'
     }
 
     const handleFormSubmit = async (values: LeadFormSchema) => {

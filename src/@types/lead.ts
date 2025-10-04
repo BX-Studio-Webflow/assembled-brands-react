@@ -14,6 +14,7 @@ export interface Lead {
     lead_status:
         | 'new_lead'
         | 'call_back'
+        | 'scheduled_call_back'
         | 'registered_for_event'
         | 'attended_event'
     source_url: string | null
@@ -217,6 +218,7 @@ export interface LeadListItem {
     lead_status:
         | 'new_lead'
         | 'call_back'
+        | 'scheduled_call_back'
         | 'registered_for_event'
         | 'attended_event'
     source_url: string | null

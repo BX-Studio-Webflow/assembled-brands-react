@@ -89,9 +89,12 @@ const OverviewSection = ({
 
     const leadStatusList: { value: Lead['lead_status']; label: string }[] = [
         { value: 'new_lead', label: 'New lead' },
-        { value: 'call_back', label: 'Call Back' },
         { value: 'registered_for_event', label: 'Registered for event' },
         { value: 'attended_event', label: 'Attended event' },
+        { value: 'scheduled_call_back', label: 'Scheduled call back' },
+        { value: 'call_back', label: 'Call Back' },
+    
+      
     ]
 
     return (

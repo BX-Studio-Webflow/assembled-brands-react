@@ -17,6 +17,7 @@ import {
     HiOutlineCursorClick,
     HiUserGroup,
     HiTag,
+    HiClock,
 } from 'react-icons/hi'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { LeadListItem } from '@/@types/lead'
@@ -151,6 +152,14 @@ const LeadListTable = () => {
                         )
                         statusClass =
                             'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
+                    }
+                    else if (row.lead_status === 'scheduled_call_back') {
+                        statusText = 'Scheduled call back'
+                        statusIcon = (
+                            <HiClock className="text-base text-yellow-600 mr-1 rtl:ml-1" />
+                        )
+                        statusClass =
+                            'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100 border-0'
                     } else if (row.lead_status === 'attended_event') {
                         statusText = 'Attended event'
                         statusIcon = (
