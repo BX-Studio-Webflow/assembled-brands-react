@@ -178,7 +178,7 @@ const LeadListTable = () => {
                             ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
                             : row.status_identifier === 'landing_page'
                                 ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100 border-0'
-                                : row.status_identifier === 'manual_bulk_import'
+                                : row.status_identifier === 'bulk_import'
                                     ? 'bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-100 border-0'
                                     : 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0'
                     const sourceIcon =
@@ -186,7 +186,7 @@ const LeadListTable = () => {
                             <HiOutlineCursorClick className="text-base text-green-600 mr-1 rtl:ml-1" />
                         ) : row.status_identifier === 'landing_page' ? (
                             <HiOutlineGlobe className="text-base text-indigo-600 mr-1 rtl:ml-1" />
-                        ) : row.status_identifier === 'manual_bulk_import' ? (
+                        ) : row.status_identifier === 'bulk_import' ? (
                             <HiUserGroup className="text-base text-violet-600 mr-1 rtl:ml-1" />
                         ) : (
                             <HiPlusCircle className="text-base text-gray-600 mr-1 rtl:ml-1" />
@@ -196,7 +196,7 @@ const LeadListTable = () => {
                             ? 'Manual'
                             : row.status_identifier === 'landing_page'
                                 ? 'Landing page'
-                                : row.status_identifier === 'manual_bulk_import'
+                                : row.status_identifier === 'bulk_import'
                                     ? 'Bulk import'
                                     : 'Unknown'
 
