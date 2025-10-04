@@ -8,7 +8,7 @@ export type OverviewFields = {
     phoneNumber: string
     img: string
     notes?: string | null
-    event_id?: number
+    event_id?: number | null
     lead_status?:
         | 'new_lead'
         | 'call_back'

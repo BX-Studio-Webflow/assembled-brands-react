@@ -93,7 +93,6 @@ const LeadEdit = () => {
     }
 
     const handleFormSubmit = async (values: LeadFormSchema) => {
-        console.log(values)
         setIsSubmiting(true)
         try {
             const leadData = {
@@ -109,7 +108,7 @@ const LeadEdit = () => {
             setIsSubmiting(false)
             toast.push(
                 <Notification type="success">
-                    Your changes have been saved!
+                    Your lead was updated successfully!
                 </Notification>,
                 {
                     placement: 'top-center',

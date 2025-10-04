@@ -29,7 +29,7 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
     dialCode: z.string().min(1, 'Please select your country code'),
     phoneNumber: z.string().min(1, 'Please input your mobile number'),
     img: z.string(),
-    event_id: z.number().optional(),
+    event_id: z.number().optional().nullable(),
     notes: z.string().optional(),
     lead_status: z
         .enum([
