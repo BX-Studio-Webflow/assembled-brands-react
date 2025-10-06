@@ -366,7 +366,9 @@ const MailEditor = ({
                                                         )
                                                     }}
                                                 >
-                                                   <span className="whitespace-nowrap">{filter.label}</span>
+                                                    <span className="whitespace-nowrap">
+                                                        {filter.label}
+                                                    </span>
                                                 </Radio>
                                             ))}
                                     </div>

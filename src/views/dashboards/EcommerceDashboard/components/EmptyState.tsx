@@ -39,7 +39,8 @@ const EmptyState = () => {
         },
         {
             title: 'Import some Lead',
-            description: 'Import your leads from a CSV file from an external platform.',
+            description:
+                'Import your leads from a CSV file from an external platform.',
             icon: <PiUploadDuotone className="text-xl" />,
             color: 'text-emerald-500',
             bg: 'bg-emerald-100 dark:bg-emerald-500/20',
@@ -85,7 +86,9 @@ const EmptyState = () => {
                                         </p>
                                         <HiOutlineArrowNarrowRight className="opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
                                     </div>
-                                    <p className="text-sm">{item.description}</p>
+                                    <p className="text-sm">
+                                        {item.description}
+                                    </p>
                                 </div>
                             </div>
                         </Link>
