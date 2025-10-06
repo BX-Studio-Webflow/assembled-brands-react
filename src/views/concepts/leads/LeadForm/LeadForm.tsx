@@ -37,6 +37,7 @@ const validationSchema: ZodType<LeadFormSchema> = z.object({
             'call_back',
             'registered_for_event',
             'attended_event',
+            'scheduled_call_back',
         ])
         .optional(),
 })
