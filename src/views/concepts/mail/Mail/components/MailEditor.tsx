@@ -244,7 +244,7 @@ const MailEditor = ({
 
     return (
         <Dialog
-            width={700}
+            width={900}
             isOpen={messageDialog.open}
             onClose={handleDialogClose}
             onRequestClose={handleDialogClose}
@@ -345,7 +345,7 @@ const MailEditor = ({
                                 control={control}
                                 defaultValue="everyone"
                                 render={({ field }) => (
-                                    <div className="flex">
+                                    <div className="flex flex-col gap-2 lg:flex-row">
                                         {filterTypes
                                             .filter(
                                                 (filter) =>
@@ -354,7 +354,7 @@ const MailEditor = ({
                                             .map((filter) => (
                                                 <Radio
                                                     key={filter.value}
-                                                    className="mr-8"
+                                                    className="lg:mr-8"
                                                     name="filterType"
                                                     checked={
                                                         field.value ===
@@ -366,7 +366,7 @@ const MailEditor = ({
                                                         )
                                                     }}
                                                 >
-                                                    {filter.label}
+                                                   <span className="whitespace-nowrap">{filter.label}</span>
                                                 </Radio>
                                             ))}
                                     </div>
