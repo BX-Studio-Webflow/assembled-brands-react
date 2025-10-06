@@ -7,6 +7,9 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { DashboardResponse } from '@/@types/auth'
 import EventsStatsTable from './components/EventsStaticsTable'
+import EmptyState from './components/EmptyState'
+import { useAuth } from '@/auth'
+import dayjs from 'dayjs'
 
 const EcommerceDashboard = () => {
     useEffect(() => {
@@ -47,22 +50,34 @@ const EcommerceDashboard = () => {
     const upcomingEvents = data?.events?.events_flat.filter(
         (event) => event.upcoming_dates.length > 0,
     )
+    const { user } = useAuth()
+
+    const isNewUser = dayjs(user?.createdAt).isAfter(dayjs().subtract(1, 'month'))
+    const isEmptyState = upcomingEvents?.length === 0 && pastEvents?.length === 0 && isNewUser
 
     return (
         <div className="grid grid-cols-1 gap-4">
             <div className="col-span-1">
                 <Overview data={data} />
             </div>
+            {isEmptyState ? (
+                <div className="col-span-1">
+                    <EmptyState />
+                </div>
+            ) : (
+                <>
+                    <div className="col-span-1">
+                        <EventsStatsTable
+                            data={upcomingEvents || []}
+                            title="upcoming"
+                        />
+                    </div>
+                    <div className="col-span-1">
+                        <EventsStatsTable data={pastEvents || []} title="past" />
+                    </div>
+                </>
+            )}
 
-            <div className="col-span-1">
-                <EventsStatsTable
-                    data={upcomingEvents || []}
-                    title="upcoming"
-                />
-            </div>
-            <div className="col-span-1">
-                <EventsStatsTable data={pastEvents || []} title="past" />
-            </div>
         </div>
     )
 }
