@@ -27,7 +27,7 @@ type FormSchema = {
     content: string
     title: string
     type: string
-    filterType: 'everyone' | 'attended' | 'notAttended'
+    filterType: 'everyone' | 'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event' | 'scheduled_call_back'
     recipients: number | null
     selectedMembership: number | null
 }
@@ -37,7 +37,7 @@ const validationSchema: ZodType<FormSchema> = z
         title: z.string().min(1, { message: 'Please enter title' }),
         content: z.string().min(1, { message: 'Please enter message' }),
         type: z.string(),
-        filterType: z.enum(['everyone', 'attended', 'notAttended']),
+        filterType: z.enum(['everyone', 'new_lead', 'call_back', 'registered_for_event', 'attended_event', 'scheduled_call_back']),
         recipients: z.number().nullable(),
         selectedMembership: z.number().nullable(),
     })
@@ -220,6 +220,15 @@ const MailEditor = ({
         handleDialogClose()
     }
 
+    const filterTypes = [
+        { value: 'everyone', label: 'Everyone' },
+        { value: 'new_lead', label: 'New Lead' },
+        { value: 'call_back', label: 'Call Back' },
+        { value: 'registered_for_event', label: 'Registered for Event' },
+        { value: 'attended_event', label: 'Attended Event' },
+        { value: 'scheduled_call_back', label: 'Scheduled Call Back' },
+    ]
+
     return (
         <Dialog
             width={700}
@@ -324,38 +333,19 @@ const MailEditor = ({
                                 defaultValue="everyone"
                                 render={({ field }) => (
                                     <div className="flex">
-                                        <Radio
-                                            className="mr-8"
-                                            name="filterType"
-                                            checked={field.value === 'everyone'}
-                                            onChange={() => {
-                                                field.onChange('everyone')
-                                            }}
-                                        >
-                                            Everyone
-                                        </Radio>
-                                        <Radio
-                                            className="mr-8"
-                                            name="filterType"
-                                            checked={field.value === 'attended'}
-                                            onChange={() => {
-                                                field.onChange('attended')
-                                            }}
-                                        >
-                                            Attended Event
-                                        </Radio>
-                                        <Radio
-                                            className="mr-8"
-                                            name="filterType"
-                                            checked={
-                                                field.value === 'notAttended'
-                                            }
-                                            onChange={() => {
-                                                field.onChange('notAttended')
-                                            }}
-                                        >
-                                            Not Attended Event
-                                        </Radio>
+                                        {filterTypes.filter((filter) => filter.value !== 'everyone').map((filter) => (
+                                            <Radio
+                                                className="mr-8"
+                                                name="filterType"
+                                                checked={field.value === filter.value}
+                                                onChange={() => {
+                                                    field.onChange(filter.value)
+                                                }}
+                                            >
+                                                {filter.label}
+                                            </Radio>
+                                        ))}
+
                                     </div>
                                 )}
                             />
@@ -366,8 +356,8 @@ const MailEditor = ({
                             watch('type') === 'tag'
                                 ? 'Tags'
                                 : watch('type') === 'event'
-                                  ? 'Events'
-                                  : 'Recipients'
+                                    ? 'Events'
+                                    : 'Recipients'
                         }
                         invalid={Boolean(errors.recipients)}
                         errorMessage={errors.recipients?.message}
@@ -382,69 +372,69 @@ const MailEditor = ({
                                         watch('type') === 'tag'
                                             ? 'Type to search tags'
                                             : watch('type') === 'event'
-                                              ? 'Type to search events'
-                                              : 'Type to search recipients'
+                                                ? 'Type to search events'
+                                                : 'Type to search recipients'
                                     }
                                     value={
                                         field.value
                                             ? (() => {
-                                                  const currentType =
-                                                      watch('type')
-                                                  let currentOptions: {
-                                                      value: number
-                                                      label: string
-                                                  }[] = []
+                                                const currentType =
+                                                    watch('type')
+                                                let currentOptions: {
+                                                    value: number
+                                                    label: string
+                                                }[] = []
 
-                                                  if (currentType === 'event') {
-                                                      currentOptions =
-                                                          events.map((e) => ({
-                                                              value: e.event.id,
-                                                              label: e.event
-                                                                  .event_name,
-                                                          }))
-                                                  } else if (
-                                                      currentType === 'tag'
-                                                  ) {
-                                                      currentOptions = tags.map(
-                                                          (t) => ({
-                                                              value: t.id,
-                                                              label: t.tag,
-                                                          }),
-                                                      )
-                                                  } else if (
-                                                      currentType === 'name'
-                                                  ) {
-                                                      currentOptions =
-                                                          searchResults
-                                                              .filter(
-                                                                  (r) =>
-                                                                      'name' in
-                                                                      r,
-                                                              )
-                                                              .map((r) =>
-                                                                  'name' in r
-                                                                      ? {
-                                                                            value: r.id,
-                                                                            label: `${r.name} - ${r.email}`,
-                                                                        }
-                                                                      : null,
-                                                              )
-                                                              .filter(
-                                                                  Boolean,
-                                                              ) as {
-                                                              value: number
-                                                              label: string
-                                                          }[]
-                                                  }
+                                                if (currentType === 'event') {
+                                                    currentOptions =
+                                                        events.map((e) => ({
+                                                            value: e.event.id,
+                                                            label: e.event
+                                                                .event_name,
+                                                        }))
+                                                } else if (
+                                                    currentType === 'tag'
+                                                ) {
+                                                    currentOptions = tags.map(
+                                                        (t) => ({
+                                                            value: t.id,
+                                                            label: t.tag,
+                                                        }),
+                                                    )
+                                                } else if (
+                                                    currentType === 'name'
+                                                ) {
+                                                    currentOptions =
+                                                        searchResults
+                                                            .filter(
+                                                                (r) =>
+                                                                    'name' in
+                                                                    r,
+                                                            )
+                                                            .map((r) =>
+                                                                'name' in r
+                                                                    ? {
+                                                                        value: r.id,
+                                                                        label: `${r.name} - ${r.email}`,
+                                                                    }
+                                                                    : null,
+                                                            )
+                                                            .filter(
+                                                                Boolean,
+                                                            ) as {
+                                                                value: number
+                                                                label: string
+                                                            }[]
+                                                }
 
-                                                  return (
-                                                      currentOptions.find(
-                                                          (option) =>
-                                                              option.value ===
-                                                              field.value,
-                                                      ) || null
-                                                  )
-                                              })()
+                                                return (
+                                                    currentOptions.find(
+                                                        (option) =>
+                                                            option.value ===
+                                                            field.value,
+                                                    ) || null
+                                                )
+                                            })()
                                             : null
                                     }
                                     options={(() => {
@@ -545,7 +535,7 @@ const MailEditor = ({
                                         if (
                                             !selectedEvent?.memberships ||
                                             selectedEvent.memberships.length ===
-                                                0
+                                            0
                                         ) {
                                             return (
                                                 <div className="text-gray-500">
