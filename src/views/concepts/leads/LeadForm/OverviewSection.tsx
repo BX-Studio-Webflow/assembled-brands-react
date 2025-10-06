@@ -93,8 +93,6 @@ const OverviewSection = ({
         { value: 'attended_event', label: 'Attended event' },
         { value: 'scheduled_call_back', label: 'Scheduled call back' },
         { value: 'call_back', label: 'Call Back' },
-    
-      
     ]
 
     return (

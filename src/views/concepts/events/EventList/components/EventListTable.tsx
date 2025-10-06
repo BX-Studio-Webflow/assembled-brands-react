@@ -195,7 +195,11 @@ const EventListTable = () => {
                 accessorKey: 'event_name',
                 cell: (props: { row: { original: EventItem } }) => {
                     const { event_name } = props.row.original
-                    return <span className="font-semibold whitespace-nowrap">{event_name}</span>
+                    return (
+                        <span className="font-semibold whitespace-nowrap">
+                            {event_name}
+                        </span>
+                    )
                 },
             },
             ...(user?.role === 'master' || user?.role === 'owner'

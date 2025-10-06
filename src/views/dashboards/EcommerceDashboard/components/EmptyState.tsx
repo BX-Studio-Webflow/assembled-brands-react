@@ -1,13 +1,11 @@
 import Card from '@/components/ui/Card'
 import type { ReactElement } from 'react'
-import {
-    HiOutlineArrowNarrowRight,
-} from 'react-icons/hi'
+import { HiOutlineArrowNarrowRight } from 'react-icons/hi'
 import {
     PiDesktopDuotone,
     PiUserPlusDuotone,
     PiUploadDuotone,
-    PiFolderOpenDuotone
+    PiFolderOpenDuotone,
 } from 'react-icons/pi'
 import { Link } from 'react-router'
 
@@ -25,7 +23,7 @@ const EmptyState = () => {
         {
             title: 'Create an Event',
             description:
-                "Streamline your events to users with a dedicated platform.",
+                'Streamline your events to users with a dedicated platform.',
             icon: <PiDesktopDuotone className="text-xl" />,
             color: 'text-rose-500',
             bg: 'bg-rose-100 dark:bg-rose-500/20',
@@ -33,8 +31,7 @@ const EmptyState = () => {
         },
         {
             title: 'Create a Lead',
-            description:
-                "Stay on top of your leads with a dedicated platform.",
+            description: 'Stay on top of your leads with a dedicated platform.',
             icon: <PiUserPlusDuotone className="text-xl" />,
             color: 'text-amber-500',
             bg: 'bg-amber-100 dark:bg-amber-500/20',
@@ -42,7 +39,7 @@ const EmptyState = () => {
         },
         {
             title: 'Import some Lead',
-            description: 'Import your leads from a CSV file.',
+            description: 'Import your leads from a CSV file from an external platform.',
             icon: <PiUploadDuotone className="text-xl" />,
             color: 'text-emerald-500',
             bg: 'bg-emerald-100 dark:bg-emerald-500/20',
@@ -56,7 +53,6 @@ const EmptyState = () => {
             bg: 'bg-blue-100 dark:bg-blue-500/20',
             to: '/concepts/file-manager',
         },
-
     ]
 
     return (
@@ -65,8 +61,8 @@ const EmptyState = () => {
                 <div className="mb-4 flex flex-col gap-1">
                     <h4>Projects</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                        You haven’t created any events yet. Get started by selecting
-                        any of the options below.
+                        You haven’t created any events yet. Get started by
+                        selecting any of the options below.
                     </p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4">
@@ -84,18 +80,17 @@ const EmptyState = () => {
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center justify-between">
-                                        <h5 className="font-medium">{item.title}</h5>
+                                        <h5 className="font-medium">
+                                            {item.title}
+                                        </h5>
                                         <HiOutlineArrowNarrowRight className="opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
                                     </div>
-                                    <p className="mt-1">
-                                        {item.description}
-                                    </p>
+                                    <p className="">{item.description}</p>
                                 </div>
                             </div>
                         </Link>
                     ))}
                 </div>
-
             </div>
         </Card>
     )

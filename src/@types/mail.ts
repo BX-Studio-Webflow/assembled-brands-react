@@ -5,7 +5,13 @@ export interface MailRequestBody {
     body: string
     button_text: string
     type: string
-    filterType?: 'everyone' | 'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event' | 'scheduled_call_back'
+    filterType?:
+        | 'everyone'
+        | 'new_lead'
+        | 'call_back'
+        | 'registered_for_event'
+        | 'attended_event'
+        | 'scheduled_call_back'
     button_link: string
     recipients: number[]
     selectedMembership?: number
@@ -24,7 +30,11 @@ export type CreateBulkMailBody = {
     title: string
     content: string
     follow_up_who_gets_it: Array<
-        'new_lead' | 'call_back' | 'registered_for_event' | 'attended_event' | 'scheduled_call_back'
+        | 'new_lead'
+        | 'call_back'
+        | 'registered_for_event'
+        | 'attended_event'
+        | 'scheduled_call_back'
     >
     timeline: number
     user_id: number

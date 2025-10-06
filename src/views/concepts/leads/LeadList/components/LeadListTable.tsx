@@ -152,8 +152,7 @@ const LeadListTable = () => {
                         )
                         statusClass =
                             'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100 border-0'
-                    }
-                    else if (row.lead_status === 'scheduled_call_back') {
+                    } else if (row.lead_status === 'scheduled_call_back') {
                         statusText = 'Scheduled call back'
                         statusIcon = (
                             <HiClock className="text-base text-yellow-600 mr-1 rtl:ml-1" />
@@ -186,10 +185,10 @@ const LeadListTable = () => {
                         row.status_identifier === 'manual'
                             ? 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 border-0'
                             : row.status_identifier === 'landing_page'
-                                ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100 border-0'
-                                : row.status_identifier === 'bulk_import'
-                                    ? 'bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-100 border-0'
-                                    : 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0'
+                              ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100 border-0'
+                              : row.status_identifier === 'bulk_import'
+                                ? 'bg-violet-100 text-violet-600 dark:bg-violet-500/20 dark:text-violet-100 border-0'
+                                : 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100 border-0'
                     const sourceIcon =
                         row.status_identifier === 'manual' ? (
                             <HiOutlineCursorClick className="text-base text-green-600 mr-1 rtl:ml-1" />
@@ -204,10 +203,10 @@ const LeadListTable = () => {
                         row.status_identifier === 'manual'
                             ? 'Manual'
                             : row.status_identifier === 'landing_page'
-                                ? 'Landing page'
-                                : row.status_identifier === 'bulk_import'
-                                    ? 'Bulk import'
-                                    : 'Unknown'
+                              ? 'Landing page'
+                              : row.status_identifier === 'bulk_import'
+                                ? 'Bulk import'
+                                : 'Unknown'
 
                     return (
                         <div className="flex items-center gap-1">
@@ -288,11 +287,12 @@ const LeadListTable = () => {
                                 <span className="capitalize">
                                     {eventName}{' '}
                                     {row.metadata?.dates &&
-                                        row.metadata?.dates.length > 0
-                                        ? ' - ' + dayjs(
-                                            Number(row.metadata?.dates[0]) *
-                                            1000,
-                                        ).format('MMMM D, YYYY')
+                                    row.metadata?.dates.length > 0
+                                        ? ' - ' +
+                                          dayjs(
+                                              Number(row.metadata?.dates[0]) *
+                                                  1000,
+                                          ).format('MMMM D, YYYY')
                                         : ''}
                                 </span>
                             </Tag>
@@ -309,8 +309,8 @@ const LeadListTable = () => {
                         <span className="font-semibold">
                             {created_at
                                 ? dayjs(created_at).format(
-                                    'MMMM D, YYYY h:mm A',
-                                )
+                                      'MMMM D, YYYY h:mm A',
+                                  )
                                 : ''}
                         </span>
                     )
