@@ -184,7 +184,7 @@ const EventListTable = () => {
                             shape="round"
                             src={
                                 image_asset?.presignedUrl ||
-                                '/img/avatars/thumb-1.jpg'
+                                '/img/avatars/logo.png'
                             }
                         />
                     )
