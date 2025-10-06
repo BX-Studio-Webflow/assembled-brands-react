@@ -199,6 +199,7 @@ const SettingsProfile = () => {
                         fileName: file.name,
                     })
                     resolve(response.data.url)
+                    mutate()
                     toast.push(
                         <Notification type="success">
                             Your profile image has been updated!

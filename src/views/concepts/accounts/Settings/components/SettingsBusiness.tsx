@@ -191,6 +191,7 @@ const SettingsBusiness = (props: {
                         fileName: file.name,
                     })
                     resolve(null)
+                    mutate()
                     toast.push(
                         <Notification type="success">
                             Your business profile image has been uploaded!
