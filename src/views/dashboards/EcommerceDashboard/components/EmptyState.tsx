@@ -80,12 +80,12 @@ const EmptyState = () => {
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center justify-between">
-                                        <h5 className="font-medium">
+                                        <p className="text-base font-semibold leading-tight">
                                             {item.title}
-                                        </h5>
+                                        </p>
                                         <HiOutlineArrowNarrowRight className="opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
                                     </div>
-                                    <p className="">{item.description}</p>
+                                    <p className="text-sm">{item.description}</p>
                                 </div>
                             </div>
                         </Link>
