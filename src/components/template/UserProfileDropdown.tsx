@@ -36,9 +36,8 @@ const _UserDropdown = () => {
     }
 
     const avatarProps = {
-        ...(user?.profile_picture
-            ? { src: user.profile_picture || '/img/avatars/man.png' }
-            : { icon: <PiUserDuotone /> }),
+       src : user?.profile_picture || '/img/avatars/thumb-2.jpg',
+       className: 'bg-transparent'
     }
 
     return (
@@ -56,7 +55,6 @@ const _UserDropdown = () => {
                 <div className="py-2 px-3 flex items-center gap-3">
                     <Avatar
                         {...avatarProps}
-                        src={user?.profile_picture || ''}
                     />
                     <div>
                         <div className="font-bold text-gray-900 dark:text-gray-100">
