@@ -14,6 +14,7 @@ export type OverviewFields = {
         | 'call_back'
         | 'registered_for_event'
         | 'attended_event'
+        | 'scheduled_call_back'
 }
 
 export type AddressFields = {
