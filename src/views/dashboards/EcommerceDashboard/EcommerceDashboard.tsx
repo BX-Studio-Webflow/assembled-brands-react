@@ -72,15 +72,16 @@ const EcommerceDashboard = () => {
 
     return (
         <div className="grid grid-cols-1 gap-4">
-            <div className="col-span-1">
-                <Overview data={data} />
-            </div>
+
             {isEmptyState ? (
                 <div className="col-span-1">
                     <EmptyState />
                 </div>
             ) : (
                 <>
+                    <div className="col-span-1">
+                        <Overview data={data} />
+                    </div>
                     <div className="col-span-1">
                         <EventsStatsTable
                             data={upcomingEvents || []}
