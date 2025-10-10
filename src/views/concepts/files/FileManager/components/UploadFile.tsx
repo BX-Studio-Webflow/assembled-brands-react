@@ -56,6 +56,7 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
         setUploadDialogOpen(false)
         setUploadedFiles([])
         setProgressArr([])
+        setIsUploading(false)
     }
 
     const uploadFileMultipart = async (file: File, idx: number) => {
