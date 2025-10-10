@@ -4,7 +4,7 @@ import { useChatStore } from '../store/chatStore'
 import useChat from '../hooks/useChat'
 import { TbChevronLeft } from 'react-icons/tb'
 import { Avatar, Card, ScrollBarRef } from '@/components/ui'
-import { EventStreamResponse } from '@/@types/events'
+import { EventDateCombination, EventStreamResponse, LivestreamStatus } from '@/@types/events'
 import ChatBox from '@/components/view/ChatBox'
 import useResponsive from '@/utils/hooks/useResponsive'
 import dayjs from 'dayjs'
@@ -14,10 +14,12 @@ import useAuth from '@/auth/useAuth'
 interface ChatListProps {
     event: EventStreamResponse
     isHost: boolean
-    nextDate: { start: Date; end: Date } | null
+    nextDate: EventDateCombination
+    eventStatus: LivestreamStatus
 }
 
-const ChatList = ({ event, isHost, nextDate }: ChatListProps) => {
+const ChatList = ({ event, isHost, nextDate ,eventStatus }: ChatListProps) => {
+    console.log({ nextDate, eventStatus })
     const chatsFetched = useChatStore((state) => state.chatsFetched)
     const { user } = useAuth()
 
@@ -140,7 +142,7 @@ const ChatList = ({ event, isHost, nextDate }: ChatListProps) => {
         //past messages before nextDate will not be shown
         const filteredMessages = messages.filter((item) => {
             const messageTimestamp = dayjs(item.timestamp)
-            return messageTimestamp.isAfter(nextDate?.start)
+            return eventStatus === 'ended' ? true : messageTimestamp.isAfter(nextDate?.start)
         })
         return filteredMessages.map((item) => {
             // First determine who the current user is in this event context

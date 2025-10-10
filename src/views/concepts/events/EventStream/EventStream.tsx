@@ -126,6 +126,7 @@ const EventStream = () => {
                                     event={data}
                                     isHost={isHost}
                                     nextDate={nextDate}
+                                    eventStatus={eventStatus}
                                 />
                                 <EventBody
                                     data={data}

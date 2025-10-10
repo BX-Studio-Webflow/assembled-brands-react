@@ -1,15 +1,16 @@
 import ChatList from '../../../chat/Chat/components/ChatList'
 import { useChatStore } from '../../../chat/Chat/store/chatStore'
 import classNames from '@/utils/classNames'
-import { EventDateCombination, EventStreamResponse } from '@/@types/events'
+import { EventDateCombination, EventStreamResponse, LivestreamStatus } from '@/@types/events'
 
 interface EventSidebarProps {
     event: EventStreamResponse
     isHost: boolean
     nextDate: EventDateCombination
+    eventStatus: LivestreamStatus
 }
 
-const EventSidebar = ({ event, isHost, nextDate }: EventSidebarProps) => {
+const EventSidebar = ({ event, isHost, nextDate, eventStatus }: EventSidebarProps) => {
     const selectedChat = useChatStore((state) => state.selectedChat)
 
     return (
@@ -19,7 +20,7 @@ const EventSidebar = ({ event, isHost, nextDate }: EventSidebarProps) => {
                 selectedChat.id && 'hidden lg:block',
             )}
         >
-            <ChatList event={event} isHost={isHost} nextDate={nextDate} />
+            <ChatList event={event} isHost={isHost} nextDate={nextDate} eventStatus={eventStatus} />
         </div>
     )
 }

@@ -48,9 +48,9 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
     return (
 
         <div className='w-full h-full flex gap-2 mb-2'>
-            {eventStatus === 'ended' && is60MinutesAfterEnd && (
+            {eventStatus === 'ended' && (
                 <div className='h-full'>
-                    <EventSidebar event={event} isHost={isHost || false} nextDate={nextDate || null} />
+                    <EventSidebar event={event} isHost={isHost || false} nextDate={nextDate || null} eventStatus={eventStatus} />
                 </div>
             )}
             <div
