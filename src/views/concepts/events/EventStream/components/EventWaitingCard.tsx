@@ -65,7 +65,7 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
                 }}
             >
                 {/* Content with relative positioning to appear above overlay */}
-                <div className="w-full sm:w-4/5 md:w-2/3 lg:w-1/2 xl:w-1/3 relative z-10 flex flex-col items-center backdrop-blur-sm bg-white/20 rounded-lg p-4 sm:p-6 md:p-8">
+                <div className="w-1/2 relative z-10 flex flex-col items-center backdrop-blur-sm bg-white/20 rounded-lg p-4 sm:p-6 md:p-8">
 
                     <div className="text-center">
                         {eventStatus === 'early' && (
