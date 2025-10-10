@@ -51,13 +51,13 @@ const EventStream = () => {
                 start: new Date(Number(date.date) * 1000),
                 end: new Date(
                     Number(date.date) * 1000 +
-                        (data.event.asset.duration || 0) * 1000,
+                    (data.event.asset.duration || 0) * 1000,
                 ),
             }))
             .sort((a, b) => a.start.getTime() - b.start.getTime())
         const next = sortedDates.find((date) => date.end > now) || null
         console.log({ sortedDates, next, actual: data.event.memberships })
-        let status = 'early'
+        let status: LivestreamStatus = 'early'
         if (!next) {
             status = 'ended'
         } else if (data.event.status === 'cancelled') {

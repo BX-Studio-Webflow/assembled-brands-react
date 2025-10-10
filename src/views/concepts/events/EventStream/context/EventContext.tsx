@@ -1,11 +1,12 @@
 import React, { createContext, useContext } from 'react'
-import { EventStreamResponse } from '@/@types/events'
+import { EventDateCombination, EventStreamResponse, LivestreamStatus } from '@/@types/events'
 
 interface EventContextType {
     data: EventStreamResponse | null
     isLoading: boolean
-    eventStatus?: string
-    nextDate?: { start: Date; end: Date } | null
+    eventStatus?: LivestreamStatus
+    nextDate?: EventDateCombination
+    isHost?: boolean
 }
 
 const EventContext = createContext<EventContextType>({

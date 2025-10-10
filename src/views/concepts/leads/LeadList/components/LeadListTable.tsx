@@ -292,7 +292,7 @@ const LeadListTable = () => {
                                           dayjs(
                                               Number(row.metadata?.dates[0]) *
                                                   1000,
-                                          ).format('MMMM D, YYYY')
+                                          ).format('MMMM D, YYYY h:mm A')
                                         : ''}
                                 </span>
                             </Tag>

@@ -1,12 +1,12 @@
 import ChatList from '../../../chat/Chat/components/ChatList'
 import { useChatStore } from '../../../chat/Chat/store/chatStore'
 import classNames from '@/utils/classNames'
-import { EventStreamResponse } from '@/@types/events'
+import { EventDateCombination, EventStreamResponse } from '@/@types/events'
 
 interface EventSidebarProps {
     event: EventStreamResponse
     isHost: boolean
-    nextDate: { start: Date; end: Date } | null
+    nextDate: EventDateCombination
 }
 
 const EventSidebar = ({ event, isHost, nextDate }: EventSidebarProps) => {
@@ -15,7 +15,7 @@ const EventSidebar = ({ event, isHost, nextDate }: EventSidebarProps) => {
     return (
         <div
             className={classNames(
-                'w-full lg:w-[400px] lg:block min-h-[400px]',
+                'w-full lg:w-[400px] lg:block min-h-[400px] h-full',
                 selectedChat.id && 'hidden lg:block',
             )}
         >

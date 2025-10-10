@@ -244,3 +244,5 @@ export type LivestreamStatus =
     | 'ended'
     | 'cancelled'
     | 'suspended'
+
+export type EventDateCombination = { start: Date; end: Date } | null

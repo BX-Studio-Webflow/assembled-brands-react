@@ -8,6 +8,7 @@ import {
 import { LivestreamStatus } from '@/@types/events'
 import Tag from '@/components/ui/Tag'
 import { HiX, HiPlay, HiClock, HiPause, HiStop } from 'react-icons/hi'
+import dayjs from 'dayjs'
 
 const getStatusTagProps = (
     status: LivestreamStatus,
@@ -38,7 +39,7 @@ const getStatusTagProps = (
             return {
                 className:
                     'text-yellow-600 bg-yellow-100 dark:text-yellow-100 dark:bg-yellow-500/20 border-0',
-                children: `event starts at ${nextDate?.start.toLocaleString()}`,
+                children: `event starts at ${dayjs(nextDate?.start).format('DD/MM/YYYY HH:mm')}`,
                 prefix: <HiClock className="mr-1 rtl:ml-1" />,
             }
         case 'ended':
