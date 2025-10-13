@@ -31,10 +31,19 @@ const EventStream = () => {
                 email: email,
                 token: token,
                 event_id: Number(code || id),
-                isHost: isHost, // If no token/email/code provided, assume it's a host
+                isHost: isHost,
             }),
         { revalidateOnFocus: false },
     )
+
+    const setEventTimelines = (start: Date, end: Date, event_id: number) => {
+        const event_timelines = {
+            start: start,
+            end: end,
+            event_id: event_id,
+        }
+        localStorage.setItem('event_timelines', JSON.stringify(event_timelines))
+    }
 
     // Compute eventStatus and nextDate
     const { eventStatus, nextDate } = useMemo(() => {
@@ -56,7 +65,8 @@ const EventStream = () => {
             }))
             .sort((a, b) => a.start.getTime() - b.start.getTime())
         const next = sortedDates.find((date) => date.end > now) || null
-        console.log({ sortedDates, next, actual: data.event.memberships })
+
+
         let status: LivestreamStatus = 'early'
         if (!next) {
             status = 'ended'
@@ -68,15 +78,21 @@ const EventStream = () => {
             status = 'ended'
         } else if (now > next.start) {
             status = 'live'
+            setEventTimelines(next.start, next.end, data.event.id)
         }
 
         // Override with UI state if it's been set
         if (uiState !== 'early') {
             status = uiState
+            if (status === 'live' && next) {
+                setEventTimelines(next.start, next.end, data.event.id)
+            }
         }
 
         return { eventStatus: status, nextDate: next }
     }, [data, uiState])
+
+
 
     const handleStatusUpdate = async (status: LivestreamStatus) => {
         if (status === 'ended' && token && email && code) {
@@ -91,7 +107,6 @@ const EventStream = () => {
     }
 
     const handleUIStateChange = (uiStatus: LivestreamStatus) => {
-        console.log('🫥 UI State Changed:', uiStatus)
         setUIState(uiStatus)
     }
 

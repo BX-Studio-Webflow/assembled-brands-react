@@ -42,13 +42,17 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
     const handleMoreInfoClick = () => {
         window.open(event.event.landing_page_url, '_blank')
     }
-    const is60MinutesAfterEnd = nextDate && dayjs(nextDate.end).isAfter(dayjs().add(60, 'minutes'))
-    console.log({ is60MinutesAfterEnd, eventStatus, nextDate })
+
+    const eventTimelines = localStorage.getItem('event_timelines')
+    const eventTimelinesData = eventTimelines ? JSON.parse(eventTimelines) : null
+    const is60MinutesAfterEnd = eventTimelinesData && dayjs(eventTimelinesData.end).isAfter(dayjs().add(60, 'minutes'))
+
+    console.log({ is60MinutesAfterEnd, eventStatus, eventTimelinesData })
 
     return (
 
         <div className='w-full h-full flex gap-2 mb-2'>
-            {eventStatus === 'ended' && (
+            {eventStatus === 'ended' && is60MinutesAfterEnd && (
                 <div className='h-full'>
                     <EventSidebar event={event} isHost={isHost || false} nextDate={nextDate || null} eventStatus={eventStatus} />
                 </div>
