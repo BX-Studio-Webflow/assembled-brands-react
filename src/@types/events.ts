@@ -246,3 +246,9 @@ export type LivestreamStatus =
     | 'suspended'
 
 export type EventDateCombination = { start: Date; end: Date } | null
+
+export type EventTimelinesType = {
+    start: Date
+    end: Date
+    event_id: number
+}

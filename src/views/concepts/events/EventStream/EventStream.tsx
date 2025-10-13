@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Loading from '@/components/shared/Loading'
 import useSWR from 'swr'
 import { useParams, useSearchParams } from 'react-router'
-import { EventStreamResponse, LivestreamStatus } from '@/@types/events'
+import { EventStreamResponse, EventTimelinesType, LivestreamStatus } from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 
 import EventBody from './components/EventBody'
@@ -37,7 +37,7 @@ const EventStream = () => {
     )
 
     const setEventTimelines = (start: Date, end: Date, event_id: number) => {
-        const event_timelines = {
+        const event_timelines: EventTimelinesType = {
             start: start,
             end: end,
             event_id: event_id,

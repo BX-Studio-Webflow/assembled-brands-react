@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useEvent } from '../context/EventContext'
 import { Countdown } from '@/utils/countdown'
-import { EventStreamResponse } from '@/@types/events'
+import { EventStreamResponse, EventTimelinesType } from '@/@types/events'
 import { HiOutlineGlobe } from 'react-icons/hi'
 import Button from '@/components/ui/Button'
 import EventSidebar from './EventSidebar'
@@ -44,7 +44,7 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
     }
 
     const eventTimelines = localStorage.getItem('event_timelines')
-    const eventTimelinesData = eventTimelines ? JSON.parse(eventTimelines) : null
+    const eventTimelinesData = eventTimelines ? JSON.parse(eventTimelines) as EventTimelinesType : null
     const is60MinutesAfterEnd = eventTimelinesData && dayjs(eventTimelinesData.end).isAfter(dayjs().add(60, 'minutes'))
 
     console.log({ is60MinutesAfterEnd, eventStatus, eventTimelinesData })
