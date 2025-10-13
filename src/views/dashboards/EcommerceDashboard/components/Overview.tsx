@@ -27,7 +27,6 @@ type EventRow = DashboardResponse['events']['events_flat'][number]
 type StatisticGroupsProps = {
     data: DashboardResponse | undefined
     upcomingEvents: EventRow[]
-    pastEvents: EventRow[]
 }
 
 const StatisticCard = (props: StatisticCardProps) => {
@@ -59,7 +58,7 @@ const StatisticCard = (props: StatisticCardProps) => {
     )
 }
 
-const Overview = ({ data, upcomingEvents, pastEvents }: StatisticGroupsProps) => {
+const Overview = ({ data, upcomingEvents }: StatisticGroupsProps) => {
     const [selectedCategory, setSelectedCategory] =
         useState<StatisticCategory>('totalEarned')
 

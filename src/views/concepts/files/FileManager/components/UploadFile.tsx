@@ -30,13 +30,18 @@ const getAssetType = (file: File) => {
     return 'document'
 }
 
-const getVideoDuration = (file: File): Promise<number> => {
+const getVideoDuration = (
+    file: File,
+): Promise<{ videoDuration: number; videoAspectRatio: number }> => {
     return new Promise((resolve, reject) => {
         const video = document.createElement('video')
         video.preload = 'metadata'
         video.onloadedmetadata = () => {
             URL.revokeObjectURL(video.src)
-            resolve(Math.ceil(video.duration))
+            resolve({
+                videoDuration: Math.ceil(video.duration),
+                videoAspectRatio: video.videoWidth / video.videoHeight,
+            })
         }
         video.onerror = () => {
             URL.revokeObjectURL(video.src)
@@ -44,6 +49,31 @@ const getVideoDuration = (file: File): Promise<number> => {
         }
         video.src = URL.createObjectURL(file)
     })
+}
+
+const validateVideoAspectRatio = (
+    videoAspectRatio: number,
+    supportedRatios: Array<{
+        label: string
+        division: number
+        isEnabled: boolean
+    }>,
+): { isValid: boolean; errorMessage?: string } => {
+    const enabledRatios = supportedRatios.filter((r) => r.isEnabled)
+    const tolerance = 0.01 // Allow small deviations due to encoding
+    const isValid = enabledRatios.some(
+        (ratio) => Math.abs(videoAspectRatio - ratio.division) < tolerance,
+    )
+
+    if (!isValid) {
+        const supportedRatiosList = enabledRatios.map((r) => r.label).join(', ')
+        return {
+            isValid: false,
+            errorMessage: `This video has an invalid aspect ratio. At the moment, we only support the following ratios: ${supportedRatiosList}`,
+        }
+    }
+
+    return { isValid: true }
 }
 
 const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
@@ -59,12 +89,76 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
         setIsUploading(false)
     }
 
+    const supportedAspectRatios = [
+        {
+            label: '16:9',
+            value: 16 / 9,
+            division: 1.7778,
+            description: 'Standard widescreen (YouTube default)',
+            isEnabled: true,
+        },
+        {
+            label: '9:16',
+            value: 9 / 16,
+            division: 0.5625,
+            description: 'Vertical / YouTube Shorts / Mobile-first',
+            isEnabled: false,
+        },
+        {
+            label: '1:1',
+            value: 1,
+            division: 1,
+            description: 'Square format (social media cross-posting)',
+            isEnabled: true,
+        },
+        {
+            label: '4:3',
+            value: 4 / 3,
+            division: 1.3333,
+            description: 'Legacy format (older cameras, presentations)',
+            isEnabled: false,
+        },
+        {
+            label: '21:9',
+            value: 21 / 9,
+            division: 2.3333,
+            description: 'Cinematic widescreen (ultrawide screens)',
+            isEnabled: true,
+        },
+        {
+            label: '18:9',
+            value: 18 / 9,
+            division: 2,
+            description: 'Mobile widescreen (modern phones)',
+            isEnabled: true,
+        },
+        {
+            label: '3:2',
+            value: 3 / 2,
+            division: 1.5,
+            description: 'Photography / hybrid aspect (some DSLRs)',
+            isEnabled: true,
+        },
+    ]
+
     const uploadFileMultipart = async (file: File, idx: number) => {
         let duration = 0
         if (file.type.startsWith('video/')) {
             try {
-                duration = await getVideoDuration(file)
-            } catch {
+                const { videoDuration, videoAspectRatio } =
+                    await getVideoDuration(file)
+                duration = videoDuration
+
+                const validation = validateVideoAspectRatio(
+                    videoAspectRatio,
+                    supportedAspectRatios,
+                )
+                if (!validation.isValid) {
+                    throw new Error(
+                        validation.errorMessage || 'Invalid aspect ratio',
+                    )
+                }
+            } catch (error) {
                 toast.push(
                     <Notification
                         title={'Could not get video duration'}
@@ -72,6 +166,7 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
                     />,
                     { placement: 'top-center' },
                 )
+                throw error
             }
         }
 
@@ -143,8 +238,20 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
         let duration = 0
         if (file.type.startsWith('video/')) {
             try {
-                duration = await getVideoDuration(file)
-            } catch {
+                const { videoDuration, videoAspectRatio } =
+                    await getVideoDuration(file)
+                duration = videoDuration
+
+                const validation = validateVideoAspectRatio(
+                    videoAspectRatio,
+                    supportedAspectRatios,
+                )
+                if (!validation.isValid) {
+                    throw new Error(
+                        validation.errorMessage || 'Invalid aspect ratio',
+                    )
+                }
+            } catch (error) {
                 toast.push(
                     <Notification
                         title={'Could not get video duration'}
@@ -152,6 +259,7 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
                     />,
                     { placement: 'top-center' },
                 )
+                throw error
             }
         }
 
@@ -236,6 +344,8 @@ const UploadFile = ({ onUploadSuccess }: { onUploadSuccess?: () => void }) => {
         } finally {
             setIsUploading(false)
             setProgressArr([])
+            setUploadedFiles([])
+            setUploadDialogOpen(false)
         }
     }
 

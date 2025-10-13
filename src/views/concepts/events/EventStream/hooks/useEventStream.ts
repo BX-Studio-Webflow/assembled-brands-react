@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react'
 import useSWR from 'swr'
-import { EventStreamResponse, EventTimelinesType, LivestreamStatus } from '@/@types/events'
+import {
+    EventStreamResponse,
+    EventTimelinesType,
+    LivestreamStatus,
+} from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 import { apiRecordLeaveEvent } from '@/services/TelemetryService'
 
@@ -70,7 +74,7 @@ export const useEventStream = ({
                 start: new Date(Number(date.date) * 1000),
                 end: new Date(
                     Number(date.date) * 1000 +
-                    (data.event.asset.duration || 0) * 1000,
+                        (data.event.asset.duration || 0) * 1000,
                 ),
             }))
             .sort((a, b) => a.start.getTime() - b.start.getTime())
@@ -85,8 +89,7 @@ export const useEventStream = ({
         // Find the currently live event
         const currentLive = sortedDates.find(
             (date) =>
-                now >= new Date(date.start.getTime() - 5000) &&
-                now <= date.end,
+                now >= new Date(date.start.getTime() - 5000) && now <= date.end,
         )
 
         // Find the next upcoming event
@@ -158,4 +161,3 @@ export const useEventStream = ({
         handleUIStateChange,
     }
 }
-

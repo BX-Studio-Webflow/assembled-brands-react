@@ -79,8 +79,10 @@ const EcommerceDashboard = () => {
             ) : (
                 <>
                     <div className="col-span-1">
-                        <Overview data={data} upcomingEvents={upcomingEvents || []}
-                            pastEvents={pastEvents || []} />
+                        <Overview
+                            data={data}
+                            upcomingEvents={upcomingEvents || []}
+                        />
                     </div>
                     <div className="col-span-1">
                         <EventsStatsTable
