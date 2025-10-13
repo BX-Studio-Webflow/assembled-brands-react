@@ -47,7 +47,7 @@ const Stream = () => {
                 start: new Date(Number(date.date) * 1000),
                 end: new Date(
                     Number(date.date) * 1000 +
-                    (data.event.asset.duration || 0) * 1000,
+                        (data.event.asset.duration || 0) * 1000,
                 ),
             }))
             .sort((a, b) => a.start.getTime() - b.start.getTime())
@@ -118,7 +118,9 @@ const Stream = () => {
                                         event={data}
                                         isHost={false}
                                         nextDate={nextDate}
-                                        eventStatus={eventStatus as LivestreamStatus}
+                                        eventStatus={
+                                            eventStatus as LivestreamStatus
+                                        }
                                     />
                                     <EventBody
                                         nextDate={nextDate}

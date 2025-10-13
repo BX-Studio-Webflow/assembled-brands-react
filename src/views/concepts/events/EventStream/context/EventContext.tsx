@@ -1,5 +1,9 @@
 import React, { createContext, useContext } from 'react'
-import { EventDateCombination, EventStreamResponse, LivestreamStatus } from '@/@types/events'
+import {
+    EventDateCombination,
+    EventStreamResponse,
+    LivestreamStatus,
+} from '@/@types/events'
 
 interface EventContextType {
     data: EventStreamResponse | null

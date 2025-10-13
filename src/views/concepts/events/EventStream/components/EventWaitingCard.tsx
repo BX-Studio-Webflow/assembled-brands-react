@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useEvent } from '../context/EventContext'
 import { Countdown } from '@/utils/countdown'
 import { EventStreamResponse, EventTimelinesType } from '@/@types/events'
@@ -6,7 +6,6 @@ import { HiOutlineGlobe } from 'react-icons/hi'
 import Button from '@/components/ui/Button'
 import EventSidebar from './EventSidebar'
 import dayjs from 'dayjs'
-
 
 interface EventWaitingCardProps {
     onCountdownEnd?: () => void
@@ -19,7 +18,23 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
 }) => {
     const { eventStatus, nextDate, isHost } = useEvent()
     const countdownRef = useRef<HTMLDivElement>(null)
+    const [isWithinGracePeriod, setIsWithinGracePeriod] = useState(false)
 
+    const GRACE_PERIOD_MINUTES = 60
+
+    const checkGracePeriod = (
+        timelines: EventTimelinesType | null,
+    ): boolean => {
+        if (!timelines) return false
+        return (
+            dayjs().isAfter(dayjs(timelines.end)) &&
+            dayjs().isBefore(
+                dayjs(timelines.end).add(GRACE_PERIOD_MINUTES, 'minutes'),
+            )
+        )
+    }
+
+    // Countdown effect for 'early' status
     useEffect(() => {
         let countdown: Countdown | null = null
         if (eventStatus === 'early' && nextDate && countdownRef.current) {
@@ -39,26 +54,54 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
         }
     }, [eventStatus, nextDate, onCountdownEnd])
 
+    useEffect(() => {
+        const eventTimelines = localStorage.getItem('event_timelines')
+        const eventTimelinesData = eventTimelines
+            ? (JSON.parse(eventTimelines) as EventTimelinesType)
+            : null
+
+        setIsWithinGracePeriod(checkGracePeriod(eventTimelinesData))
+
+        if (eventStatus !== 'ended' || !eventTimelinesData) return
+
+        // Check every 10 seconds
+        const interval = setInterval(() => {
+            const stillInGracePeriod = checkGracePeriod(eventTimelinesData)
+            setIsWithinGracePeriod(stillInGracePeriod)
+
+            const differenceInMinutes = dayjs().diff(
+                dayjs(eventTimelinesData.end),
+                'minutes',
+            )
+            console.log({
+                isWithinGracePeriod: stillInGracePeriod,
+                eventStatus,
+                eventTimelinesData,
+                differenceInMinutes,
+            })
+
+            if (!stillInGracePeriod) {
+                clearInterval(interval)
+            }
+        }, 10000)
+
+        return () => clearInterval(interval)
+    }, [eventStatus])
+
     const handleMoreInfoClick = () => {
         window.open(event.event.landing_page_url, '_blank')
     }
 
-    const eventTimelines = localStorage.getItem('event_timelines')
-    const eventTimelinesData = eventTimelines ? JSON.parse(eventTimelines) as EventTimelinesType : null
-    // Check if current time is within 20 minutes after the event ended
-    const isWithinGracePeriod = eventTimelinesData &&
-        dayjs().isAfter(dayjs(eventTimelinesData.end)) &&
-        dayjs().isBefore(dayjs(eventTimelinesData.end).add(7, 'minutes'))
-    const differenceInMinutes = eventTimelinesData ? dayjs().diff(dayjs(eventTimelinesData.end), 'minutes') : null
-
-    console.log({ isWithinGracePeriod, eventStatus, eventTimelinesData, differenceInMinutes })
-
     return (
-
-        <div className='w-full h-full flex gap-2 mb-2'>
+        <div className="w-full h-full flex gap-2 mb-2">
             {eventStatus === 'ended' && isWithinGracePeriod && (
-                <div className='h-full'>
-                    <EventSidebar event={event} isHost={isHost || false} nextDate={nextDate || null} eventStatus={eventStatus} />
+                <div className="h-full">
+                    <EventSidebar
+                        event={event}
+                        isHost={isHost || false}
+                        nextDate={nextDate || null}
+                        eventStatus={eventStatus}
+                    />
                 </div>
             )}
             <div
@@ -74,7 +117,6 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
             >
                 {/* Content with relative positioning to appear above overlay */}
                 <div className="w-1/2 relative z-10 flex flex-col items-center backdrop-blur-sm bg-white/20 rounded-lg p-4 sm:p-6 md:p-8">
-
                     <div className="text-center">
                         {eventStatus === 'early' && (
                             <>
@@ -94,14 +136,17 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
                                     This event has ended
                                 </div>
                                 <div>
-                                    <Button className="mr-2" icon={<HiOutlineGlobe />} onClick={handleMoreInfoClick}>
+                                    <Button
+                                        className="mr-2"
+                                        icon={<HiOutlineGlobe />}
+                                        onClick={handleMoreInfoClick}
+                                    >
                                         <span>
                                             <span>More Infomation</span>
                                         </span>
                                     </Button>
                                 </div>
                             </div>
-
                         )}
                         {eventStatus === 'cancelled' && (
                             <div className="font-bold text-white red-700 text-base sm:text-lg md:text-xl">
@@ -116,9 +161,7 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
                     </div>
                 </div>
             </div>
-
         </div>
-
     )
 }
 

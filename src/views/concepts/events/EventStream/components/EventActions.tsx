@@ -178,11 +178,11 @@ const EventActions = ({ isHost, eventStatus, eventId }: EventActionsProps) => {
                                     )}
                                 {(!telemetryData?.lobby_telemetry ||
                                     telemetryData?.lobby_telemetry.length ===
-                                    0) && (
-                                        <div className="text-gray-400 text-sm italic">
-                                            No one in lobby yet
-                                        </div>
-                                    )}
+                                        0) && (
+                                    <div className="text-gray-400 text-sm italic">
+                                        No one in lobby yet
+                                    </div>
+                                )}
                             </div>
                         </div>
                     }

@@ -2,7 +2,11 @@ import React, { useMemo, useState } from 'react'
 import Loading from '@/components/shared/Loading'
 import useSWR from 'swr'
 import { useParams, useSearchParams } from 'react-router'
-import { EventStreamResponse, EventTimelinesType, LivestreamStatus } from '@/@types/events'
+import {
+    EventStreamResponse,
+    EventTimelinesType,
+    LivestreamStatus,
+} from '@/@types/events'
 import { apiStreamEvent } from '@/services/EventService'
 
 import EventBody from './components/EventBody'
@@ -60,12 +64,11 @@ const EventStream = () => {
                 start: new Date(Number(date.date) * 1000),
                 end: new Date(
                     Number(date.date) * 1000 +
-                    (data.event.asset.duration || 0) * 1000,
+                        (data.event.asset.duration || 0) * 1000,
                 ),
             }))
             .sort((a, b) => a.start.getTime() - b.start.getTime())
         const next = sortedDates.find((date) => date.end > now) || null
-
 
         let status: LivestreamStatus = 'early'
         if (!next) {
@@ -91,8 +94,6 @@ const EventStream = () => {
 
         return { eventStatus: status, nextDate: next }
     }, [data, uiState])
-
-
 
     const handleStatusUpdate = async (status: LivestreamStatus) => {
         if (status === 'ended' && token && email && code) {

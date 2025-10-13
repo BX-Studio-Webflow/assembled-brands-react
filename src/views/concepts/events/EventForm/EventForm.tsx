@@ -135,7 +135,7 @@ const EventForm = (props: EventFormProps) => {
                     payment_type: plan.payment_type,
                     date:
                         typeof plan.date === 'object' &&
-                            plan.date instanceof Date
+                        plan.date instanceof Date
                             ? plan.date.getTime()
                             : plan.date,
                 })),
@@ -162,8 +162,6 @@ const EventForm = (props: EventFormProps) => {
                 >
                     <Container>
                         <div className="flex gap-4">
-
-
                             <div className="flex-1">
                                 <div className="flex flex-col gap-4">
                                     <EventDetailsSection

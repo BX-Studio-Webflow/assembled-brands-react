@@ -83,7 +83,6 @@ const EmptyState = () => {
                                         </p>
                                         <HiOutlineArrowNarrowRight className="opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
                                     </div>
-
                                 </div>
                             </div>
                         </Link>
