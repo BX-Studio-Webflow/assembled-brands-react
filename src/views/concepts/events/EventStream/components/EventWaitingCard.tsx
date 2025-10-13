@@ -26,12 +26,18 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
         timelines: EventTimelinesType | null,
     ): boolean => {
         if (!timelines) return false
-        return (
-            dayjs().isAfter(dayjs(timelines.end)) &&
-            dayjs().isBefore(
-                dayjs(timelines.end).add(GRACE_PERIOD_MINUTES, 'minutes'),
-            )
-        )
+        const now = dayjs()
+        const end = dayjs(timelines.end)
+
+        // Add 5 second buffer before end time to account for video ending slightly early
+        const startGracePeriod = end.subtract(5, 'seconds')
+        const endGracePeriod = end.add(GRACE_PERIOD_MINUTES, 'minutes')
+
+        const isAfterStart = !now.isBefore(startGracePeriod)
+        const isBeforeEnd = now.isBefore(endGracePeriod)
+
+        // Check if current time is within grace period (5 sec before end to 60 min after)
+        return isAfterStart && isBeforeEnd
     }
 
     // Countdown effect for 'early' status
@@ -60,8 +66,13 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
             ? (JSON.parse(eventTimelines) as EventTimelinesType)
             : null
 
-        setIsWithinGracePeriod(checkGracePeriod(eventTimelinesData))
-
+        const gracePeriodValue = checkGracePeriod(eventTimelinesData)
+        setIsWithinGracePeriod(gracePeriodValue)
+        console.log({
+            eventStatus,
+            isWithinGracePeriod: gracePeriodValue,
+            eventTimelinesData,
+        })
         if (eventStatus !== 'ended' || !eventTimelinesData) return
 
         // Check every 10 seconds
