@@ -22,9 +22,12 @@ type StatisticCardProps = {
     active: boolean
     onClick: (label: StatisticCategory) => void
 }
+type EventRow = DashboardResponse['events']['events_flat'][number]
 
 type StatisticGroupsProps = {
     data: DashboardResponse | undefined
+    upcomingEvents: EventRow[]
+    pastEvents: EventRow[]
 }
 
 const StatisticCard = (props: StatisticCardProps) => {
@@ -56,7 +59,7 @@ const StatisticCard = (props: StatisticCardProps) => {
     )
 }
 
-const Overview = ({ data }: StatisticGroupsProps) => {
+const Overview = ({ data, upcomingEvents, pastEvents }: StatisticGroupsProps) => {
     const [selectedCategory, setSelectedCategory] =
         useState<StatisticCategory>('totalEarned')
 
@@ -88,7 +91,7 @@ const Overview = ({ data }: StatisticGroupsProps) => {
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={data?.event_counts?.upcoming || 0}
+                            value={upcomingEvents?.length || 0}
                             thousandSeparator={true}
                         />
                     }
