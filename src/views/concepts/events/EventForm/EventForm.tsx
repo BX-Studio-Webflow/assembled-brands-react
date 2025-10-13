@@ -5,8 +5,8 @@ import BottomStickyBar from '@/components/template/BottomStickyBar'
 import EventDetailsSection from './components/EventDetailsSection'
 import EventConfigurationSection from './components/EventConfigurationSection'
 import MembershipPlansSection from './components/MembershipPlansSection'
-import useLayoutGap from '@/utils/hooks/useLayoutGap'
-import useResponsive from '@/utils/hooks/useResponsive'
+//import useLayoutGap from '@/utils/hooks/useLayoutGap'
+//import useResponsive from '@/utils/hooks/useResponsive'
 import useSWR from 'swr'
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -61,8 +61,8 @@ const defaultValues = {
 const EventForm = (props: EventFormProps) => {
     const { children } = props
     const [assets, setAssets] = useState<Asset[]>([])
-    const { getTopGapValue } = useLayoutGap()
-    const { larger } = useResponsive()
+    //const { getTopGapValue } = useLayoutGap()
+    //const { larger } = useResponsive()
 
     useSWR(
         [

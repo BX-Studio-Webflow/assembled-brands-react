@@ -18,8 +18,7 @@ interface ChatListProps {
     eventStatus: LivestreamStatus
 }
 
-const ChatList = ({ event, isHost, nextDate ,eventStatus }: ChatListProps) => {
-    console.log({ nextDate, eventStatus })
+const ChatList = ({ event, isHost, nextDate, eventStatus }: ChatListProps) => {
     const chatsFetched = useChatStore((state) => state.chatsFetched)
     const { user } = useAuth()
 

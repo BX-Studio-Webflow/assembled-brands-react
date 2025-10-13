@@ -45,14 +45,18 @@ const EventWaitingCard: React.FC<EventWaitingCardProps> = ({
 
     const eventTimelines = localStorage.getItem('event_timelines')
     const eventTimelinesData = eventTimelines ? JSON.parse(eventTimelines) as EventTimelinesType : null
-    const is60MinutesAfterEnd = eventTimelinesData && dayjs(eventTimelinesData.end).isAfter(dayjs().add(60, 'minutes'))
+    // Check if current time is within 20 minutes after the event ended
+    const isWithinGracePeriod = eventTimelinesData &&
+        dayjs().isAfter(dayjs(eventTimelinesData.end)) &&
+        dayjs().isBefore(dayjs(eventTimelinesData.end).add(7, 'minutes'))
+    const differenceInMinutes = eventTimelinesData ? dayjs().diff(dayjs(eventTimelinesData.end), 'minutes') : null
 
-    console.log({ is60MinutesAfterEnd, eventStatus, eventTimelinesData })
+    console.log({ isWithinGracePeriod, eventStatus, eventTimelinesData, differenceInMinutes })
 
     return (
 
         <div className='w-full h-full flex gap-2 mb-2'>
-            {eventStatus === 'ended' && is60MinutesAfterEnd && (
+            {eventStatus === 'ended' && isWithinGracePeriod && (
                 <div className='h-full'>
                     <EventSidebar event={event} isHost={isHost || false} nextDate={nextDate || null} eventStatus={eventStatus} />
                 </div>
