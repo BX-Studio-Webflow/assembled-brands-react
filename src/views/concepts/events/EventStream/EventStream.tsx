@@ -1,13 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import Loading from '@/components/shared/Loading'
-import useSWR from 'swr'
 import { useParams, useSearchParams } from 'react-router'
-import {
-    EventStreamResponse,
-    EventTimelinesType,
-    LivestreamStatus,
-} from '@/@types/events'
-import { apiStreamEvent } from '@/services/EventService'
+import { LivestreamStatus } from '@/@types/events'
 
 import EventBody from './components/EventBody'
 import EventSidebar from './components/EventSidebar'
@@ -16,7 +10,7 @@ import { EventProvider } from './context/EventContext'
 import EventHeader from './components/EventHeader'
 import EventActions from './components/EventActions'
 import EventWaitingCard from './components/EventWaitingCard'
-import { apiRecordLeaveEvent } from '@/services/TelemetryService'
+import { useEventStream } from './hooks/useEventStream'
 
 const EventStream = () => {
     const { id } = useParams()
@@ -24,92 +18,23 @@ const EventStream = () => {
     const token = searchParams.get('token')
     const email = searchParams.get('email')
     const code = searchParams.get('code')
-    const isHost = !token && !email && !code
-    const [uiState, setUIState] = useState<LivestreamStatus>('early')
-    console.log({ token, email, code, id })
-    const swrKey = [`/event/stream/${id}`]
-    const { data, isLoading } = useSWR<EventStreamResponse>(
-        swrKey,
-        () =>
-            apiStreamEvent({
-                email: email,
-                token: token,
-                event_id: Number(code || id),
-                isHost: isHost,
-            }),
-        { revalidateOnFocus: false },
-    )
+    const isHostFromParams = !token && !email && !code
 
-    const setEventTimelines = (start: Date, end: Date, event_id: number) => {
-        const event_timelines: EventTimelinesType = {
-            start: start,
-            end: end,
-            event_id: event_id,
-        }
-        localStorage.setItem('event_timelines', JSON.stringify(event_timelines))
-    }
-
-    // Compute eventStatus and nextDate
-    const { eventStatus, nextDate } = useMemo(() => {
-        if (!data?.event.memberships?.length)
-            return {
-                eventStatus: undefined,
-                nextDate: null,
-                membershipId: null,
-            }
-        const now = new Date()
-        const sortedDates = data.event.memberships
-            .flatMap((membership) => membership.dates)
-            .map((date) => ({
-                start: new Date(Number(date.date) * 1000),
-                end: new Date(
-                    Number(date.date) * 1000 +
-                        (data.event.asset.duration || 0) * 1000,
-                ),
-            }))
-            .sort((a, b) => a.start.getTime() - b.start.getTime())
-        const next = sortedDates.find((date) => date.end > now) || null
-
-        let status: LivestreamStatus = 'early'
-        if (!next) {
-            status = 'ended'
-        } else if (data.event.status === 'cancelled') {
-            status = 'cancelled'
-        } else if (data.event.status === 'suspended') {
-            status = 'suspended'
-        } else if (now > next.end) {
-            status = 'ended'
-        } else if (now > next.start) {
-            status = 'live'
-            setEventTimelines(next.start, next.end, data.event.id)
-        }
-
-        // Override with UI state if it's been set
-        if (uiState !== 'early') {
-            status = uiState
-            if (status === 'live' && next) {
-                setEventTimelines(next.start, next.end, data.event.id)
-            }
-        }
-
-        return { eventStatus: status, nextDate: next }
-    }, [data, uiState])
-
-    const handleStatusUpdate = async (status: LivestreamStatus) => {
-        if (status === 'ended' && token && email && code) {
-            await apiRecordLeaveEvent({
-                token: token,
-                email: email,
-                code: code,
-                scenario: 'VIDEO_ENDED',
-            })
-        }
-        setUIState(status)
-    }
-
-    const handleUIStateChange = (uiStatus: LivestreamStatus) => {
-        setUIState(uiStatus)
-    }
+    const {
+        data,
+        isLoading,
+        eventStatus,
+        nextDate,
+        isHost,
+        handleStatusUpdate,
+        handleUIStateChange,
+    } = useEventStream({
+        eventId: Number(code || id),
+        token,
+        email,
+        code,
+        isHost: isHostFromParams,
+    })
 
     return (
         <EventProvider
