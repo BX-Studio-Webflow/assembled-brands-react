@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/auth'
 import Loading from '@/components/shared/Loading'
-import endpointConfig from '@/configs/endpoint.config'
+import { apiGetLandingPage } from '@/services/AuthService'
 
 const ProxyLanding = () => {
     const [content, setContent] = useState('')
@@ -12,27 +12,8 @@ const ProxyLanding = () => {
     useEffect(() => {
         const fetchLanding = async () => {
             try {
-                // Fetch from backend proxy endpoint
-                const backendUrl = endpointConfig.apiPrefix.replace(
-                    '/v1',
-                    '',
-                )
-                const response = await fetch(`${backendUrl}/landing`, {
-                    method: 'GET',
-                    credentials: 'include', // Include cookies for auth detection
-                    headers: {
-                        Accept: 'text/html',
-                    },
-                })
-
-                if (!response.ok) {
-                    throw new Error(
-                        `Failed to fetch: ${response.status} ${response.statusText}`,
-                    )
-                }
-
-                const html = await response.text()
-                setContent(html)
+                const response = await apiGetLandingPage()
+                setContent(response)
                 setError(null)
             } catch (error) {
                 console.error('Failed to fetch landing page:', error)
