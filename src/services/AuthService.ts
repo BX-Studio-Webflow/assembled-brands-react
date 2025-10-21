@@ -162,3 +162,10 @@ export async function apiSaveStripeOauthState(data: SaveOauthStateBody) {
         data,
     })
 }
+
+export async function apiGetLandingPage() {
+    return ApiService.fetchDataWithAxios<string>({
+        url: '/proxy/landing',
+        method: 'get',
+    })
+}
