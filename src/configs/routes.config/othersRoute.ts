@@ -16,7 +16,7 @@ const othersRoute: Routes = [
     {
         key: 'landing',
         path: `/`,
-        component: lazy(() => import('@/views/others/Landing/ProxyLanding')),
+        component: lazy(() => import('@/views/others/Landing/Landing')),
         authority: [ADMIN, USER],
         meta: {
             layout: 'blank',
