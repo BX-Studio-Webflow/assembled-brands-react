@@ -7,9 +7,12 @@ import TextField from '@/components/ui/TextField'
 import OptionGroup from '@/components/ui/OptionGroup'
 import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
+import QualifyStepSkeleton from '@/components/skeletons/QualifyStepSkeleton'
 import { ASSET_TYPES, LOAN_AMOUNT_OPTIONS } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
-import { apiGetOnboardingProgress, apiSaveOnboardingStep2 } from '@/services/OnboardingService'
+import { useOnboardingProgress } from '@/lib/hooks/useOnboardingProgress'
+import { revalidateAfterOnboardingSave } from '@/lib/swr/mutate'
+import { apiSaveOnboardingStep2 } from '@/services/OnboardingService'
 import { mapAssetType } from '@/lib/mappings/onboarding'
 import type { OnboardingStep2Body } from '@/types/onboarding'
 
@@ -24,22 +27,27 @@ export default function QualifyStep2() {
     const navigate = useNavigate()
     const qualify = useApplicationStore((s) => s.qualify)
     const patch = useApplicationStore((s) => s.patchQualify)
+    const { data: onboarding, isLoading } = useOnboardingProgress()
     const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [seedApplied, setSeedApplied] = useState(false)
 
     useEffect(() => {
-        void apiGetOnboardingProgress().then((result) => {
-            const step2 = result?.progress?.step2
-            if (!step2) return
-            patch({
-                yearsInBusiness: step2.years_in_business ?? '',
-                assetType: step2.asset_type
-                    ? (ASSET_API_TO_LABEL[step2.asset_type] ?? step2.asset_type)
-                    : '',
-                loanAmount: step2.desired_loan_amount ?? '',
-            })
+        if (!onboarding || seedApplied) return
+        const step2 = onboarding?.progress?.step2
+        if (!step2) {
+            setSeedApplied(true)
+            return
+        }
+        patch({
+            yearsInBusiness: step2.years_in_business ?? '',
+            assetType: step2.asset_type
+                ? (ASSET_API_TO_LABEL[step2.asset_type] ?? step2.asset_type)
+                : '',
+            loanAmount: step2.desired_loan_amount ?? '',
         })
-    }, [patch])
+        setSeedApplied(true)
+    }, [onboarding, patch, seedApplied])
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -59,7 +67,7 @@ export default function QualifyStep2() {
             return
         }
 
-        setLoading(true)
+        setSubmitting(true)
         try {
             await apiSaveOnboardingStep2({
                 years_in_business: qualify.yearsInBusiness.trim(),
@@ -67,6 +75,7 @@ export default function QualifyStep2() {
                 desired_loan_amount:
                     qualify.loanAmount as OnboardingStep2Body['desired_loan_amount'],
             })
+            await revalidateAfterOnboardingSave()
             navigate('/onboarding-wizard?step=step-3')
         } catch (err) {
             setError(
@@ -74,8 +83,16 @@ export default function QualifyStep2() {
                     'There was a problem saving your information',
             )
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
+    }
+
+    if (isLoading) {
+        return (
+            <CenteredCardLayout>
+                <QualifyStepSkeleton step={2} />
+            </CenteredCardLayout>
+        )
     }
 
     return (
@@ -133,7 +150,7 @@ export default function QualifyStep2() {
                         <PillButton
                             type="submit"
                             variant="outline"
-                            loading={loading}
+                            loading={submitting}
                         >
                             Next
                         </PillButton>

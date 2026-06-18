@@ -7,9 +7,12 @@ import TextField from '@/components/ui/TextField'
 import OptionGroup from '@/components/ui/OptionGroup'
 import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
+import QualifyStepSkeleton from '@/components/skeletons/QualifyStepSkeleton'
 import { COMPANY_TYPES, YES_NO } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
-import { apiGetOnboardingProgress, apiSaveOnboardingStep3 } from '@/services/OnboardingService'
+import { useOnboardingProgress } from '@/lib/hooks/useOnboardingProgress'
+import { revalidateAfterOnboardingSave } from '@/lib/swr/mutate'
+import { apiSaveOnboardingStep3 } from '@/services/OnboardingService'
 import { mapCompanyType } from '@/lib/mappings/onboarding'
 import type { OnboardingStep3Body } from '@/types/onboarding'
 
@@ -24,23 +27,28 @@ export default function QualifyStep3() {
     const navigate = useNavigate()
     const qualify = useApplicationStore((s) => s.qualify)
     const patch = useApplicationStore((s) => s.patchQualify)
+    const { data: onboarding, isLoading } = useOnboardingProgress()
     const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [seedApplied, setSeedApplied] = useState(false)
 
     useEffect(() => {
-        void apiGetOnboardingProgress().then((result) => {
-            const step3 = result?.progress?.step3
-            if (!step3) return
-            patch({
-                companyType: step3.company_type
-                    ? (COMPANY_API_TO_LABEL[step3.company_type] ??
-                      step3.company_type)
-                    : '',
-                otherCompanyType: step3.company_type_other ?? '',
-                revenuesOver10mm: step3.revenue_qualification ?? '',
-            })
+        if (!onboarding || seedApplied) return
+        const step3 = onboarding?.progress?.step3
+        if (!step3) {
+            setSeedApplied(true)
+            return
+        }
+        patch({
+            companyType: step3.company_type
+                ? (COMPANY_API_TO_LABEL[step3.company_type] ??
+                  step3.company_type)
+                : '',
+            otherCompanyType: step3.company_type_other ?? '',
+            revenuesOver10mm: step3.revenue_qualification ?? '',
         })
-    }, [patch])
+        setSeedApplied(true)
+    }, [onboarding, patch, seedApplied])
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -60,7 +68,7 @@ export default function QualifyStep3() {
             return
         }
 
-        setLoading(true)
+        setSubmitting(true)
         try {
             await apiSaveOnboardingStep3({
                 company_type: companyType,
@@ -70,6 +78,7 @@ export default function QualifyStep3() {
                     ? { company_type_other: qualify.otherCompanyType.trim() }
                     : {}),
             })
+            await revalidateAfterOnboardingSave()
 
             if (qualify.revenuesOver10mm === 'no') {
                 navigate('/onboarding-step-not-fit')
@@ -82,8 +91,16 @@ export default function QualifyStep3() {
                     'There was a problem saving your information',
             )
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
+    }
+
+    if (isLoading) {
+        return (
+            <CenteredCardLayout>
+                <QualifyStepSkeleton step={3} />
+            </CenteredCardLayout>
+        )
     }
 
     return (
@@ -146,7 +163,7 @@ export default function QualifyStep3() {
                         <PillButton
                             type="submit"
                             variant="outline"
-                            loading={loading}
+                            loading={submitting}
                         >
                             Finish
                         </PillButton>

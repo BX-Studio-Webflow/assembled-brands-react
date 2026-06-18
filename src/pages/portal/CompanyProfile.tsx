@@ -6,41 +6,42 @@ import Field from '@/components/ui/Field'
 import TextField from '@/components/ui/TextField'
 import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
+import FormPageSkeleton from '@/components/skeletons/FormPageSkeleton'
 import { US_STATES, ACCOUNTING_SOFTWARE } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
+import { useCompanyProfileSeed } from '@/lib/hooks/useCompanyProfileSeed'
+import { revalidateAfterFinancialSave } from '@/lib/swr/mutate'
 import { apiUpdateBusiness } from '@/services/BusinessService'
-import { apiGetFinancialProgress } from '@/services/FinancialWizardService'
-import { apiGetOnboardingProgress } from '@/services/OnboardingService'
 
 export default function CompanyProfile() {
     const navigate = useNavigate()
     const data = useApplicationStore((s) => s.companyProfile)
     const patch = useApplicationStore((s) => s.patchCompanyProfile)
+    const { data: seed, isLoading } = useCompanyProfileSeed()
     const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [seedApplied, setSeedApplied] = useState(false)
 
     useEffect(() => {
-        void Promise.all([
-            apiGetFinancialProgress(),
-            apiGetOnboardingProgress(),
-        ]).then(([financial, onboarding]) => {
-            const profile = financial.company_profile ?? financial.business
-            const step1 = onboarding?.progress?.step1
-            const step2 = onboarding?.progress?.step2
+        if (!seed || seedApplied) return
+        const { financial, onboarding } = seed
+        const profile = financial.company_profile ?? financial.business
+        const step1 = onboarding?.progress?.step1
+        const step2 = onboarding?.progress?.step2
 
-            patch({
-                legalName:
-                    profile?.legal_name ??
-                    step1?.legal_name ??
-                    financial.business?.legal_name ??
-                    '',
-                headquarters: profile?.headquarters ?? '',
-                yearFormed: profile?.year_formed ?? step2?.years_in_business ?? '',
-                accountingSoftware: profile?.accounting_software ?? '',
-                accountingOther: profile?.other_accounting_software ?? '',
-            })
+        patch({
+            legalName:
+                profile?.legal_name ??
+                step1?.legal_name ??
+                financial.business?.legal_name ??
+                '',
+            headquarters: profile?.headquarters ?? '',
+            yearFormed: profile?.year_formed ?? step2?.years_in_business ?? '',
+            accountingSoftware: profile?.accounting_software ?? '',
+            accountingOther: profile?.other_accounting_software ?? '',
         })
-    }, [patch])
+        setSeedApplied(true)
+    }, [patch, seed, seedApplied])
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -51,7 +52,7 @@ export default function CompanyProfile() {
             return
         }
 
-        setLoading(true)
+        setSubmitting(true)
         try {
             await apiUpdateBusiness({
                 legal_name: data.legalName.trim(),
@@ -61,6 +62,7 @@ export default function CompanyProfile() {
                 accounting_software: data.accountingSoftware,
                 other_accounting_software: data.accountingOther || '',
             })
+            await revalidateAfterFinancialSave()
             navigate('/finance-financial-overview')
         } catch (err) {
             setError(
@@ -68,8 +70,12 @@ export default function CompanyProfile() {
                     'There was a problem saving your information',
             )
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
+    }
+
+    if (isLoading) {
+        return <FormPageSkeleton title="Company Profile" fields={5} />
     }
 
     return (
@@ -147,7 +153,7 @@ export default function CompanyProfile() {
                         <PillButton
                             type="submit"
                             variant="outline"
-                            loading={loading}
+                            loading={submitting}
                         >
                             Save and continue
                         </PillButton>

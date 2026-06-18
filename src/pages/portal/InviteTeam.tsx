@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import PageHeader from '@/components/ui/PageHeader'
 import PortalCard from '@/components/ui/PortalCard'
 import Field from '@/components/ui/Field'
@@ -7,37 +7,26 @@ import Textarea from '@/components/ui/Textarea'
 import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
 import Badge from '@/components/ui/Badge'
+import InviteTeamSkeleton from '@/components/skeletons/InviteTeamSkeleton'
 import { INVITE_ROLES } from '@/constants/options'
-import {
-    apiGetTeamInvitations,
-    apiGetMyTeams,
-    apiInviteTeamMember,
-} from '@/services/TeamService'
-import type { TeamInvitation } from '@/types/team'
+import { useMyTeams, useTeamInvitations } from '@/lib/hooks/useTeamData'
+import { revalidateTeamInvitations } from '@/lib/swr/mutate'
+import { apiInviteTeamMember } from '@/services/TeamService'
 import { isValidEmail } from '@/lib/routing/postLogin'
 
 const emptyForm = { fullName: '', email: '', role: '', message: '' }
 
 export default function InviteTeam() {
+    const { data: teams, isLoading: teamsLoading } = useMyTeams()
+    const { data: invitations = [], isLoading: invitesLoading } =
+        useTeamInvitations()
     const [form, setForm] = useState(emptyForm)
-    const [teamId, setTeamId] = useState<number | null>(null)
-    const [invitations, setInvitations] = useState<TeamInvitation[]>([])
     const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
 
-    async function loadInvitations() {
-        const invites = await apiGetTeamInvitations()
-        setInvitations(invites)
-    }
-
-    useEffect(() => {
-        void apiGetMyTeams().then((teams) => {
-            if (teams.length > 0) setTeamId(teams[0].team_id)
-        })
-        void loadInvitations()
-    }, [])
-
+    const teamId = teams?.[0]?.team_id ?? null
     const canSubmit = form.fullName.trim() && form.email.trim() && form.role
+    const loading = teamsLoading || invitesLoading
 
     async function submit() {
         if (!canSubmit) return
@@ -51,7 +40,7 @@ export default function InviteTeam() {
         }
 
         setError(null)
-        setLoading(true)
+        setSubmitting(true)
         try {
             await apiInviteTeamMember(
                 form.fullName.trim(),
@@ -61,14 +50,18 @@ export default function InviteTeam() {
                 form.message.trim(),
             )
             setForm(emptyForm)
-            await loadInvitations()
+            await revalidateTeamInvitations()
         } catch (err) {
             setError(
                 (err as { message?: string }).message ?? 'Unable to send invite',
             )
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
+    }
+
+    if (loading) {
+        return <InviteTeamSkeleton />
     }
 
     return (
@@ -128,7 +121,7 @@ export default function InviteTeam() {
                     <div className="flex flex-wrap items-center justify-end gap-[15px]">
                         <button
                             type="button"
-                            disabled={!canSubmit || loading}
+                            disabled={!canSubmit || submitting}
                             className="ab-label border-b border-ink text-ink disabled:cursor-not-allowed disabled:opacity-40"
                             onClick={() => void submit()}
                         >
@@ -138,7 +131,7 @@ export default function InviteTeam() {
                             type="submit"
                             variant={canSubmit ? 'stack' : 'muted'}
                             disabled={!canSubmit}
-                            loading={loading}
+                            loading={submitting}
                         >
                             Send invite
                         </PillButton>

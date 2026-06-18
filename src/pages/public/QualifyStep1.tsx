@@ -6,9 +6,12 @@ import Field from '@/components/ui/Field'
 import TextField from '@/components/ui/TextField'
 import OptionGroup from '@/components/ui/OptionGroup'
 import PillButton from '@/components/ui/PillButton'
+import QualifyStepSkeleton from '@/components/skeletons/QualifyStepSkeleton'
 import { EMPLOYEE_RANGES } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
-import { apiGetOnboardingProgress, apiSaveOnboardingStep1 } from '@/services/OnboardingService'
+import { useOnboardingProgress } from '@/lib/hooks/useOnboardingProgress'
+import { revalidateAfterOnboardingSave } from '@/lib/swr/mutate'
+import { apiSaveOnboardingStep1 } from '@/services/OnboardingService'
 import {
     isValidWebsite,
     mapEmployeeCount,
@@ -27,23 +30,28 @@ export default function QualifyStep1() {
     const navigate = useNavigate()
     const qualify = useApplicationStore((s) => s.qualify)
     const patch = useApplicationStore((s) => s.patchQualify)
+    const { data: onboarding, isLoading } = useOnboardingProgress()
     const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [seedApplied, setSeedApplied] = useState(false)
 
     useEffect(() => {
-        void apiGetOnboardingProgress().then((result) => {
-            const step1 = result?.progress?.step1
-            if (!step1) return
-            patch({
-                legalName: step1.legal_name ?? '',
-                employees: step1.employee_count
-                    ? (EMPLOYEE_API_TO_LABEL[step1.employee_count] ??
-                      step1.employee_count)
-                    : '',
-                website: step1.website ?? '',
-            })
+        if (!onboarding || seedApplied) return
+        const step1 = onboarding?.progress?.step1
+        if (!step1) {
+            setSeedApplied(true)
+            return
+        }
+        patch({
+            legalName: step1.legal_name ?? '',
+            employees: step1.employee_count
+                ? (EMPLOYEE_API_TO_LABEL[step1.employee_count] ??
+                  step1.employee_count)
+                : '',
+            website: step1.website ?? '',
         })
-    }, [patch])
+        setSeedApplied(true)
+    }, [onboarding, patch, seedApplied])
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -67,13 +75,14 @@ export default function QualifyStep1() {
             return
         }
 
-        setLoading(true)
+        setSubmitting(true)
         try {
             await apiSaveOnboardingStep1({
                 legal_name: qualify.legalName.trim(),
                 employee_count: employeeCount,
                 website: qualify.website.trim(),
             })
+            await revalidateAfterOnboardingSave()
             navigate('/onboarding-wizard?step=2')
         } catch (err) {
             setError(
@@ -81,8 +90,16 @@ export default function QualifyStep1() {
                     'There was a problem saving your information',
             )
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
+    }
+
+    if (isLoading) {
+        return (
+            <CenteredCardLayout>
+                <QualifyStepSkeleton step={1} />
+            </CenteredCardLayout>
+        )
     }
 
     return (
@@ -140,7 +157,7 @@ export default function QualifyStep1() {
                         <PillButton
                             type="submit"
                             variant="outline"
-                            loading={loading}
+                            loading={submitting}
                         >
                             Next
                         </PillButton>

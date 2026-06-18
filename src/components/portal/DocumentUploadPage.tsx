@@ -1,17 +1,20 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import PageHeader from '@/components/ui/PageHeader'
 import PortalCard from '@/components/ui/PortalCard'
 import Dropzone from '@/components/ui/Dropzone'
 import PillButton from '@/components/ui/PillButton'
+import DocumentUploadSkeleton from '@/components/skeletons/DocumentUploadSkeleton'
 import ExampleModal from './ExampleModal'
 import {
     getDocumentsForPage,
     type DocumentUploadPageConfig,
+    type DocumentUploadSectionConfig,
 } from '@/configs/documentUpload'
 import { uploadFinancialDocumentFile } from '@/lib/api/uploadFinancialDocumentFile'
+import { useFinancialProgress } from '@/lib/hooks/useFinancialProgress'
+import { revalidateAfterFinancialSave, revalidateSidebarProgress } from '@/lib/swr/mutate'
 import { apiDeleteFinancialDocument } from '@/services/FinancialWizardService'
-import { apiGetFinancialProgress } from '@/services/FinancialWizardService'
 import type { FinancialDocument } from '@/types/financial-wizard'
 
 type SectionState = {
@@ -20,7 +23,15 @@ type SectionState = {
     error: string | null
 }
 
-type Props = DocumentUploadPageConfig
+export type DocumentUploadPageProps = DocumentUploadPageConfig & {
+    headerContent?: ReactNode
+    validateSubmit?: () => string | null
+    onBeforeSubmit?: () => Promise<void>
+    isSectionRequired?: (section: DocumentUploadSectionConfig) => boolean
+    onProgressLoaded?: (
+        progress: NonNullable<ReturnType<typeof useFinancialProgress>['data']>,
+    ) => void
+}
 
 export default function DocumentUploadPage({
     title,
@@ -28,10 +39,15 @@ export default function DocumentUploadPage({
     sections,
     nextTo,
     requireAll = true,
-}: Props) {
+    headerContent,
+    validateSubmit,
+    onBeforeSubmit,
+    isSectionRequired,
+    onProgressLoaded,
+}: DocumentUploadPageProps) {
     const navigate = useNavigate()
+    const { data: progress, isLoading, mutate } = useFinancialProgress()
     const [example, setExample] = useState<string | null>(null)
-    const [loading, setLoading] = useState(true)
     const [submitting, setSubmitting] = useState(false)
     const [formError, setFormError] = useState<string | null>(null)
     const [sectionState, setSectionState] = useState<Record<string, SectionState>>(
@@ -44,37 +60,35 @@ export default function DocumentUploadPage({
             ),
     )
 
-    const loadProgress = useCallback(async () => {
-        setLoading(true)
-        try {
-            const progress = await apiGetFinancialProgress()
-            const docs = getDocumentsForPage(progress, page)
-            setSectionState(
-                Object.fromEntries(
-                    sections.map((section) => {
-                        const uploadedDoc =
-                            docs.find(
-                                (d) => d.document_type === section.documentType,
-                            ) ?? null
-                        return [
-                            section.id,
-                            {
-                                pendingFile: null,
-                                uploadedDoc,
-                                error: null,
-                            },
-                        ]
-                    }),
-                ),
-            )
-        } finally {
-            setLoading(false)
-        }
-    }, [page, sections])
+    const sectionIsRequired = useCallback(
+        (section: DocumentUploadSectionConfig) =>
+            isSectionRequired ? isSectionRequired(section) : requireAll,
+        [isSectionRequired, requireAll],
+    )
 
     useEffect(() => {
-        void loadProgress()
-    }, [loadProgress])
+        if (!progress) return
+        onProgressLoaded?.(progress)
+        const docs = getDocumentsForPage(progress, page)
+        setSectionState(
+            Object.fromEntries(
+                sections.map((section) => {
+                    const uploadedDoc =
+                        docs.find(
+                            (d) => d.document_type === section.documentType,
+                        ) ?? null
+                    return [
+                        section.id,
+                        {
+                            pendingFile: null,
+                            uploadedDoc,
+                            error: null,
+                        },
+                    ]
+                }),
+            ),
+        )
+    }, [onProgressLoaded, page, progress, sections])
 
     function patchSection(id: string, patch: Partial<SectionState>) {
         setSectionState((prev) => ({
@@ -88,6 +102,8 @@ export default function DocumentUploadPage({
         try {
             await apiDeleteFinancialDocument(docId)
             patchSection(sectionId, { uploadedDoc: null })
+            await mutate()
+            void revalidateSidebarProgress()
         } catch (err) {
             patchSection(sectionId, {
                 error:
@@ -100,12 +116,19 @@ export default function DocumentUploadPage({
     async function onSubmit() {
         setFormError(null)
 
+        const extraError = validateSubmit?.()
+        if (extraError) {
+            setFormError(extraError)
+            return
+        }
+
         const missingRequired = sections.filter((section) => {
+            if (!sectionIsRequired(section)) return false
             const state = sectionState[section.id]
             return !state.pendingFile && !state.uploadedDoc
         })
 
-        if (requireAll && missingRequired.length > 0) {
+        if (missingRequired.length > 0) {
             setFormError('Please upload all required documents')
             return
         }
@@ -115,46 +138,53 @@ export default function DocumentUploadPage({
                 section,
                 file: sectionState[section.id].pendingFile,
             }))
-            .filter((entry): entry is { section: (typeof sections)[0]; file: File } =>
-                Boolean(entry.file),
+            .filter(
+                (
+                    entry,
+                ): entry is {
+                    section: DocumentUploadSectionConfig
+                    file: File
+                } => Boolean(entry.file),
             )
-
-        if (uploads.length === 0) {
-            navigate(nextTo)
-            return
-        }
 
         setSubmitting(true)
         try {
-            await Promise.all(
-                uploads.map(({ section, file }) =>
-                    uploadFinancialDocumentFile(
-                        file,
-                        page,
-                        section.documentType,
-                        section.allowedMimeTypes,
+            if (onBeforeSubmit) {
+                await onBeforeSubmit()
+            }
+
+            if (uploads.length > 0) {
+                await Promise.all(
+                    uploads.map(({ section, file }) =>
+                        uploadFinancialDocumentFile(
+                            file,
+                            page,
+                            section.documentType,
+                            section.allowedMimeTypes,
+                        ),
                     ),
-                ),
-            )
+                )
+            }
+
+            await revalidateAfterFinancialSave()
             navigate(nextTo)
         } catch (err) {
             setFormError(
                 (err as { message?: string }).message ??
-                    'There was a problem uploading the documents',
+                    'There was a problem saving your information',
             )
         } finally {
             setSubmitting(false)
         }
     }
 
-    if (loading) {
+    if (isLoading) {
         return (
-            <>
-                <PageHeader title={title} />
-                <PortalCard>
-                    <p className="ab-text-s text-ink/60">Loading documents…</p>
-                </PortalCard>
-            </>
+            <DocumentUploadSkeleton
+                title={title}
+                sections={sections.length}
+                showHeaderFields={Boolean(headerContent)}
+            />
         )
     }
 
@@ -163,6 +193,8 @@ export default function DocumentUploadPage({
             <PageHeader title={title} />
             <PortalCard>
                 <div className="mx-auto flex w-full max-w-[543px] flex-col items-end gap-[30px]">
+                    {headerContent}
+
                     {sections.map((section) => {
                         const state = sectionState[section.id]
                         return (

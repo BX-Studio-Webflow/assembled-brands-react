@@ -4,8 +4,11 @@ import CenteredCardLayout from '@/components/layouts/CenteredCardLayout'
 import TextField from '@/components/ui/TextField'
 import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
+import FormPageSkeleton from '@/components/skeletons/FormPageSkeleton'
 import { apiExchangeWarmLeadSession } from '@/services/DealApplicationService'
-import { apiGetOnboardingProgress, apiSubmitWarmLead, apiSubmitWarmLeadMe } from '@/services/OnboardingService'
+import { apiSubmitWarmLead, apiSubmitWarmLeadMe } from '@/services/OnboardingService'
+import { useOnboardingProgress } from '@/lib/hooks/useOnboardingProgress'
+import { revalidateAfterOnboardingSave } from '@/lib/swr/mutate'
 import { useAuth } from '@/lib/auth'
 import { isAuthenticated, persistLoginSession } from '@/lib/session'
 
@@ -22,8 +25,9 @@ export default function OnboardingWarmLead() {
     const [workingWithMember, setWorkingWithMember] = useState<'yes' | 'no'>('no')
     const [memberEmail, setMemberEmail] = useState('')
     const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
     const [ready, setReady] = useState(false)
+    const { data: onboarding } = useOnboardingProgress()
 
     useEffect(() => {
         async function init() {
@@ -57,15 +61,13 @@ export default function OnboardingWarmLead() {
     }, [dealId])
 
     useEffect(() => {
-        if (!ready || !isAuthenticated()) return
-        void apiGetOnboardingProgress().then((result) => {
-            const step1 = result?.progress?.step1
-            if (step1?.legal_name) setLegalName(step1.legal_name)
-        })
-    }, [ready])
+        if (!ready || !isAuthenticated() || legalName) return
+        const step1 = onboarding?.progress?.step1
+        if (step1?.legal_name) setLegalName(step1.legal_name)
+    }, [ready, onboarding, legalName])
 
     async function onSubmit() {
-        setLoading(true)
+        setSubmitting(true)
         setError(null)
         const shared = {
             legal_name: legalName,
@@ -78,6 +80,7 @@ export default function OnboardingWarmLead() {
         try {
             if (isAuthenticated()) {
                 await apiSubmitWarmLeadMe(shared)
+                await revalidateAfterOnboardingSave()
                 navigate('/warm/finance-docs-financial-report')
             } else {
                 if (!dealId || Number.isNaN(dealId)) {
@@ -89,6 +92,7 @@ export default function OnboardingWarmLead() {
                     ...shared,
                 })
                 applySession(response)
+                await revalidateAfterOnboardingSave()
                 navigate('/warm/finance-docs-financial-report')
             }
         } catch (err) {
@@ -97,16 +101,12 @@ export default function OnboardingWarmLead() {
                     'Unable to save onboarding details',
             )
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
     }
 
     if (!ready) {
-        return (
-            <CenteredCardLayout title="Loading…">
-                <p className="ab-text-s text-ink/60">Preparing your application…</p>
-            </CenteredCardLayout>
-        )
+        return <FormPageSkeleton title="Company information" fields={4} />
     }
 
     return (
@@ -160,7 +160,7 @@ export default function OnboardingWarmLead() {
                     />
                 )}
                 {error && <p className="ab-text-m text-coral">{error}</p>}
-                <PillButton loading={loading} onClick={() => void onSubmit()}>
+                <PillButton loading={submitting} onClick={() => void onSubmit()}>
                     Save and continue
                 </PillButton>
             </div>

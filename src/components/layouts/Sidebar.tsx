@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router'
 import { LuChevronDown, LuChevronLeft, LuChevronRight, LuEllipsis, LuEllipsisVertical } from 'react-icons/lu'
 import { navigation, warmNavigation, type NavGroup } from '@/configs/navigation'
 import LogoMark from '@/components/shared/LogoMark'
 import HexPattern from '@/components/shared/HexPattern'
 import ProgressBar from '@/components/ui/ProgressBar'
+import Skeleton from '@/components/ui/Skeleton'
 import { useAuth } from '@/lib/auth'
-import { fetchSidebarProgress } from '@/lib/api/progress'
+import { useSidebarProgress } from '@/lib/hooks/useSidebarProgress'
 import { cx } from '@/lib/utils'
 
 function initials(name: string) {
@@ -147,24 +148,15 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     const { pathname } = useLocation()
     const navItems = pathname.startsWith('/warm') ? warmNavigation : navigation
     const [collapsed, setCollapsed] = useState(false)
-    const [progress, setProgress] = useState(0)
-    const [displayName, setDisplayName] = useState<string | null>(null)
-    const [displayEmail, setDisplayEmail] = useState<string | null>(null)
+    const { data: sidebarData, isLoading } = useSidebarProgress()
 
-    useEffect(() => {
-        void fetchSidebarProgress().then((data) => {
-            setProgress(data.percentage)
-            setDisplayName(data.userName)
-            setDisplayEmail(data.userEmail)
-        })
-    }, [pathname])
-
+    const progress = sidebarData?.percentage ?? 0
     const name =
-        displayName ??
+        sidebarData?.userName ??
         (user
             ? `${user.first_name || 'Full'} ${user.last_name || 'Name'}`.trim()
             : 'Full Name')
-    const email = displayEmail ?? user?.email ?? 'hello@company.com'
+    const email = sidebarData?.userEmail ?? user?.email ?? 'hello@company.com'
 
     return (
         <aside
@@ -219,7 +211,13 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                         collapsed && 'items-center',
                     )}
                 >
-                    {collapsed ? (
+                    {isLoading ? (
+                        collapsed ? (
+                            <Skeleton className="h-4 w-8 bg-offwhite/20" />
+                        ) : (
+                            <Skeleton className="h-2 w-[249px] max-w-full bg-offwhite/20" />
+                        )
+                    ) : collapsed ? (
                         <p className="ab-h5 text-center uppercase text-offwhite">
                             {progress}%
                         </p>

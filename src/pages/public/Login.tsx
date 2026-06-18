@@ -7,8 +7,8 @@ import TextField from '@/components/ui/TextField'
 import PillButton from '@/components/ui/PillButton'
 import InlineLink from '@/components/ui/InlineLink'
 import { useAuth } from '@/lib/auth'
-import { resolvePostLoginRoute } from '@/lib/routing/postLogin'
-import { isValidEmail } from '@/lib/routing/postLogin'
+import { resolvePostLoginRoute , isValidEmail } from '@/lib/routing/postLogin'
+
 
 export default function Login() {
     const navigate = useNavigate()

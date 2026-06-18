@@ -5,28 +5,35 @@ import PortalCard from '@/components/ui/PortalCard'
 import Field from '@/components/ui/Field'
 import TextField from '@/components/ui/TextField'
 import PillButton from '@/components/ui/PillButton'
+import FormPageSkeleton from '@/components/skeletons/FormPageSkeleton'
 import { useApplicationStore } from '@/store/applicationStore'
+import { useFinancialProgress } from '@/lib/hooks/useFinancialProgress'
+import { revalidateAfterFinancialSave } from '@/lib/swr/mutate'
 import { apiSaveFinancialOverview } from '@/services/FinancialWizardService'
-import { apiGetFinancialProgress } from '@/services/FinancialWizardService'
 
 export default function FinancialOverview() {
     const navigate = useNavigate()
     const data = useApplicationStore((s) => s.financialOverview)
     const patch = useApplicationStore((s) => s.patchFinancialOverview)
+    const { data: progress, isLoading } = useFinancialProgress()
     const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [seedApplied, setSeedApplied] = useState(false)
 
     useEffect(() => {
-        void apiGetFinancialProgress().then((progress) => {
-            const overview = progress.financial_overview
-            if (!overview) return
-            patch({
-                revenuesLast12: overview.revenue_last_12_months ?? '',
-                netIncomeLast12: overview.net_income_last_12_months ?? '',
-                projectedRevenue: overview.projected_revenue_next_12_months ?? '',
-            })
+        if (!progress || seedApplied) return
+        const overview = progress.financial_overview
+        if (!overview) {
+            setSeedApplied(true)
+            return
+        }
+        patch({
+            revenuesLast12: overview.revenue_last_12_months ?? '',
+            netIncomeLast12: overview.net_income_last_12_months ?? '',
+            projectedRevenue: overview.projected_revenue_next_12_months ?? '',
         })
-    }, [patch])
+        setSeedApplied(true)
+    }, [patch, progress, seedApplied])
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -37,13 +44,14 @@ export default function FinancialOverview() {
             return
         }
 
-        setLoading(true)
+        setSubmitting(true)
         try {
             await apiSaveFinancialOverview({
                 revenue_last_12_months: data.revenuesLast12.trim(),
                 net_income_last_12_months: data.netIncomeLast12.trim(),
                 projected_revenue_next_12_months: data.projectedRevenue.trim(),
             })
+            await revalidateAfterFinancialSave()
             navigate('/finance-docs-financial-reports')
         } catch (err) {
             setError(
@@ -51,8 +59,12 @@ export default function FinancialOverview() {
                     'There was a problem saving your information',
             )
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
+    }
+
+    if (isLoading) {
+        return <FormPageSkeleton title="Financial Overview" fields={3} />
     }
 
     return (
@@ -111,7 +123,7 @@ export default function FinancialOverview() {
                         <PillButton
                             type="submit"
                             variant="outline"
-                            loading={loading}
+                            loading={submitting}
                         >
                             Save & continue
                         </PillButton>

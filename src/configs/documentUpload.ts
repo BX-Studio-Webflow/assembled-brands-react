@@ -251,7 +251,7 @@ export const warmTeamOwnershipConfig: DocumentUploadPageConfig = {
     title: 'Team & Ownership',
     page: 'team-ownership',
     nextTo: '/warm/finance-docs-optional-docs',
-    requireAll: true,
+    requireAll: false,
     sections: [
         {
             id: 'to-management-bios',

@@ -58,6 +58,11 @@ export const YES_NO = [
     { label: 'No', value: 'no' },
 ]
 
+export const INVENTORY_LOCATION_OPTIONS = [
+    { label: 'United States (California)', value: 'US-CA' },
+    { label: 'International', value: 'International' },
+]
+
 export const INVITE_ROLES = [
     'CEO', 'CFO', 'CTO', 'COO', 'Founder', 'Finance', 'Operations', 'Other',
 ].map((s) => ({ label: s, value: s }))
