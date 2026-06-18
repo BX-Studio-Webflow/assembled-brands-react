@@ -10,8 +10,8 @@ import Badge from '@/components/ui/Badge'
 import InviteTeamSkeleton from '@/components/skeletons/InviteTeamSkeleton'
 import { INVITE_ROLES } from '@/constants/options'
 import { useMyTeams, useTeamInvitations } from '@/lib/hooks/useTeamData'
-import { revalidateTeamInvitations } from '@/lib/swr/mutate'
 import { apiInviteTeamMember } from '@/services/TeamService'
+import type { TeamInvitation } from '@/types/team'
 import { isValidEmail } from '@/lib/routing/postLogin'
 
 const NOT_HOST_MESSAGE = 'You are not a host of any team'
@@ -47,11 +47,12 @@ function inviteStatusTone(status: string): 'pending' | 'active' | 'neutral' {
 export default function InviteTeam() {
     const { data: teams, isLoading: teamsLoading } = useMyTeams()
     const {
-        data: invitations = [],
+        data: invitations,
         error: invitationsError,
         isLoading: invitesLoading,
+        mutate: mutateInvitations,
     } = useTeamInvitations()
-    const [form, setForm] = useState<InviteForm>(emptyForm)
+    const [form, setForm] = useState<InviteForm>(emptyForm())
     const [showForm, setShowForm] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
@@ -60,12 +61,13 @@ export default function InviteTeam() {
     const hostTeam = teams?.find((t) => t.role === 'host') ?? null
     const teamId = hostTeam?.team_id ?? null
     const loading = teamsLoading || invitesLoading
+    const inviteList = Array.isArray(invitations) ? invitations : []
 
     const notHost =
         getErrorMessage(invitationsError) === NOT_HOST_MESSAGE ||
         (!teamsLoading && teams !== undefined && !hostTeam)
 
-    const hasInvites = invitations.length > 0
+    const hasInvites = inviteList.length > 0
     const displayForm = !notHost && (showForm || !hasInvites)
     const displayTable = !notHost && hasInvites && !showForm
 
@@ -115,21 +117,49 @@ export default function InviteTeam() {
 
         setSubmitting(true)
         try {
+            const submittedName = form.fullName.trim()
+            const submittedRole = form.role
+            const submittedMessage = form.message.trim()
+
             await Promise.all(
                 emailsToSend.map((email) =>
                     apiInviteTeamMember(
-                        form.fullName.trim(),
-                        form.role,
+                        submittedName,
+                        submittedRole,
                         email,
                         teamId,
-                        form.message.trim(),
+                        submittedMessage,
                     ),
                 ),
             )
+
             setForm(emptyForm())
             setShowForm(false)
             setSuccess(true)
-            await revalidateTeamInvitations()
+
+            const refreshed = await mutateInvitations()
+            const refreshedList = Array.isArray(refreshed) ? refreshed : []
+
+            if (refreshedList.length === 0) {
+                const optimisticInvites: TeamInvitation[] = emailsToSend.map(
+                    (email, index) => ({
+                        id: Date.now() + index,
+                        team_id: teamId,
+                        inviter_id: 0,
+                        invitee_email: email,
+                        invitee_name: submittedName,
+                        user_defined_role: submittedRole,
+                        status: 'pending',
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                    }),
+                )
+                await mutateInvitations(
+                    [...inviteList, ...optimisticInvites],
+                    { revalidate: true },
+                )
+            }
+
             window.setTimeout(() => setSuccess(false), 2000)
         } catch (err) {
             setError(
@@ -264,7 +294,7 @@ export default function InviteTeam() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {invitations.map((m) => (
+                                {inviteList.map((m) => (
                                     <tr
                                         key={m.id}
                                         className="border-b border-ink/10 last:border-0"

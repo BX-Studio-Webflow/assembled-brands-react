@@ -1,4 +1,5 @@
 import { mutate } from 'swr'
+import { fetchTeamInvitations } from '@/lib/hooks/useTeamData'
 import { swrKeys } from '@/lib/swr/keys'
 
 export function revalidateFinancialProgress() {
@@ -21,7 +22,7 @@ export function revalidateSidebarProgress() {
 }
 
 export function revalidateTeamInvitations() {
-    return mutate(swrKeys.teamInvitations)
+    return mutate(swrKeys.teamInvitations, fetchTeamInvitations)
 }
 
 export function revalidateDealApplications() {
