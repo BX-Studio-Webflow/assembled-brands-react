@@ -74,3 +74,21 @@ export const apiDeleteAsset = (id: number) => {
     method: 'delete',
   });
 };
+
+/** Step 2 of legacy document upload: PUT file bytes to S3 presigned URL. */
+export function uploadToPresignedUrl(file: File, presignedUrl: string) {
+  return new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open('PUT', presignedUrl)
+    xhr.setRequestHeader('Content-Type', file.type)
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve()
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`))
+      }
+    }
+    xhr.onerror = () => reject(new Error('Upload failed'))
+    xhr.send(file)
+  })
+}

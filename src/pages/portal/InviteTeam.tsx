@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PageHeader from '@/components/ui/PageHeader'
 import PortalCard from '@/components/ui/PortalCard'
 import Field from '@/components/ui/Field'
@@ -8,26 +8,67 @@ import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
 import Badge from '@/components/ui/Badge'
 import { INVITE_ROLES } from '@/constants/options'
-import { useApplicationStore } from '@/store/applicationStore'
+import {
+    apiGetTeamInvitations,
+    apiGetMyTeams,
+    apiInviteTeamMember,
+} from '@/services/TeamService'
+import type { TeamInvitation } from '@/types/team'
+import { isValidEmail } from '@/lib/routing/postLogin'
 
 const emptyForm = { fullName: '', email: '', role: '', message: '' }
 
 export default function InviteTeam() {
-    const members = useApplicationStore((s) => s.members)
-    const addMember = useApplicationStore((s) => s.addMember)
     const [form, setForm] = useState(emptyForm)
+    const [teamId, setTeamId] = useState<number | null>(null)
+    const [invitations, setInvitations] = useState<TeamInvitation[]>([])
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
+
+    async function loadInvitations() {
+        const invites = await apiGetTeamInvitations()
+        setInvitations(invites)
+    }
+
+    useEffect(() => {
+        void apiGetMyTeams().then((teams) => {
+            if (teams.length > 0) setTeamId(teams[0].team_id)
+        })
+        void loadInvitations()
+    }, [])
 
     const canSubmit = form.fullName.trim() && form.email.trim() && form.role
 
-    function submit() {
+    async function submit() {
         if (!canSubmit) return
-        addMember({
-            fullName: form.fullName.trim(),
-            email: form.email.trim(),
-            role: form.role,
-            message: form.message.trim(),
-        })
-        setForm(emptyForm)
+        if (!isValidEmail(form.email.trim())) {
+            setError('Please enter a valid email')
+            return
+        }
+        if (!teamId) {
+            setError('Team not found')
+            return
+        }
+
+        setError(null)
+        setLoading(true)
+        try {
+            await apiInviteTeamMember(
+                form.fullName.trim(),
+                form.role,
+                form.email.trim(),
+                teamId,
+                form.message.trim(),
+            )
+            setForm(emptyForm)
+            await loadInvitations()
+        } catch (err) {
+            setError(
+                (err as { message?: string }).message ?? 'Unable to send invite',
+            )
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -39,7 +80,7 @@ export default function InviteTeam() {
                     className="mx-auto flex w-full max-w-[543px] flex-col gap-[30px]"
                     onSubmit={(e) => {
                         e.preventDefault()
-                        submit()
+                        void submit()
                     }}
                 >
                     <div className="grid grid-cols-1 gap-[30px] sm:grid-cols-2">
@@ -82,12 +123,14 @@ export default function InviteTeam() {
                         />
                     </Field>
 
+                    {error && <p className="ab-text-m text-coral">{error}</p>}
+
                     <div className="flex flex-wrap items-center justify-end gap-[15px]">
                         <button
                             type="button"
-                            disabled={!canSubmit}
+                            disabled={!canSubmit || loading}
                             className="ab-label border-b border-ink text-ink disabled:cursor-not-allowed disabled:opacity-40"
-                            onClick={submit}
+                            onClick={() => void submit()}
                         >
                             + Add another member
                         </button>
@@ -95,6 +138,7 @@ export default function InviteTeam() {
                             type="submit"
                             variant={canSubmit ? 'stack' : 'muted'}
                             disabled={!canSubmit}
+                            loading={loading}
                         >
                             Send invite
                         </PillButton>
@@ -102,7 +146,7 @@ export default function InviteTeam() {
                 </form>
             </PortalCard>
 
-            {members.length > 0 && (
+            {invitations.length > 0 && (
                 <PortalCard className="overflow-hidden !px-0 !py-0">
                     <div className="overflow-x-auto">
                         <table className="w-full border-collapse text-left">
@@ -123,19 +167,19 @@ export default function InviteTeam() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {members.map((m) => (
+                                {invitations.map((m) => (
                                     <tr
                                         key={m.id}
                                         className="border-b border-ink/10 last:border-0"
                                     >
                                         <td className="ab-text-m px-6 py-4 text-ink">
-                                            {m.fullName}
+                                            {m.invitee_name || 'Unknown'}
                                         </td>
                                         <td className="ab-text-m px-6 py-4 text-ink/70">
-                                            {m.email}
+                                            {m.invitee_email}
                                         </td>
                                         <td className="ab-text-m px-6 py-4 text-ink/70">
-                                            {m.role}
+                                            {m.user_defined_role}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <Badge tone="pending">

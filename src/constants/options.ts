@@ -13,12 +13,19 @@ export const US_STATES = [
 ].map((s) => ({ label: s, value: s }))
 
 export const ACCOUNTING_SOFTWARE = [
-    'QuickBooks',
-    'QuickBooks Online',
-    'Netsuite',
-    'Accumatica',
-    'Other',
-].map((s) => ({ label: s, value: s }))
+    { label: 'QuickBooks', value: 'quickbooks' },
+    { label: 'QuickBooks Online', value: 'quickbooks_online' },
+    { label: 'Netsuite', value: 'netsuite' },
+    { label: 'Accumatica', value: 'accumatica' },
+    { label: 'Other', value: 'other' },
+]
+
+export const LOAN_AMOUNT_OPTIONS = [
+    { label: '$1M – $5M', value: '1-5' },
+    { label: '$5M – $10M', value: '5-10' },
+    { label: '$10M – $25M', value: '10-25' },
+    { label: '$25M+', value: '25+' },
+]
 
 export const COMPANY_TYPES = [
     'CPG Company',

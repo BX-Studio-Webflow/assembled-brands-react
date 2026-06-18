@@ -1,20 +1,6 @@
 import DocumentUploadPage from '@/components/portal/DocumentUploadPage'
+import { warmEcommerceConfig } from '@/configs/documentUpload'
 
-export default function WarmFinanceDocsEcommercePerformance() {
-    return (
-        <DocumentUploadPage
-            title="E-Commerce Performance"
-            nextTo="/warm/finance-docs-team-and-ownership"
-            sections={[
-                {
-                    id: 'ec-repeat-customers',
-                    label: 'Shopify Repeat Customer Reports',
-                },
-                {
-                    id: 'ec-monthly-sales',
-                    label: 'Shopify Monthly Sales Reports',
-                },
-            ]}
-        />
-    )
+export default function FinanceDocsEcommercePerformance() {
+    return <DocumentUploadPage {...warmEcommerceConfig} />
 }

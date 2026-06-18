@@ -1,52 +1,225 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import PageHeader from '@/components/ui/PageHeader'
 import PortalCard from '@/components/ui/PortalCard'
 import Dropzone from '@/components/ui/Dropzone'
 import PillButton from '@/components/ui/PillButton'
 import ExampleModal from './ExampleModal'
+import {
+    getDocumentsForPage,
+    type DocumentUploadPageConfig,
+} from '@/configs/documentUpload'
+import { uploadFinancialDocumentFile } from '@/lib/api/uploadFinancialDocumentFile'
+import { apiDeleteFinancialDocument } from '@/services/FinancialWizardService'
+import { apiGetFinancialProgress } from '@/services/FinancialWizardService'
+import type { FinancialDocument } from '@/types/financial-wizard'
 
-export type UploadSection = {
-    id: string
-    label: string
-    formats?: string
+type SectionState = {
+    pendingFile: File | null
+    uploadedDoc: FinancialDocument | null
+    error: string | null
 }
 
-type Props = {
-    title: string
-    sections: UploadSection[]
-    nextTo: string
-}
+type Props = DocumentUploadPageConfig
 
-export default function DocumentUploadPage({ title, sections, nextTo }: Props) {
+export default function DocumentUploadPage({
+    title,
+    page,
+    sections,
+    nextTo,
+    requireAll = true,
+}: Props) {
     const navigate = useNavigate()
     const [example, setExample] = useState<string | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [submitting, setSubmitting] = useState(false)
+    const [formError, setFormError] = useState<string | null>(null)
+    const [sectionState, setSectionState] = useState<Record<string, SectionState>>(
+        () =>
+            Object.fromEntries(
+                sections.map((s) => [
+                    s.id,
+                    { pendingFile: null, uploadedDoc: null, error: null },
+                ]),
+            ),
+    )
+
+    const loadProgress = useCallback(async () => {
+        setLoading(true)
+        try {
+            const progress = await apiGetFinancialProgress()
+            const docs = getDocumentsForPage(progress, page)
+            setSectionState(
+                Object.fromEntries(
+                    sections.map((section) => {
+                        const uploadedDoc =
+                            docs.find(
+                                (d) => d.document_type === section.documentType,
+                            ) ?? null
+                        return [
+                            section.id,
+                            {
+                                pendingFile: null,
+                                uploadedDoc,
+                                error: null,
+                            },
+                        ]
+                    }),
+                ),
+            )
+        } finally {
+            setLoading(false)
+        }
+    }, [page, sections])
+
+    useEffect(() => {
+        void loadProgress()
+    }, [loadProgress])
+
+    function patchSection(id: string, patch: Partial<SectionState>) {
+        setSectionState((prev) => ({
+            ...prev,
+            [id]: { ...prev[id], ...patch },
+        }))
+    }
+
+    async function handleDeleteUploaded(sectionId: string, docId: number) {
+        patchSection(sectionId, { error: null })
+        try {
+            await apiDeleteFinancialDocument(docId)
+            patchSection(sectionId, { uploadedDoc: null })
+        } catch (err) {
+            patchSection(sectionId, {
+                error:
+                    (err as { message?: string }).message ??
+                    'Failed to delete file',
+            })
+        }
+    }
+
+    async function onSubmit() {
+        setFormError(null)
+
+        const missingRequired = sections.filter((section) => {
+            const state = sectionState[section.id]
+            return !state.pendingFile && !state.uploadedDoc
+        })
+
+        if (requireAll && missingRequired.length > 0) {
+            setFormError('Please upload all required documents')
+            return
+        }
+
+        const uploads = sections
+            .map((section) => ({
+                section,
+                file: sectionState[section.id].pendingFile,
+            }))
+            .filter((entry): entry is { section: (typeof sections)[0]; file: File } =>
+                Boolean(entry.file),
+            )
+
+        if (uploads.length === 0) {
+            navigate(nextTo)
+            return
+        }
+
+        setSubmitting(true)
+        try {
+            await Promise.all(
+                uploads.map(({ section, file }) =>
+                    uploadFinancialDocumentFile(
+                        file,
+                        page,
+                        section.documentType,
+                        section.allowedMimeTypes,
+                    ),
+                ),
+            )
+            navigate(nextTo)
+        } catch (err) {
+            setFormError(
+                (err as { message?: string }).message ??
+                    'There was a problem uploading the documents',
+            )
+        } finally {
+            setSubmitting(false)
+        }
+    }
+
+    if (loading) {
+        return (
+            <>
+                <PageHeader title={title} />
+                <PortalCard>
+                    <p className="ab-text-s text-ink/60">Loading documents…</p>
+                </PortalCard>
+            </>
+        )
+    }
 
     return (
         <>
             <PageHeader title={title} />
             <PortalCard>
                 <div className="mx-auto flex w-full max-w-[543px] flex-col items-end gap-[30px]">
-                    {sections.map((section) => (
-                        <div
-                            key={section.id}
-                            className="flex w-full flex-col gap-[10px]"
-                        >
-                            <div className="flex flex-col items-start gap-[5px]">
-                                <p className="ab-serif">{section.label}</p>
-                                <button
-                                    type="button"
-                                    className="ab-text-s border-b border-ink text-ink"
-                                    onClick={() => setExample(section.label)}
-                                >
-                                    See example
-                                </button>
+                    {sections.map((section) => {
+                        const state = sectionState[section.id]
+                        return (
+                            <div
+                                key={section.id}
+                                className="flex w-full flex-col gap-[10px]"
+                            >
+                                <div className="flex flex-col items-start gap-[5px]">
+                                    <p className="ab-serif">{section.label}</p>
+                                    <button
+                                        type="button"
+                                        className="ab-text-s border-b border-ink text-ink"
+                                        onClick={() => setExample(section.label)}
+                                    >
+                                        See example
+                                    </button>
+                                </div>
+                                <Dropzone
+                                    formats={section.formats}
+                                    accept={section.accept}
+                                    allowedMimeTypes={section.allowedMimeTypes}
+                                    invalidMessage={section.invalidMessage}
+                                    pendingFile={state.pendingFile}
+                                    uploadedName={
+                                        state.uploadedDoc?.asset_name ?? null
+                                    }
+                                    error={state.error}
+                                    onSelect={(file) =>
+                                        patchSection(section.id, {
+                                            pendingFile: file,
+                                            error: null,
+                                        })
+                                    }
+                                    onClearPending={() =>
+                                        patchSection(section.id, {
+                                            pendingFile: null,
+                                        })
+                                    }
+                                    onDeleteUploaded={
+                                        state.uploadedDoc
+                                            ? () =>
+                                                  void handleDeleteUploaded(
+                                                      section.id,
+                                                      state.uploadedDoc!.id,
+                                                  )
+                                            : undefined
+                                    }
+                                />
                             </div>
-                            <Dropzone slot={section.id} formats={section.formats} />
-                        </div>
-                    ))}
+                        )
+                    })}
 
-                    <PillButton onClick={() => navigate(nextTo)}>
+                    {formError && (
+                        <p className="ab-text-m w-full text-coral">{formError}</p>
+                    )}
+
+                    <PillButton loading={submitting} onClick={() => void onSubmit()}>
                         Save & Continue
                     </PillButton>
                 </div>

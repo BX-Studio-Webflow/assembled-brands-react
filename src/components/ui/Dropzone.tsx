@@ -1,17 +1,19 @@
 import { useRef, useState, type DragEvent } from 'react'
 import { LuCloudUpload, LuFile, LuX } from 'react-icons/lu'
-import {
-    useApplicationStore,
-    type UploadedFile,
-} from '@/store/applicationStore'
 import { cx } from '@/lib/utils'
 
 type Props = {
-    slot: string
     formats?: string
+    accept?: string
+    allowedMimeTypes?: readonly string[]
+    invalidMessage?: string
+    pendingFile: File | null
+    uploadedName: string | null
+    error?: string | null
+    onSelect: (file: File) => void
+    onClearPending: () => void
+    onDeleteUploaded?: () => void
 }
-
-const EMPTY: UploadedFile[] = []
 
 function prettySize(bytes: number) {
     if (!bytes) return ''
@@ -20,18 +22,34 @@ function prettySize(bytes: number) {
     return `${(kb / 1024).toFixed(1)} MB`
 }
 
-export default function Dropzone({ slot, formats = 'sheets, excel' }: Props) {
-    const files = useApplicationStore((s) => s.documents[slot] ?? EMPTY)
-    const addDocument = useApplicationStore((s) => s.addDocument)
-    const removeDocument = useApplicationStore((s) => s.removeDocument)
+export default function Dropzone({
+    formats = 'sheets, excel',
+    accept,
+    allowedMimeTypes,
+    invalidMessage = 'Invalid file type',
+    pendingFile,
+    uploadedName,
+    error,
+    onSelect,
+    onClearPending,
+    onDeleteUploaded,
+}: Props) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [dragging, setDragging] = useState(false)
+    const [localError, setLocalError] = useState<string | null>(null)
+
+    function handleFile(file: File) {
+        if (allowedMimeTypes?.length && !allowedMimeTypes.includes(file.type)) {
+            setLocalError(invalidMessage)
+            return
+        }
+        setLocalError(null)
+        onSelect(file)
+    }
 
     function handleFiles(list: FileList | null) {
-        if (!list) return
-        Array.from(list).forEach((f) =>
-            addDocument(slot, { name: f.name, size: f.size }),
-        )
+        const file = list?.[0]
+        if (file) handleFile(file)
     }
 
     function onDrop(e: DragEvent) {
@@ -39,6 +57,9 @@ export default function Dropzone({ slot, formats = 'sheets, excel' }: Props) {
         setDragging(false)
         handleFiles(e.dataTransfer.files)
     }
+
+    const displayName = pendingFile?.name ?? uploadedName
+    const displaySize = pendingFile?.size
 
     return (
         <div className="flex flex-col gap-[10px]">
@@ -50,6 +71,7 @@ export default function Dropzone({ slot, formats = 'sheets, excel' }: Props) {
                     dragging
                         ? 'border-ink bg-beige/60'
                         : 'border-ink bg-offwhite hover:bg-beige/40',
+                    (error || localError) && 'border-coral',
                 )}
                 onClick={() => inputRef.current?.click()}
                 onKeyDown={(e) =>
@@ -75,40 +97,42 @@ export default function Dropzone({ slot, formats = 'sheets, excel' }: Props) {
                 </p>
                 <input
                     ref={inputRef}
-                    multiple
                     type="file"
+                    accept={accept}
                     className="hidden"
                     onChange={(e) => handleFiles(e.target.files)}
                 />
             </div>
 
-            {files.length > 0 && (
-                <ul className="flex flex-col gap-2">
-                    {files.map((f) => (
-                        <li
-                            key={f.name}
-                            className="flex items-center justify-between gap-3 rounded-[4px] border border-ink/15 bg-white px-3 py-2"
-                        >
-                            <span className="flex min-w-0 items-center gap-2">
-                                <LuFile className="size-4 shrink-0 text-ink/60" />
-                                <span className="ab-text-m truncate text-ink">
-                                    {f.name}
-                                </span>
-                                <span className="ab-text-s shrink-0 text-ink/40">
-                                    {prettySize(f.size)}
-                                </span>
+            {(error || localError) && (
+                <p className="ab-text-s text-coral">{error ?? localError}</p>
+            )}
+
+            {displayName && (
+                <div className="flex items-center justify-between gap-3 rounded-[4px] border border-ink/15 bg-white px-3 py-2">
+                    <span className="flex min-w-0 items-center gap-2">
+                        <LuFile className="size-4 shrink-0 text-ink/60" />
+                        <span className="ab-text-m truncate text-ink">
+                            {displayName}
+                        </span>
+                        {displaySize != null && (
+                            <span className="ab-text-s shrink-0 text-ink/40">
+                                {prettySize(displaySize)}
                             </span>
-                            <button
-                                type="button"
-                                aria-label={`Remove ${f.name}`}
-                                className="shrink-0 text-ink/50 hover:text-coral"
-                                onClick={() => removeDocument(slot, f.name)}
-                            >
-                                <LuX className="size-4" />
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                        )}
+                    </span>
+                    <button
+                        type="button"
+                        aria-label={`Remove ${displayName}`}
+                        className="shrink-0 text-ink/50 hover:text-coral"
+                        onClick={() => {
+                            if (pendingFile) onClearPending()
+                            else onDeleteUploaded?.()
+                        }}
+                    >
+                        <LuX className="size-4" />
+                    </button>
+                </div>
             )}
         </div>
     )

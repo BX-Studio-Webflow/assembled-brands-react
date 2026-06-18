@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import PageHeader from '@/components/ui/PageHeader'
 import PortalCard from '@/components/ui/PortalCard'
@@ -7,11 +8,69 @@ import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
 import { US_STATES, ACCOUNTING_SOFTWARE } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
+import { apiUpdateBusiness } from '@/services/BusinessService'
+import { apiGetFinancialProgress } from '@/services/FinancialWizardService'
+import { apiGetOnboardingProgress } from '@/services/OnboardingService'
 
 export default function CompanyProfile() {
     const navigate = useNavigate()
     const data = useApplicationStore((s) => s.companyProfile)
     const patch = useApplicationStore((s) => s.patchCompanyProfile)
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        void Promise.all([
+            apiGetFinancialProgress(),
+            apiGetOnboardingProgress(),
+        ]).then(([financial, onboarding]) => {
+            const profile = financial.company_profile ?? financial.business
+            const step1 = onboarding?.progress?.step1
+            const step2 = onboarding?.progress?.step2
+
+            patch({
+                legalName:
+                    profile?.legal_name ??
+                    step1?.legal_name ??
+                    financial.business?.legal_name ??
+                    '',
+                headquarters: profile?.headquarters ?? '',
+                yearFormed: profile?.year_formed ?? step2?.years_in_business ?? '',
+                accountingSoftware: profile?.accounting_software ?? '',
+                accountingOther: profile?.other_accounting_software ?? '',
+            })
+        })
+    }, [patch])
+
+    async function onSubmit(e: React.FormEvent) {
+        e.preventDefault()
+        setError(null)
+
+        if (!data.legalName.trim()) {
+            setError('Company legal name is required')
+            return
+        }
+
+        setLoading(true)
+        try {
+            await apiUpdateBusiness({
+                legal_name: data.legalName.trim(),
+                headquarters: data.headquarters,
+                description: '',
+                year_formed: data.yearFormed,
+                accounting_software: data.accountingSoftware,
+                other_accounting_software: data.accountingOther || '',
+            })
+            navigate('/finance-financial-overview')
+        } catch (err) {
+            setError(
+                (err as { message?: string }).message ??
+                    'There was a problem saving your information',
+            )
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <>
@@ -19,10 +78,7 @@ export default function CompanyProfile() {
             <PortalCard>
                 <form
                     className="mx-auto flex w-full max-w-[543px] flex-col gap-[30px]"
-                    onSubmit={(e) => {
-                        e.preventDefault()
-                        navigate('/finance-financial-overview')
-                    }}
+                    onSubmit={onSubmit}
                 >
                     <h2 className="ab-h3">Basic Information</h2>
 
@@ -63,7 +119,7 @@ export default function CompanyProfile() {
                         />
                     </Field>
 
-                    {data.accountingSoftware === 'Other' && (
+                    {data.accountingSoftware === 'other' && (
                         <Field label="Other">
                             <TextField
                                 variant="soft"
@@ -76,15 +132,23 @@ export default function CompanyProfile() {
                         </Field>
                     )}
 
+                    {error && <p className="ab-text-m text-coral">{error}</p>}
+
                     <div className="flex justify-end gap-[10px]">
                         <PillButton
                             type="button"
                             variant="solid"
-                            onClick={() => navigate('/finance-financial-overview')}
+                            onClick={() =>
+                                navigate('/onboarding-wizard?step=step-3')
+                            }
                         >
                             Cancel
                         </PillButton>
-                        <PillButton type="submit" variant="outline">
+                        <PillButton
+                            type="submit"
+                            variant="outline"
+                            loading={loading}
+                        >
                             Save and continue
                         </PillButton>
                     </div>

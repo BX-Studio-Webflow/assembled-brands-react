@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import CenteredCardLayout from '@/components/layouts/CenteredCardLayout'
 import StepProgress from '@/components/ui/StepProgress'
@@ -8,17 +9,81 @@ import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
 import { COMPANY_TYPES, YES_NO } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
+import { apiGetOnboardingProgress, apiSaveOnboardingStep3 } from '@/services/OnboardingService'
+import { mapCompanyType } from '@/lib/mappings/onboarding'
+import type { OnboardingStep3Body } from '@/types/onboarding'
+
+const COMPANY_API_TO_LABEL: Record<string, string> = {
+    cpg: 'CPG Company',
+    distributor_wholesaler: 'Distributor or Wholesaler',
+    service_provider: 'SaaS Company',
+    other: 'Other',
+}
 
 export default function QualifyStep3() {
     const navigate = useNavigate()
     const qualify = useApplicationStore((s) => s.qualify)
     const patch = useApplicationStore((s) => s.patchQualify)
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
 
-    function onSubmit(e: React.FormEvent) {
+    useEffect(() => {
+        void apiGetOnboardingProgress().then((result) => {
+            const step3 = result?.progress?.step3
+            if (!step3) return
+            patch({
+                companyType: step3.company_type
+                    ? (COMPANY_API_TO_LABEL[step3.company_type] ??
+                      step3.company_type)
+                    : '',
+                otherCompanyType: step3.company_type_other ?? '',
+                revenuesOver10mm: step3.revenue_qualification ?? '',
+            })
+        })
+    }, [patch])
+
+    async function onSubmit(e: React.FormEvent) {
         e.preventDefault()
-        // Dummy qualification rule: must have $10MM+ revenue to be a fit.
-        if (qualify.revenuesOver10mm === 'no') navigate('/onboarding-step-not-fit')
-        else navigate('/claim-account')
+        setError(null)
+
+        const companyType = mapCompanyType(qualify.companyType)
+        if (!companyType) {
+            setError('Company type is required')
+            return
+        }
+        if (companyType === 'other' && !qualify.otherCompanyType.trim()) {
+            setError('Please specify the company type')
+            return
+        }
+        if (!qualify.revenuesOver10mm) {
+            setError('Revenue qualification is required')
+            return
+        }
+
+        setLoading(true)
+        try {
+            await apiSaveOnboardingStep3({
+                company_type: companyType,
+                revenue_qualification:
+                    qualify.revenuesOver10mm as OnboardingStep3Body['revenue_qualification'],
+                ...(companyType === 'other'
+                    ? { company_type_other: qualify.otherCompanyType.trim() }
+                    : {}),
+            })
+
+            if (qualify.revenuesOver10mm === 'no') {
+                navigate('/onboarding-step-not-fit')
+            } else {
+                navigate('/finance-company-profile')
+            }
+        } catch (err) {
+            setError(
+                (err as { message?: string }).message ??
+                    'There was a problem saving your information',
+            )
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -68,6 +133,8 @@ export default function QualifyStep3() {
                         </Field>
                     </div>
 
+                    {error && <p className="ab-text-m text-coral">{error}</p>}
+
                     <div className="flex justify-end gap-[10px]">
                         <PillButton
                             type="button"
@@ -76,8 +143,12 @@ export default function QualifyStep3() {
                         >
                             Back
                         </PillButton>
-                        <PillButton type="submit" variant="outline">
-                            Next
+                        <PillButton
+                            type="submit"
+                            variant="outline"
+                            loading={loading}
+                        >
+                            Finish
                         </PillButton>
                     </div>
                 </form>

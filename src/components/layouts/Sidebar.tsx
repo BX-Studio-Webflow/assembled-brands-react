@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router'
 import { LuChevronDown, LuChevronLeft, LuChevronRight, LuEllipsis, LuEllipsisVertical } from 'react-icons/lu'
 import { navigation, warmNavigation, type NavGroup } from '@/configs/navigation'
@@ -6,6 +6,7 @@ import LogoMark from '@/components/shared/LogoMark'
 import HexPattern from '@/components/shared/HexPattern'
 import ProgressBar from '@/components/ui/ProgressBar'
 import { useAuth } from '@/lib/auth'
+import { fetchSidebarProgress } from '@/lib/api/progress'
 import { cx } from '@/lib/utils'
 
 function initials(name: string) {
@@ -146,10 +147,24 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     const { pathname } = useLocation()
     const navItems = pathname.startsWith('/warm') ? warmNavigation : navigation
     const [collapsed, setCollapsed] = useState(false)
-    const name = user
-        ? `${user.first_name || 'Full'} ${user.last_name || 'Name'}`.trim()
-        : 'Full Name'
-    const email = user?.email ?? 'hello@company.com'
+    const [progress, setProgress] = useState(0)
+    const [displayName, setDisplayName] = useState<string | null>(null)
+    const [displayEmail, setDisplayEmail] = useState<string | null>(null)
+
+    useEffect(() => {
+        void fetchSidebarProgress().then((data) => {
+            setProgress(data.percentage)
+            setDisplayName(data.userName)
+            setDisplayEmail(data.userEmail)
+        })
+    }, [pathname])
+
+    const name =
+        displayName ??
+        (user
+            ? `${user.first_name || 'Full'} ${user.last_name || 'Name'}`.trim()
+            : 'Full Name')
+    const email = displayEmail ?? user?.email ?? 'hello@company.com'
 
     return (
         <aside
@@ -206,11 +221,11 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 >
                     {collapsed ? (
                         <p className="ab-h5 text-center uppercase text-offwhite">
-                            10%
+                            {progress}%
                         </p>
                     ) : (
                         <div className="w-[249px] max-w-full">
-                            <ProgressBar value={10} />
+                            <ProgressBar value={progress} />
                         </div>
                     )}
 
