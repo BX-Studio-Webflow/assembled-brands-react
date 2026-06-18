@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
 import { LuChevronDown, LuEllipsis, LuEllipsisVertical, LuLogOut, LuX } from 'react-icons/lu'
-import { navigation, warmNavigation, isExternalNavUrl, type NavGroup } from '@/configs/navigation'
+import { warmNavigation, isExternalNavUrl, type NavGroup } from '@/configs/navigation'
 import LogoMark from '@/components/shared/LogoMark'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Skeleton from '@/components/ui/Skeleton'
@@ -25,16 +25,18 @@ function GroupBlock({
     group,
     collapsed,
     onNavigate,
+    defaultExpanded = false,
 }: {
     group: NavGroup
     collapsed: boolean
     onNavigate?: () => void
+    defaultExpanded?: boolean
 }) {
     const { pathname } = useLocation()
     const Icon = group.icon
     const containsActive =
         group.children?.some((c) => pathname.startsWith(c.to)) ?? false
-    const [open, setOpen] = useState(containsActive)
+    const [open, setOpen] = useState(defaultExpanded || containsActive)
 
     // Collapsed: render only the icon, linking to the group's destination.
     if (collapsed) {
@@ -264,8 +266,7 @@ export default function Sidebar({
     onClose?: () => void
 }) {
     const { user } = useAuth()
-    const { pathname } = useLocation()
-    const navItems = pathname.startsWith('/warm') ? warmNavigation : navigation
+    const navItems = warmNavigation
     const isDrawer = variant === 'drawer'
     const [collapsed, setCollapsed] = useState(false)
     const effectiveCollapsed = isDrawer ? false : collapsed
@@ -343,6 +344,7 @@ export default function Sidebar({
                                 key={group.label}
                                 group={group}
                                 collapsed={effectiveCollapsed}
+                                defaultExpanded={Boolean(group.children)}
                                 onNavigate={onNavigate}
                             />
                         ))}

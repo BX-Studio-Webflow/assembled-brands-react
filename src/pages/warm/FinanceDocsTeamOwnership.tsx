@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import DocumentUploadPage from '@/components/portal/DocumentUploadPage'
 import Field from '@/components/ui/Field'
 import RadioGroup from '@/components/ui/RadioGroup'
@@ -10,16 +10,31 @@ import {
 import { YES_NO } from '@/constants/options'
 import { apiUpdateBusiness } from '@/services/BusinessService'
 import type { Business, UpdateBusinessRequest } from '@/types/business'
+import type { FinancialWizardProgressResponse } from '@/types/financial-wizard'
 
 export default function FinanceDocsTeamOwnership() {
     const [raisedExternalEquity, setRaisedExternalEquity] = useState('')
     const businessProfileRef = useRef<Business | null>(null)
+    const equityInitializedRef = useRef(false)
 
     const capTableRequired = raisedExternalEquity === 'yes'
 
     const sections = warmTeamOwnershipConfig.sections.filter(
         (section) =>
             section.documentType !== 'cap_table' || capTableRequired,
+    )
+
+    const handleProgressLoaded = useCallback(
+        (progress: FinancialWizardProgressResponse) => {
+            const profile = getBusinessProfile(progress)
+            businessProfileRef.current = profile
+            if (equityInitializedRef.current) return
+            equityInitializedRef.current = true
+            if (profile?.raised_external_equity) {
+                setRaisedExternalEquity(profile.raised_external_equity)
+            }
+        },
+        [],
     )
 
     return (
@@ -52,13 +67,7 @@ export default function FinanceDocsTeamOwnership() {
                 }
                 return null
             }}
-            onProgressLoaded={(progress) => {
-                const profile = getBusinessProfile(progress)
-                businessProfileRef.current = profile
-                if (profile?.raised_external_equity) {
-                    setRaisedExternalEquity(profile.raised_external_equity)
-                }
-            }}
+            onProgressLoaded={handleProgressLoaded}
             onBeforeSubmit={async () => {
                 const profile = businessProfileRef.current
                 if (!profile?.legal_name) {

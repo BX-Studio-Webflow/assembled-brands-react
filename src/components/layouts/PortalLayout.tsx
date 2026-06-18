@@ -19,9 +19,9 @@ export default function PortalLayout() {
             {mobileOpen && (
                 <div className="fixed inset-0 z-50 lg:hidden">
                     <div
+                        aria-hidden
                         className="absolute inset-0 bg-ink/50"
                         onClick={() => setMobileOpen(false)}
-                        aria-hidden
                     />
                     <div className="relative z-10 h-full w-[min(324px,100vw)] shadow-xl">
                         <Sidebar
@@ -62,9 +62,9 @@ export default function PortalLayout() {
                 className="fixed bottom-6 right-6 z-30 flex size-[43px] items-center justify-center transition-transform hover:scale-105 md:bottom-[50px] md:right-[50px]"
             >
                 <img
+                    aria-hidden
                     src={portalBrandMark}
                     alt=""
-                    aria-hidden
                     className="size-[43px]"
                 />
             </a>

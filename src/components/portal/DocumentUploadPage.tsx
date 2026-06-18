@@ -36,6 +36,7 @@ export type DocumentUploadPageProps = DocumentUploadPageConfig & {
     renderAfterSection?: (sectionId: string) => ReactNode
     validateSubmit?: () => string | null
     onBeforeSubmit?: () => Promise<void>
+    onAfterSubmit?: () => Promise<void>
     isSectionRequired?: (section: DocumentUploadSectionConfig) => boolean
     onProgressLoaded?: (
         progress: NonNullable<ReturnType<typeof useFinancialProgress>['data']>,
@@ -52,6 +53,7 @@ export default function DocumentUploadPage({
     renderAfterSection,
     validateSubmit,
     onBeforeSubmit,
+    onAfterSubmit,
     isSectionRequired,
     onProgressLoaded,
 }: DocumentUploadPageProps) {
@@ -79,6 +81,10 @@ export default function DocumentUploadPage({
     useEffect(() => {
         if (!progress) return
         onProgressLoaded?.(progress)
+    }, [onProgressLoaded, progress])
+
+    useEffect(() => {
+        if (!progress) return
         const docs = getDocumentsForPage(progress, page)
         setSectionState((prev) =>
             Object.fromEntries(
@@ -100,7 +106,7 @@ export default function DocumentUploadPage({
                 }),
             ),
         )
-    }, [onProgressLoaded, page, progress, sections])
+    }, [page, progress, sections])
 
     function getSectionState(id: string): SectionState {
         return sectionState[id] ?? emptySectionState()
@@ -183,6 +189,9 @@ export default function DocumentUploadPage({
             }
 
             await revalidateAfterFinancialSave()
+            if (onAfterSubmit) {
+                await onAfterSubmit()
+            }
             if (isExternalNavUrl(nextTo)) {
                 window.location.assign(nextTo)
                 return
@@ -217,13 +226,17 @@ export default function DocumentUploadPage({
 
                     {sections.map((section) => {
                         const state = getSectionState(section.id)
-                        const showExample =
-                            section.exampleLabel !== null &&
-                            (section.exampleLabel !== undefined ||
-                                section.label !== undefined)
                         const exampleText =
                             section.exampleLabel ??
                             (section.label ? 'See example' : null)
+                        const showExample =
+                            exampleText != null &&
+                            (section.exampleUrl !== undefined
+                                ? Boolean(section.exampleUrl)
+                                : section.exampleLabel !== null &&
+                                  (section.exampleLabel !== undefined ||
+                                      section.label !== undefined))
+                        const useExternalExample = Boolean(section.exampleUrl)
 
                         return (
                             <div key={section.id} className="contents">
@@ -247,21 +260,33 @@ export default function DocumentUploadPage({
                                                 </p>
                                             )
                                         )}
-                                        {showExample && exampleText && (
-                                            <button
-                                                type="button"
+                                        {showExample && exampleText && useExternalExample && (
+                                            <a
+                                                href={section.exampleUrl!}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                                 className="ab-text-s border-b border-ink text-ink"
-                                                onClick={() =>
-                                                    setExample(
-                                                        section.title ??
-                                                            section.label ??
-                                                            exampleText,
-                                                    )
-                                                }
                                             >
                                                 {exampleText}
-                                            </button>
+                                            </a>
                                         )}
+                                        {showExample &&
+                                            exampleText &&
+                                            !useExternalExample && (
+                                                <button
+                                                    type="button"
+                                                    className="ab-text-s border-b border-ink text-ink"
+                                                    onClick={() =>
+                                                        setExample(
+                                                            section.title ??
+                                                                section.label ??
+                                                                exampleText,
+                                                        )
+                                                    }
+                                                >
+                                                    {exampleText}
+                                                </button>
+                                            )}
                                     </div>
                                     <Dropzone
                                         formats={section.formats}

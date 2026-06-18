@@ -28,57 +28,8 @@ export type NavGroup = {
     children?: NavLeaf[]
 }
 
-/** Cold / standard finance portal navigation (legacy sitemap paths). */
-export const financeNavigation: NavGroup[] = [
-    {
-        label: 'Business Info',
-        icon: BusinessIcon,
-        accent: 'var(--color-coral)',
-        children: [
-            { label: 'Company Profile', to: '/finance-company-profile' },
-            { label: 'Financial Overview', to: '/finance-financial-overview' },
-        ],
-    },
-    {
-        label: 'Document Upload Center',
-        icon: DocumentsIcon,
-        accent: 'var(--color-brandblue)',
-        children: [
-            {
-                label: 'Financial Reports',
-                to: '/finance-docs-financial-reports',
-            },
-            {
-                label: 'Accounts & Inventory',
-                to: '/finance-docs-accounts-and-inventory',
-            },
-            {
-                label: 'E-Commerce Performance',
-                to: '/finance-docs-ecommerce-performance',
-            },
-            {
-                label: 'Team & Ownership',
-                to: '/finance-docs-team-and-ownership',
-            },
-        ],
-    },
-    {
-        label: 'Support',
-        icon: SupportIcon,
-        accent: 'var(--color-lightyellow)',
-        to: SUPPORT_URL,
-    },
-    {
-        label: 'Invite Team Members',
-        icon: TeamIcon,
-        accent: 'var(--color-softgreen)',
-        to: '/invite-team-members',
-    },
-]
-
-/** Warm-lead navigation (legacy sitemap paths under /warm/). */
-export const warmNavigation: NavGroup[] = [
-    {
+/** Portal sidebar navigation (warm inbound flow). */
+export const warmNavigation: NavGroup[] = [    {
         label: 'Business Info',
         icon: BusinessIcon,
         accent: 'var(--color-coral)',
@@ -140,5 +91,5 @@ export const warmNavigation: NavGroup[] = [
     },
 ]
 
-/** @deprecated Use financeNavigation or warmNavigation */
-export const navigation = financeNavigation
+/** @deprecated Use warmNavigation */
+export const navigation = warmNavigation

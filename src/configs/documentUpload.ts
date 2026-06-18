@@ -23,7 +23,7 @@ import {
     WARM_LEAD_TEAM_LEADERSHIP_INVALID_MESSAGE,
     WARM_LEAD_TEAM_LEADERSHIP_MIME_TYPES,
 } from '@/lib/validation/warmLead'
-import { THANK_YOU_URL } from '@/configs/navigation'
+import { warmInboundExampleUrl } from '@/constants/warmInboundExampleFiles'
 
 export type DocumentUploadSectionConfig = {
     id: string
@@ -35,6 +35,8 @@ export type DocumentUploadSectionConfig = {
     description?: string
     /** Example link text; `null` hides the link. */
     exampleLabel?: string | null
+    /** CDN URL for sample file; omit for modal fallback, `null` to hide even if label is set. */
+    exampleUrl?: string | null
     documentType: FinancialDocumentBody['document_type']
     formats?: string
     accept?: string
@@ -177,6 +179,7 @@ export const warmFinancialReportsConfig: DocumentUploadPageConfig = {
             description:
                 'Upload your monthly income statements for the past three (3) calendar years (starting from January).',
             exampleLabel: 'View a sample income statement',
+            exampleUrl: warmInboundExampleUrl('monthly_income_statement'),
             documentType: 'monthly_income_statement',
             ...warmExcel,
         },
@@ -186,6 +189,7 @@ export const warmFinancialReportsConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your monthly balance sheets for the past three (3) calendar years (starting from January).',
             exampleLabel: 'View a sample balance sheet',
+            exampleUrl: warmInboundExampleUrl('monthly_balance_sheet'),
             documentType: 'monthly_balance_sheet',
             ...warmExcel,
         },
@@ -204,6 +208,7 @@ export const warmForecastsConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your projected monthly income statement for the next 12 months (or longer, if available).',
             exampleLabel: 'View a sample financial forecast',
+            exampleUrl: warmInboundExampleUrl('income_statement_forecast'),
             documentType: 'income_statement_forecast',
             ...warmExcel,
         },
@@ -213,6 +218,7 @@ export const warmForecastsConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your projected monthly balance sheet for the next 12 months (or longer, if available).',
             exampleLabel: 'View a sample forecasted balance sheet',
+            exampleUrl: warmInboundExampleUrl('balance_sheet_full_year_forecast'),
             documentType: 'balance_sheet_full_year_forecast',
             ...warmExcel,
         },
@@ -231,6 +237,7 @@ export const warmAccountsInventoryConfig: DocumentUploadPageConfig = {
             description:
                 'Upload your inventory report for the most recent month-end.',
             exampleLabel: 'View a sample inventory report',
+            exampleUrl: warmInboundExampleUrl('monthly_inventory_report'),
             documentType: 'monthly_inventory_report',
             ...warmExcel,
         },
@@ -240,6 +247,7 @@ export const warmAccountsInventoryConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your accounts receivable aging report for the most recent month-end.',
             exampleLabel: 'View a sample A/R aging report',
+            exampleUrl: warmInboundExampleUrl('accounts_receivable_aging'),
             documentType: 'accounts_receivable_aging',
             ...warmExcel,
         },
@@ -249,6 +257,7 @@ export const warmAccountsInventoryConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your accounts payable aging report for the most recent month-end.',
             exampleLabel: 'View a sample A/P aging report',
+            exampleUrl: warmInboundExampleUrl('accounts_payable_aging'),
             documentType: 'accounts_payable_aging',
             ...warmExcel,
         },
@@ -267,6 +276,7 @@ export const warmEcommerceConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your monthly sales reports from Shopify covering at least the last 24 months (or longer, if available).',
             exampleLabel: 'View a sample Shopify sales report',
+            exampleUrl: warmInboundExampleUrl('shopify_sales_over_time'),
             documentType: 'shopify_sales_over_time',
             ...warmExcel,
         },
@@ -276,6 +286,7 @@ export const warmEcommerceConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your new vs. repeat-customer breakdown reports from Shopify covering at least the last 24 months (or longer if available).',
             exampleLabel: 'View a sample Shopify customer report',
+            exampleUrl: warmInboundExampleUrl('shopify_first_vs_returning_customers'),
             documentType: 'shopify_first_vs_returning_customers',
             ...warmExcel,
         },
@@ -318,6 +329,7 @@ export const warmTeamOwnershipConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your most recent capitalization table detailing current equity ownership.',
             exampleLabel: 'View a sample cap table',
+            exampleUrl: warmInboundExampleUrl('cap_table'),
             documentType: 'cap_table',
             allowedMimeTypes: WARM_LEAD_EXCEL_MIME_TYPES,
             formats: WARM_LEAD_EXCEL_FORMAT_LABEL,
@@ -330,7 +342,7 @@ export const warmTeamOwnershipConfig: DocumentUploadPageConfig = {
 export const warmOptionalDocsConfig: DocumentUploadPageConfig = {
     title: 'Optional Documents',
     page: 'team-ownership',
-    nextTo: THANK_YOU_URL,
+    nextTo: '/application-summary?submitted-success',
     requireAll: false,
     sections: [
         {
@@ -339,6 +351,7 @@ export const warmOptionalDocsConfig: DocumentUploadPageConfig = {
             description:
                 'Provide any retail velocity data or reports (e.g., SPINS, IRI / Nielsen, Whole Foods Market, Walmart, Target, etc.).',
             exampleLabel: 'View a sample velocity report',
+            exampleUrl: warmInboundExampleUrl('instore_velocity_reports'),
             documentType: 'instore_velocity_reports',
             allowedMimeTypes: WARM_LEAD_INSTORE_VELOCITY_MIME_TYPES,
             formats: WARM_LEAD_INSTORE_VELOCITY_FORMAT_LABEL,
@@ -351,6 +364,7 @@ export const warmOptionalDocsConfig: DocumentUploadPageConfig = {
             description:
                 'Provide your formal business plan or operational summary, if available.',
             exampleLabel: 'View a sample business plan layout',
+            exampleUrl: warmInboundExampleUrl('business_plan'),
             documentType: 'business_plan',
             allowedMimeTypes: WARM_LEAD_BUSINESS_PLAN_MIME_TYPES,
             formats: WARM_LEAD_BUSINESS_PLAN_FORMAT_LABEL,
