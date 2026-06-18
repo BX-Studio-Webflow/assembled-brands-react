@@ -1,14 +1,15 @@
-import { useState } from 'react'
-import { NavLink, useLocation } from 'react-router'
-import { LuChevronDown, LuChevronLeft, LuChevronRight, LuEllipsis, LuEllipsisVertical } from 'react-icons/lu'
+import { useEffect, useRef, useState } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router'
+import { LuChevronDown, LuEllipsis, LuEllipsisVertical, LuLogOut } from 'react-icons/lu'
 import { navigation, warmNavigation, type NavGroup } from '@/configs/navigation'
 import LogoMark from '@/components/shared/LogoMark'
-import HexPattern from '@/components/shared/HexPattern'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Skeleton from '@/components/ui/Skeleton'
 import { useAuth } from '@/lib/auth'
 import { useSidebarProgress } from '@/lib/hooks/useSidebarProgress'
 import { cx } from '@/lib/utils'
+import sidenavHexagon from '@/assets-ab/sidenav-hexagon.svg'
+import sidenavToggle from '@/assets-ab/sidenav-toggle.svg'
 
 function initials(name: string) {
     return name
@@ -120,6 +121,77 @@ function GroupBlock({
     )
 }
 
+function AccountMenu({
+    collapsed = false,
+    onNavigate,
+}: {
+    collapsed?: boolean
+    onNavigate?: () => void
+}) {
+    const navigate = useNavigate()
+    const { logout } = useAuth()
+    const [open, setOpen] = useState(false)
+    const menuRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (!open) return
+        function onPointerDown(event: MouseEvent) {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
+                setOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', onPointerDown)
+        return () => document.removeEventListener('mousedown', onPointerDown)
+    }, [open])
+
+    function handleLogout() {
+        logout()
+        onNavigate?.()
+        setOpen(false)
+        navigate('/login?error=logged-out')
+    }
+
+    return (
+        <div ref={menuRef} className="relative shrink-0">
+            <button
+                type="button"
+                aria-label="Account menu"
+                aria-expanded={open}
+                className="text-ink/60 hover:text-ink"
+                onClick={() => setOpen((v) => !v)}
+            >
+                {collapsed ? (
+                    <LuEllipsis className="size-4" />
+                ) : (
+                    <LuEllipsisVertical className="size-4" />
+                )}
+            </button>
+            {open && (
+                <div
+                    className={cx(
+                        'absolute z-50 min-w-[160px] rounded border border-ink/10 bg-white py-1 shadow-lg',
+                        collapsed
+                            ? 'bottom-full left-1/2 mb-2 -translate-x-1/2'
+                            : 'bottom-full right-0 mb-2',
+                    )}
+                >
+                    <button
+                        type="button"
+                        className="flex w-full items-center gap-2 px-4 py-2 text-left ab-text-s text-ink hover:bg-beige/60"
+                        onClick={handleLogout}
+                    >
+                        <LuLogOut className="size-4 shrink-0" />
+                        Log out
+                    </button>
+                </div>
+            )}
+        </div>
+    )
+}
+
 function CollapseToggle({
     collapsed,
     onToggle,
@@ -131,14 +203,15 @@ function CollapseToggle({
         <button
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            className="flex size-[35px] shrink-0 items-center justify-center rounded-full border border-ink/10 bg-offwhite text-ink shadow-md transition-colors hover:bg-white"
+            className="shrink-0 transition-opacity hover:opacity-90"
             onClick={onToggle}
         >
-            {collapsed ? (
-                <LuChevronRight className="size-4" />
-            ) : (
-                <LuChevronLeft className="size-4" />
-            )}
+            <img
+                aria-hidden
+                src={sidenavToggle}
+                alt=""
+                className={cx('size-[37px]', !collapsed && '-scale-x-100')}
+            />
         </button>
     )
 }
@@ -165,12 +238,13 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 collapsed ? 'w-[90px]' : 'w-[324px]',
             )}
         >
-            {/* Clipped hex backdrop */}
+            {/* Hex mesh backdrop (Figma side-nav asset) */}
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <HexPattern
-                    stroke="#ffffff"
-                    opacity={0.05}
-                    className="absolute -left-12 bottom-28 h-[420px] w-[400px]"
+                <img
+                    aria-hidden
+                    src={sidenavHexagon}
+                    alt=""
+                    className="absolute bottom-0 left-0 h-[min(100%,549px)] w-[275px] max-w-none object-cover object-left-bottom"
                 />
             </div>
 
@@ -240,13 +314,10 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ink/10 text-[12px] font-semibold text-ink">
                                     {initials(name)}
                                 </span>
-                                <button
-                                    type="button"
-                                    aria-label="Account menu"
-                                    className="text-ink/60 hover:text-ink"
-                                >
-                                    <LuEllipsis className="size-4" />
-                                </button>
+                                <AccountMenu
+                                    collapsed
+                                    onNavigate={onNavigate}
+                                />
                             </div>
                         ) : (
                             <div className="flex items-center justify-between gap-[15px]">
@@ -263,13 +334,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                                         </span>
                                     </span>
                                 </span>
-                                <button
-                                    type="button"
-                                    aria-label="Account menu"
-                                    className="shrink-0 text-ink/60 hover:text-ink"
-                                >
-                                    <LuEllipsisVertical className="size-4" />
-                                </button>
+                                <AccountMenu onNavigate={onNavigate} />
                             </div>
                         )}
                     </div>

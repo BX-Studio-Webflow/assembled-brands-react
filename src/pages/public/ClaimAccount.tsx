@@ -5,7 +5,7 @@ import BeigeCard from '@/components/shared/BeigeCard'
 import Field from '@/components/ui/Field'
 import TextField from '@/components/ui/TextField'
 import PillButton from '@/components/ui/PillButton'
-import { cx } from '@/lib/utils'
+import OptionGroup from '@/components/ui/OptionGroup'
 import { LOAN_URGENCY } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
 import { apiHotLeadRegister } from '@/services/AuthService'
@@ -158,28 +158,13 @@ export default function ClaimAccount() {
                             </Field>
 
                             <Field label="Loan urgency">
-                                <div className="grid grid-cols-2 gap-[20px] sm:grid-cols-4">
-                                    {LOAN_URGENCY.map((opt) => {
-                                        const active = claim.loanUrgency === opt
-                                        return (
-                                            <button
-                                                key={opt}
-                                                type="button"
-                                                className={cx(
-                                                    'ab-text-m border p-[15px] text-center transition-colors',
-                                                    active
-                                                        ? 'border-ink bg-ink text-offwhite'
-                                                        : 'border-ink bg-offwhite text-ink hover:bg-ink/5',
-                                                )}
-                                                onClick={() =>
-                                                    patch({ loanUrgency: opt })
-                                                }
-                                            >
-                                                {opt}
-                                            </button>
-                                        )
-                                    })}
-                                </div>
+                                <OptionGroup
+                                    name="loan-urgency"
+                                    options={[...LOAN_URGENCY]}
+                                    value={claim.loanUrgency}
+                                    className="grid w-full grid-cols-2 sm:grid-cols-4"
+                                    onChange={(v) => patch({ loanUrgency: v })}
+                                />
                             </Field>
 
                             {error && (

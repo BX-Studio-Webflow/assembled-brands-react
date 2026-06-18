@@ -5,7 +5,7 @@ import StepProgress from '@/components/ui/StepProgress'
 import Field from '@/components/ui/Field'
 import TextField from '@/components/ui/TextField'
 import OptionGroup from '@/components/ui/OptionGroup'
-import Select from '@/components/ui/Select'
+import RadioGroup from '@/components/ui/RadioGroup'
 import PillButton from '@/components/ui/PillButton'
 import QualifyStepSkeleton from '@/components/skeletons/QualifyStepSkeleton'
 import { COMPANY_TYPES, YES_NO } from '@/constants/options'
@@ -141,11 +141,13 @@ export default function QualifyStep3() {
                         )}
 
                         <Field label="Has the company generated $10MM+ of revenues over the last 12 months?">
-                            <Select
+                            <RadioGroup
+                                name="revenue-qualification"
                                 options={YES_NO}
                                 value={qualify.revenuesOver10mm}
-                                placeholder="Select an option"
-                                onChange={(v) => patch({ revenuesOver10mm: v })}
+                                onChange={(v) =>
+                                    patch({ revenuesOver10mm: v })
+                                }
                             />
                         </Field>
                     </div>

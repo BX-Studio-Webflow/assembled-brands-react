@@ -3,6 +3,8 @@
  * Each icon keeps its own brand accent fill (coral / blue / yellow / green),
  * matching the source file regardless of the active state.
  */
+import mark from '@/assets-ab/logo-mark.png'
+
 type IconProps = { className?: string }
 
 export function BusinessIcon({ className }: IconProps) {
@@ -89,5 +91,17 @@ export function TeamIcon({ className }: IconProps) {
                 fill="#C2ECB0"
             />
         </svg>
+    )
+}
+
+export function ApplicationsIcon({ className }: IconProps) {
+    return (
+        <img
+            aria-hidden
+            src={mark}
+            alt=""
+            className={className ?? 'h-5 w-5 object-contain'}
+            draggable={false}
+        />
     )
 }

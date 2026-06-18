@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import {
+    ApplicationsIcon,
     BusinessIcon,
     DocumentsIcon,
     SupportIcon,
@@ -73,7 +74,12 @@ export const warmNavigation: NavGroup[] = [
         label: 'Business Info',
         icon: BusinessIcon,
         accent: 'var(--color-coral)',
-        to: '/warm/onboarding-warm-lead',
+        children: [
+            {
+                label: 'Company Profile',
+                to: '/warm/onboarding-warm-lead',
+            },
+        ],
     },
     {
         label: 'Document Upload Center',
@@ -85,7 +91,7 @@ export const warmNavigation: NavGroup[] = [
                 to: '/warm/finance-docs-financial-report',
             },
             {
-                label: 'Forecasts',
+                label: 'Financial Forecasts',
                 to: '/warm/finance-docs-forecasts',
             },
             {
@@ -117,6 +123,12 @@ export const warmNavigation: NavGroup[] = [
         icon: TeamIcon,
         accent: 'var(--color-softgreen)',
         to: '/warm/invite-team-members',
+    },
+    {
+        label: 'My Applications',
+        icon: ApplicationsIcon,
+        accent: 'var(--color-coral)',
+        to: '/warm/finance-my-applications',
     },
 ]
 

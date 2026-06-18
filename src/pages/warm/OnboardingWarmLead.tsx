@@ -5,6 +5,7 @@ import TextField from '@/components/ui/TextField'
 import Select from '@/components/ui/Select'
 import PillButton from '@/components/ui/PillButton'
 import FormPageSkeleton from '@/components/skeletons/FormPageSkeleton'
+import RadioGroup from '@/components/ui/RadioGroup'
 import { apiExchangeWarmLeadSession } from '@/services/DealApplicationService'
 import { apiSubmitWarmLead, apiSubmitWarmLeadMe } from '@/services/OnboardingService'
 import { useOnboardingProgress } from '@/lib/hooks/useOnboardingProgress'
@@ -132,26 +133,20 @@ export default function OnboardingWarmLead() {
                     value={netRevenue}
                     onChange={(e) => setNetRevenue(e.target.value)}
                 />
-                <div className="flex gap-[20px]">
-                    <label className="flex items-center gap-2">
-                        <input
-                            checked={workingWithMember === 'yes'}
-                            name="member"
-                            type="radio"
-                            onChange={() => setWorkingWithMember('yes')}
-                        />
-                        Working with a team member
-                    </label>
-                    <label className="flex items-center gap-2">
-                        <input
-                            checked={workingWithMember === 'no'}
-                            name="member"
-                            type="radio"
-                            onChange={() => setWorkingWithMember('no')}
-                        />
-                        No
-                    </label>
-                </div>
+                <RadioGroup
+                    name="working-with-member"
+                    value={workingWithMember}
+                    options={[
+                        {
+                            label: 'Working with a team member',
+                            value: 'yes',
+                        },
+                        { label: 'No', value: 'no' },
+                    ]}
+                    onChange={(v) =>
+                        setWorkingWithMember(v as 'yes' | 'no')
+                    }
+                />
                 {workingWithMember === 'yes' && (
                     <TextField
                         placeholder="Team member email"

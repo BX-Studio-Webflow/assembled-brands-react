@@ -1,28 +1,61 @@
-import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router'
+import { useMemo, useState, type FormEvent } from 'react'
+import { useNavigate, useSearchParams } from 'react-router'
 import PublicShell from '@/components/layouts/PublicShell'
 import BeigeCard from '@/components/shared/BeigeCard'
-import HexPattern from '@/components/shared/HexPattern'
 import TextField from '@/components/ui/TextField'
 import PillButton from '@/components/ui/PillButton'
 import InlineLink from '@/components/ui/InlineLink'
 import { useAuth } from '@/lib/auth'
-import { resolvePostLoginRoute , isValidEmail } from '@/lib/routing/postLogin'
+import { resolvePostLoginRoute, isValidEmail } from '@/lib/routing/postLogin'
+import { cx } from '@/lib/utils'
+import loginHexagon from '@/assets-ab/login-hexagon.png'
 
+function loginBannerMessage(
+    error: string | null,
+    action: string | null,
+): { tone: 'success' | 'info' | 'error'; text: string } | null {
+    if (action === 'password-reset-success') {
+        return {
+            tone: 'success',
+            text: 'Your password has been reset. Sign in with your new password.',
+        }
+    }
+    if (error === 'unauthorized') {
+        return {
+            tone: 'error',
+            text: 'Your session has expired. Please sign in again.',
+        }
+    }
+    if (error === 'logged-out') {
+        return {
+            tone: 'info',
+            text: 'You have been signed out.',
+        }
+    }
+    return null
+}
 
 export default function Login() {
     const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
     const { login } = useAuth()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
-    const [showRecovery, setShowRecovery] = useState(false)
     const [loading, setLoading] = useState(false)
+
+    const banner = useMemo(
+        () =>
+            loginBannerMessage(
+                searchParams.get('error'),
+                searchParams.get('action'),
+            ),
+        [searchParams],
+    )
 
     async function onSubmit(e: FormEvent) {
         e.preventDefault()
         setError(null)
-        setShowRecovery(false)
 
         if (!email.trim()) {
             setError('Email is required')
@@ -46,6 +79,9 @@ export default function Login() {
         setLoading(false)
 
         if (res.ok) {
+            if (searchParams.has('error') || searchParams.has('action')) {
+                setSearchParams({}, { replace: true })
+            }
             const target = resolvePostLoginRoute(res.response)
             const [path, query] = target.split('?')
             navigate(query ? `${path}?${query}` : path)
@@ -53,21 +89,40 @@ export default function Login() {
         }
 
         setError(res.error)
-        if (res.code === 'AUTH_INVALID_PASSWORD') {
-            setShowRecovery(true)
-        }
     }
 
     return (
         <PublicShell mainClassName="p-4 md:p-[40px]">
-            <BeigeCard className="flex flex-1 items-center justify-center px-6 py-12 md:pb-[56px] md:pl-[50px] md:pr-[40px] md:pt-[50px]">
-                <HexPattern className="pointer-events-none absolute -right-10 top-1/2 hidden h-[560px] w-[520px] -translate-y-1/2 opacity-60 lg:block" />
+            <BeigeCard className="relative flex flex-1 items-center justify-center overflow-hidden px-6 py-12 md:pb-[56px] md:pl-[50px] md:pr-[40px] md:pt-[50px]">
+                <img
+                    aria-hidden
+                    src={loginHexagon}
+                    alt=""
+                    className="pointer-events-none absolute -bottom-16 -right-10 z-0 hidden h-auto w-[566px] max-w-[55%] opacity-50 lg:block"
+                />
 
                 <div className="relative z-10 flex w-full max-w-[543px] flex-col gap-[30px]">
-                    <h1 className="ab-display">Welcome to Assembled Brands</h1>
+                    <h1 className="ab-display w-full">Welcome to Assembled Brands</h1>
 
-                    <form className="flex flex-col gap-[30px]" onSubmit={onSubmit}>
-                        <div className="flex flex-col gap-5">
+                    {banner && (
+                        <div
+                            className={cx(
+                                'rounded-[4px] px-4 py-3',
+                                banner.tone === 'success' && 'bg-softgreen',
+                                banner.tone === 'info' && 'bg-beige',
+                                banner.tone === 'error' && 'bg-coral/15',
+                            )}
+                            role="status"
+                        >
+                            <p className="ab-text-m text-ink">{banner.text}</p>
+                        </div>
+                    )}
+
+                    <form
+                        className="flex w-full flex-col gap-[30px]"
+                        onSubmit={onSubmit}
+                    >
+                        <div className="flex w-full flex-col gap-[20px]">
                             <TextField
                                 required
                                 type="email"
@@ -89,21 +144,19 @@ export default function Login() {
                             {error && (
                                 <p className="ab-text-m text-coral">{error}</p>
                             )}
-                            {showRecovery && (
-                                <p className="ab-text-s">
-                                    <InlineLink to="/account-recovery">
-                                        Recover your account
-                                    </InlineLink>
-                                </p>
-                            )}
                         </div>
 
-                        <PillButton fullWidth loading={loading} type="submit">
-                            Continue
-                        </PillButton>
+                        <div className="flex w-full items-center justify-between gap-4">
+                            <PillButton loading={loading} type="submit">
+                                Continue
+                            </PillButton>
+                            <InlineLink to="/account-recovery">
+                                Forgot password
+                            </InlineLink>
+                        </div>
                     </form>
 
-                    <div className="flex flex-wrap items-center gap-x-[10px] gap-y-1 border-t border-ink pt-5">
+                    <div className="flex w-full flex-wrap items-center gap-x-[10px] gap-y-1 border-t border-ink pt-5">
                         <span className="ab-serif">
                             Looking to get started with Assembled Brands for your
                             business?

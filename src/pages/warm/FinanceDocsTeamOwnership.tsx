@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import DocumentUploadPage from '@/components/portal/DocumentUploadPage'
 import Field from '@/components/ui/Field'
-import Select from '@/components/ui/Select'
+import RadioGroup from '@/components/ui/RadioGroup'
 import { warmTeamOwnershipConfig } from '@/configs/documentUpload'
 import {
     buildBusinessUpdatePayload,
@@ -30,9 +30,9 @@ export default function FinanceDocsTeamOwnership() {
             headerContent={
                 <div className="flex w-full flex-col gap-[20px]">
                     <Field label="Has your company raised external equity capital?">
-                        <Select
+                        <RadioGroup
+                            name="raised-external-equity"
                             options={YES_NO}
-                            placeholder="Select an option"
                             value={raisedExternalEquity}
                             onChange={setRaisedExternalEquity}
                         />
