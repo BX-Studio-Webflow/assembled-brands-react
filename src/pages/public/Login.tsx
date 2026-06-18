@@ -7,6 +7,8 @@ import TextField from '@/components/ui/TextField'
 import PillButton from '@/components/ui/PillButton'
 import InlineLink from '@/components/ui/InlineLink'
 import { useAuth } from '@/lib/auth'
+import { resolvePostLoginRoute } from '@/lib/routing/postLogin'
+import { isValidEmail } from '@/lib/routing/postLogin'
 
 export default function Login() {
     const navigate = useNavigate()
@@ -14,16 +16,46 @@ export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
+    const [showRecovery, setShowRecovery] = useState(false)
     const [loading, setLoading] = useState(false)
 
     async function onSubmit(e: FormEvent) {
         e.preventDefault()
         setError(null)
+        setShowRecovery(false)
+
+        if (!email.trim()) {
+            setError('Email is required')
+            return
+        }
+        if (!isValidEmail(email)) {
+            setError('Please enter a valid email')
+            return
+        }
+        if (!password) {
+            setError('Password cannot be empty')
+            return
+        }
+        if (password.length < 8) {
+            setError('Password must be at least 8 characters long')
+            return
+        }
+
         setLoading(true)
         const res = await login(email, password)
         setLoading(false)
-        if (res.ok) navigate('/app')
-        else setError(res.error)
+
+        if (res.ok) {
+            const target = resolvePostLoginRoute(res.response)
+            const [path, query] = target.split('?')
+            navigate(query ? `${path}?${query}` : path)
+            return
+        }
+
+        setError(res.error)
+        if (res.code === 'AUTH_INVALID_PASSWORD') {
+            setShowRecovery(true)
+        }
     }
 
     return (
@@ -42,7 +74,7 @@ export default function Login() {
                                 placeholder="Email Address"
                                 autoComplete="email"
                                 value={email}
-                                error={!!error}
+                                error={!!error && error.includes('email')}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                             <TextField
@@ -57,9 +89,16 @@ export default function Login() {
                             {error && (
                                 <p className="ab-text-m text-coral">{error}</p>
                             )}
+                            {showRecovery && (
+                                <p className="ab-text-s">
+                                    <InlineLink to="/account-recovery">
+                                        Recover your account
+                                    </InlineLink>
+                                </p>
+                            )}
                         </div>
 
-                        <PillButton fullWidth type="submit" loading={loading}>
+                        <PillButton fullWidth loading={loading} type="submit">
                             Continue
                         </PillButton>
                     </form>
@@ -69,7 +108,7 @@ export default function Login() {
                             Looking to get started with Assembled Brands for your
                             business?
                         </span>
-                        <InlineLink to="/get-started">Sign Up</InlineLink>
+                        <InlineLink to="/register-get-started">Sign Up</InlineLink>
                     </div>
                 </div>
             </BeigeCard>

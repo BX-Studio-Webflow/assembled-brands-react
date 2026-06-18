@@ -7,12 +7,12 @@ import Login from '@/pages/public/Login'
 import GetStarted from '@/pages/public/GetStarted'
 import AccountRecovery from '@/pages/public/AccountRecovery'
 import ResetPassword from '@/pages/public/ResetPassword'
-import QualifyIntro from '@/pages/public/QualifyIntro'
-import QualifyStep1 from '@/pages/public/QualifyStep1'
-import QualifyStep2 from '@/pages/public/QualifyStep2'
-import QualifyStep3 from '@/pages/public/QualifyStep3'
+import AccountSetupFinishVerification from '@/pages/public/AccountSetupFinishVerification'
+import OnboardingWizard from '@/pages/public/OnboardingWizard'
 import NotAFit from '@/pages/public/NotAFit'
+import OnboardingComplete from '@/pages/public/OnboardingComplete'
 import ClaimAccount from '@/pages/public/ClaimAccount'
+import ClaimAccountGetStarted from '@/pages/public/ClaimAccountGetStarted'
 
 import CompanyProfile from '@/pages/portal/CompanyProfile'
 import FinancialOverview from '@/pages/portal/FinancialOverview'
@@ -23,64 +23,127 @@ import TeamOwnership from '@/pages/portal/TeamOwnership'
 import Support from '@/pages/portal/Support'
 import InviteTeam from '@/pages/portal/InviteTeam'
 
+import OnboardingWarmLead from '@/pages/warm/OnboardingWarmLead'
+import FinanceMyApplications from '@/pages/warm/FinanceMyApplications'
+import FinanceDocsFinancialReport from '@/pages/warm/FinanceDocsFinancialReport'
+import FinanceDocsForecasts from '@/pages/warm/FinanceDocsForecasts'
+import FinanceDocsAccountsInventory from '@/pages/warm/FinanceDocsAccountsInventory'
+import FinanceDocsEcommercePerformance from '@/pages/warm/FinanceDocsEcommercePerformance'
+import FinanceDocsTeamOwnership from '@/pages/warm/FinanceDocsTeamOwnership'
+import FinanceDocsOptionalDocs from '@/pages/warm/FinanceDocsOptionalDocs'
+import AcceptTeamInvitation from '@/pages/warm/AcceptTeamInvitation'
+
 export default function App() {
     return (
         <BrowserRouter>
             <AuthProvider>
                 <Routes>
-                    {/* Public */}
                     <Route path="/" element={<Navigate replace to="/login" />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/get-started" element={<GetStarted />} />
-                    <Route path="/recover" element={<AccountRecovery />} />
+                    <Route
+                        path="/register-get-started"
+                        element={<GetStarted />}
+                    />
+                    <Route
+                        path="/account-recovery"
+                        element={<AccountRecovery />}
+                    />
                     <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route
+                        path="/account-setup-finish-verification"
+                        element={<AccountSetupFinishVerification />}
+                    />
+                    <Route
+                        path="/warm/accept-team-invitation"
+                        element={<AcceptTeamInvitation />}
+                    />
+                    <Route
+                        path="/warm/onboarding-warm-lead"
+                        element={<OnboardingWarmLead />}
+                    />
 
-                    {/* Qualification funnel */}
-                    <Route path="/apply" element={<QualifyIntro />} />
-                    <Route path="/apply/step-1" element={<QualifyStep1 />} />
-                    <Route path="/apply/step-2" element={<QualifyStep2 />} />
-                    <Route path="/apply/step-3" element={<QualifyStep3 />} />
-                    <Route path="/apply/not-a-fit" element={<NotAFit />} />
-                    <Route path="/apply/claim" element={<ClaimAccount />} />
-
-                    {/* Authenticated portal */}
                     <Route element={<ProtectedRoute />}>
-                        <Route path="/app" element={<PortalLayout />}>
+                        <Route
+                            path="/onboarding-wizard"
+                            element={<OnboardingWizard />}
+                        />
+                        <Route
+                            path="/onboarding-step-not-fit"
+                            element={<NotAFit />}
+                        />
+                        <Route
+                            path="/onboarding-complete"
+                            element={<OnboardingComplete />}
+                        />
+                        <Route path="/claim-account" element={<ClaimAccount />} />
+                        <Route
+                            path="/claim-account-get-started"
+                            element={<ClaimAccountGetStarted />}
+                        />
+
+                        <Route element={<PortalLayout />}>
                             <Route
-                                index
-                                element={
-                                    <Navigate
-                                        replace
-                                        to="/app/company-profile"
-                                    />
-                                }
-                            />
-                            <Route
-                                path="company-profile"
+                                path="/finance-company-profile"
                                 element={<CompanyProfile />}
                             />
                             <Route
-                                path="financial-overview"
+                                path="/finance-financial-overview"
                                 element={<FinancialOverview />}
                             />
                             <Route
-                                path="documents/financial-reports"
+                                path="/finance-docs-financial-reports"
                                 element={<FinancialReports />}
                             />
                             <Route
-                                path="documents/accounts-inventory"
+                                path="/finance-docs-accounts-and-inventory"
                                 element={<AccountsInventory />}
                             />
                             <Route
-                                path="documents/ecommerce"
+                                path="/finance-docs-ecommerce-performance"
                                 element={<EcommercePerformance />}
                             />
                             <Route
-                                path="documents/team-ownership"
+                                path="/finance-docs-team-and-ownership"
                                 element={<TeamOwnership />}
                             />
-                            <Route path="support" element={<Support />} />
-                            <Route path="invite" element={<InviteTeam />} />
+                            <Route path="/support" element={<Support />} />
+                            <Route
+                                path="/invite-team-members"
+                                element={<InviteTeam />}
+                            />
+
+                            <Route
+                                path="/warm/finance-my-applications"
+                                element={<FinanceMyApplications />}
+                            />
+                            <Route
+                                path="/warm/finance-docs-financial-report"
+                                element={<FinanceDocsFinancialReport />}
+                            />
+                            <Route
+                                path="/warm/finance-docs-forecasts"
+                                element={<FinanceDocsForecasts />}
+                            />
+                            <Route
+                                path="/warm/finance-docs-accounts-and-inventory"
+                                element={<FinanceDocsAccountsInventory />}
+                            />
+                            <Route
+                                path="/warm/finance-docs-ecommerce-performance"
+                                element={<FinanceDocsEcommercePerformance />}
+                            />
+                            <Route
+                                path="/warm/finance-docs-team-and-ownership"
+                                element={<FinanceDocsTeamOwnership />}
+                            />
+                            <Route
+                                path="/warm/finance-docs-optional-docs"
+                                element={<FinanceDocsOptionalDocs />}
+                            />
+                            <Route
+                                path="/warm/invite-team-members"
+                                element={<InviteTeam />}
+                            />
                         </Route>
                     </Route>
 

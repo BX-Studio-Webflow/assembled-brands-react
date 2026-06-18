@@ -7,9 +7,11 @@ import HexPattern from '@/components/shared/HexPattern'
  *  Used by the qualification intro and step pages. */
 export default function CenteredCardLayout({
     children,
+    title,
     maxWidth = 543,
 }: {
     children: ReactNode
+    title?: string
     maxWidth?: number
 }) {
     return (
@@ -20,6 +22,9 @@ export default function CenteredCardLayout({
                     className="relative z-10 mx-auto w-full"
                     style={{ maxWidth }}
                 >
+                    {title && (
+                        <h1 className="ab-h3 mb-[30px]">{title}</h1>
+                    )}
                     {children}
                 </div>
             </BeigeCard>

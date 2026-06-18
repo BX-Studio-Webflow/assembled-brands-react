@@ -4,7 +4,7 @@ export default function FinancialReports() {
     return (
         <DocumentUploadPage
             title="Financial Reports"
-            nextTo="/app/documents/accounts-inventory"
+            nextTo="/finance-docs-accounts-and-inventory"
             sections={[
                 {
                     id: 'fr-balance-sheets',

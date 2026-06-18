@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router'
 import { LuChevronDown, LuChevronLeft, LuChevronRight, LuEllipsis, LuEllipsisVertical } from 'react-icons/lu'
-import { navigation, type NavGroup } from '@/configs/navigation'
+import { navigation, warmNavigation, type NavGroup } from '@/configs/navigation'
 import LogoMark from '@/components/shared/LogoMark'
 import HexPattern from '@/components/shared/HexPattern'
 import ProgressBar from '@/components/ui/ProgressBar'
@@ -143,8 +143,12 @@ function CollapseToggle({
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     const { user } = useAuth()
+    const { pathname } = useLocation()
+    const navItems = pathname.startsWith('/warm') ? warmNavigation : navigation
     const [collapsed, setCollapsed] = useState(false)
-    const name = user?.name ?? 'Full Name'
+    const name = user
+        ? `${user.first_name || 'Full'} ${user.last_name || 'Name'}`.trim()
+        : 'Full Name'
     const email = user?.email ?? 'hello@company.com'
 
     return (
@@ -183,7 +187,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                             collapsed && 'items-center',
                         )}
                     >
-                        {navigation.map((group) => (
+                        {navItems.map((group) => (
                             <GroupBlock
                                 key={group.label}
                                 group={group}

@@ -8,22 +8,94 @@ import PillButton from '@/components/ui/PillButton'
 import { cx } from '@/lib/utils'
 import { LOAN_URGENCY } from '@/constants/options'
 import { useApplicationStore } from '@/store/applicationStore'
-import { useAuth } from '@/lib/auth'
+import { apiHotLeadRegister } from '@/services/AuthService'
+import type { ClaimYourAccountBody } from '@/types/auth'
+import { isValidEmail } from '@/lib/routing/postLogin'
+import { persistLoginSession } from '@/lib/session'
 import photo from '@/assets-ab/claim-photo.png'
+
+const LOAN_URGENCY_MAP: Record<string, ClaimYourAccountBody['loan_urgency']> = {
+    Yesterday: 'yesterday',
+    'This Month': 'this-month',
+    '3 Months': '3-months',
+    '2025': 'this-year',
+}
 
 export default function ClaimAccount() {
     const navigate = useNavigate()
-    const { signup } = useAuth()
     const claim = useApplicationStore((s) => s.claim)
     const patch = useApplicationStore((s) => s.patchClaim)
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     async function onSubmit(e: FormEvent) {
         e.preventDefault()
+        setError(null)
+
+        if (!claim.workEmail.trim()) {
+            setError('Work email is required')
+            return
+        }
+        if (!isValidEmail(claim.workEmail)) {
+            setError('Invalid email format')
+            return
+        }
+        if (!claim.firstName.trim() || claim.firstName.length < 2) {
+            setError('First name must be at least 2 characters')
+            return
+        }
+        if (!claim.lastName.trim() || claim.lastName.length < 2) {
+            setError('Last name must be at least 2 characters')
+            return
+        }
+        if (!claim.password || claim.password.length < 8) {
+            setError('Password must be at least 8 characters')
+            return
+        }
+        if (!claim.loanUrgency) {
+            setError('Loan urgency is required')
+            return
+        }
+
+        const loanUrgency = LOAN_URGENCY_MAP[claim.loanUrgency]
+        if (!loanUrgency) {
+            setError('Invalid loan urgency selection')
+            return
+        }
+
         setLoading(true)
-        await signup(claim.workEmail || 'new.user@company.com', claim.password)
-        setLoading(false)
-        navigate('/app')
+        try {
+            const response = await apiHotLeadRegister({
+                work_email: claim.workEmail.trim(),
+                first_name: claim.firstName.trim(),
+                last_name: claim.lastName.trim(),
+                password: claim.password,
+                loan_urgency: loanUrgency,
+            })
+            persistLoginSession(response.token, response.user)
+            navigate('/claim-account-get-started')
+        } catch (err) {
+            const axiosErr = err as {
+                message?: string
+                response?: { data?: { code?: string; message?: string } }
+            }
+            const code = axiosErr.response?.data?.code
+            if (code === 'USER_EXISTS') {
+                setError('User already exists. Please try logging in.')
+            } else if (code === 'INVALID_EMAIL') {
+                setError(
+                    'We are not accepting personal emails at the moment',
+                )
+            } else {
+                setError(
+                    axiosErr.response?.data?.message ??
+                        axiosErr.message ??
+                        'There was a problem claiming your account',
+                )
+            }
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -109,6 +181,10 @@ export default function ClaimAccount() {
                                     })}
                                 </div>
                             </Field>
+
+                            {error && (
+                                <p className="ab-text-m text-coral">{error}</p>
+                            )}
 
                             <div className="pt-2">
                                 <PillButton type="submit" loading={loading}>

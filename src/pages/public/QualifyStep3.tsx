@@ -17,8 +17,8 @@ export default function QualifyStep3() {
     function onSubmit(e: React.FormEvent) {
         e.preventDefault()
         // Dummy qualification rule: must have $10MM+ revenue to be a fit.
-        if (qualify.revenuesOver10mm === 'no') navigate('/apply/not-a-fit')
-        else navigate('/apply/claim')
+        if (qualify.revenuesOver10mm === 'no') navigate('/onboarding-step-not-fit')
+        else navigate('/claim-account')
     }
 
     return (
@@ -72,7 +72,7 @@ export default function QualifyStep3() {
                         <PillButton
                             type="button"
                             variant="solid"
-                            onClick={() => navigate('/apply/step-2')}
+                            onClick={() => navigate('/onboarding-wizard?step=2')}
                         >
                             Back
                         </PillButton>

@@ -1,22 +1,53 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router'
 import AuthSplitLayout from '@/components/layouts/AuthSplitLayout'
 import TextField from '@/components/ui/TextField'
 import PillButton from '@/components/ui/PillButton'
 import InlineLink from '@/components/ui/InlineLink'
-import { sleep } from '@/lib/utils'
+import { apiStartAccountRecovery } from '@/services/AuthService'
+import { isValidEmail } from '@/lib/routing/postLogin'
 
 export default function AccountRecovery() {
-    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState<string | null>(null)
 
     async function onSubmit(e: FormEvent) {
         e.preventDefault()
+        setError(null)
+        setSuccess(null)
+
+        if (!email.trim()) {
+            setError('Email is required')
+            return
+        }
+        if (!isValidEmail(email)) {
+            setError('Please enter a valid email')
+            return
+        }
+
         setLoading(true)
-        await sleep()
-        setLoading(false)
-        navigate('/reset-password')
+        try {
+            const response = await apiStartAccountRecovery({
+                email: email.trim(),
+            })
+            setSuccess(
+                response.message ||
+                    'Please check your email for your verification',
+            )
+        } catch (err) {
+            const axiosErr = err as {
+                message?: string
+                response?: { data?: { code?: string; message?: string } }
+            }
+            setError(
+                axiosErr.response?.data?.message ??
+                    axiosErr.message ??
+                    'Unable to start account recovery',
+            )
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -41,11 +72,25 @@ export default function AccountRecovery() {
                         placeholder="Enter your email"
                         autoComplete="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        error={!!error}
+                        onChange={(e) => {
+                            setEmail(e.target.value)
+                            setError(null)
+                            setSuccess(null)
+                        }}
                     />
 
-                    <PillButton type="submit" loading={loading}>
-                        Submit
+                    {error && <p className="ab-text-m text-coral">{error}</p>}
+                    {success && (
+                        <p className="ab-text-m text-softgreen">{success}</p>
+                    )}
+
+                    <PillButton
+                        type="submit"
+                        loading={loading}
+                        disabled={Boolean(success)}
+                    >
+                        {success ? 'Email sent' : 'Submit'}
                     </PillButton>
 
                     <div className="flex flex-wrap items-center gap-x-[10px] gap-y-1 border-t border-ink pt-5">

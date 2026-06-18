@@ -21,7 +21,7 @@ export default function QualifyIntro() {
                     </p>
                 </div>
                 <div>
-                    <PillButton onClick={() => navigate('/apply/step-1')}>
+                    <PillButton onClick={() => navigate('/onboarding-wizard')}>
                         Start application ~10 minutes
                     </PillButton>
                 </div>

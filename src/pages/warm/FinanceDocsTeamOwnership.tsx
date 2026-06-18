@@ -1,22 +1,22 @@
 import DocumentUploadPage from '@/components/portal/DocumentUploadPage'
 
-export default function TeamOwnership() {
+export default function WarmFinanceDocsTeamOwnership() {
     return (
         <DocumentUploadPage
             title="Team & Ownership"
-            nextTo="/invite-team-members"
+            nextTo="/warm/finance-docs-optional-docs"
             sections={[
                 {
                     id: 'to-management-bios',
-                    label: 'Please upload the management bios for our team.',
+                    label: 'Management bios',
                 },
                 {
                     id: 'to-investor-deck',
-                    label: 'Please provide the most recent investor deck.',
+                    label: 'Investor deck',
                 },
                 {
                     id: 'to-cap-table',
-                    label: 'Please provide the most recent capitalization table.',
+                    label: 'Cap table',
                 },
             ]}
         />

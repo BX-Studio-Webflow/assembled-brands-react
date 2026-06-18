@@ -4,7 +4,7 @@ export default function EcommercePerformance() {
     return (
         <DocumentUploadPage
             title="E-Commerce Performance"
-            nextTo="/app/documents/team-ownership"
+            nextTo="/finance-docs-team-and-ownership"
             sections={[
                 {
                     id: 'ec-repeat-customers',

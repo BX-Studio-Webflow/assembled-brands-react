@@ -21,7 +21,7 @@ export default function CompanyProfile() {
                     className="mx-auto flex w-full max-w-[543px] flex-col gap-[30px]"
                     onSubmit={(e) => {
                         e.preventDefault()
-                        navigate('/app/financial-overview')
+                        navigate('/finance-financial-overview')
                     }}
                 >
                     <h2 className="ab-h3">Basic Information</h2>
@@ -80,7 +80,7 @@ export default function CompanyProfile() {
                         <PillButton
                             type="button"
                             variant="solid"
-                            onClick={() => navigate('/app')}
+                            onClick={() => navigate('/finance-financial-overview')}
                         >
                             Cancel
                         </PillButton>

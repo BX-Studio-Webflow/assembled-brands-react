@@ -30,7 +30,7 @@ export default function QualifyStep1() {
                     className="flex flex-col gap-[30px]"
                     onSubmit={(e) => {
                         e.preventDefault()
-                        navigate('/apply/step-2')
+                        navigate('/onboarding-wizard?step=2')
                     }}
                 >
                     <div className="flex flex-col gap-[20px]">
@@ -65,7 +65,7 @@ export default function QualifyStep1() {
                         <PillButton
                             type="button"
                             variant="solid"
-                            onClick={() => navigate('/apply')}
+                            onClick={() => navigate('/onboarding-wizard?step=start')}
                         >
                             Back
                         </PillButton>

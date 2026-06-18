@@ -1,30 +1,59 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router'
 import AuthSplitLayout from '@/components/layouts/AuthSplitLayout'
 import TextField from '@/components/ui/TextField'
 import PillButton from '@/components/ui/PillButton'
 import InlineLink from '@/components/ui/InlineLink'
-import { useAuth } from '@/lib/auth'
-import { sleep } from '@/lib/utils'
-import { useApplicationStore } from '@/store/applicationStore'
+import { apiColdLeadRegister } from '@/services/AuthService'
+import { isValidEmail } from '@/lib/routing/postLogin'
 
 export default function GetStarted() {
-    const navigate = useNavigate()
-    const { emailExists } = useAuth()
-    const patchClaim = useApplicationStore((s) => s.patchClaim)
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
-
-    const exists = email.trim().length > 0 && emailExists(email)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState<string | null>(null)
+    const [exists, setExists] = useState(false)
 
     async function onSubmit(e: FormEvent) {
         e.preventDefault()
-        if (exists) return
+        setError(null)
+        setSuccess(null)
+        setExists(false)
+
+        if (!email.trim()) {
+            setError('Email is required')
+            return
+        }
+        if (!isValidEmail(email)) {
+            setError('Please enter a valid email')
+            return
+        }
+
         setLoading(true)
-        await sleep(400)
-        patchClaim({ workEmail: email.trim() })
-        setLoading(false)
-        navigate('/apply')
+        try {
+            const response = await apiColdLeadRegister({
+                work_email: email.trim(),
+            })
+            setSuccess(
+                response.message ||
+                    'Please check your email for your verification',
+            )
+        } catch (err) {
+            const axiosErr = err as {
+                message?: string
+                response?: { data?: { code?: string; message?: string } }
+            }
+            const code = axiosErr.response?.data?.code
+            const message =
+                axiosErr.response?.data?.message ??
+                axiosErr.message ??
+                'Unable to register'
+            setError(message)
+            if (code === 'USER_EXISTS') {
+                setExists(true)
+            }
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -49,27 +78,39 @@ export default function GetStarted() {
                         placeholder="What's your work email?"
                         autoComplete="email"
                         value={email}
-                        error={exists}
-                        onChange={(e) => setEmail(e.target.value)}
+                        error={!!error || exists}
+                        onChange={(e) => {
+                            setEmail(e.target.value)
+                            setError(null)
+                            setExists(false)
+                            setSuccess(null)
+                        }}
                     />
+
+                    {error && <p className="ab-text-m text-coral">{error}</p>}
+                    {success && (
+                        <p className="ab-text-m text-softgreen">{success}</p>
+                    )}
 
                     <div className="flex flex-col gap-[15px]">
                         <PillButton
                             fullWidth
                             type="submit"
                             variant={exists ? 'muted' : 'stack'}
-                            disabled={exists}
+                            disabled={Boolean(success)}
                             loading={loading}
                         >
-                            {exists
-                                ? 'An account with this email already exists'
-                                : 'Get started'}
+                            {success
+                                ? 'Email sent'
+                                : exists
+                                  ? 'An account with this email already exists'
+                                  : 'Get started'}
                         </PillButton>
 
                         {exists && (
                             <div className="flex flex-wrap items-center gap-x-[10px] gap-y-1">
                                 <span className="ab-serif">Forgot password?</span>
-                                <InlineLink to="/recover">
+                                <InlineLink to="/account-recovery">
                                     Recover account
                                 </InlineLink>
                             </div>

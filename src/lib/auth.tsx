@@ -7,125 +7,96 @@ import {
     useState,
     type ReactNode,
 } from 'react'
-import { seededUsers, type DummyUser } from './dummyData'
+import { apiSignIn } from '@/services/AuthService'
+import type { SignInResponse, User } from '@/types/auth'
+import {
+    clearSession,
+    getCookie,
+    getStoredUser,
+    isAuthenticated as hasSession,
+    persistLoginSession,
+    setStoredUser,
+} from '@/lib/session'
 
-const STORAGE_KEY = 'ab.auth.user'
-const USERS_KEY = 'ab.auth.users'
-
-export type AuthUser = {
-    email: string
-    name: string
-}
-
-type AuthResult = { ok: true } | { ok: false; error: string }
+export type AuthUser = User
 
 type AuthContextValue = {
     user: AuthUser | null
+    session: SignInResponse | null
     isAuthenticated: boolean
     loading: boolean
-    login: (email: string, password: string) => Promise<AuthResult>
-    signup: (email: string, password?: string) => Promise<AuthResult>
-    emailExists: (email: string) => boolean
+    login: (
+        email: string,
+        password: string,
+    ) => Promise<
+        | { ok: true; response: SignInResponse }
+        | { ok: false; error: string; code?: string }
+    >
+    applySession: (response: SignInResponse) => void
     logout: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-/** Fake network latency so the dummy flow feels real. */
-const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
-function readUsers(): DummyUser[] {
-    try {
-        const raw = localStorage.getItem(USERS_KEY)
-        if (raw) return JSON.parse(raw) as DummyUser[]
-    } catch {
-        /* ignore */
-    }
-    return seededUsers
-}
-
-function writeUsers(users: DummyUser[]) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users))
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<AuthUser | null>(null)
+    const [session, setSession] = useState<SignInResponse | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        try {
-            const raw = localStorage.getItem(STORAGE_KEY)
-            if (raw) setUser(JSON.parse(raw) as AuthUser)
-            if (!localStorage.getItem(USERS_KEY)) writeUsers(seededUsers)
-        } catch {
-            /* ignore */
+        if (hasSession()) {
+            setUser(getStoredUser())
         }
         setLoading(false)
     }, [])
 
-    const persist = useCallback((next: AuthUser | null) => {
-        setUser(next)
-        if (next) localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-        else localStorage.removeItem(STORAGE_KEY)
+    const applySession = useCallback((response: SignInResponse) => {
+        const team = response.teams?.[0]
+        persistLoginSession(response.token, response.user, team?.team_id)
+        setStoredUser(response.user)
+        setUser(response.user)
+        setSession(response)
     }, [])
-
-    const emailExists = useCallback(
-        (email: string) =>
-            readUsers().some(
-                (u) => u.email.toLowerCase() === email.trim().toLowerCase(),
-            ),
-        [],
-    )
 
     const login = useCallback<AuthContextValue['login']>(
         async (email, password) => {
-            await wait(550)
-            const match = readUsers().find(
-                (u) => u.email.toLowerCase() === email.trim().toLowerCase(),
-            )
-            if (!match) return { ok: false, error: 'No account found for that email.' }
-            if (match.password !== password)
-                return { ok: false, error: 'Incorrect password. Try again.' }
-            persist({ email: match.email, name: match.name })
-            return { ok: true }
-        },
-        [persist],
-    )
-
-    const signup = useCallback<AuthContextValue['signup']>(
-        async (email, password = 'password') => {
-            await wait(550)
-            const normalized = email.trim().toLowerCase()
-            if (readUsers().some((u) => u.email.toLowerCase() === normalized))
-                return {
-                    ok: false,
-                    error: 'An account with this email already exists',
+            try {
+                const response = await apiSignIn({ email, password })
+                applySession(response)
+                return { ok: true, response }
+            } catch (error) {
+                const err = error as {
+                    message?: string
+                    response?: { data?: { code?: string; message?: string } }
                 }
-            const next = readUsers().concat({
-                email: email.trim(),
-                password,
-                name: email.split('@')[0],
-            })
-            writeUsers(next)
-            persist({ email: email.trim(), name: email.split('@')[0] })
-            return { ok: true }
+                const code = err.response?.data?.code
+                const message =
+                    err.response?.data?.message ??
+                    err.message ??
+                    'Unable to sign in.'
+                return { ok: false, error: message, code }
+            }
         },
-        [persist],
+        [applySession],
     )
 
-    const logout = useCallback(() => persist(null), [persist])
+    const logout = useCallback(() => {
+        clearSession()
+        setUser(null)
+        setSession(null)
+    }, [])
 
     const value = useMemo<AuthContextValue>(
         () => ({
             user,
-            isAuthenticated: !!user,
+            session,
+            isAuthenticated: Boolean(user && getCookie('accessToken')),
             loading,
             login,
-            signup,
-            emailExists,
+            applySession,
             logout,
         }),
-        [user, loading, login, signup, emailExists, logout],
+        [user, session, loading, login, applySession, logout],
     )
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

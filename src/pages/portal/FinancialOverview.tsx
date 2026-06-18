@@ -18,10 +18,10 @@ export default function FinancialOverview() {
     const [step, setStep] = useState(1)
 
     const back = () =>
-        step === 1 ? navigate('/app/company-profile') : setStep((s) => s - 1)
+        step === 1 ? navigate('/finance-company-profile') : setStep((s) => s - 1)
     const next = () =>
         step === TOTAL
-            ? navigate('/app/documents/financial-reports')
+            ? navigate('/finance-docs-financial-reports')
             : setStep((s) => s + 1)
 
     const steps: Record<number, JSX.Element> = {

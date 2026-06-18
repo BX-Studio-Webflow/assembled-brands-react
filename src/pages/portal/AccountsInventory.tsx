@@ -4,7 +4,7 @@ export default function AccountsInventory() {
     return (
         <DocumentUploadPage
             title="Accounts & Inventory"
-            nextTo="/app/documents/ecommerce"
+            nextTo="/finance-docs-ecommerce-performance"
             sections={[
                 {
                     id: 'ai-inventory',
