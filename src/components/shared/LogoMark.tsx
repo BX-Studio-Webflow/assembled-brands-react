@@ -1,8 +1,9 @@
-import mark from '@/assets-ab/logo-mark.png'
+import logoMark from '@/assets-ab/AssembledBrands_Logo_Transparent 2 Logo Collapsed.svg'
+import wordmark from '@/assets-ab/Asembled Word SVG.svg'
+import { cx } from '@/lib/utils'
 
-/** Hexagon mark + wordmark lockup. `tone` controls the wordmark color so it can
- *  sit on the dark sidebar (light) or a light surface (dark). When `compact` is
- *  set, only the hexagon mark is shown (used by the collapsed sidebar). */
+/** Sidebar / header logo lockup from Figma.
+ *  Expanded: hex mark + wordmark. Collapsed: mark only. */
 export default function LogoMark({
     tone = 'light',
     compact = false,
@@ -12,24 +13,43 @@ export default function LogoMark({
     compact?: boolean
     size?: 'default' | 'mobile'
 }) {
-    return (
-        <span className="inline-flex items-center gap-2.5">
+    const markClassName =
+        size === 'mobile' ? 'h-10 w-auto' : 'h-[37px] w-auto'
+
+    if (compact) {
+        return (
             <img
-                src={mark}
-                alt=""
-                className={size === 'mobile' ? 'h-10 w-auto' : 'h-8 w-auto'}
+                src={logoMark}
+                alt="Assembled Brands"
+                className={markClassName}
                 draggable={false}
             />
-            {!compact && (
-                <span
-                    className="text-[13px] font-bold leading-[0.95] tracking-[-0.01em] uppercase"
-                    style={{ color: tone === 'light' ? '#fffbf5' : '#262626' }}
-                >
-                    Assembled
-                    <br />
-                    Brands
-                </span>
+        )
+    }
+
+    return (
+        <span
+            className={cx(
+                'inline-flex items-center',
+                size === 'mobile' ? 'gap-[30px]' : 'gap-[5px]',
             )}
+        >
+            <img
+                src={logoMark}
+                alt=""
+                aria-hidden
+                className={markClassName}
+                draggable={false}
+            />
+            <img
+                src={wordmark}
+                alt="Assembled Brands"
+                className={cx(
+                    size === 'mobile' ? 'h-[36px] w-auto' : 'h-8 w-auto',
+                    tone === 'dark' && 'brightness-0',
+                )}
+                draggable={false}
+            />
         </span>
     )
 }
