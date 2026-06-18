@@ -59,8 +59,14 @@ export const YES_NO = [
 ]
 
 export const INVENTORY_LOCATION_OPTIONS = [
-    { label: 'United States (California)', value: 'US-CA' },
-    { label: 'International', value: 'International' },
+    {
+        label: 'United States / Canada (excluding Quebec)',
+        value: 'US-CA',
+    },
+    {
+        label: 'International / Outside US & Canada',
+        value: 'International',
+    },
 ]
 
 export const INVITE_ROLES = [

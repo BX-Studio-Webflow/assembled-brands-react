@@ -27,17 +27,19 @@ export default function FinanceDocsTeamOwnership() {
             {...warmTeamOwnershipConfig}
             sections={sections}
             requireAll={false}
-            headerContent={
-                <div className="flex w-full flex-col gap-[20px]">
-                    <Field label="Has your company raised external equity capital?">
-                        <RadioGroup
-                            name="raised-external-equity"
-                            options={YES_NO}
-                            value={raisedExternalEquity}
-                            onChange={setRaisedExternalEquity}
-                        />
-                    </Field>
-                </div>
+            renderAfterSection={(sectionId) =>
+                sectionId === 'to-investor-deck' ? (
+                    <div className="flex w-full flex-col gap-[20px]">
+                        <Field label="Has your company raised external capital?">
+                            <RadioGroup
+                                name="raised-external-equity"
+                                options={YES_NO}
+                                value={raisedExternalEquity}
+                                onChange={setRaisedExternalEquity}
+                            />
+                        </Field>
+                    </div>
+                ) : null
             }
             isSectionRequired={(section) => {
                 if (section.documentType === 'management_bios') return true
@@ -46,7 +48,7 @@ export default function FinanceDocsTeamOwnership() {
             }}
             validateSubmit={() => {
                 if (!raisedExternalEquity) {
-                    return 'Please select whether your company has raised external equity capital'
+                    return 'Please select whether your company has raised external capital'
                 }
                 return null
             }}

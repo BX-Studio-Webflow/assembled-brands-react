@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LuMail, LuPhone, LuMessageSquare } from 'react-icons/lu'
+import { LuMail } from 'react-icons/lu'
 import PageHeader from '@/components/ui/PageHeader'
 import PortalCard from '@/components/ui/PortalCard'
 import Field from '@/components/ui/Field'
@@ -7,24 +7,6 @@ import TextField from '@/components/ui/TextField'
 import Textarea from '@/components/ui/Textarea'
 import PillButton from '@/components/ui/PillButton'
 import { sleep } from '@/lib/utils'
-
-const channels = [
-    {
-        icon: LuMail,
-        title: 'Email us',
-        detail: 'hello@assembledbrands.com',
-    },
-    {
-        icon: LuPhone,
-        title: 'Schedule a call',
-        detail: 'Book time with your funding advisor',
-    },
-    {
-        icon: LuMessageSquare,
-        title: 'Live chat',
-        detail: 'Mon–Fri, 9am–6pm ET',
-    },
-]
 
 export default function Support() {
     const [subject, setSubject] = useState('')
@@ -45,24 +27,25 @@ export default function Support() {
     return (
         <>
             <PageHeader
-                title="Support"
-                subtitle="Have a question about your application? Our team is here to help."
+                title="Need Help?"
+                subtitle="Contact Support"
             />
 
             <div className="grid grid-cols-1 gap-[30px] md:grid-cols-3">
-                {channels.map((c) => {
-                    const Icon = c.icon
-                    return (
-                        <div
-                            key={c.title}
-                            className="flex flex-col gap-3 bg-beige p-[24px]"
+                <div className="flex flex-col gap-3 bg-beige p-[24px] md:col-span-3">
+                    <LuMail className="size-6 text-coral" />
+                    <p className="ab-serif text-ink">
+                        Having trouble with your uploads or have a question about
+                        the requested documents? Send our team an email at{' '}
+                        <a
+                            className="border-b border-ink text-ink"
+                            href="mailto:sales@assembledbrands.com"
                         >
-                            <Icon className="size-6 text-coral" />
-                            <p className="ab-h5">{c.title}</p>
-                            <p className="ab-serif text-ink/70">{c.detail}</p>
-                        </div>
-                    )
-                })}
+                            sales@assembledbrands.com
+                        </a>
+                        .
+                    </p>
+                </div>
             </div>
 
             <PortalCard>

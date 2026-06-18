@@ -12,6 +12,7 @@ import {
     type DocumentUploadSectionConfig,
 } from '@/configs/documentUpload'
 import { uploadFinancialDocumentFile } from '@/lib/api/uploadFinancialDocumentFile'
+import { fetchFinancialProgress } from '@/lib/api/financialProgress'
 import { useFinancialProgress } from '@/lib/hooks/useFinancialProgress'
 import { revalidateAfterFinancialSave, revalidateSidebarProgress } from '@/lib/swr/mutate'
 import { apiDeleteFinancialDocument } from '@/services/FinancialWizardService'
@@ -23,8 +24,15 @@ type SectionState = {
     error: string | null
 }
 
+const emptySectionState = (): SectionState => ({
+    pendingFile: null,
+    uploadedDoc: null,
+    error: null,
+})
+
 export type DocumentUploadPageProps = DocumentUploadPageConfig & {
     headerContent?: ReactNode
+    renderAfterSection?: (sectionId: string) => ReactNode
     validateSubmit?: () => string | null
     onBeforeSubmit?: () => Promise<void>
     isSectionRequired?: (section: DocumentUploadSectionConfig) => boolean
@@ -40,6 +48,7 @@ export default function DocumentUploadPage({
     nextTo,
     requireAll = true,
     headerContent,
+    renderAfterSection,
     validateSubmit,
     onBeforeSubmit,
     isSectionRequired,
@@ -70,19 +79,21 @@ export default function DocumentUploadPage({
         if (!progress) return
         onProgressLoaded?.(progress)
         const docs = getDocumentsForPage(progress, page)
-        setSectionState(
+        setSectionState((prev) =>
             Object.fromEntries(
                 sections.map((section) => {
                     const uploadedDoc =
                         docs.find(
                             (d) => d.document_type === section.documentType,
                         ) ?? null
+                    const existing = prev[section.id]
                     return [
                         section.id,
                         {
-                            pendingFile: null,
-                            uploadedDoc,
-                            error: null,
+                            pendingFile: existing?.pendingFile ?? null,
+                            uploadedDoc:
+                                existing?.uploadedDoc ?? uploadedDoc,
+                            error: existing?.error ?? null,
                         },
                     ]
                 }),
@@ -90,10 +101,14 @@ export default function DocumentUploadPage({
         )
     }, [onProgressLoaded, page, progress, sections])
 
+    function getSectionState(id: string): SectionState {
+        return sectionState[id] ?? emptySectionState()
+    }
+
     function patchSection(id: string, patch: Partial<SectionState>) {
         setSectionState((prev) => ({
             ...prev,
-            [id]: { ...prev[id], ...patch },
+            [id]: { ...(prev[id] ?? emptySectionState()), ...patch },
         }))
     }
 
@@ -102,7 +117,7 @@ export default function DocumentUploadPage({
         try {
             await apiDeleteFinancialDocument(docId)
             patchSection(sectionId, { uploadedDoc: null })
-            await mutate()
+            await mutate(fetchFinancialProgress(), { revalidate: false })
             void revalidateSidebarProgress()
         } catch (err) {
             patchSection(sectionId, {
@@ -124,7 +139,7 @@ export default function DocumentUploadPage({
 
         const missingRequired = sections.filter((section) => {
             if (!sectionIsRequired(section)) return false
-            const state = sectionState[section.id]
+            const state = getSectionState(section.id)
             return !state.pendingFile && !state.uploadedDoc
         })
 
@@ -136,7 +151,7 @@ export default function DocumentUploadPage({
         const uploads = sections
             .map((section) => ({
                 section,
-                file: sectionState[section.id].pendingFile,
+                file: getSectionState(section.id).pendingFile,
             }))
             .filter(
                 (
@@ -196,53 +211,89 @@ export default function DocumentUploadPage({
                     {headerContent}
 
                     {sections.map((section) => {
-                        const state = sectionState[section.id]
+                        const state = getSectionState(section.id)
+                        const showExample =
+                            section.exampleLabel !== null &&
+                            (section.exampleLabel !== undefined ||
+                                section.label !== undefined)
+                        const exampleText =
+                            section.exampleLabel ??
+                            (section.label ? 'See example' : null)
+
                         return (
-                            <div
-                                key={section.id}
-                                className="flex w-full flex-col gap-[10px]"
-                            >
-                                <div className="flex flex-col items-start gap-[5px]">
-                                    <p className="ab-serif">{section.label}</p>
-                                    <button
-                                        type="button"
-                                        className="ab-text-s border-b border-ink text-ink"
-                                        onClick={() => setExample(section.label)}
-                                    >
-                                        See example
-                                    </button>
+                            <div key={section.id} className="contents">
+                                <div className="flex w-full flex-col gap-[10px]">
+                                    <div className="flex flex-col items-start gap-[5px]">
+                                        {section.title ? (
+                                            <>
+                                                <p className="ab-h5 text-ink">
+                                                    {section.title}
+                                                </p>
+                                                {section.description && (
+                                                    <p className="ab-serif text-ink">
+                                                        {section.description}
+                                                    </p>
+                                                )}
+                                            </>
+                                        ) : (
+                                            section.label && (
+                                                <p className="ab-serif">
+                                                    {section.label}
+                                                </p>
+                                            )
+                                        )}
+                                        {showExample && exampleText && (
+                                            <button
+                                                type="button"
+                                                className="ab-text-s border-b border-ink text-ink"
+                                                onClick={() =>
+                                                    setExample(
+                                                        section.title ??
+                                                            section.label ??
+                                                            exampleText,
+                                                    )
+                                                }
+                                            >
+                                                {exampleText}
+                                            </button>
+                                        )}
+                                    </div>
+                                    <Dropzone
+                                        formats={section.formats}
+                                        accept={section.accept}
+                                        allowedMimeTypes={
+                                            section.allowedMimeTypes
+                                        }
+                                        invalidMessage={section.invalidMessage}
+                                        pendingFile={state.pendingFile}
+                                        uploadedName={
+                                            state.uploadedDoc?.asset_name ??
+                                            null
+                                        }
+                                        error={state.error}
+                                        onSelect={(file) =>
+                                            patchSection(section.id, {
+                                                pendingFile: file,
+                                                error: null,
+                                            })
+                                        }
+                                        onClearPending={() =>
+                                            patchSection(section.id, {
+                                                pendingFile: null,
+                                            })
+                                        }
+                                        onDeleteUploaded={
+                                            state.uploadedDoc
+                                                ? () =>
+                                                      void handleDeleteUploaded(
+                                                          section.id,
+                                                          state.uploadedDoc!.id,
+                                                      )
+                                                : undefined
+                                        }
+                                    />
                                 </div>
-                                <Dropzone
-                                    formats={section.formats}
-                                    accept={section.accept}
-                                    allowedMimeTypes={section.allowedMimeTypes}
-                                    invalidMessage={section.invalidMessage}
-                                    pendingFile={state.pendingFile}
-                                    uploadedName={
-                                        state.uploadedDoc?.asset_name ?? null
-                                    }
-                                    error={state.error}
-                                    onSelect={(file) =>
-                                        patchSection(section.id, {
-                                            pendingFile: file,
-                                            error: null,
-                                        })
-                                    }
-                                    onClearPending={() =>
-                                        patchSection(section.id, {
-                                            pendingFile: null,
-                                        })
-                                    }
-                                    onDeleteUploaded={
-                                        state.uploadedDoc
-                                            ? () =>
-                                                  void handleDeleteUploaded(
-                                                      section.id,
-                                                      state.uploadedDoc!.id,
-                                                  )
-                                            : undefined
-                                    }
-                                />
+                                {renderAfterSection?.(section.id)}
                             </div>
                         )
                     })}

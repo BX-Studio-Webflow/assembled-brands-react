@@ -20,36 +20,42 @@ export default function FinanceDocsAccountsInventory() {
 
     const showInternational = inventoryLocation === 'International'
 
+    function inventoryLocationFields() {
+        return (
+            <div className="flex w-full flex-col gap-[20px]">
+                <Field label="Where is your company-owned inventory currently held?">
+                    <Select
+                        options={INVENTORY_LOCATION_OPTIONS}
+                        placeholder="Select inventory location"
+                        value={inventoryLocation}
+                        onChange={setInventoryLocation}
+                    />
+                </Field>
+                {showInternational && (
+                    <Field label="Please specify the city and country:">
+                        <TextField
+                            variant="soft"
+                            placeholder={WARM_LEAD_INTERNATIONAL_LOCATION_PLACEHOLDER}
+                            value={internationalLocation}
+                            onChange={(e) =>
+                                setInternationalLocation(e.target.value)
+                            }
+                        />
+                    </Field>
+                )}
+            </div>
+        )
+    }
+
     return (
         <DocumentUploadPage
             {...warmAccountsInventoryConfig}
-            headerContent={
-                <div className="flex w-full flex-col gap-[20px]">
-                    <Field label="Where is your inventory located?">
-                        <Select
-                            options={INVENTORY_LOCATION_OPTIONS}
-                            placeholder="Select inventory location"
-                            value={inventoryLocation}
-                            onChange={setInventoryLocation}
-                        />
-                    </Field>
-                    {showInternational && (
-                        <Field label="City and country">
-                            <TextField
-                                variant="soft"
-                                placeholder={WARM_LEAD_INTERNATIONAL_LOCATION_PLACEHOLDER}
-                                value={internationalLocation}
-                                onChange={(e) =>
-                                    setInternationalLocation(e.target.value)
-                                }
-                            />
-                        </Field>
-                    )}
-                </div>
+            renderAfterSection={(sectionId) =>
+                sectionId === 'ai-inventory' ? inventoryLocationFields() : null
             }
             validateSubmit={() => {
                 if (!inventoryLocation) {
-                    return 'Please select an inventory location'
+                    return 'Please select where your company-owned inventory is held'
                 }
                 if (
                     inventoryLocation === 'International' &&

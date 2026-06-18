@@ -1,7 +1,7 @@
 import useSWR from 'swr'
-import { apiGetFinancialProgress } from '@/services/FinancialWizardService'
+import { fetchFinancialProgress } from '@/lib/api/financialProgress'
 import { swrKeys } from '@/lib/swr/keys'
 
 export function useFinancialProgress() {
-    return useSWR(swrKeys.financialProgress, apiGetFinancialProgress)
+    return useSWR(swrKeys.financialProgress, () => fetchFinancialProgress())
 }

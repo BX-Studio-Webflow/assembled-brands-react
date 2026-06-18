@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
 import { LuChevronDown, LuEllipsis, LuEllipsisVertical, LuLogOut } from 'react-icons/lu'
-import { navigation, warmNavigation, type NavGroup } from '@/configs/navigation'
+import { navigation, warmNavigation, isExternalNavUrl, type NavGroup } from '@/configs/navigation'
 import LogoMark from '@/components/shared/LogoMark'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Skeleton from '@/components/ui/Skeleton'
@@ -39,6 +39,21 @@ function GroupBlock({
     // Collapsed: render only the icon, linking to the group's destination.
     if (collapsed) {
         const dest = group.to ?? group.children?.[0]?.to ?? '#'
+        if (isExternalNavUrl(dest)) {
+            return (
+                <a
+                    href={dest}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={group.label}
+                    aria-label={group.label}
+                    className="flex h-8 items-center justify-center"
+                    onClick={onNavigate}
+                >
+                    <Icon />
+                </a>
+            )
+        }
         return (
             <NavLink
                 to={dest}
@@ -53,9 +68,26 @@ function GroupBlock({
     }
 
     if (!group.children) {
+        const dest = group.to ?? '#'
+        if (isExternalNavUrl(dest)) {
+            return (
+                <a
+                    href={dest}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-[10px]"
+                    onClick={onNavigate}
+                >
+                    <span className="flex w-5 shrink-0 justify-center">
+                        <Icon />
+                    </span>
+                    <span className="ab-h4 text-offwhite">{group.label}</span>
+                </a>
+            )
+        }
         return (
             <NavLink
-                to={group.to ?? '#'}
+                to={dest}
                 className="flex items-center gap-[10px]"
                 onClick={onNavigate}
             >

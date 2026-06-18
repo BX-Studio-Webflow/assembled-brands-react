@@ -23,7 +23,7 @@ function prettySize(bytes: number) {
 }
 
 export default function Dropzone({
-    formats = 'sheets, excel',
+    formats = 'excel',
     accept,
     allowedMimeTypes,
     invalidMessage = 'Invalid file type',

@@ -31,6 +31,7 @@ import FinanceDocsAccountsInventory from '@/pages/warm/FinanceDocsAccountsInvent
 import FinanceDocsEcommercePerformance from '@/pages/warm/FinanceDocsEcommercePerformance'
 import FinanceDocsTeamOwnership from '@/pages/warm/FinanceDocsTeamOwnership'
 import FinanceDocsOptionalDocs from '@/pages/warm/FinanceDocsOptionalDocs'
+import WarmApplicationSubmitted from '@/pages/warm/WarmApplicationSubmitted'
 import AcceptTeamInvitation from '@/pages/warm/AcceptTeamInvitation'
 
 export default function App() {
@@ -139,6 +140,10 @@ export default function App() {
                             <Route
                                 path="/warm/finance-docs-optional-docs"
                                 element={<FinanceDocsOptionalDocs />}
+                            />
+                            <Route
+                                path="/warm/application-submitted"
+                                element={<WarmApplicationSubmitted />}
                             />
                             <Route
                                 path="/warm/invite-team-members"

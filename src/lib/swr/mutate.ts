@@ -1,13 +1,15 @@
 import { mutate } from 'swr'
+import { fetchFinancialProgress } from '@/lib/api/financialProgress'
+import { fetchOnboardingProgress } from '@/lib/api/onboardingProgress'
 import { fetchTeamInvitations } from '@/lib/hooks/useTeamData'
 import { swrKeys } from '@/lib/swr/keys'
 
 export function revalidateFinancialProgress() {
-    return mutate(swrKeys.financialProgress)
+    return mutate(swrKeys.financialProgress, () => fetchFinancialProgress())
 }
 
 export function revalidateOnboardingProgress() {
-    return mutate(swrKeys.onboardingProgress)
+    return mutate(swrKeys.onboardingProgress, fetchOnboardingProgress)
 }
 
 export function revalidateCompanyProfileSeed() {

@@ -1,60 +1,26 @@
 import { apiGetUserMe } from '@/services/AuthService'
-import { apiGetFinancialProgress } from '@/services/FinancialWizardService'
-import { apiGetOnboardingProgress } from '@/services/OnboardingService'
 import { apiGetMyTeams } from '@/services/TeamService'
 import type { User } from '@/types/auth'
-import type { Business } from '@/types/business'
-import type { FinancialWizardProgressResponse } from '@/types/financial-wizard'
 import type { OnboardingProgressApiResponse } from '@/types/onboarding'
 import type { MyTeam } from '@/types/team'
+import { fetchFinancialProgress } from '@/lib/api/financialProgress'
+import { fetchOnboardingProgress } from '@/lib/api/onboardingProgress'
 import { getStoredUser } from '@/lib/session'
-
-const emptyFinancialProgress = (
-    business: Business | null | undefined = null,
-): FinancialWizardProgressResponse => ({
-    current_page: 'company-profile',
-    is_complete: false,
-    percentage: 0,
-    company_profile: null,
-    financial_overview: null,
-    financial_reports: [],
-    accounts_inventory: [],
-    ecommerce_performance: [],
-    team_ownership: [],
-    business: business ?? null,
-})
-
-function normalizeFinancialProgress(
-    data:
-        | FinancialWizardProgressResponse
-        | { progress: null; business?: Business | null }
-        | undefined,
-): FinancialWizardProgressResponse | undefined {
-    if (!data) return undefined
-    if ('percentage' in data && typeof data.percentage === 'number') {
-        return data
-    }
-    if ('progress' in data && data.progress === null) {
-        return emptyFinancialProgress(data.business)
-    }
-    return undefined
-}
 
 /** Legacy `fetchProgressData` from shared/utils/helpers.ts */
 export async function fetchProgressData(userId?: string) {
     const [financialResult, userResult, teamsResult, onboardingResult] =
         await Promise.allSettled([
-            apiGetFinancialProgress(userId),
+            fetchFinancialProgress(userId),
             apiGetUserMe(),
             apiGetMyTeams(),
-            apiGetOnboardingProgress(),
+            fetchOnboardingProgress(),
         ])
 
-    const financialProgress = normalizeFinancialProgress(
+    const financialProgress =
         financialResult.status === 'fulfilled'
             ? financialResult.value
-            : undefined,
-    )
+            : undefined
     const user: User =
         userResult.status === 'fulfilled'
             ? userResult.value

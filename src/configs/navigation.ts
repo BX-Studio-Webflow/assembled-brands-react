@@ -7,6 +7,12 @@ import {
     TeamIcon,
 } from '@/components/shared/NavIcons'
 
+export const SUPPORT_URL = 'https://bx-assembled.webflow.io/support'
+
+export function isExternalNavUrl(url: string) {
+    return /^https?:\/\//i.test(url)
+}
+
 export type NavLeaf = {
     label: string
     to: string
@@ -58,7 +64,7 @@ export const financeNavigation: NavGroup[] = [
         label: 'Support',
         icon: SupportIcon,
         accent: 'var(--color-lightyellow)',
-        to: '/support',
+        to: SUPPORT_URL,
     },
     {
         label: 'Invite Team Members',
@@ -116,7 +122,7 @@ export const warmNavigation: NavGroup[] = [
         label: 'Support',
         icon: SupportIcon,
         accent: 'var(--color-lightyellow)',
-        to: '/support',
+        to: SUPPORT_URL,
     },
     {
         label: 'Invite Team Members',
