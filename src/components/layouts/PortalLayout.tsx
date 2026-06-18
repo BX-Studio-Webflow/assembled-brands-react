@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router'
-import { LuMenu, LuX, LuMessageSquare } from 'react-icons/lu'
+import { LuMenu } from 'react-icons/lu'
 import Sidebar from './Sidebar'
 import LogoMark from '@/components/shared/LogoMark'
+import portalBrandMark from '@/assets-ab/portal-brand-mark.svg'
 
 export default function PortalLayout() {
     const [mobileOpen, setMobileOpen] = useState(false)
@@ -16,36 +17,33 @@ export default function PortalLayout() {
 
             {/* Mobile drawer */}
             {mobileOpen && (
-                <div className="fixed inset-0 z-40 lg:hidden">
+                <div className="fixed inset-0 z-50 lg:hidden">
                     <div
                         className="absolute inset-0 bg-ink/50"
                         onClick={() => setMobileOpen(false)}
+                        aria-hidden
                     />
-                    <div className="absolute left-0 top-0 h-full">
-                        <Sidebar onNavigate={() => setMobileOpen(false)} />
+                    <div className="relative z-10 h-full w-[min(324px,100vw)] shadow-xl">
+                        <Sidebar
+                            variant="drawer"
+                            onNavigate={() => setMobileOpen(false)}
+                            onClose={() => setMobileOpen(false)}
+                        />
                     </div>
-                    <button
-                        type="button"
-                        aria-label="Close menu"
-                        className="absolute right-4 top-4 text-offwhite"
-                        onClick={() => setMobileOpen(false)}
-                    >
-                        <LuX className="size-6" />
-                    </button>
                 </div>
             )}
 
             <div className="flex min-w-0 flex-1 flex-col">
                 {/* Mobile top bar */}
                 <div className="flex items-center justify-between border-b border-ink/10 px-4 py-3 lg:hidden">
-                    <LogoMark tone="dark" />
+                    <LogoMark tone="dark" size="mobile" />
                     <button
                         type="button"
                         aria-label="Open menu"
                         className="text-ink"
                         onClick={() => setMobileOpen(true)}
                     >
-                        <LuMenu className="size-6" />
+                        <LuMenu className="size-7" />
                     </button>
                 </div>
 
@@ -56,14 +54,20 @@ export default function PortalLayout() {
                 </div>
             </div>
 
-            {/* Intercom-style helper button */}
-            <button
-                type="button"
-                aria-label="Get help"
-                className="fixed bottom-[50px] right-[50px] z-30 flex size-[43px] items-center justify-center rounded-xl bg-ink text-offwhite shadow-lg transition-transform hover:scale-105"
+            <a
+                href="https://assembledbrands.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Assembled Brands"
+                className="fixed bottom-6 right-6 z-30 flex size-[43px] items-center justify-center transition-transform hover:scale-105 md:bottom-[50px] md:right-[50px]"
             >
-                <LuMessageSquare className="size-5" />
-            </button>
+                <img
+                    src={portalBrandMark}
+                    alt=""
+                    aria-hidden
+                    className="size-[43px]"
+                />
+            </a>
         </div>
     )
 }

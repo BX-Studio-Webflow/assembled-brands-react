@@ -9,6 +9,8 @@ import {
 
 export const SUPPORT_URL = 'https://bx-assembled.webflow.io/support'
 
+export const THANK_YOU_URL = 'https://bx-assembled.webflow.io/thank-you'
+
 export function isExternalNavUrl(url: string) {
     return /^https?:\/\//i.test(url)
 }

@@ -12,6 +12,7 @@ import { useOnboardingProgress } from '@/lib/hooks/useOnboardingProgress'
 import { revalidateAfterOnboardingSave } from '@/lib/swr/mutate'
 import { useAuth } from '@/lib/auth'
 import { isAuthenticated, persistLoginSession } from '@/lib/session'
+import { US_STATE_OPTIONS, WARM_TEAM_MEMBER_OPTIONS } from '@/constants/options'
 
 export default function OnboardingWarmLead() {
     const navigate = useNavigate()
@@ -62,14 +63,44 @@ export default function OnboardingWarmLead() {
     }, [dealId])
 
     useEffect(() => {
-        if (!ready || !isAuthenticated() || legalName) return
+        if (!ready || !isAuthenticated()) return
         const step1 = onboarding?.progress?.step1
-        if (step1?.legal_name) setLegalName(step1.legal_name)
-    }, [ready, onboarding, legalName])
+        const progressData = onboarding?.progress?.progress_data
+        if (step1?.legal_name && !legalName) setLegalName(step1.legal_name)
+        if (!legalName && progressData?.legal_name) {
+            setLegalName(progressData.legal_name)
+        }
+        const state =
+            step1?.incorporation_state ?? progressData?.incorporation_state
+        if (state && !incorporationState) setIncorporationState(state)
+        const revenue =
+            step1?.net_revenue_last_12_months ??
+            progressData?.net_revenue_last_12_months
+        if (revenue && !netRevenue) setNetRevenue(revenue)
+        const working =
+            step1?.working_with_team_member ??
+            progressData?.working_with_team_member
+        if (working) setWorkingWithMember('yes')
+        const member =
+            step1?.team_member_email ?? progressData?.team_member_email
+        if (member && !memberEmail) setMemberEmail(member)
+    }, [
+        ready,
+        onboarding,
+        legalName,
+        incorporationState,
+        netRevenue,
+        memberEmail,
+    ])
 
     async function onSubmit() {
         setSubmitting(true)
         setError(null)
+        if (workingWithMember === 'yes' && !memberEmail) {
+            setError('Please select a team member')
+            setSubmitting(false)
+            return
+        }
         const shared = {
             legal_name: legalName,
             incorporation_state: incorporationState,
@@ -121,11 +152,8 @@ export default function OnboardingWarmLead() {
                 <Select
                     placeholder="State of incorporation"
                     value={incorporationState}
-                    options={[
-                        { label: 'California', value: 'CA' },
-                        { label: 'New York', value: 'NY' },
-                        { label: 'Delaware', value: 'DE' },
-                    ]}
+                    options={US_STATE_OPTIONS}
+                    isSearchable
                     onChange={setIncorporationState}
                 />
                 <TextField
@@ -143,15 +171,17 @@ export default function OnboardingWarmLead() {
                         },
                         { label: 'No', value: 'no' },
                     ]}
-                    onChange={(v) =>
+                    onChange={(v) => {
                         setWorkingWithMember(v as 'yes' | 'no')
-                    }
+                        if (v === 'no') setMemberEmail('')
+                    }}
                 />
                 {workingWithMember === 'yes' && (
-                    <TextField
-                        placeholder="Team member email"
+                    <Select
+                        placeholder="Select team member"
                         value={memberEmail}
-                        onChange={(e) => setMemberEmail(e.target.value)}
+                        options={WARM_TEAM_MEMBER_OPTIONS}
+                        onChange={setMemberEmail}
                     />
                 )}
                 {error && <p className="ab-text-m text-coral">{error}</p>}

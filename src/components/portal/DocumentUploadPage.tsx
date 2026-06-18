@@ -11,6 +11,7 @@ import {
     type DocumentUploadPageConfig,
     type DocumentUploadSectionConfig,
 } from '@/configs/documentUpload'
+import { isExternalNavUrl } from '@/configs/navigation'
 import { uploadFinancialDocumentFile } from '@/lib/api/uploadFinancialDocumentFile'
 import { fetchFinancialProgress } from '@/lib/api/financialProgress'
 import { useFinancialProgress } from '@/lib/hooks/useFinancialProgress'
@@ -182,6 +183,10 @@ export default function DocumentUploadPage({
             }
 
             await revalidateAfterFinancialSave()
+            if (isExternalNavUrl(nextTo)) {
+                window.location.assign(nextTo)
+                return
+            }
             navigate(nextTo)
         } catch (err) {
             setFormError(

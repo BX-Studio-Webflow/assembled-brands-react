@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
-import { LuChevronDown, LuEllipsis, LuEllipsisVertical, LuLogOut } from 'react-icons/lu'
+import { LuChevronDown, LuEllipsis, LuEllipsisVertical, LuLogOut, LuX } from 'react-icons/lu'
 import { navigation, warmNavigation, isExternalNavUrl, type NavGroup } from '@/configs/navigation'
 import LogoMark from '@/components/shared/LogoMark'
 import ProgressBar from '@/components/ui/ProgressBar'
@@ -155,9 +155,11 @@ function GroupBlock({
 
 function AccountMenu({
     collapsed = false,
+    menuPlacement = 'up',
     onNavigate,
 }: {
     collapsed?: boolean
+    menuPlacement?: 'up' | 'down'
     onNavigate?: () => void
 }) {
     const navigate = useNavigate()
@@ -204,10 +206,14 @@ function AccountMenu({
             {open && (
                 <div
                     className={cx(
-                        'absolute z-50 min-w-[160px] rounded border border-ink/10 bg-white py-1 shadow-lg',
-                        collapsed
-                            ? 'bottom-full left-1/2 mb-2 -translate-x-1/2'
-                            : 'bottom-full right-0 mb-2',
+                        'absolute z-[200] min-w-[160px] rounded border border-ink/10 bg-white py-1 shadow-lg',
+                        menuPlacement === 'down'
+                            ? collapsed
+                                ? 'left-1/2 top-full mt-2 -translate-x-1/2'
+                                : 'left-0 top-full mt-2'
+                            : collapsed
+                              ? 'bottom-full left-1/2 mb-2 -translate-x-1/2'
+                              : 'bottom-full right-0 mb-2',
                     )}
                 >
                     <button
@@ -248,11 +254,22 @@ function CollapseToggle({
     )
 }
 
-export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+export default function Sidebar({
+    onNavigate,
+    variant = 'default',
+    onClose,
+}: {
+    onNavigate?: () => void
+    variant?: 'default' | 'drawer'
+    onClose?: () => void
+}) {
     const { user } = useAuth()
     const { pathname } = useLocation()
     const navItems = pathname.startsWith('/warm') ? warmNavigation : navigation
+    const isDrawer = variant === 'drawer'
     const [collapsed, setCollapsed] = useState(false)
+    const effectiveCollapsed = isDrawer ? false : collapsed
+    const menuPlacement = isDrawer ? 'down' : 'up'
     const { data: sidebarData, isLoading } = useSidebarProgress()
 
     const progress = sidebarData?.percentage ?? 0
@@ -266,8 +283,13 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     return (
         <aside
             className={cx(
-                'relative flex h-full flex-col bg-sidebar p-[25px] text-offwhite transition-[width] duration-200 ease-out',
-                collapsed ? 'w-[90px]' : 'w-[324px]',
+                'relative flex h-full max-h-screen flex-col bg-sidebar text-offwhite transition-[width] duration-200 ease-out',
+                isDrawer
+                    ? 'w-full overflow-hidden p-[25px]'
+                    : cx(
+                          'p-[25px]',
+                          effectiveCollapsed ? 'w-[90px]' : 'w-[324px]',
+                      ),
             )}
         >
             {/* Hex mesh backdrop (Figma side-nav asset) */}
@@ -283,28 +305,44 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             {/* Floating collapse toggle, anchored on the right edge (desktop only) */}
             <div className="absolute right-0 top-[25px] z-30 hidden translate-x-1/2 lg:block">
                 <CollapseToggle
-                    collapsed={collapsed}
+                    collapsed={effectiveCollapsed}
                     onToggle={() => setCollapsed((v) => !v)}
                 />
             </div>
 
-            <div className="relative z-10 flex h-full flex-col justify-between">
-                <div className="flex flex-col gap-[60px]">
-                    <div className={cx('flex', collapsed && 'justify-center')}>
-                        <LogoMark compact={collapsed} tone="light" />
+            <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between">
+                <div className="flex min-h-0 flex-1 flex-col gap-[60px]">
+                    <div
+                        className={cx(
+                            'flex shrink-0',
+                            isDrawer && 'items-center justify-between gap-3',
+                            effectiveCollapsed && !isDrawer && 'justify-center',
+                        )}
+                    >
+                        <LogoMark compact={effectiveCollapsed} tone="light" />
+                        {isDrawer && onClose && (
+                            <button
+                                type="button"
+                                aria-label="Close menu"
+                                className="flex size-[37px] shrink-0 items-center justify-center rounded-full border border-ink bg-offwhite text-ink shadow-[2px_2px_0_0_#262626]"
+                                onClick={onClose}
+                            >
+                                <LuX className="size-5" strokeWidth={2} />
+                            </button>
+                        )}
                     </div>
 
                     <nav
                         className={cx(
-                            'flex flex-col gap-[25px] overflow-y-auto',
-                            collapsed && 'items-center',
+                            'flex min-h-0 flex-1 flex-col gap-[25px] overflow-y-auto overscroll-contain pr-1',
+                            effectiveCollapsed && 'items-center',
                         )}
                     >
                         {navItems.map((group) => (
                             <GroupBlock
                                 key={group.label}
                                 group={group}
-                                collapsed={collapsed}
+                                collapsed={effectiveCollapsed}
                                 onNavigate={onNavigate}
                             />
                         ))}
@@ -313,17 +351,17 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
                 <div
                     className={cx(
-                        'flex flex-col gap-[46px]',
-                        collapsed && 'items-center',
+                        'flex shrink-0 flex-col gap-[46px] overflow-visible',
+                        effectiveCollapsed && 'items-center',
                     )}
                 >
                     {isLoading ? (
-                        collapsed ? (
+                        effectiveCollapsed ? (
                             <Skeleton className="h-4 w-8 bg-offwhite/20" />
                         ) : (
                             <Skeleton className="h-2 w-[249px] max-w-full bg-offwhite/20" />
                         )
-                    ) : collapsed ? (
+                    ) : effectiveCollapsed ? (
                         <p className="ab-h5 text-center uppercase text-offwhite">
                             {progress}%
                         </p>
@@ -335,19 +373,20 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
                     {/* Beige chamfered footer panel (Figma: bottom "Subtract" shape) */}
                     <div
-                        className="-mx-[25px] -mb-[25px] self-stretch bg-beige px-[25px] py-[20px]"
+                        className="relative z-20 -mx-[25px] -mb-[25px] self-stretch overflow-visible bg-beige px-[25px] py-[20px]"
                         style={{
                             clipPath:
                                 'polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%)',
                         }}
                     >
-                        {collapsed ? (
+                        {effectiveCollapsed ? (
                             <div className="flex flex-col items-center gap-[20px]">
                                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ink/10 text-[12px] font-semibold text-ink">
                                     {initials(name)}
                                 </span>
                                 <AccountMenu
                                     collapsed
+                                    menuPlacement={menuPlacement}
                                     onNavigate={onNavigate}
                                 />
                             </div>
@@ -366,7 +405,10 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                                         </span>
                                     </span>
                                 </span>
-                                <AccountMenu onNavigate={onNavigate} />
+                                <AccountMenu
+                                    menuPlacement={menuPlacement}
+                                    onNavigate={onNavigate}
+                                />
                             </div>
                         )}
                     </div>

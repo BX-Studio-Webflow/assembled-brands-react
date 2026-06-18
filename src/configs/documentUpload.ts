@@ -23,6 +23,7 @@ import {
     WARM_LEAD_TEAM_LEADERSHIP_INVALID_MESSAGE,
     WARM_LEAD_TEAM_LEADERSHIP_MIME_TYPES,
 } from '@/lib/validation/warmLead'
+import { THANK_YOU_URL } from '@/configs/navigation'
 
 export type DocumentUploadSectionConfig = {
     id: string
@@ -329,7 +330,7 @@ export const warmTeamOwnershipConfig: DocumentUploadPageConfig = {
 export const warmOptionalDocsConfig: DocumentUploadPageConfig = {
     title: 'Optional Documents',
     page: 'team-ownership',
-    nextTo: '/warm/application-submitted',
+    nextTo: THANK_YOU_URL,
     requireAll: false,
     sections: [
         {

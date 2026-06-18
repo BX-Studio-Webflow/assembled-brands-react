@@ -67,7 +67,7 @@ export default function Dropzone({
                 role="button"
                 tabIndex={0}
                 className={cx(
-                    'flex h-[199px] flex-col items-center justify-end gap-[40px] border border-dashed px-[15px] py-[22px] text-center transition-colors',
+                    'flex min-h-[140px] flex-col items-center justify-end gap-6 border border-dashed px-3 py-4 text-center transition-colors touch-manipulation md:h-[199px] md:gap-[40px] md:px-[15px] md:py-[22px]',
                     dragging
                         ? 'border-ink bg-beige/60'
                         : 'border-ink bg-offwhite hover:bg-beige/40',
@@ -86,9 +86,10 @@ export default function Dropzone({
                 onDrop={onDrop}
             >
                 <div className="flex flex-col items-center gap-[10px]">
-                    <LuCloudUpload aria-hidden className="size-9 text-ink" />
-                    <p className="ab-label flex items-center gap-[5px] text-ink">
-                        Drop documents here Or
+                    <LuCloudUpload aria-hidden className="size-7 text-ink md:size-9" />
+                    <p className="ab-label flex flex-wrap items-center justify-center gap-x-[5px] gap-y-1 text-ink">
+                        <span className="hidden sm:inline">Drop documents here Or</span>
+                        <span className="sm:hidden">Tap to</span>
                         <span className="border-b border-ink">browse</span>
                     </p>
                 </div>
