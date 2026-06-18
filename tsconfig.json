@@ -19,6 +19,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "src/views/concepts/events/EventList/store/eventListStore.ts"],
+    "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
